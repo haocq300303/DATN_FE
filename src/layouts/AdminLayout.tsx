@@ -10,7 +10,7 @@ import {
   HomeOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import FsportLogo from "../assets/img/logo-fsport.png";
+import FsportLogo from "../assets/img/sport-bg.png";
 import { Outlet } from "react-router-dom";
 import HeaderAdmin from "../components/Admin/Header/Header";
 
@@ -41,6 +41,9 @@ const items: MenuItem[] = [
   getItem("Post", "sub3", <SolutionOutlined />, [
     getItem(<Link to={"/admin/post/add"}>Create Post</Link>, "4"),
     getItem(<Link to={"/admin/post"}>Post List</Link>, "5"),
+  ]),
+  getItem("Comment", "sub4", <SolutionOutlined />, [
+    getItem(<Link to={"/admin/comment"}>Comment List</Link>, "6"),
   ]),
 ];
 const AdminLayout = () => {
