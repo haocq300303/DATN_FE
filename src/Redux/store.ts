@@ -1,9 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import bannerSlice from './Reducer/bannerSlice';
+import postReducer from "./Slices/postSlice";
+import commentReducer from "./Slices/commentSlide";
+import bannerSlice from './Slices/bannerSlice';
 const store = configureStore({
   reducer: {
     banner: bannerSlice,
-
+    post: postReducer,
+    comment: commentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

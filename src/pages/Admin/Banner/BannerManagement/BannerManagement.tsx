@@ -1,39 +1,60 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
-// import { useAppSelector, useAppDispatch } from "@/redux/hook";
-import { Link } from 'react-router-dom';
-import { Popconfirm, Space, Table, Button, message, Input } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import {  getAllBanner, handleRemoveBanner } from '../../../../Redux/Reducer/bannerSlice';
+import {
+  Popconfirm,
+  Space,
+  Table,
+  Button,
+  message,
+  Form,
+  Input,
+  Upload,
+} from "antd";
+import type { ColumnsType } from "antd/es/table";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import ModalForm from "../../../../components/ModalForm/ModalForm";
 import { useAppDispatch, useAppSelector } from '../../../../Redux/hook';
+import axios from "axios";
+import IBanner from "../../../../interfaces/Banner";
+import { createBannerMid, deleteBannerMid, getAllBannerMid } from "../../../../Redux/Slices/bannerSlice";
+import { updatePostMid } from "../../../../Redux/Slices/postSlice";
 
-const { Search } = Input;
+const { Dragger } = Upload;
 
 const BannerManagement = () => {
-  const [searchText, setSearchText] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState("");
 
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
   
+console.log(banners);
 
   useEffect(() => {
-    dispatch(getAllBanner());
+    dispatch(getAllBannerMid());
   }, [dispatch]);
 
   const confirm = (id: string) => {
-    void dispatch(handleRemoveBanner(id));
+    void dispatch(deleteBannerMid(id));
   };
 
   const cancel = () => {
     message.error('Đã hủy!');
   };
 
-  const columns = [
+
+  const columns: ColumnsType<IBanner> = [
     {
       title: 'Image',
       dataIndex: 'url',
       key: 'url',
-      render: (image: string) => <img width={200} src={image} alt="Banner" />,
+      render: (image: string) => <img width={200} src={image[0]} alt="Banner" />,
     },
     Table.EXPAND_COLUMN,
     {
@@ -49,12 +70,25 @@ const BannerManagement = () => {
       key: 'action',
       render: (record: any) => (
         <Space size="middle">
-          <Link to={`/admin/banner/update/${record._id}`}>
-            <Button type="primary" ghost>
-              <EditOutlined />
-              Edit
-            </Button>
-          </Link>
+         <Button
+            type="primary"
+            onClick={() => {
+              const banner = banners?.find(
+                (banner: IBanner) => banner._id === record._id
+              );
+
+              form.setFieldsValue({
+                _id: banner?._id,
+                images: banner?.url,
+                description: banner?.content,
+              });
+              showModal("edit");
+            }}
+            ghost
+          >
+            <EditOutlined style={{ display: "inline-flex" }} />
+            Edit
+          </Button>
           <Popconfirm
             placement="topRight"
             title="Xóa bài viết?"
@@ -74,26 +108,158 @@ const BannerManagement = () => {
     },
   ];
 
+  const data = banners.map((item: IBanner, index: number) => ({
+    ...item,
+    key: index,
+  }));
+  const showModal = (mode: string) => {
+    setModalMode(mode);
+    setIsModalOpen(true);
+  };
+
+  const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
+  };
+
+  const validateMessages = {
+    required: "${label} is required!",
+  };
+
+  const onFinish = async (values: any) => {
+    if (modalMode === "add") {
+      const url = values?.images?.fileList?.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ({ response }: any) => response.data.url
+        );
+        
+        const newValues = { ...values, url };
+        console.log(newValues);
+
+      await dispatch(createBannerMid(newValues));
+      message.success(`Tạo banner thành công!`);
+    } else if (modalMode === "edit") {
+      const newImages = values.images.fileList
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          values.images.fileList.map(({ response }: any) => response.data.url)
+        : values.images;
+
+      const newValues = { ...values, images: newImages };
+      const { _id, ...post } = newValues;
+
+      await dispatch(updatePostMid({ _id, post }));
+      message.success(`Sửa banner thành công!`);
+    }
+    setIsModalOpen(false);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const uploadFiles = async (file: any) => {
+    if (file) {
+      const CLOUD_NAME = "dhwpz6l7t";
+      const PRESET_NAME = "datn-img";
+      const FOLDER_NAME = "datn-img";
+      const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+      const formData = new FormData();
+      formData.append("upload_preset", PRESET_NAME);
+      formData.append("folder", FOLDER_NAME);
+      formData.append("file", file);
+
+      const response = await axios.post(api, formData);
+
+      return response;
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const customRequest = async ({ file, onSuccess, onError }: any) => {
+    try {
+      // Gọi hàm tải lên ảnh của bạn và chờ kết quả
+      const response = await uploadFiles(file);
+      // Kiểm tra kết quả và xử lý tùy theo trạng thái tải lên
+      if (response?.status === 200) {
+        message.success(`${file.name} uploaded successfully`);
+        onSuccess(response, file);
+      } else {
+        message.error(`${file.name} upload failed.`);
+        onError(response);
+      }
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      message.error("An error occurred while uploading the image.");
+      onError(error);
+    }
+  };
+
+  const [form] = Form.useForm();
+
+
   return (
     <>
-      <Search
-        style={{ width: '22%', marginBottom: 10 }}
-        placeholder="Search name . . ."
-        size="large"
-        value={searchText}
-        onChange={(event) => setSearchText(event.target.value)}
-      />
+      <div className="flex justify-end mb-2">
+        <Button
+          type="primary"
+          icon={<PlusCircleOutlined />}
+          size={"large"}
+          className="bg-[#1677ff]"
+          onClick={() => {
+            form.resetFields();
+            showModal("add");
+          }}
+        >
+          Create Banner
+        </Button>
+      </div>
       <Table
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 8 }}
         columns={columns}
-        dataSource={banners}
-        rowKey={(record: any) => record._id}
+        dataSource={data}
+        rowSelection={{}}
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.content}</p>
           ),
         }}
       />
+      <ModalForm
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        form={form}
+        modalMode={modalMode}
+      >
+        <Form
+          form={form}
+          {...layout}
+          name="nest-messages"
+          onFinish={onFinish}
+          validateMessages={validateMessages}
+          layout="vertical"
+        >
+          {modalMode === "edit" && (
+            <Form.Item name="_id" style={{ display: "none" }}>
+              <Input />
+            </Form.Item>
+          )}
+
+          <Form.Item name="url" label="Images" rules={[{ required: true }]}>
+            <Dragger multiple listType="picture" customRequest={customRequest}>
+              <Button icon={<UploadOutlined />}>Upload Images</Button>
+            </Dragger>
+          </Form.Item>
+
+          <Form.Item
+            name="content"
+            label="Description"
+            rules={[
+              { required: true },
+              { whitespace: true, message: "${label} is required!" },
+            ]}
+          >
+            <Input.TextArea rows={4} placeholder="Description" />
+          </Form.Item>
+        </Form>
+      </ModalForm>
     </>
   );
 };

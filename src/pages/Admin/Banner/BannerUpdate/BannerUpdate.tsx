@@ -12,9 +12,9 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch } from "../../../../Redux/hook";
-import {
-  handleUpdateBanner,
-} from "../../../../Redux/Reducer/bannerSlice";
+// import {
+//   handleUpdateBanner,
+// } from "../../../../Redux/Slices/bannerSlice";
 import axios from "axios";
 
 const { Dragger } = Upload;

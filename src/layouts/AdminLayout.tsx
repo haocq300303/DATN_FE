@@ -12,7 +12,7 @@ import {
   FileImageOutlined,
   ProfileOutlined
 } from "@ant-design/icons";
-import FsportLogo from "../assets/img/logo-fsport.png";
+import FsportLogo from "../assets/img/sport-bg.png";
 import { Outlet } from "react-router-dom";
 import HeaderAdmin from "../components/Admin/Header/Header";
 
@@ -34,7 +34,6 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem(<Link to={"/admin"}>Thống kê</Link>, "sub1", <PieChartOutlined />),
-
   getItem("Pitch", "sub2", <AppstoreOutlined />, [
     getItem(<Link to={"/admin/pitch/add"}>Create Pich</Link>, "2"),
     getItem(<Link to={"/admin/pitch"}>Pitch List</Link>, "3"),
@@ -52,6 +51,9 @@ const items: MenuItem[] = [
   getItem("Service", "sub5", <ProfileOutlined />, [
     getItem(<Link to={"/admin/service/add"}>Create Service</Link>, "8"),
     getItem(<Link to={"/admin/service"}>Service List</Link>, "9"),
+  ]),
+  getItem("Comment", "sub6", <SolutionOutlined />, [
+    getItem(<Link to={"/admin/comment"}>Comment List</Link>, "10"),
   ]),
 ];
 const AdminLayout = () => {
