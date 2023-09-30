@@ -9,6 +9,8 @@ import {
   PieChartOutlined,
   HomeOutlined,
   UserOutlined,
+  FileImageOutlined,
+  ProfileOutlined
 } from "@ant-design/icons";
 import FsportLogo from "../assets/img/logo-fsport.png";
 import { Outlet } from "react-router-dom";
@@ -41,6 +43,15 @@ const items: MenuItem[] = [
   getItem("Post", "sub3", <SolutionOutlined />, [
     getItem(<Link to={"/admin/post/add"}>Create Post</Link>, "4"),
     getItem(<Link to={"/admin/post"}>Post List</Link>, "5"),
+  ]),
+
+  getItem("Banner", "sub4", <FileImageOutlined />, [
+    getItem(<Link to={"/admin/banner/add"}>Create Banner</Link>, "6"),
+    getItem(<Link to={"/admin/banner"}>Banner List</Link>, "7"),
+  ]),
+  getItem("Service", "sub5", <ProfileOutlined />, [
+    getItem(<Link to={"/admin/service/add"}>Create Service</Link>, "8"),
+    getItem(<Link to={"/admin/service"}>Service List</Link>, "9"),
   ]),
 ];
 const AdminLayout = () => {

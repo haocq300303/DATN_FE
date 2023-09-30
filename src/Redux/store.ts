@@ -1,7 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-
+import bannerSlice from './Reducer/bannerSlice';
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    banner: bannerSlice,
+
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
@@ -9,4 +12,5 @@ const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 export default store;
