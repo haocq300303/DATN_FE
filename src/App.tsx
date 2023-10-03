@@ -8,6 +8,8 @@ import AdminLayout from "./layouts/AdminLayout";
 import PostAdd from "./pages/Admin/Post/PostAdd/PostAdd";
 import PostManagement from "./pages/Admin/Post/PostManagement/PostManagement";
 import CommentManagement from "./pages/Admin/Comment/CommentManagement/CommentManagement";
+import PitchList from "./pages/Admin/Pitch/PitchList";
+import LocationList from "./pages/Admin/Location/LocationList";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path={routes.admin} element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path={routes.post} element={<PostManagement />} />
+          <Route path={routes.pitch} element={<PitchList />} />
+          <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.postAdd} element={<PostAdd />} />
           <Route path={routes.comment} element={<CommentManagement />} />
         </Route>
