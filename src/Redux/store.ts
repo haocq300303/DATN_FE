@@ -5,6 +5,9 @@ import bannerSlice from './Slices/bannerSlice';
 import serviceSlice from "./Slices/serviceSlice";
 import navbar from "./Slices/navbarSlice";
 import menuReducer from "./Slices/menuSlice";
+import locationReducer from "./Slices/locationSlice";
+import pitchReducer from "./Slices/pitchSlice";
+
 
 const store = configureStore({
   reducer: {
@@ -14,6 +17,8 @@ const store = configureStore({
     service: serviceSlice,
     post: postReducer,
     comment: commentReducer,
+    location: locationReducer,
+    pitch: pitchReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

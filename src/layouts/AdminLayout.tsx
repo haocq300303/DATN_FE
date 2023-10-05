@@ -10,7 +10,8 @@ import {
   HomeOutlined,
   UserOutlined,
   FileImageOutlined,
-  ProfileOutlined
+  ProfileOutlined,
+  EnvironmentOutlined,
 } from "@ant-design/icons";
 import FsportLogo from "../assets/img/sport-bg.png";
 import { Outlet } from "react-router-dom";
@@ -54,6 +55,9 @@ const items: MenuItem[] = [
   ]),
   getItem("Comment", "sub6", <SolutionOutlined />, [
     getItem(<Link to={"/admin/comment"}>Comment List</Link>, "10"),
+  ]),
+  getItem("Location", "sub7", <EnvironmentOutlined />, [
+    getItem(<Link to={"/admin/location"}>Location List</Link>, "11"),
   ]),
 ];
 const AdminLayout = () => {

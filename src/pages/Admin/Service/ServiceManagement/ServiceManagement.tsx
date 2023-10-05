@@ -31,6 +31,7 @@ import {
 import { IService } from "../../../../interfaces/service";
 import "./ServiceManagement.css";
 import { Option } from "antd/es/mentions";
+import { fetchAllPitch } from "../../../../Redux/Slices/pitchSlice";
 
 const { Dragger } = Upload;
 
@@ -39,12 +40,14 @@ const ServiceManagement = () => {
   const [modalMode, setModalMode] = useState("");
 
   const dispatch = useAppDispatch();
-  const services = useAppSelector((state) => state.service.services);
 
-  console.log(services);
+  const services = useAppSelector((state) => state.service.services);
+  const pitch_id = useAppSelector((state) => state.pitch.pitchs);
+
 
   useEffect(() => {
     dispatch(getAllServiceMid());
+    dispatch(fetchAllPitch());
   }, [dispatch]);
 
   const confirm = (id: string) => {
@@ -90,12 +93,12 @@ const ServiceManagement = () => {
               const service = services?.find(
                 (service: IService) => service._id === record._id
               );
-
+                
               form.setFieldsValue({
                 _id: service?._id,
                 name: service?.name,
                 price: service?.price,
-                id_Pitch: service?.id_Pitch,
+                id_Pitch: service?.id_Pitch?._id ?? service?._id,
                 image: service?.image,
               });
               showModal("edit");
@@ -124,11 +127,13 @@ const ServiceManagement = () => {
     },
   ];
 
-  const data = services.map((item: IService, index: number) => ({
-    ...item,
-    key: index,
-  }));
-  console.log(data);
+  const data = services.map((item: IService, index: number) => {
+    return {
+      ...item,
+      key: index,
+    };
+  });
+  
 
   const showModal = (mode: string) => {
     setModalMode(mode);
@@ -146,30 +151,27 @@ const ServiceManagement = () => {
 
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
-      const urls = values?.url?.fileList?.map(
+      const urls = values?.image?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
       );
-      const url = urls[0];
-      console.log(url);
-
-      const newValues = { ...values, url };
-
+      const newValues = { ...values, image: urls[0] };
+        console.log(newValues);
+        
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
-      const newImages = values.url.fileList
+      const newImages = values.image.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.url.fileList.map(({ response }: any) => response.data.url)
-        : values.url;
+          values.image[0].fileList.map(({ response }: any) => response.data.url)
+        : values.image;
 
-      // const url = newImages[0];
-      const newValues = { ...values, url: newImages };
-      console.log(newValues);
+      const newValues = { ...values,image: newImages };
 
       const { _id, ...service } = newValues;
+console.log({ _id, service });
 
-      await dispatch(updateServiceMid({ _id, service }));
+      // await dispatch(updateServiceMid({ _id, service }));
       message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);
@@ -178,7 +180,7 @@ const ServiceManagement = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadFiles = async (file: any) => {
     if (file) {
-      const CLOUD_NAME = "dhwpz6l7t";
+      const CLOUD_NAME = "dlu4tkcct";
       const PRESET_NAME = "datn-img";
       const FOLDER_NAME = "datn-img";
       const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
@@ -280,19 +282,19 @@ const ServiceManagement = () => {
               { whitespace: true, message: "${label} is required!" },
             ]}
           >
-            <Input type="number" placeholder="Price" />
+            <Input placeholder="Price" />
           </Form.Item>
           <Form.Item
             name="id_Pitch"
             label="ID_Pitch"
             rules={[{ required: true, message: "ID_Pitch is required!" }]}
           >
-            <Select style={{ width: 200 }}>
-              {data.map((item: any) => (
-                <Option key={item.id_Pitch._id} value={item.id_Pitch.name}>
-                  {item.id_Pitch.name}
-                </Option>
-              ))}
+            <Select style={{ width: '100%' }}>
+            {pitch_id.map((item: any) => (
+            <Option key={item._id} value={item._id}>
+              {item.name}
+            </Option>
+          ))}
             </Select>
           </Form.Item>
           <Form.Item name="image" label="Images" rules={[{ required: true }]}>

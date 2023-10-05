@@ -37,6 +37,7 @@ const PostManagement = () => {
   const dispatch = useAppDispatch();
 
   const posts = useAppSelector((state) => state.post.posts);
+  console.log(posts);
 
   useEffect(() => {
     dispatch(getAllPostMid());
@@ -167,7 +168,7 @@ const PostManagement = () => {
     } else if (modalMode === "edit") {
       const newImages = values.images.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.images.fileList.map(({ response }: any) => response.data.url)
+        values.images.fileList.map(({ response }: any) => response.data.url)
         : values.images;
 
       const newValues = { ...values, images: newImages };

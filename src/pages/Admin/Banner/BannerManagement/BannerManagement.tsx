@@ -128,29 +128,25 @@ console.log(banners);
 
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
-      const urls = values?.url?.fileList?.map(
+      const urls = values?.url[0]?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
         );
-        const url = urls[0];
-        console.log(url);
         
-        const newValues = { ...values, url };
+        const newValues = { ...values, urls };
         
       await dispatch(createBannerMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
       const newImages = values.url.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.url.fileList.map(({ response }: any) => response.data.url)
+          values.url[0].fileList.map(({ response }: any) => response.data.url)
         : values.url;
 
-        // const url = newImages[0];
       const newValues = { ...values, url: newImages };
-      console.log(newValues);
       
       const { _id, ...banner } = newValues;
-
+      
       await dispatch(updateBannerMid({ _id, banner }));
       message.success(`Sửa banner thành công!`);
     }
@@ -160,7 +156,7 @@ console.log(banners);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadFiles = async (file: any) => {
     if (file) {
-      const CLOUD_NAME = "dhwpz6l7t";
+      const CLOUD_NAME = "dlu4tkcct";
       const PRESET_NAME = "datn-img";
       const FOLDER_NAME = "datn-img";
       const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;

@@ -11,7 +11,8 @@ import BannerManagement from './pages/Admin/Banner/BannerManagement/BannerManage
 import ServiceManagement from "./pages/Admin/Service/ServiceManagement/ServiceManagement";
 import CommentManagement from "./pages/Admin/Comment/CommentManagement/CommentManagement";
 import MainLayout from "./layouts/MainLayout";
-
+import PitchList from "./pages/Admin/Pitch/PitchList";
+import LocationList from "./pages/Admin/Location/LocationList";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
         <Route path={routes.admin} element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path={routes.post} element={<PostManagement />} />
+          <Route path={routes.pitch} element={<PitchList />} />
+          <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.postAdd} element={<PostAdd />} />
           <Route path={routes.banner} element={<BannerManagement />} />
           <Route path={routes.service} element={<ServiceManagement />} />
