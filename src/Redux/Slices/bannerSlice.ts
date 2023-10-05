@@ -25,14 +25,13 @@ export const getAllBannerMid = createAsyncThunk(
     }
   }
 );
-
 export const createBannerMid = createAsyncThunk(
   "banner/createBannerMid",
   async (banner: IBanner, thunkAPI) => {
     try {
-      const { data } = await createBanner(banner);
+      const { data: { data } } = await createBanner(banner);
 
-      return data.data;
+      return data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ message: error.message });

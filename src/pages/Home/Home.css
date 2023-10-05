@@ -1,0 +1,12 @@
+.Other-box-grid-3 .icon-antd{
+    font-size: 50px !important;
+    color: rgb(255, 123, 0) !important;
+}
+
+.Other-box-grid-3 h2{
+    padding: 20px 0;
+}
+
+.shadow-lg{
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px !important;
+}

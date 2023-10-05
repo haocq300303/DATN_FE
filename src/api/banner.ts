@@ -14,7 +14,7 @@ const createBanner = (banner: IBanner) => {
 };
 
 const updateBanner = (_id: string, banner: IBanner) => {
-  return instance.put(`banners/${_id}`, banner);
+  return instance.patch(`banners/${_id}`, banner);
 };
 
 const deleteBanner = (idBanner: string) => {

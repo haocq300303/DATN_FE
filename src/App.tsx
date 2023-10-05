@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { routes } from "./routes";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import DashboardPage from "./pages/Admin/Dashboard/DashboardPage";
@@ -10,15 +10,18 @@ import PostManagement from "./pages/Admin/Post/PostManagement/PostManagement";
 import BannerManagement from './pages/Admin/Banner/BannerManagement/BannerManagement';
 import ServiceManagement from "./pages/Admin/Service/ServiceManagement/ServiceManagement";
 import CommentManagement from "./pages/Admin/Comment/CommentManagement/CommentManagement";
+import MainLayout from "./layouts/MainLayout";
 
 
 function App() {
   return (
     <Router>
       <Routes>
+      <Route element={<MainLayout />}>
         <Route path={routes.home} element={<Home />} />
         <Route path={routes.register} element={<Register />} />
         <Route index path={routes.login} element={<Login />} />
+        </Route>
         {/* Admin */}
         <Route path={routes.admin} element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />

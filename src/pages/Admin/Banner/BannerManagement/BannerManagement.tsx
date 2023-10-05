@@ -22,14 +22,14 @@ import ModalForm from "../../../../components/ModalForm/ModalForm";
 import { useAppDispatch, useAppSelector } from '../../../../Redux/hook';
 import axios from "axios";
 import IBanner from "../../../../interfaces/Banner";
-import { createBannerMid, deleteBannerMid, getAllBannerMid } from "../../../../Redux/Slices/bannerSlice";
-import { updatePostMid } from "../../../../Redux/Slices/postSlice";
+import { createBannerMid, deleteBannerMid, getAllBannerMid, updateBannerMid } from "../../../../Redux/Slices/bannerSlice";
 
 const { Dragger } = Upload;
 
 const BannerManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
+
 
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
@@ -54,7 +54,7 @@ console.log(banners);
       title: 'Image',
       dataIndex: 'url',
       key: 'url',
-      render: (image: string) => <img width={200} src={image[0]} alt="Banner" />,
+      render: (image: string) => <img width={200} src={image} alt="Banner" />,
     },
     Table.EXPAND_COLUMN,
     {
@@ -79,8 +79,8 @@ console.log(banners);
 
               form.setFieldsValue({
                 _id: banner?._id,
-                images: banner?.url,
-                description: banner?.content,
+                url: banner?.url,
+                content: banner?.content,
               });
               showModal("edit");
             }}
@@ -128,26 +128,30 @@ console.log(banners);
 
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
-      const url = values?.images?.fileList?.map(
+      const urls = values?.url?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
         );
+        const url = urls[0];
+        console.log(url);
         
         const newValues = { ...values, url };
-        console.log(newValues);
-
+        
       await dispatch(createBannerMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
-      const newImages = values.images.fileList
+      const newImages = values.url.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.images.fileList.map(({ response }: any) => response.data.url)
-        : values.images;
+          values.url.fileList.map(({ response }: any) => response.data.url)
+        : values.url;
 
-      const newValues = { ...values, images: newImages };
-      const { _id, ...post } = newValues;
+        // const url = newImages[0];
+      const newValues = { ...values, url: newImages };
+      console.log(newValues);
+      
+      const { _id, ...banner } = newValues;
 
-      await dispatch(updatePostMid({ _id, post }));
+      await dispatch(updateBannerMid({ _id, banner }));
       message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);
@@ -181,6 +185,7 @@ console.log(banners);
       if (response?.status === 200) {
         message.success(`${file.name} uploaded successfully`);
         onSuccess(response, file);
+
       } else {
         message.error(`${file.name} upload failed.`);
         onError(response);

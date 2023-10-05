@@ -1,0 +1,33 @@
+.Banner .img-banner {
+    position: relative;
+}
+
+.Banner .img-banner .video .video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
+.Banner .search-location-home {
+    background: rgba(255, 254, 254, 0.5);
+    padding: 10px;
+    width: 65%;
+}
+
+.Banner .search-location-home select,
+.Banner .search-location-home input,
+.Banner .search-location-home button {
+    outline: none;
+    height: 50px;
+}
+
+.Banner .search-location-home select option {
+    background-color: #fff;
+    color: #333;
+    padding: 5px 10px;
+    font-size: 14px;
+}
