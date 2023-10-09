@@ -13,6 +13,8 @@ const routes = {
   location: "/admin/location",
   payment: "/admin/payment",
   booking: "/admin/booking",
+  pitch_client: "/pitch",
+  pitch_detail: "/pitch/detail",
 };
 
 export { routes };
