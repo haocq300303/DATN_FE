@@ -9,6 +9,8 @@ import {
   PieChartOutlined,
   HomeOutlined,
   UserOutlined,
+  FileImageOutlined,
+  ProfileOutlined,
   EnvironmentOutlined,
 } from "@ant-design/icons";
 import FsportLogo from "../assets/img/sport-bg.png";
@@ -33,7 +35,6 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem(<Link to={"/admin"}>Thống kê</Link>, "sub1", <PieChartOutlined />),
-
   getItem("Pitch", "sub2", <AppstoreOutlined />, [
     getItem(<Link to={"/admin/pitch/add"}>Create Pich</Link>, "2"),
     getItem(<Link to={"/admin/pitch"}>Pitch List</Link>, "3"),
@@ -43,8 +44,10 @@ const items: MenuItem[] = [
     getItem(<Link to={"/admin/post/add"}>Create Post</Link>, "4"),
     getItem(<Link to={"/admin/post"}>Post List</Link>, "5"),
   ]),
-  getItem("Comment", "sub4", <SolutionOutlined />, [
-    getItem(<Link to={"/admin/comment"}>Comment List</Link>, "6"),
+
+  getItem("Banner", "sub4", <FileImageOutlined />, [
+    getItem(<Link to={"/admin/banner/add"}>Create Banner</Link>, "6"),
+    getItem(<Link to={"/admin/banner"}>Banner List</Link>, "7"),
   ]),
   getItem(
     <Link to={"/admin/payment"}>Payment</Link>,
@@ -56,12 +59,12 @@ const items: MenuItem[] = [
     "sub6",
     <SolutionOutlined />
   ),
-
-  getItem("Comment", "sub4", <SolutionOutlined />, [
-    getItem(<Link to={"/admin/comment"}>Comment List</Link>, "6"),
-  ]),
   getItem("Location", "sub5", <EnvironmentOutlined />, [
     getItem(<Link to={"/admin/location"}>Location List</Link>, "7"),
+    getItem("Service", "sub5", <ProfileOutlined />, [
+      getItem(<Link to={"/admin/service/add"}>Create Service</Link>, "8"),
+      getItem(<Link to={"/admin/service"}>Service List</Link>, "9"),
+    ]),
   ]),
 ];
 const AdminLayout = () => {

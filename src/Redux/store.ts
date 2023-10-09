@@ -1,6 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import postReducer from "./Slices/postSlice";
 import commentReducer from "./Slices/commentSlide";
+import bannerSlice from "./Slices/bannerSlice";
+import serviceSlice from "./Slices/serviceSlice";
+import navbar from "./Slices/navbarSlice";
 import locationReducer from "./Slices/locationSlice";
 import pitchReducer from "./Slices/pitchSlice";
 import paymentApi from "./payment/paymentApi";
@@ -10,6 +13,10 @@ const store = configureStore({
   reducer: {
     [paymentApi.reducerPath]: paymentApi.reducer,
     [bookingApi.reducerPath]: bookingApi.reducer,
+    navbar,
+    banner: bannerSlice,
+    service: serviceSlice,
+
     post: postReducer,
     comment: commentReducer,
     location: locationReducer,
