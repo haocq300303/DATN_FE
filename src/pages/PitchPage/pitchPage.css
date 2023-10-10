@@ -63,7 +63,7 @@
   color: #343434;
   position: relative;
 }
-.header-pitch h1::before {
+.header-pitch h1::before{
   position: absolute;
   content: "";
   bottom: -10px;
@@ -79,40 +79,41 @@
 
 /* ITEM PITCH */
 .list-pitch {
-  margin: 80px 0 30px;
+  margin: 80px 0 30px ;
 }
-.image-item-pitch {
+.image-item-pitch{
   width: 100%;
   overflow: hidden;
   object-fit: cover;
 }
 .item-pitch img {
   border-radius: 15px;
-  box-shadow: 0 10px 35px rgba(128, 128, 128, 0.582);
-  margin: 0 0 25px 0;
-  transition: 0.2s linear;
+  box-shadow:
+   0 10px 35px rgba(128, 128, 128, 0.582);
+   margin: 0 0 25px 0;
+   transition: .2s linear;
 }
-.item-pitch img:hover {
+.item-pitch img:hover{
   transform: translateY(-8%);
-  transition: 0.2s linear;
+  transition: .2s linear;
 }
-.text-item-pitch {
+.text-item-pitch{
   margin: 20px 0;
 }
-.text-item-pitch h3 {
+.text-item-pitch h3{
   font-weight: 550;
   word-spacing: 3px;
   font-size: 20px;
   margin: 10px 0;
 }
-.hot-pitch > h1 {
+.hot-pitch>h1{
   position: relative;
   margin: 50px 0;
   font-size: 30px;
   font-weight: 700;
-  word-spacing: 3px;
+  word-spacing: 3px; 
 }
-.hot-pitch > h1::before {
+.hot-pitch>h1::before{
   position: absolute;
   content: "";
   bottom: -10px;

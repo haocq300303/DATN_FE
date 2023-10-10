@@ -1,5 +1,5 @@
 import { Carousel } from "antd";
-import "./Detail.css";
+import "./pitchDetailPage.css";
 import {
   Tabs,
   TabsHeader,
