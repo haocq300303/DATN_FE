@@ -1,6 +1,6 @@
 import Table, { ColumnsType } from "antd/es/table";
 import React, { useEffect, useMemo, useState } from "react";
-import { useGetAllPaymentByUserIdQuery } from "~/Redux/payment/paymentApi";
+import { useGetAllPaymentByUserIdQuery } from "../../../Redux/payment/paymentApi";
 import { IPayment } from "~/interfaces/payment.type";
 import { format } from "date-fns";
 import { EyeOutlined } from "@ant-design/icons";
