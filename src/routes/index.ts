@@ -7,8 +7,9 @@ const routes = {
     post: "/admin/post",
     postAdd: "/admin/post/add",
     comment: "/admin/comment",
-    payment: "/admin/payment",
-    booking: "/admin/booking",
+    paymentAdmin: "/admin/payment",
+    bookingAdmin: "/admin/booking",
+    bookingMain: "/booking",
 };
 
 export { routes };

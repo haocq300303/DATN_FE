@@ -10,6 +10,7 @@ import PostManagement from "./pages/Admin/Post/PostManagement/PostManagement";
 import CommentManagement from "./pages/Admin/Comment/CommentManagement/CommentManagement";
 import PaymentAdminPage from "./pages/Admin/Payment";
 import BookingAdminPage from "./pages/Admin/Booking";
+import BookingPage from "./pages/main/Booking";
 
 function App() {
     return (
@@ -24,9 +25,10 @@ function App() {
                     <Route path={routes.post} element={<PostManagement />} />
                     <Route path={routes.postAdd} element={<PostAdd />} />
                     <Route path={routes.comment} element={<CommentManagement />} />
-                    <Route path={routes.payment} element={<PaymentAdminPage />} />
-                    <Route path={routes.booking} element={<BookingAdminPage />} />
+                    <Route path={routes.paymentAdmin} element={<PaymentAdminPage />} />
+                    <Route path={routes.bookingAdmin} element={<BookingAdminPage />} />
                 </Route>
+                <Route path={routes.bookingMain} element={<BookingPage />} />
             </Routes>
         </Router>
     );
