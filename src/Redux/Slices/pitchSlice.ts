@@ -17,6 +17,9 @@ export const fetchAllPitch = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const { data } = await getAllPitch();
+            
+            console.log({data});
+            
             return data.data;
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
