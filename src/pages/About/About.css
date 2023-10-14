@@ -1,0 +1,32 @@
+/* @import url('https://fonts.googleapis.com/css2?family==Roboto:wght@400&display=swap'); */
+.headerSide {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    
+  }
+  .banner-contact{
+    background-image: url("https://t3.ftcdn.net/jpg/04/83/81/78/240_F_483817817_dVwUCdYSLnITSsOpsLr42bnUz9Xit92N.jpg");
+    height: 200px;
+    background-color: rgba(67, 61, 61, 0.846);
+    background-blend-mode: overlay;
+    z-index: -100;
+  }
+  
+  .image-about{
+    background-image: url("https://media.istockphoto.com/id/1347652268/photo/group-of-colleagues-celebrating-success.jpg?s=612x612&w=0&k=20&c=dojtkf9ItX21j3jtlGOGpbKDs320TTAuofoGnNSZD8Y=");
+    background-position: 60% 70%;
+    
+  }
+  .banner-team{
+    background-image: url("https://res.cloudinary.com/dqyffo8rx/image/upload/v1697301913/DATN/slide-1_dvhmph.jpg")
+  }
+  .image-team-about{
+    background-image: url("https://res.cloudinary.com/dqyffo8rx/image/upload/v1697303581/DATN/team-development-plan_lgi9ag.jpg");
+    transition: 1s;
+  }
+  .image-team-about:hover{
+    transform: scale(1.1);
+    transition: 1s;
+    box-shadow: 2px 2px 3px 4px gray;
+    border-radius: 40px;
+  }

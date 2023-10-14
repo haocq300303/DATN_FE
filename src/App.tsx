@@ -19,6 +19,8 @@ import BookingAdminPage from "./pages/Admin/Booking";
 import PitchPage from "./pages/PitchPage/pitchPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
 import ChildrentPitch from "./pages/Admin/ChildrentPitch/ChildrentPitch";
+import About from "./pages/About/About";
+import Contact from "./pages/Contact/Contact";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route path={routes.home} element={<Home />} />
+          <Route path={routes.about} element={<About />} />
+          <Route path={routes.contact} element={<Contact />} />
           <Route path={routes.register} element={<Register />} />
           <Route index path={routes.login} element={<Login />} />
         </Route>
