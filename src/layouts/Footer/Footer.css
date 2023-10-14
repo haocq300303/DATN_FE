@@ -1,18 +1,6 @@
-footer .container .grid .img-footer-o img:nth-child(1) {
-    width: 150px !important;
-}
-
-footer .container .grid .col-span-1 {
-    transition: .3s;
-}
-
-footer .container .grid .col-span-1 ul li:hover {
-    transition: .3s;
-    color: rgb(131, 203, 23);
-}
-
-footer .container-sm {
-    width: 50%;
-    border-top: 1px solid rgba(208, 208, 208, 0.795);
-    border-bottom: 1px solid rgba(208, 208, 208, 0.795);
+.gradient {
+    background: linear-gradient(90deg, #59e04d 0%, #7fa541 100%);
+  }
+li a{
+    color: black !important;
 }

@@ -73,16 +73,27 @@ header {
     background-color: transparent;
   }
   
+  .list-reset-header li a{
+    color: white !important;
+  }
   .fixed-header.active {
     background-color: #fff; 
     color: black !important;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   }
-  .fixed-header.active > .items-center .menu-pc li a{
+  .fixed-header.active .list-reset li a{
     color: black !important;
   }
   
-  /* .visible-title { */
-    /* Cài đặt hiển thị tiêu đề hoặc các hiệu ứng khác khi cần */
-  /* } */
+  @media  (max-width: 1023px) {
+ 
+    .header-mobile{
+      background-color: #fff; 
+      color: black !important;
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    }
+    .list-reset-header li a{
+      color: black !important;
+    }
+  }
   
