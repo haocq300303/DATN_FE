@@ -4,6 +4,7 @@ import './Banner.css';
 
 const contentStyle: React.CSSProperties = {
     overflow: 'hidden',
+
 };
 const Banner = () => {
     return (
