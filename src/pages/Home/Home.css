@@ -474,3 +474,6 @@ html {
 .blog_card__one h3 {
   font-size: 25px !important;
 }
+.gradient {
+  background: linear-gradient(90deg, #59e04d 0%, #7fa541 100%);
+}

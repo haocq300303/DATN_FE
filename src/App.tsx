@@ -21,6 +21,8 @@ import PitchDetailPage from "./pages/PitchDetailPage";
 import ChildrentPitch from "./pages/Admin/ChildrentPitch/ChildrentPitch";
 import PostPage from "./pages/PostPage/PostPage";
 import PostDetailPage from "./pages/PostDetailPage/PostDetailPage";
+import About from "./pages/About/About";
+import Contact from "./pages/Contact/Contact";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route path={routes.home} element={<Home />} />
+          <Route path={routes.about} element={<About />} />
+          <Route path={routes.contact} element={<Contact />} />
           <Route path={routes.register} element={<Register />} />
           <Route index path={routes.login} element={<Login />} />
         </Route>
