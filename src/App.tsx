@@ -19,6 +19,8 @@ import BookingAdminPage from "./pages/Admin/Booking";
 import PitchPage from "./pages/PitchPage/pitchPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
 import ChildrentPitch from "./pages/Admin/ChildrentPitch/ChildrentPitch";
+import PostPage from "./pages/PostPage/PostPage";
+import PostDetailPage from "./pages/PostDetailPage/PostDetailPage";
 
 function App() {
   return (
@@ -34,6 +36,10 @@ function App() {
           <Route index path={routes.pitch_client} element={<PitchPage />} />
           <Route path={routes.pitch_detail} element={<PitchDetailPage />} />
         </Route>
+        <Route path="/post" element={<LayoutPage />}>
+          <Route index path={routes.post_client} element={<PostPage />} />
+          <Route path={routes.post_detail} element={<PostDetailPage />} />
+        </Route>
         {/* Admin */}
         <Route path={routes.admin} element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
@@ -43,7 +49,7 @@ function App() {
           <Route path={routes.service} element={<ServiceManagement />} />
           <Route path={routes.comment} element={<CommentManagement />} />
           <Route path={routes.pitch} element={<PitchList />} />
-          <Route path={routes.childrenpitch } element={<ChildrentPitch/>}/>
+          <Route path={routes.childrenpitch} element={<ChildrentPitch />} />
           <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />
