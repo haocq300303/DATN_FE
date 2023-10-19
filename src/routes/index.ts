@@ -13,13 +13,15 @@ const routes = {
   comment: "/admin/comment",
   pitch: "/admin/pitch",
   childrenpitch: "/admin/childrenpitch",
-  shift:'/admin/shift',
-  childrenPitch_client: '/pitch/childrenPitch',
+  shift: "/admin/shift",
+  childrenPitch_client: "/pitch/childrenPitch",
   location: "/admin/location",
   payment: "/admin/payment",
   booking: "/admin/booking",
   pitch_client: "/pitch",
   pitch_detail: "/pitch/detail",
+  post_client: "/post",
+  post_detail: "/post/:id",
 };
 
 export { routes };
