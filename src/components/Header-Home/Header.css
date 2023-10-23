@@ -1,6 +1,9 @@
 /* Header.css */
-header {
+#header {
     font-family: 'Roboto', sans-serif;
+    background-color: #fff; 
+    color: black !important;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   }
   
   header .logo-menu-partner {
@@ -78,10 +81,8 @@ header {
   }
   .fixed-header.active {
     background-color: #fff; 
-    color: black !important;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   }
-  .fixed-header.active .list-reset li a{
+ .list-reset li a{
     color: black !important;
   }
   
