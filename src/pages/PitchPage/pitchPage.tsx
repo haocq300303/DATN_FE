@@ -73,9 +73,11 @@ const PitchPage = () => {
   // nếu ai muốn lấy
   const printResult = () => {
     if (selectedCity !== "" && selectedDistrict !== "" && selectedWard !== "") {
-      const city = cities.find((c: any) => c.code === selectedCity);
-      const district = districts.find((d: any) => d.code === selectedDistrict);
-      const ward = wards.find((w: any) => w.code === selectedWard);
+      const city: any = cities.find((c: any) => c.code === selectedCity);
+      const district: any = districts.find(
+        (d: any) => d.code === selectedDistrict
+      );
+      const ward:any = wards.find((w: any) => w.code === selectedWard);
       if (city && district && ward) {
         const result = `Khu Vực ${city.name} | ${district.name} | ${ward.name}`;
         return result;
@@ -105,7 +107,7 @@ const PitchPage = () => {
               allowClear
               showSearch
             >
-              {cities.map((city) => (
+              {cities.map((city:any) => (
                 <Option key={city.code} value={city.code}>
                   {city.name}
                 </Option>
@@ -118,7 +120,7 @@ const PitchPage = () => {
               onChange={handleDistrictChange}
               defaultValue={""}
             >
-              {districts.map((district) => (
+              {districts.map((district:any) => (
                 <Option key={district.code} value={district.code}>
                   {district.name}
                 </Option>
@@ -131,7 +133,7 @@ const PitchPage = () => {
               onChange={handleWardChange}
               defaultValue={undefined}
             >
-              {wards.map((ward) => (
+              {wards.map((ward:any) => (
                 <Option key={ward.code} value={ward.code}>
                   {ward.name}
                 </Option>
@@ -150,7 +152,7 @@ const PitchPage = () => {
               ))}
             </Select>
             <Button
-              className="bg-red-500 hover:bg-red-700 hover:text-white text-white"
+              className="bg-[#fd9e4b] hover:bg-[#fdaa4b] hover:text-white text-white"
               icon={<SearchOutlined />}
             >
               Search

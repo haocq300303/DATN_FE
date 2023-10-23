@@ -3,7 +3,7 @@ import type { ColumnsType } from "antd/es/table";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
-import { updatePostMid } from "../../../Redux/Slices/postSlice";
+// import { updatePostMid } from "../../../Redux/Slices/postSlice";
 import IPost from "../../../interfaces/post";
 import ModalForm from "../../../components/ModalForm/ModalForm";
 // import axios from "axios";
@@ -13,7 +13,7 @@ import IChildrentPitch from "~/interfaces/childrentPitch";
 // const { Dragger } = Upload;
 
 
-const PostManagement = () => {
+const ChildrentPitch = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("");
 
@@ -43,7 +43,13 @@ const PostManagement = () => {
             render: (text) => <span>{text}</span>,
         },
         {
-            title: "Action",
+            title: "Giờ Diễn",
+            dataIndex: "code_chirldren_pitch",
+            key: "code_chirldren_pitch",
+            render: (text) => <span>{text}</span>,
+        },
+        {
+            title: "Thực Hiện",
             key: "action",
             render: (record) => (
                 <Space size="middle">
@@ -67,8 +73,8 @@ const PostManagement = () => {
 
                     <Popconfirm
                         placement="topRight"
-                        title="Xóa bài viết?"
-                        description="Bạn có chắc chắn xóa bài viết này không?"
+                        title="Xóa ca sân?"
+                        description="Bạn có chắc chắn xóa ca sân này không?"
                         onConfirm={() => confirm(record._id)}
                         onCancel={cancel}
                         okText="Đồng ý"
@@ -104,7 +110,6 @@ const PostManagement = () => {
     };
 
     const [form] = Form.useForm();
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onFinish = async (values: any) => {
         if (modalMode === "add") {
@@ -178,7 +183,7 @@ const PostManagement = () => {
                     type="primary"
                     icon={<PlusCircleOutlined />}
                     size={"large"}
-                    className="bg-[#1677ff]"
+                    className="bg-[#2988bc]"
                     onClick={() => {
                         form.resetFields();
                         showModal("add");
@@ -231,4 +236,4 @@ const PostManagement = () => {
     );
 };
 
-export default PostManagement;
+export default ChildrentPitch;

@@ -78,3 +78,12 @@
   font-weight: 700;
   margin: 30px 0 10px;
 }
+.ant-table-content .ant-table-thead .ant-table-cell{
+  background-color: #f4eade !important;
+  text-align: center !important;
+  color: #000 !important;
+}
+.ant-table-content .ant-table-tbody{
+  text-align: center !important;
+}
+

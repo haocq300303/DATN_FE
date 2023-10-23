@@ -9,6 +9,7 @@ import childrenPitchReducer from "./Slices/childrentPitch";
 import pitchReducer from "./Slices/pitchSlice";
 import paymentApi from "./payment/paymentApi";
 import bookingApi from "./booking/bookingApi";
+import shift from "./Slices/shift";
 
 const store = configureStore({
   reducer: {
@@ -17,7 +18,7 @@ const store = configureStore({
     navbar,
     banner: bannerSlice,
     service: serviceSlice,
-
+    shift: shift, 
     post: postReducer,
     comment: commentReducer,
     location: locationReducer,

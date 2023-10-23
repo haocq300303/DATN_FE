@@ -19,6 +19,8 @@ import BookingAdminPage from "./pages/Admin/Booking";
 import PitchPage from "./pages/PitchPage/pitchPage";
 import PitchDetailPage from "./pages/PitchDetailPage";
 import ChildrentPitch from "./pages/Admin/ChildrentPitch/ChildrentPitch";
+import Shift from "./pages/Admin/shift/shift";
+
 
 function App() {
   return (
@@ -44,6 +46,7 @@ function App() {
           <Route path={routes.comment} element={<CommentManagement />} />
           <Route path={routes.pitch} element={<PitchList />} />
           <Route path={routes.childrenpitch } element={<ChildrentPitch/>}/>
+          <Route path={routes.shift} element={<Shift />} />
           <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />

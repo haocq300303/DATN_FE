@@ -8,7 +8,7 @@ import {
     Input,
     Upload,
     Select,
-    InputNumber,
+    InputNumber
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
@@ -246,7 +246,7 @@ const PitchList = () => {
                     type="primary"
                     icon={<PlusCircleOutlined />}
                     size={"large"}
-                    className="bg-[#1677ff]"
+                    className="bg-[#2988bc]"
                     onClick={() => {
                         form.resetFields();
                         showModal("add");

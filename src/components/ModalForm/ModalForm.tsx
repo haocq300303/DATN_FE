@@ -22,12 +22,12 @@ const ModalForm = ({
 
   return (
     <Modal
-      title={modalMode === "add" ? "Create Post" : "Edit Post"}
+      title={modalMode === "add" ? "Tạo Mới" : "Cập Nhật"}
       open={isModalOpen}
       onCancel={handleCancel}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Huỷ
         </Button>,
         <Button
           key="submit"
@@ -36,7 +36,7 @@ const ModalForm = ({
           onClick={() => form.submit()}
           className="bg-[#1677ff]"
         >
-          {modalMode === "add" ? "Create" : "Edit"}
+          {modalMode === "add" ? "Thêm" : "Sửa"}
         </Button>,
       ]}
     >

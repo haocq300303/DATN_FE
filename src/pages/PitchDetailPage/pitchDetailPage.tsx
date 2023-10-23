@@ -1,4 +1,4 @@
-import { Carousel } from "antd";
+import { Carousel, Image,Button} from "antd";
 import "./pitchDetailPage.css";
 import {
   Tabs,
@@ -26,7 +26,7 @@ const columns: ColumnsType<DataType> = [
     title: "Ca sân",
     dataIndex: "pitch",
     key: "pitch",
-    render: (text) => <a>{text}</a>,
+    render: (text) => <span>{text}</span>,
   },
   {
     title: "Giờ Diễn",
@@ -65,7 +65,7 @@ const columns: ColumnsType<DataType> = [
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        <a>Đặt sân {record.pitch}</a>
+        <Link to={'/'}>  <Button className="bg-[#8593AE] text-[#fff] hover:text-[#fff]" shape="round">Đặt sân {record.pitch}</Button></Link>
       </Space>
     ),
   },
@@ -104,11 +104,23 @@ const PitchDetailPage = () => {
         <>
           <div className="flex img-pitch gap-[20px]">
             <div className="left-img w-[65%] md:w-[100%]">
-              <img src={img1} alt="" width="100%" />
+            <Image.PreviewGroup
+                items={[
+                  `${img1}`,
+                  `${img1}`,
+                  `${img1}`,
+                  `${img1}`,
+                ]}
+              >
+                <Image
+                  className="w-[100%] h-[100%]"
+                  src={img1}
+                />
+              </Image.PreviewGroup>
             </div>
             <div className="right-img w-[30%] xl:grid md:hidden">
-              <img src={img1} alt="" width="100%" />
-              <img src={img1} alt="" width="100%" />
+            <img src={img1} alt="" className="w-[100%] h-[100%]" />
+              <img src={img1} alt="" className="w-[100%] h-[100%]" />
             </div>
           </div>
           <h1 className="text-pitch">SÂN BÓNG MẠNH CƯỜNG</h1>
@@ -116,7 +128,7 @@ const PitchDetailPage = () => {
             {" "}
             <Rate allowHalf defaultValue={5} /> <span> ( 2 Reviews )</span>
           </p>
-          <Table columns={columns} dataSource={tableData} />
+          <Table  columns={columns} dataSource={tableData} />
         </>
       ),
     },
@@ -152,6 +164,9 @@ const PitchDetailPage = () => {
   ];
   return (
     <div>
+
+  
+
       {/* =========banner========= */}
       <div className="detail-pitch">
         <div className="banner-detail">
@@ -168,7 +183,7 @@ const PitchDetailPage = () => {
         {/* left */}
         <div className="sm:w-full md:w-full xl:w-[75%]">
           <Tabs id="custom-animation" value="html">
-            <TabsHeader>
+            <TabsHeader className="">
               {data.map(({ label, value }) => (
                 <Tab key={value} value={value}>
                   {label}
@@ -190,7 +205,7 @@ const PitchDetailPage = () => {
             </TabsBody>
           </Tabs>
         </div>
-        <div className="right-detail-pitch xl:w-[25%] md:w-[100%]  md:relative md:mt-[50px] xl:absolute xl:top-[-100px] right-0 bg-white p-[40px]">
+        <div className="right-detail-pitch xl:w-[25%] md:w-[100%]  md:relative md:mt-[50px] xl:absolute xl:top-[-120px] right-0 bg-white p-[40px]">
           <p className="mb-[30px] flex justify-between">
             HOT PITCH{" "}
             <span>
@@ -220,7 +235,7 @@ const PitchDetailPage = () => {
       </div>
 
       {/* các sân bongs ưu tiên */}
-      <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
+      <div className="hot-pitch mt-[100px] mx-auto max-w-screen-2xl xl px-[30px]">
         <h1>CÓ THỂ BẠN ĐÉO THÍCH</h1>
         <Swiper
           spaceBetween={80}
