@@ -305,42 +305,44 @@ export function Header() {
     );
   }, []);
   return (
-    <Navbar className="mx-auto max-w-screen-2xl px-4 py-2 ">
-      <div className="flex items-center justify-between text-blue-gray-900">
-        <div className="flex items-center justify-between ">
-          <Link to="/">
-            <img src={logo} className="w-24" alt="" />
-          </Link>
+    <div className="shadow-lg">
+      <Navbar className="mx-auto max-w-screen-2xl px-4 py-2">
+        <div className="flex items-center justify-between text-blue-gray-900">
+          <div className="flex items-center justify-between ">
+            <Link to="/">
+              <img src={logo} className="w-24" alt="" />
+            </Link>
+          </div>
+          <div className="w-72">
+            <Input label="Tìm Nhanh Sân ..." />
+          </div>
+          <div className="hidden lg:block">
+            <NavList />
+          </div>
+          <div className="hidden gap-2 lg:flex">
+            <ProfileMenu />
+          </div>
+          <IconButton
+            variant="text"
+            color="blue-gray"
+            className="lg:hidden"
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+            ) : (
+              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+            )}
+          </IconButton>
         </div>
-        <div className="w-72">
-          <Input label="Tìm Nhanh Sân ..." />
-        </div>
-        <div className="hidden lg:block">
-          <NavList />
-        </div>
-        <div className="hidden gap-2 lg:flex">
-          <ProfileMenu />
-        </div>
-        <IconButton
-          variant="text"
-          color="blue-gray"
-          className="lg:hidden"
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-          ) : (
-            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-          )}
-        </IconButton>
-      </div>
 
-      <Collapse open={openNav}>
-        <NavList />
-        <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          <ProfileMenu />
-        </div>
-      </Collapse>
-    </Navbar>
+        <Collapse open={openNav}>
+          <NavList />
+          <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+            <ProfileMenu />
+          </div>
+        </Collapse>
+      </Navbar>
+    </div>
   );
 }
