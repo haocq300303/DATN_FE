@@ -7,7 +7,7 @@ import {
   Form,
   Input,
   Select,
-  // TimePicker,
+  InputNumber,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
@@ -29,11 +29,14 @@ import {
 const Shift = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
-
   const dispatch = useAppDispatch();
 
   const shifts = useAppSelector((state) => state.shift.shift);
-  console.log({ shifts });
+
+  console.log("toàn bộ các ca sân : " + shifts);
+
+  const numberShifts = shifts.map((item: any) => item.number_shift);
+  console.log("Danh sách số ca sân:", numberShifts);
 
   useEffect(() => {
     dispatch(fetchAllShift());
@@ -51,17 +54,32 @@ const Shift = () => {
   const columns: ColumnsType<IShift> = [
     {
       title: "Ca Sân",
-      dataIndex: "shift",
-      key: "status",
+      dataIndex: "number_shift",
+      key: "number_shift",
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Giờ Diễn",
-      dataIndex: "timeslot",
-      key: "timeslot",
+      title: "Giờ Bắt Đầu",
+      dataIndex: "time_start",
+      key: "time_start",
       render: (text) => <span>{text}</span>,
     },
-
+    {
+      title: "Giờ Kết Thúc",
+      dataIndex: "time_end",
+      key: "time_end",
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Số Sân Trống",
+      dataIndex: "number_remain",
+      key: "number_remain",
+      render: (text) => (
+        <span>
+          <Space>{text} / 4</Space>
+        </span>
+      ),
+    },
     {
       title: "Giá Sân",
       dataIndex: "price",
@@ -97,9 +115,12 @@ const Shift = () => {
               );
 
               form.setFieldsValue({
-                _id: shift?._id,
+                _id: shift._id,
+                number_shift: shift?.number_shift,
                 price: shift?.price,
-                timeslot: shift?.timeslot,
+                time_start: shift.time_start,
+                time_end: shift?.time_end,
+                number_remain: shift?.number_remain,
                 statusPitch: shift?.statusPitch,
               });
               showModal("edit");
@@ -151,20 +172,27 @@ const Shift = () => {
   const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
-    if (modalMode === "add") {
-      console.log({values});
-      await dispatch(fetchCreatShift(values));
-      message.success(`Tạo bài viết thành công!`);
-    } else if (modalMode === "edit") {
+    const newShiftNumber = values.number_shift;
+    if (values.number_remain === 0) {
+      values.statusPitch = false;
+    } else {
+      values.statusPitch = true;
+    }
+    if (modalMode === "edit") {
       const newValues = { ...values };
       const { _id, ...shift } = newValues;
-
       await dispatch(fetchUpdateShift({ _id, shift }));
-      message.success(`Sửa ca sân thành công!`);
+      message.success("Sửa ca sân thành công!");
+    } else if (numberShifts.includes(newShiftNumber)) {
+      message.error(
+        "Ca sân đã tồn tại, vui lòng cập nhật lại ca sân hoặc thêm ca khác !"
+      );
+    } else if (modalMode === "add") {
+      await dispatch(fetchCreatShift(values));
+      message.success("Tạo bài viết thành công!");
     }
     setIsModalOpen(false);
   };
-
   const [caCount, setCaCount] = useState(1);
   const [caData, setCaData] = useState([
     {
@@ -190,6 +218,7 @@ const Shift = () => {
     const updatedCaData = caData.filter((ca) => ca.id !== id);
     setCaData(updatedCaData);
   };
+
   return (
     <>
       <div className="flex justify-end mb-2">
@@ -218,7 +247,6 @@ const Shift = () => {
           ),
         }}
       />
-    
 
       <ModalForm
         isModalOpen={isModalOpen}
@@ -235,7 +263,7 @@ const Shift = () => {
           // layout="vertical"
         >
           {modalMode === "edit" && (
-            <Form.Item name="id" style={{ display: "none" }}>
+            <Form.Item name="_id" style={{ display: "none" }}>
               <Input />
             </Form.Item>
           )}
@@ -243,22 +271,17 @@ const Shift = () => {
           <Form.Item>
             {caData.map((ca: any) => (
               <div key={ca.id}>
-                <p className="my-[20px]">Ca {ca.id}</p>
-                
-                <Form.Item className="hidden" name="shift">
-                  <Input size="large" type="number" placeholder={ca.id} value={ca.id} />
-                </Form.Item>
-
+                <p className="my-[20px] numberShift">Ca {ca.id}</p>
 
                 <div className="flex items-center justify-between">
                   <Form.Item
-                    name="timeslot"
-                    label="Thời Gian"
-                    rules={[{ required: true }]}
+                    className="w-[50%]"
+                    name="number_shift"
+                    initialValue={ca.id}
+                    style={{ display: modalMode === "edit" ? "none" : "block" }}
                   >
-                    <Input type="time" />
+                    <InputNumber size="large" placeholder={ca.id} min={1} />
                   </Form.Item>
-
                   <Form.Item>
                     <Button
                       className="border-red-600 text-[red]"
@@ -268,29 +291,48 @@ const Shift = () => {
                     </Button>
                   </Form.Item>
                 </div>
-              
+
+                <Form.Item
+                  name="time_start"
+                  label="Thời Gian Bắt Đầu"
+                  rules={[{ required: true }]}
+                  className=""
+                >
+                  <Input type="time" />
+                </Form.Item>
+                <Form.Item
+                  name="time_end"
+                  label="Thời Gian Kết Thúc"
+                  rules={[{ required: true }]}
+                  className=""
+                >
+                  <Input type="time" />
+                </Form.Item>
+
                 <Form.Item
                   name="price"
                   label="Giá Sân"
                   className="mt-[10px]"
-                  rules={[
-                    { required: true },
-                    {
-                      whitespace: true,
-                      message: "Không được để trống ${label} !",
-                    },
-                  ]}
+                  rules={[{ required: true }]}
                 >
-                  <Input size="large" type="number" placeholder="Giá Sân" />
+                  <InputNumber size="large" min={0} placeholder="Giá Sân" />
                 </Form.Item>
-
+                <Form.Item
+                  name="number_remain"
+                  label="Số Sân Trống"
+                  className="mt-[10px]"
+                  rules={[{ required: true }]}
+                >
+                  <InputNumber
+                    size="large"
+                    min={0}
+                    placeholder="Số Sân Trống"
+                  />
+                </Form.Item>
                 <Form.Item
                   label="Trạng Thái Sân"
                   name="statusPitch"
-                  className="my-[20px] w-[50%]"
-                  rules={[
-                    { required: true, message: "Trạng thái sân là bắt buộc" },
-                  ]}
+                  className="my-[20px] w-[50%] hidden"
                 >
                   <Select placeholder="Chọn trạng thái sân">
                     <Select.Option value={false}>Sân Bận</Select.Option>

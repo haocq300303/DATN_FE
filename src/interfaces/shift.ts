@@ -1,10 +1,12 @@
 interface IShift{
-    _id?: any;
+    _id?: string;
     id_chirlden_pitch?: string;
-    shift:string;
+    number_shift?:number;
     price : number;
-    timeslot:string;
-    statusPitch : boolean;
+    time_start:string;
+    time_end:string;
+    number_remain:number;
+    statusPitch?: boolean;
     createdAt?: string;
     updatedAt?: string;
 }
