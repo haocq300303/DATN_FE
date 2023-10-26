@@ -1,4 +1,5 @@
-import { EyeOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { format } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
@@ -10,6 +11,7 @@ interface DataType extends IBooking {
 }
 const BookingAdminPage = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const columns: ColumnsType<DataType> = useMemo(
         () => [
             {
@@ -21,7 +23,6 @@ const BookingAdminPage = () => {
             },
             {
                 title: "Thông tin người đặt",
-
                 children: [
                     {
                         title: "Họ và tên",
@@ -138,7 +139,6 @@ const BookingAdminPage = () => {
                     );
                 },
             },
-
             {
                 title: "Thời gian",
                 dataIndex: "createdAt",
@@ -160,12 +160,20 @@ const BookingAdminPage = () => {
                 fixed: "right",
                 render: () => (
                     <div className="flex justify-center">
-                        <EyeOutlined size={20} className="cursor-pointer" />
+                        <span onClick={() => setIsModalOpen(!isModalOpen)}>
+                            <InfoCircleOutlined size={20} className="cursor-pointer text-2xl hover:text-red-600" />
+                        </span>
+
+                        <Modal title="Basic Modal" open={isModalOpen} onCancel={() => setIsModalOpen(false)}>
+                            <p>Some contents...</p>
+                            <p>Some contents...</p>
+                            <p>Some contents...</p>
+                        </Modal>
                     </div>
                 ),
             },
         ],
-        []
+        [isModalOpen]
     );
 
     const { data: booking, isFetching } = useGetAllBookingByUserIdQuery();
@@ -176,7 +184,7 @@ const BookingAdminPage = () => {
             index: index + 1,
             ...item,
         }));
-        setDataSource(_dataSource as DataType[]);
+        if (_dataSource) setDataSource(_dataSource as DataType[]);
     }, [booking]);
 
     return (

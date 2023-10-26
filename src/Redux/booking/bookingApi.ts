@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IPayment } from "~/interfaces/payment.type";
+import { IBooking } from "~/interfaces/booking.type";
 
 const bookingApi = createApi({
     reducerPath: "bookingApi",
@@ -7,11 +7,24 @@ const bookingApi = createApi({
         baseUrl: "http://localhost:8080",
     }),
     endpoints: (builder) => ({
-        getAllBookingByUserId: builder.query<{ data: IPayment[] }, void>({
+        getAllBookingByUserId: builder.query<{ data: IBooking[] }, void>({
             query: () => "/api/bookings",
+        }),
+        getBookingByPaymentId: builder.query<{ data: IBooking[] }, { payment_id: string }>({
+            query: (params) => ({
+                url: "/api/bookings/get-by-code",
+                params,
+            }),
+        }),
+        newBookingAffterPay: builder.mutation<{ data: IBooking; message: string }, IBooking>({
+            query: (data) => ({
+                url: "/api/bookings/affter-pay",
+                method: "POST",
+                body: data,
+            }),
         }),
     }),
 });
 
-export const { useGetAllBookingByUserIdQuery } = bookingApi;
+export const { useGetAllBookingByUserIdQuery, useGetBookingByPaymentIdQuery, useNewBookingAffterPayMutation } = bookingApi;
 export default bookingApi;
