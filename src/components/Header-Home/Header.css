@@ -1,6 +1,8 @@
 /* Header.css */
-header {
+#header {
     font-family: 'Roboto', sans-serif;
+    color: black !important;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   }
   
   header .logo-menu-partner {
@@ -46,6 +48,17 @@ header {
     cursor: pointer;
     transition: .4s;
   }
+  ul .menu-text-a{
+    position: relative;
+  }
+  ul .menu-text-a::after {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 20px;
+    background-color: antiquewhite;
+    top: 0;
+  }
   
   @media screen and (max-width: 768px) {
     header .menu ul {
@@ -73,16 +86,22 @@ header {
     background-color: transparent;
   }
   
-  .fixed-header.active {
-    background-color: #fff; 
-    color: black !important;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  .list-reset-header li a{
+    color: white !important;
   }
-  .fixed-header.active > .items-center .menu-pc li a{
+ .list-reset li a{
     color: black !important;
   }
   
-  /* .visible-title { */
-    /* Cài đặt hiển thị tiêu đề hoặc các hiệu ứng khác khi cần */
-  /* } */
+  @media  (max-width: 1023px) {
+ 
+    .header-mobile{
+      background-color: #fff; 
+      color: black !important;
+      box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    }
+    .list-reset-header li a{
+      color: black !important;
+    }
+  }
   

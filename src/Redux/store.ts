@@ -5,6 +5,7 @@ import bannerSlice from "./Slices/bannerSlice";
 import serviceSlice from "./Slices/serviceSlice";
 import navbar from "./Slices/navbarSlice";
 import locationReducer from "./Slices/locationSlice";
+import childrenPitchReducer from "./Slices/childrentPitch";
 import pitchReducer from "./Slices/pitchSlice";
 import paymentApi from "./payment/paymentApi";
 import bookingApi from "./booking/bookingApi";
@@ -21,6 +22,7 @@ const store = configureStore({
     comment: commentReducer,
     location: locationReducer,
     pitch: pitchReducer,
+    childrenPitch: childrenPitchReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

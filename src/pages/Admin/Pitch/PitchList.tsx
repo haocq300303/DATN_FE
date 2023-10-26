@@ -28,6 +28,7 @@ import { fetchAllPitch, fetchCreatPitch, fetchDeletePitch, fetchUpdatePitch } fr
 import { getAllLocationMid } from "../../../Redux/Slices/locationSlice";
 import IPitch from "../../../interfaces/pitch";
 import { Option } from "antd/es/mentions";
+import { Link } from "react-router-dom";
 
 
 const PitchList = () => {
@@ -72,7 +73,7 @@ const PitchList = () => {
             title: "Tên Sân",
             dataIndex: "name",
             key: "name",
-            // render: (image) => <img width={30} src={image[0]} />,
+            render: (text) => <Link to={`/admin/childrentpitch/${text.id}`}>{text}</Link>,
         },
         {
             title: "Số Lượng sân",

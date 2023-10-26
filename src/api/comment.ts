@@ -9,6 +9,10 @@ const getOneComment = (idComment: string) => {
   return instance.get(`comments/${idComment}`);
 };
 
+const getCommentByPost = (idPost: string) => {
+  return instance.get(`comments/post/${idPost}`);
+};
+
 const createComment = (comment: IComment) => {
   return instance.post(`comments`, comment);
 };
@@ -24,6 +28,7 @@ const deleteComment = (idComment: string) => {
 export {
   getAllComment,
   getOneComment,
+  getCommentByPost,
   createComment,
   updateComment,
   deleteComment,

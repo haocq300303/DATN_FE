@@ -19,6 +19,16 @@ const routes = {
     pitch_client: "/pitch",
     pitch_detail: "/pitch/detail",
     bookingHistory: "/booking/history",
+
+    about: "/about",
+    contact: "/contact",
+
+    childrenpitch: "/admin/childrenpitch",
+    shift: "/admin/shift",
+    childrenPitch_client: "/pitch/childrenPitch",
+
+    post_client: "/post",
+    post_detail: "/post/:id",
 };
 
 export { routes };

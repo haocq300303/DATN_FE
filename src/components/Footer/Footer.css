@@ -1,0 +1,6 @@
+.gradient {
+    background: linear-gradient(90deg, #59e04d 0%, #7fa541 100%);
+  }
+li a{
+    color: black !important;
+}

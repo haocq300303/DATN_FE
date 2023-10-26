@@ -3,7 +3,7 @@ import { Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { format } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
-import { useGetAllBookingByUserIdQuery } from "~/Redux/booking/bookingApi";
+import { useGetAllBookingByUserIdQuery } from "../../../Redux/booking/bookingApi";
 import { IBooking } from "~/interfaces/booking.type";
 
 interface DataType extends IBooking {
