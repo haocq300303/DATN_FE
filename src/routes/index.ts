@@ -29,6 +29,7 @@ const routes = {
 
     post_client: "/post",
     post_detail: "/post/:id",
+
 };
 
 export { routes };
