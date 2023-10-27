@@ -1,7 +1,37 @@
-
+import { getAllPostMid } from "~/Redux/Slices/postSlice";
+import { useAppDispatch, useAppSelector } from "~/Redux/hook";
+import IPost from "~/interfaces/post";
 import "./Home.css"
+import { useEffect } from "react";
 const Home = () => {
+  const dispatch = useAppDispatch();
 
+  const posts = useAppSelector((state) => state.post.posts);
+  const calculateTimeAgo = (createdAt: any) => {
+    const currentDate: any = new Date();
+    const postDate: any = new Date(createdAt);
+    const timeDifference = currentDate - postDate;
+  
+    const seconds = Math.floor(timeDifference / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+  
+    if (days > 0) {
+      return `${days} ngày trước`;
+    } else if (hours > 0) {
+      return `${hours} giờ trước`;
+    } else if (minutes > 0) {
+      return `${minutes} phút trước`;
+    } else {
+      return `${seconds} giây trước`;
+    }
+  };
+  console.log(posts);
+
+  useEffect(() => {
+    dispatch(getAllPostMid());
+  }, [dispatch]);
   return (
     <div className="leading-normal tracking-normal text-white gradient">
       <section className="bg-white border-b py-8">
@@ -474,7 +504,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="bg-white border-b py-8">
+        <section className="bg-white border-b py-8">
         <div className="container mx-auto flex flex-wrap pt-4 pb-12">
           <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
             Tin Tức Mới Nhất
@@ -482,109 +512,45 @@ const Home = () => {
           <div className="w-full mb-4">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
+      {posts?.map((post: IPost) => (
           <div className="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-            <div className="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
+            <div className="flex-1 bg-white rounded-t-lg rounded-b-none overflow-hidden shadow">
               <a
                 href="#"
                 className="flex flex-wrap no-underline hover:no-underline"
               >
-                <div className="img h-72">
+                <div className="img h-72 overflow-hidden">
                   <img
-                    src="https://nads.1cdn.vn/thumbs/750x500/2023/05/16/W_z4347907168739_5f2885afac514fd21db254287c517031-1-.jpg"
+                    src={post.images[0]}
                     alt="news"
+                    className="w-full hover:scale-110 transition ease-in-out delay-250"
                   />
                 </div>
-                <p className="w-full text-gray-600 text-xs md:text-sm px-6">
-                  21-9 - By admin
+                <p className="w-full text-gray-600 text-xs md:text-sm px-4 mt-4">
+                {calculateTimeAgo(post.createdAt)} - By {post.id_user?.name}
                 </p>
-                <div className="w-full font-bold text-xl text-gray-800 px-6 py-2">
-                  Những khoảnh khắc xúc động bóng đá nữ Việt Nam viết nên trang
-                  sử mới ở SEA Games
+                <div className="w-full font-bold text-xl text-gray-800 px-4 py-2">
+                {post.title}
                 </div>
-                <p className="text-gray-800 text-base px-6 mb-5">
-                  (NADS) - Đội nữ Việt Nam giành tấm Huy chương Vàng SEA Games
-                  lần thứ 4 liên tiếp. Với chiến thắng này, đội tuyển nữ Việt
-                  Nam đi vào lịch sử SEA Games.
+                <p className="text-gray-800 text-base px-4 mb-5">
+                {post.description}
                 </p>
               </a>
             </div>
             <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
               <div className="flex items-center justify-end">
-                <button className="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-4 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+               <a href={`/post/${post._id}`}>
+               <button className="mx-auto lg:mx-0 gradient text-white font-bold rounded-full my-4 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                   Xem Thêm
                 </button>
+               </a>
               </div>
             </div>
           </div>
-          <div className="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-            <div className="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
-              <a
-                href="#"
-                className="flex flex-wrap no-underline hover:no-underline"
-              >
-                <div className="img h-72">
-                  <img
-                    src="https://nads.1cdn.vn/2022/09/21/W_anh-3.jpg"
-                    alt="news"
-                  />
-                </div>
-                <p className="w-full text-gray-600 text-xs md:text-sm px-6">
-                  22-9 - By admin
-                </p>
-                <div className="w-full font-bold text-xl text-gray-800 px-6 py-2">
-                  Buổi tập đầu tiên của Quang Hải cùng ĐT Việt Nam
-                </div>
-                <p className="text-gray-800 text-base px-6 mb-5">
-                  Sau khi về nước, tiền vệ Nguyễn Quang Hải đã có buổi tập đầu
-                  tiên cùng các đồng đội ở ĐT Việt Nam để chuẩn bị cho trận đấu
-                  giao hữu với ĐT Singapore
-                </p>
-              </a>
-            </div>
-            <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-              <div className="flex items-center justify-end">
-                <button className="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-4 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
-                  Xem Thêm
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="w-full md:w-1/3 p-6 flex flex-col flex-grow flex-shrink">
-            <div className="flex-1 bg-white rounded-t rounded-b-none overflow-hidden shadow">
-              <a
-                href="#"
-                className="flex flex-wrap no-underline hover:no-underline"
-              >
-                <div className="img h-72">
-                  <img
-                    src="https://nads.1cdn.vn/2022/09/21/W_anh-3.jpg"
-                    alt="news"
-                  />
-                </div>
-                <p className="w-full text-gray-600 text-xs md:text-sm px-6">
-                  22-9 - By admin
-                </p>
-                <div className="w-full font-bold text-xl text-gray-800 px-6 py-2">
-                  Buổi tập đầu tiên của Quang Hải cùng ĐT Việt Nam
-                </div>
-                <p className="text-gray-800 text-base px-6 mb-5">
-                  Sau khi về nước, tiền vệ Nguyễn Quang Hải đã có buổi tập đầu
-                  tiên cùng các đồng đội ở ĐT Việt Nam để chuẩn bị cho trận đấu
-                  giao hữu với ĐT Singapore
-                </p>
-              </a>
-            </div>
-            <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
-              <div className="flex items-center justify-end">
-                <button className="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-4 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
-                  Xem Thêm
-                </button>
-              </div>
-            </div>
-          </div>
+        ))}
         </div>
       </section>
-      <section className="bg-gray-100 py-8">
+      <section className="bg-white py-8">
         <div className="container mx-auto px-2 pt-4 pb-12 text-gray-800">
           <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
             Các gói ưu đãi
@@ -824,7 +790,7 @@ const Home = () => {
         <h3 className="my-4 text-3xl leading-tight">
           Đặt sân nay để nhận được những ưu đãi tốt nhất từ chúng tôi!
         </h3>
-        <button className="mx-auto lg:mx-0 hover:underline bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+        <button className="mx-auto lg:mx-0 bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
           Đặt Sân Ngay
         </button>
       </section>

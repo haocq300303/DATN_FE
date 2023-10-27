@@ -63,6 +63,16 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal"
       >
+        <a href="/post" className="flex items-center">
+          Tin Tức
+        </a>
+      </Typography>
+      <Typography
+        as="li"
+        variant="small"
+        color="blue-gray"
+        className="p-1 font-normal"
+      >
         <a href="/contact" className="flex items-center">
           Liên Hệ
         </a>

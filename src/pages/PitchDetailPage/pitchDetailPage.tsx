@@ -6,6 +6,10 @@ import {
   TabsBody,
   Tab,
   TabPanel,
+  Card,
+  CardHeader,
+  CardBody,
+  Typography,
 } from "@material-tailwind/react";
 import { Rate, Space, Table, Tag } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -13,6 +17,10 @@ import type { ColumnsType } from "antd/es/table";
 import img1 from "../../assets/img/Web/banner1.png";
 import { Link } from "react-router-dom";
 import item2 from "../../assets/img/Web/stadium1.jfif";
+import { useAppDispatch, useAppSelector } from "~/Redux/hook";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+import { useEffect } from "react";
+import { IService } from "~/interfaces/service";
 interface DataType {
   key: string;
   pitch: string;
@@ -96,6 +104,15 @@ const tableData: DataType[] = [
 ];
 
 const PitchDetailPage = () => {
+  const dispatch = useAppDispatch();
+
+  const services = useAppSelector((state) => state.service.services);
+  console.log(services);
+  
+  useEffect(() => {
+    dispatch(getAllServiceMid());
+  }, [dispatch]);
+
   const data = [
     {
       label: "ĐẶT SÂN",
@@ -136,12 +153,29 @@ const PitchDetailPage = () => {
     },
 
     {
-      label: "DỊCH VỤ",
+      label: "Dịch VỤ",
       value: "angular",
-      desc: `Because it's about motivating the doers. Because I'm here
-          to follow my dreams and inspire other people to follow their dreams, too.`,
+      desc: (
+        <div className="flex flex-wrap ">
+          {services?.map((service: IService) => (
+          <Card className="mt-6 w-48 md:w-1/2 lg:w-1/4 px-4 mb-4" key={service._id}>
+            <CardHeader color="blue-gray" className="relative h-36 w-full">
+              <img
+                src={service.image}
+                alt="card-image"
+              />
+            </CardHeader>
+            <CardBody>
+              <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                { service.name }
+              </Typography>
+              <Typography>{ service.price }</Typography>
+            </CardBody>
+          </Card>
+          ))}
+        </div>
+      ),
     },
-
     {
       label: "ĐÁNH GIÁ",
       value: "svelte",
