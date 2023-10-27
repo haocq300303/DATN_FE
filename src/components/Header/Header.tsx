@@ -34,7 +34,7 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/img/logoFsport.png";
 import "./Header.css";
 
-const colors = {
+const colors:{ [key: string]: string }  = {
   blue: "bg-blue-50 text-blue-500",
   orange: "bg-orange-50 text-orange-500",
   green: "bg-green-50 text-green-500",
@@ -313,7 +313,7 @@ export function Header() {
           </Link>
         </div>
         <div className="w-72">
-          <Input label="Tìm Nhanh Sân ..." />
+          <Input label="Tìm Nhanh Sân ..." crossOrigin="anonymous"/>
         </div>
         <div className="hidden lg:block">
           <NavList />

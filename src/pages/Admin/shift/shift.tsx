@@ -33,7 +33,7 @@ const Shift = () => {
 
   const shifts = useAppSelector((state) => state.shift.shift);
 
-  console.log("toàn bộ các ca sân : " + shifts);
+  console.log( shifts);
 
   const numberShifts = shifts.map((item: any) => item.number_shift);
   console.log("Danh sách số ca sân:", numberShifts);
@@ -56,7 +56,7 @@ const Shift = () => {
       title: "Ca Sân",
       dataIndex: "number_shift",
       key: "number_shift",
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span> Ca {text} </span>,
     },
     {
       title: "Giờ Bắt Đầu",
@@ -193,6 +193,9 @@ const Shift = () => {
     }
     setIsModalOpen(false);
   };
+
+
+
   const [caCount, setCaCount] = useState(1);
   const [caData, setCaData] = useState([
     {
@@ -349,6 +352,7 @@ const Shift = () => {
             </Button>
           </Form.Item>
         </Form>
+        
       </ModalForm>
     </>
   );
