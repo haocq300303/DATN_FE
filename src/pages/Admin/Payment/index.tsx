@@ -21,7 +21,6 @@ const PaymentAdminPage = () => {
             },
             {
                 title: "Thông tin người chuyển",
-
                 children: [
                     {
                         title: "Họ và tên",
@@ -138,6 +137,66 @@ const PaymentAdminPage = () => {
                 ],
             },
             {
+                title: "Số tiền",
+                children: [
+                    {
+                        title: "Đã chuyển",
+                        dataIndex: "price_received",
+                        width: 200,
+                        key: "price_received",
+                        render: (price_received) => (
+                            <p
+                                className="text-center"
+                                style={{
+                                    color: "#10b981",
+                                    backgroundColor: "#10b98119",
+                                    padding: "4px 8px",
+                                    borderRadius: "4px",
+                                }}
+                            >
+                                {price_received?.toLocaleString()} VNĐ
+                            </p>
+                        ),
+                    },
+                    {
+                        title: "Phải chuyển",
+                        dataIndex: "total_received",
+                        width: 200,
+                        key: "total_received",
+                        render: (total_received) => (
+                            <p
+                                className="text-center"
+                                style={{
+                                    color: "rgb(0 95 182)",
+                                    backgroundColor: "#10b98119",
+                                    padding: "4px 8px",
+                                    borderRadius: "4px",
+                                }}
+                            >
+                                {total_received?.toLocaleString()} VNĐ
+                            </p>
+                        ),
+                    },
+                    {
+                        title: "Còn nợ",
+                        width: 200,
+                        render: (item) => (
+                            <p
+                                className="text-center"
+                                style={{
+                                    color: "rgb(227 15 103)",
+                                    backgroundColor: "#10b98119",
+                                    padding: "4px 8px",
+                                    borderRadius: "4px",
+                                }}
+                            >
+                                {(item?.total_received - item?.price_received)?.toLocaleString()} VNĐ
+                            </p>
+                        ),
+                    },
+                ],
+            },
+            {
                 title: "Phương thức",
                 dataIndex: "payment_method",
                 width: 100,
@@ -175,30 +234,12 @@ const PaymentAdminPage = () => {
                 ),
             },
             {
-                title: "Số tiền",
-                dataIndex: "price",
-                width: 250,
-                key: "price",
-                render: (price) => (
-                    <span
-                        style={{
-                            color: "#10b981",
-                            backgroundColor: "#10b98119",
-                            padding: "4px 8px",
-                            borderRadius: "4px",
-                        }}
-                    >
-                        {price.toLocaleString()} VNĐ
-                    </span>
-                ),
-            },
-            {
                 title: "Thời gian",
                 dataIndex: "createdAt",
                 key: "createdAt",
                 width: 150,
                 render: (createdAt) => (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col items-center">
                         <span style={{ color: "#64748b", fontWeight: "600", fontSize: "15px" }}>{format(new Date(createdAt), "dd-MM-yyyy")}</span>
 
                         <span className="text-sm mt-0.5" style={{ color: "#64748b", fontWeight: "500" }}>
