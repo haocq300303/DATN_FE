@@ -1,17 +1,21 @@
+import { ThemeProvider } from "@material-tailwind/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.scss";
 import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import App from "./App.tsx";
 import store from "./Redux/store.ts";
-import { ThemeProvider } from "@material-tailwind/react";
+import "./index.scss";
+import "./styles/global-style.scss";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+    // <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+        <ThemeProvider>
+            <App />
+            <ToastContainer />
+        </ThemeProvider>
     </Provider>
-  </React.StrictMode>
+    // </React.StrictMode>
 );
