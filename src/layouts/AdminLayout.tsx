@@ -58,12 +58,12 @@ const items: MenuItem[] = [
     "sub6",
     <SolutionOutlined />
   ),
-  getItem("Location", "sub5", <EnvironmentOutlined />, [
-    getItem(<Link to={"/admin/location"}>Location List</Link>, "7"),
+  getItem("Location", "sub7", <EnvironmentOutlined />, [
+    getItem(<Link to={"/admin/location"}>Location List</Link>, "8"),
   ]),
-  getItem("Service", "sub7", <ProfileOutlined />, [
-    getItem(<Link to={"/admin/service/add"}>Create Service</Link>, "8"),
-    getItem(<Link to={"/admin/service"}>Service List</Link>, "9"),
+  getItem("Service", "sub8", <ProfileOutlined />, [
+    getItem(<Link to={"/admin/service/add"}>Create Service</Link>, "9"),
+    getItem(<Link to={"/admin/service"}>Service List</Link>, "10"),
   ]),
 ];
 const AdminLayout = () => {
