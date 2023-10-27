@@ -32,9 +32,9 @@ import { IoIosFootball, IoMdTennisball } from "react-icons/io";
 import { TbYoga } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import logo from "../../assets/img/logoFsport.png";
-import "./Header.css";
 
-const colors = {
+
+const colors:{ [key: string]: string }  = {
   blue: "bg-blue-50 text-blue-500",
   orange: "bg-orange-50 text-orange-500",
   green: "bg-green-50 text-green-500",
@@ -157,7 +157,7 @@ function ProfileMenu() {
             variant="circular"
             size="sm"
             alt="tania andrew"
-            className="border border-gray-900 p-0.5"
+            className="border border-gray-900 p-0.5 w-[50px]"
             src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
           />
           <ChevronDownIcon
@@ -168,6 +168,8 @@ function ProfileMenu() {
           />
         </Button>
       </MenuHandler>
+
+
       <MenuList className="p-1">
         {profileMenuItems.map(({ label, icon }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
@@ -185,6 +187,7 @@ function ProfileMenu() {
                 className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
                 strokeWidth: 2,
               })}
+
               <Typography
                 as="span"
                 variant="small"
@@ -244,7 +247,7 @@ function NavListMenu() {
         <MenuHandler>
           <Typography as="div" variant="small" className="font-normal">
             <ListItem
-              className="flex items-center gap-2 py-2 pr-4"
+              className="flex items-center gap-2 py-2 pr-4 text-[#000000]"
               selected={isMenuOpen || isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
@@ -287,8 +290,8 @@ function NavList() {
         color="blue-gray"
         className="font-normal"
       >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">
-          <CubeTransparentIcon className="h-[18px] w-[18px]" />
+        <ListItem className="flex items-center gap-2 py-2 pr-4 text-[#000000]">
+          <CubeTransparentIcon className="h-[18px] w-[18px] text-[#000000]" />
           Tìm Kèo
         </ListItem>
       </Typography>
@@ -305,44 +308,42 @@ export function Header() {
     );
   }, []);
   return (
-    <div className="shadow-lg">
-      <Navbar className="mx-auto max-w-screen-2xl px-4 py-2">
-        <div className="flex items-center justify-between text-blue-gray-900">
-          <div className="flex items-center justify-between ">
-            <Link to="/">
-              <img src={logo} className="w-24" alt="" />
-            </Link>
-          </div>
-          <div className="w-72">
-            <Input label="Tìm Nhanh Sân ..." />
-          </div>
-          <div className="hidden lg:block">
-            <NavList />
-          </div>
-          <div className="hidden gap-2 lg:flex">
-            <ProfileMenu />
-          </div>
-          <IconButton
-            variant="text"
-            color="blue-gray"
-            className="lg:hidden"
-            onClick={() => setOpenNav(!openNav)}
-          >
-            {openNav ? (
-              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-            ) : (
-              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-            )}
-          </IconButton>
+    <Navbar className="mx-auto max-w-screen-2xl px-4 py-2 border-none">
+      <div className="flex items-center justify-between text-blue-gray-900">
+        <div className="flex items-center justify-between ">
+          <Link to="/">
+            <img src={logo} className="w-24" alt="" />
+          </Link>
         </div>
-
-        <Collapse open={openNav}>
+        <div className="w-72">
+          <Input label="Tìm Nhanh Sân ..." crossOrigin="anonymous"/>
+        </div>
+        <div className="hidden lg:block">
           <NavList />
-          <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-            <ProfileMenu />
-          </div>
-        </Collapse>
-      </Navbar>
-    </div>
+        </div>
+        <div className="hidden gap-2 lg:flex">
+          <ProfileMenu />
+        </div>
+        <IconButton
+          variant="text"
+          color="blue-gray"
+          className="lg:hidden"
+          onClick={() => setOpenNav(!openNav)}
+        >
+          {openNav ? (
+            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+          ) : (
+            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+          )}
+        </IconButton>
+      </div>
+
+      <Collapse open={openNav}>
+        <NavList />
+        <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+          <ProfileMenu />
+        </div>
+      </Collapse>
+    </Navbar>
   );
 }

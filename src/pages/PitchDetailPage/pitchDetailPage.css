@@ -24,13 +24,7 @@
 #custom-animation nav {
   border-bottom: 1px solid gray !important;
 }
-#custom-animation li {
-  padding: 13px !important;
-}
-.right-detail-pitch {
-  box-shadow: 0px 10px 30px rgba(31, 31, 31, 0.207);
-  border-radius: 10px;
-}
+
 .btn-call {
   text-decoration: none;
   padding: 15px 20px;
@@ -76,5 +70,12 @@
 .text-pitch {
   font-size: 30px;
   font-weight: 700;
-  margin: 30px 0 10px;
+}
+.ant-table-content .ant-table-thead .ant-table-cell{
+  background-color: #f4eade !important;
+  text-align: center !important;
+  color: #000 !important;
+}
+.ant-table-content .ant-table-tbody{
+  text-align: center !important;
 }

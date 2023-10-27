@@ -1,4 +1,4 @@
-import { Carousel } from "antd";
+import { Button, Carousel, DatePicker, Form, Image } from "antd";
 import "./pitchDetailPage.css";
 import {
   Tabs,
@@ -7,116 +7,120 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import { Rate, Space, Table, Tag } from "antd";
+import { Rate, Space, Table } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { ColumnsType } from "antd/es/table";
 import img1 from "../../assets/img/Web/banner1.png";
 import { Link } from "react-router-dom";
 import item2 from "../../assets/img/Web/stadium1.jfif";
-interface DataType {
-  key: string;
-  pitch: string;
-  time: string;
-  address: string;
-  status: string[];
-}
+import { useAppDispatch, useAppSelector } from "../../Redux/hook";
+import { useEffect } from "react";
+import { fetchAllShift } from "../../Redux/Slices/shiftSlice";
+import IShift from "~/interfaces/shift";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Ca sân",
-    dataIndex: "pitch",
-    key: "pitch",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Giờ Diễn",
-    dataIndex: "time",
-    key: "time",
-  },
-  {
-    title: "Số Sân",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
-    title: "Trạng Thái",
-    key: "tags",
-    dataIndex: "tags",
-    render: (_, { status }) => (
-      <>
-        {status.map((status) => {
-          let color = status.length > 8 ? "green" : "geekblue";
-          if (status === "Sân Bận") {
-            color = "red";
-          }
-          console.log(status);
-
-          return (
-            <Tag color={color} key={status}>
-              {status.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
-  },
-  {
-    title: "Hành Động",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Đặt sân {record.pitch}</a>
-      </Space>
-    ),
-  },
-];
-
-const tableData: DataType[] = [
-  {
-    key: "1",
-    pitch: "Ca 1",
-    time: "7:00-9:00",
-    address: "4",
-    status: ["Tìm Đối"],
-  },
-  {
-    key: "2",
-    pitch: "Ca 2",
-    time: "9:00-11:00",
-    address: "4",
-    status: ["Sân Trống"],
-  },
-  {
-    key: "2",
-    pitch: "Ca 3",
-    time: "11:00-13:00",
-    address: "4",
-    status: ["Sân Bận"],
-  },
-];
-
+const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+const today = dayjs();
 const PitchDetailPage = () => {
+  const dispatch = useAppDispatch();
+  const shifts = useAppSelector((state) => state.shift.shift);
+  console.log(shifts);
+  const dataTable = shifts.map((item: IShift, index: number) => ({
+    ...item,
+    key: index,
+  }));
+
+  useEffect(() => {
+    dispatch(fetchAllShift());
+  }, [dispatch]);
+
+  const handleButtonClick = (id: any) => {
+    const selectedShift = shifts.find((shift: any) => shift._id === id);
+    if (selectedShift) {
+      console.log("id: ", selectedShift._id);
+    }
+  };
+  const columns: ColumnsType<IShift> = [
+    {
+      title: "Ca Sân",
+      dataIndex: "number_shift",
+      key: "number_shift",
+      render: (text) => <span> Ca {text} </span>,
+    },
+    {
+      title: "Giờ Bắt Đầu",
+      dataIndex: "time_start",
+      key: "time_start",
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Giờ Kết Thúc",
+      dataIndex: "time_end",
+      key: "time_end",
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Số Sân Trống",
+      dataIndex: "number_remain",
+      key: "number_remain",
+      render: (text) => (
+        <span>
+          <Space>{text} / 4</Space>
+        </span>
+      ),
+    },
+    {
+      title: "Giá Sân",
+      dataIndex: "price",
+      key: "price",
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Trạng Thái Sân",
+      dataIndex: "statusPitch",
+      key: "statusPitch",
+      render: (text) => (
+        <span
+          className={
+            text
+              ? "text-[#fff] bg-green-600 p-[10px] rounded-[10px]"
+              : "p-[10px] rounded-[10px] text-[#fff] bg-red-600"
+          }
+        >
+          {text ? "Sân Trống" : "Sân Bận"}
+        </span>
+      ),
+    },
+    {
+      title: "Đặt Sân",
+      render: (record) => (
+        <Button onClick={() => handleButtonClick(record._id)}>
+          Đặt Sân Ca {record.number_shift}
+        </Button>
+      ),
+    },
+  ];
   const data = [
     {
-      label: "ĐẶT SÂN",
+      label: "THÔNG TIN CƠ BẢN",
       value: "html",
       desc: (
         <>
           <div className="flex img-pitch gap-[20px]">
             <div className="left-img w-[65%] md:w-[100%]">
-              <img src={img1} alt="" width="100%" />
+              <Image.PreviewGroup
+                items={[`${img1}`, `${img1}`, `${img1}`, `${img1}`]}
+              >
+                <Image className="w-[100%] h-[100%]" src={img1} />
+              </Image.PreviewGroup>
             </div>
             <div className="right-img w-[30%] xl:grid md:hidden">
-              <img src={img1} alt="" width="100%" />
-              <img src={img1} alt="" width="100%" />
+              <img src={img1} alt="" className="w-[100%] h-[100%]" />
+              <img src={img1} alt="" className="w-[100%] h-[100%]" />
             </div>
           </div>
-          <h1 className="text-pitch">SÂN BÓNG MẠNH CƯỜNG</h1>
-          <p>
-            {" "}
-            <Rate allowHalf defaultValue={5} /> <span> ( 2 Reviews )</span>
-          </p>
-          <Table columns={columns} dataSource={tableData} />
         </>
       ),
     },
@@ -150,8 +154,9 @@ const PitchDetailPage = () => {
           constantly trying to express ourselves and actualize our dreams.`,
     },
   ];
+
   return (
-    <div>
+    <div className="bg-[#f3f3f5]">
       {/* =========banner========= */}
       <div className="detail-pitch">
         <div className="banner-detail">
@@ -164,17 +169,19 @@ const PitchDetailPage = () => {
         </div>
       </div>
       {/* -===========detail pitch============ */}
+      {/* ảnh ọt thôi */}
       <div className="mx-auto max-w-screen-2xl gap-10 flex md:block relative">
         {/* left */}
         <div className="sm:w-full md:w-full xl:w-[75%]">
           <Tabs id="custom-animation" value="html">
-            <TabsHeader>
+            <TabsHeader className="">
               {data.map(({ label, value }) => (
                 <Tab key={value} value={value}>
                   {label}
                 </Tab>
               ))}
             </TabsHeader>
+
             <TabsBody
               animate={{
                 initial: { y: 250 },
@@ -190,43 +197,98 @@ const PitchDetailPage = () => {
             </TabsBody>
           </Tabs>
         </div>
-        <div className="right-detail-pitch xl:w-[25%] md:w-[100%]  md:relative md:mt-[50px] xl:absolute xl:top-[-100px] right-0 bg-white p-[40px]">
-          <p className="mb-[30px] flex justify-between">
-            HOT PITCH{" "}
-            <span>
-              <i className="text-[30px] fa-sharp fa-solid fa-star-of-david fa-spin fa-spin-reverse"></i>
-            </span>
+        <div className="right-detail-pitch xl:w-[25%] md:w-[100%] md:relative md:mt-[10px] xl:absolute xl:top-[-120px] right-0">
+          <div className=" bg-white p-[40px] rounded-[20px] shadow">
+            <p className="mb-[30px] flex justify-between">
+              HOT PITCH{" "}
+              <span>
+                <i className="text-[30px] fa-sharp fa-solid fa-star-of-david fa-spin fa-spin-reverse"></i>
+              </span>
+            </p>
+            <p className="flex items-center justify-between">
+              <i className="fa-solid fa-tag"></i>
+              <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
+              <span className="text-[#ffb932]">150.000</span> -{" "}
+              <span className="text-[#fd9e4b]">850.000</span>
+            </p>
+            <p className="my-[20px]">
+              Sân trống : <span>10</span>
+            </p>
+            <p className="my-[20px]">
+              Sân chưa có đối : <span>1</span>
+            </p>
+
+            <p className="my-[20px]">
+              Sân Bận : <span>8</span>
+            </p>
+            <p></p>
+            <p>
+              <a href="#timca" className="text-[#3a75da]">
+                {" "}
+                <i className="fa-solid fa-right-long fa-shake mr-[20px]"></i>Tìm
+                Ca Sân
+              </a>
+            </p>
+            <a href="tel:0775292262" className="btn-call">
+              <button>GỌI TỚI CHỦ SÂN</button>
+            </a>
+          </div>
+
+          <div className="maps bg-[#fff] mt-[50px] shadow">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.9631506304613!2d105.7677671750488!3d21.034160387593463!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454b9df6626ef%3A0xbadd9b53272fd8c1!2zMjEgxJAuIEzDqiDEkOG7qWMgVGjhu40sIE3hu7kgxJDDrG5oLCBOYW0gVOG7qyBMacOqbSwgSMOgIE7hu5lpLCBWaWV0bmFt!5e0!3m2!1sen!2s!4v1698378147194!5m2!1sen!2s"
+              loading="lazy"
+              className="w-[100%]"
+            ></iframe>
+            <a href="https://maps.app.goo.gl/bMpLZc9tXFTEAEMLA" target="_blank">
+              <button className="my-[10px] text-[#3a75da]"> Chỉ Đường</button>{" "}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* thôn tin sân và đặt lịch ở đây  */}
+      <div className="container flex justify-between my-[50px]">
+        <div className="info-pitch">
+          <h1 className="text-pitch">SÂN BÓNG MẠNH CƯỜNG</h1>
+          <p>
+            <Rate allowHalf defaultValue={5} /> <span> ( 2 Reviews )</span>
           </p>
-          <p className="flex items-center justify-between">
-            <i className="fa-solid fa-tag"></i>
-            <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
-            <span className="text-[#ffb932]">150.000</span> -{" "}
-            <span className="text-[#fd9e4b]">850.000</span>
-          </p>
-          <p className="my-[20px]">
-            Sân trống : <span>10</span>
-          </p>
-          <p className="my-[20px]">
-            Sân chưa có đối : <span>1</span>
-          </p>
-          <p className="my-[20px]">
-            Sân Bận : <span>8</span>
-          </p>
-          <p></p>
-          <a href="tel:0775292262" className="btn-call">
-            <button>GỌI TỚI CHỦ SÂN</button>
-          </a>
+        </div>
+        <div className="calendar">
+          <Form>
+            <Form.Item>
+              <div className="flex items-center">
+                <p className="text-20px font-[600] w-max mr-[30px]">
+                  <i className="fa-regular fa-calendar mr-[20px]"></i>CHỌN LỊCH
+                  NGÀY :
+                </p>
+                <Space
+                  direction="vertical"
+                  size={12}
+                >
+                  <DatePicker defaultValue={today} format={dateFormatList} />
+                </Space>
+              </div>
+            </Form.Item>
+            <Form.Item></Form.Item>
+          </Form>
+        </div>
+      </div>
+      <div id="timca" className="container booking_detail items-center">
+        <div className="left_booking">
+          <Table
+            pagination={{ pageSize: 8 }}
+            columns={columns}
+            dataSource={dataTable}
+          />
         </div>
       </div>
 
       {/* các sân bongs ưu tiên */}
-      <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
-        <h1>CÓ THỂ BẠN ĐÉO THÍCH</h1>
-        <Swiper
-          spaceBetween={80}
-          slidesPerView={3}
-          onSlideChange={() => console.log("slide change")}
-        >
+      <div className="hot-pitch mt-[100px] mx-auto max-w-screen-2xl xl px-[30px]">
+        <h1>CÓ THỂ BẠN KHUM THÍCH</h1>
+        <Swiper spaceBetween={80} slidesPerView={3}>
           <SwiperSlide>
             <div className="item-pitch ">
               <Link to="detail">
