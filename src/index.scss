@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+  body {
+    margin: 0;
+  }
+}
 .ant-table-thead .ant-table-cell {
-    background-color: #0088e9 !important;
-    color: white !important;
-    text-align: center !important;
+  background-color: #0088e9 !important;
+  color: white !important;
+  text-align: center !important;
 }

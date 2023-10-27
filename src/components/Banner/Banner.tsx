@@ -19,8 +19,8 @@ const Banner = () => {
             reprehenderit quidem quos voluptates beatae nobis?
           </p>
         </div>
-        <div className="flex-1 rounded-tl-full overflow-hidden">
-            <img src="https://images.pexels.com/photos/10923070/pexels-photo-10923070.jpeg?cs=srgb&dl=pexels-gonzalo-acu%C3%B1a-10923070.jpg&fm=jpg" alt="" />
+        <div className="flex-1 lg:rounded-tl-full overflow-hidden">
+            <img className="w-full" src="https://images.pexels.com/photos/10923070/pexels-photo-10923070.jpeg?cs=srgb&dl=pexels-gonzalo-acu%C3%B1a-10923070.jpg&fm=jpg" alt="" />
         </div>
       </div>
     </section>

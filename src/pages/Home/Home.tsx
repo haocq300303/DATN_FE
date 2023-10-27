@@ -3,38 +3,23 @@ import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import IPost from "~/interfaces/post";
 import "./Home.css"
 import { useEffect } from "react";
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
+
 const Home = () => {
   const dispatch = useAppDispatch();
-
   const posts = useAppSelector((state) => state.post.posts);
   const calculateTimeAgo = (createdAt: any) => {
-    const currentDate: any = new Date();
-    const postDate: any = new Date(createdAt);
-    const timeDifference = currentDate - postDate;
-  
-    const seconds = Math.floor(timeDifference / 1000);
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-  
-    if (days > 0) {
-      return `${days} ngày trước`;
-    } else if (hours > 0) {
-      return `${hours} giờ trước`;
-    } else if (minutes > 0) {
-      return `${minutes} phút trước`;
-    } else {
-      return `${seconds} giây trước`;
-    }
+    const postDate: Date = new Date(createdAt);  
+    return formatDistanceToNow(postDate, { addSuffix: true, locale: vi }); // Việt Nam (vi) là ví dụ của ngôn ngữ
   };
-  console.log(posts);
-
+  
   useEffect(() => {
     dispatch(getAllPostMid());
   }, [dispatch]);
   return (
-    <div className="leading-normal tracking-normal text-white gradient">
-      <section className="bg-white border-b py-8">
+    <div className="gradient">
+      <section className="bg-white box-border py-8">
         <div className="container max-w-5xl mx-auto m-8">
           <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
             FSport
@@ -43,7 +28,7 @@ const Home = () => {
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
           <div className="flex flex-wrap">
-            <div className="w-5/6 sm:w-1/2 p-6">
+            <div className="w-5/6 sm:w-1/2 p-4">
               <h3 className="text-3xl text-gray-800 font-bold leading-none mb-3">
                 Hệ thống đặt lịch hàng đầu
               </h3>
@@ -504,7 +489,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-        <section className="bg-white border-b py-8">
+        <section className="bg-white py-8">
         <div className="container mx-auto flex flex-wrap pt-4 pb-12">
           <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
             Tin Tức Mới Nhất
@@ -529,7 +514,7 @@ const Home = () => {
                 <p className="w-full text-gray-600 text-xs md:text-sm px-4 mt-4">
                 {calculateTimeAgo(post.createdAt)} - By {post.id_user?.name}
                 </p>
-                <div className="w-full font-bold text-xl text-gray-800 px-4 py-2">
+                <div className="w-full font-bold text-2xl text-gray-800 px-4 py-2">
                 {post.title}
                 </div>
                 <p className="text-gray-800 text-base px-4 mb-5">
@@ -540,10 +525,10 @@ const Home = () => {
             <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
               <div className="flex items-center justify-end">
                <a href={`/post/${post._id}`}>
-               <button className="mx-auto lg:mx-0 gradient text-white font-bold rounded-full my-4 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+               <button className="mx-auto border-none lg:mx-0 gradient text-white font-bold rounded-full my-4 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                   Xem Thêm
                 </button>
-               </a>
+               </a> 
               </div>
             </div>
           </div>
@@ -565,9 +550,9 @@ const Home = () => {
                   Gói Tuần
                 </div>
                 <ul className="w-full text-center text-sm">
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
                 </ul>
               </div>
               <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
@@ -575,7 +560,7 @@ const Home = () => {
                   200.000đ
                 </div>
                 <div className="flex items-center justify-center">
-                  <button className="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                  <button className="border-none mx-auto lg:mx-0  gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                     Mua Ngay
                   </button>
                 </div>
@@ -588,10 +573,10 @@ const Home = () => {
                 </div>
                 <div className="h-1 w-full gradient my-0 py-0 rounded-t"></div>
                 <ul className="w-full text-center text-base font-bold">
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
                 </ul>
               </div>
               <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
@@ -599,7 +584,7 @@ const Home = () => {
                   2.000.000đ
                 </div>
                 <div className="flex items-center justify-center">
-                  <button className="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                  <button className="border-none mx-auto lg:mx-0  gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                     Mua Ngay
                   </button>
                 </div>
@@ -611,9 +596,9 @@ const Home = () => {
                   Gói Năm
                 </div>
                 <ul className="w-full text-center text-sm">
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
-                  <li className="border-b py-4">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
+                  <li className="border-b py-4 list-none">Ưu đãi</li>
                 </ul>
               </div>
               <div className="flex-none mt-auto bg-white rounded-b rounded-t-none overflow-hidden shadow p-6">
@@ -621,7 +606,7 @@ const Home = () => {
                   5.000.000đ
                 </div>
                 <div className="flex items-center justify-center">
-                  <button className="mx-auto lg:mx-0 hover:underline gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+                  <button className="border-none mx-auto lg:mx-0  gradient text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
                     Mua Ngay
                   </button>
                 </div>
@@ -648,7 +633,7 @@ const Home = () => {
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4 md:w-1/2 xl:w-1/4">
               <div className="relative mx-auto mb-10 max-w-[370px] text-center">
-                <div className="absolute top-12 -right-4 hidden h-1 w-16 border-t-2 border-dashed border-black xl:block 2xl:w-[75px]"></div>
+                <div className="absolute top-12 -right-4 hidden h-1 w-16  border-dashed border-black xl:block 2xl:w-[75px]"></div>
                 <div className="relative mx-auto mb-8 flex h-[100px] w-[100px] items-center justify-center rounded-[20px] gradient text-white">
                   <svg
                     width="45"
@@ -673,8 +658,8 @@ const Home = () => {
             </div>
             <div className="w-full px-4 md:w-1/2 xl:w-1/4">
               <div className="relative mx-auto mb-10 max-w-[370px] text-center">
-                <div className="absolute top-12 -left-4 hidden h-1 w-16 border-t-2 border-dashed border-black xl:block 2xl:w-[75px]"></div>
-                <div className="absolute top-12 right-[-14px] hidden h-1 w-16 border-t-2 border-dashed border-black xl:block 2xl:w-[75px]"></div>
+                <div className="absolute top-12 -left-4 hidden h-1 w-16 ml-1 border-dashed border-black xl:block 2xl:w-[75px]"></div>
+                <div className="absolute top-12 right-[-14px] hidden h-1 w-16  border-dashed border-black xl:block 2xl:w-[75px]"></div>
                 <div className="mx-auto mb-8 flex h-[100px] w-[100px] items-center justify-center rounded-[20px] gradient text-white">
                   <svg
                     width="45"
@@ -696,8 +681,8 @@ const Home = () => {
             </div>
             <div className="w-full px-4 md:w-1/2 xl:w-1/4">
               <div className="relative mx-auto mb-10 max-w-[370px] text-center">
-                <div className="absolute top-12 -left-4 hidden h-1 w-16 border-t-2 border-dashed border-black xl:block 2xl:w-[75px]"></div>
-                <div className="absolute top-12 right-[-14px] hidden h-1 w-16 border-t-2 border-dashed border-black xl:block 2xl:w-[75px]"></div>
+                <div className="absolute top-12 -left-4 hidden h-1 w-16  border-dashed border-black xl:block 2xl:w-[75px]"></div>
+                <div className="absolute top-12 right-[-14px] hidden h-1 w-16  border-dashed border-black xl:block 2xl:w-[75px]"></div>
                 <div className="mx-auto mb-8 flex h-[100px] w-[100px] items-center justify-center rounded-[20px] gradient text-white">
                   <svg
                     width="45"
@@ -722,7 +707,7 @@ const Home = () => {
             </div>
             <div className="w-full px-4 md:w-1/2 xl:w-1/4">
               <div className="relative mx-auto mb-10 max-w-[370px] text-center">
-                <div className="absolute top-12 left-[-14px] hidden h-1 w-16 border-t-2 border-dashed border-black xl:block 2xl:w-[75px]"></div>
+                <div className="absolute top-12 left-[-14px] hidden h-1 w-16  border-dashed border-black xl:block 2xl:w-[75px]"></div>
                 <div className="mx-auto mb-8 flex h-[100px] w-[100px] items-center justify-center rounded-[20px] gradient text-white">
                   <svg
                     width="45"
