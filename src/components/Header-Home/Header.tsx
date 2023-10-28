@@ -33,7 +33,7 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
       >
-        <a href="/" className="flex no-underline items-center hover:translate-x-3 hover:transition-all transition-all">
+        <a href="/" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Trang Chủ
         </a>
       </Typography>
@@ -43,7 +43,7 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="/pitch" className="flex no-underline items-center hover:translate-x-3 hover:transition-all transition-all">
+        <a href="/pitch" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Sân Bóng
         </a>
       </Typography>
@@ -53,7 +53,7 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="#" className="flex no-underline items-center hover:translate-x-3 hover:transition-all transition-all">
+        <a href="#" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Tìm Đối
         </a>
       </Typography>
@@ -63,7 +63,7 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="/post" className="flex no-underline items-center hover:translate-x-3 hover:transition-all transition-all">
+        <a href="/post" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Tin Tức
         </a>
       </Typography>
@@ -73,7 +73,7 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="/contact" className="flex no-underline items-center hover:translate-x-3 hover:transition-all transition-all">
+        <a href="/contact" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Liên Hệ
         </a>
       </Typography>
@@ -83,7 +83,7 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all"
       >
-        <a href="/about" className="flex no-underline items-center hover:translate-x-3 hover:transition-all transition-all">
+        <a href="/about" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Về Chúng Tôi
         </a>
       </Typography>

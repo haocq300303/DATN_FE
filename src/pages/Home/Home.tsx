@@ -616,7 +616,7 @@ const Home = () => {
         </div>
         </section>
 
-        <section className="bg-white pt-20   lg:pt-[120px]">
+        <section className="bg-white pt-20 lg:pt-[120px]">
         <div className="container mx-auto">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
@@ -772,10 +772,10 @@ const Home = () => {
         <div className="w-full mb-4">
           <div className="h-1 mx-auto bg-white w-1/6 opacity-25 my-0 py-0 rounded-t"></div>
         </div>
-        <h3 className="my-4 text-3xl leading-tight">
+        <h3 className="my-4 text-3xl leading-tight text-white">
           Đặt sân nay để nhận được những ưu đãi tốt nhất từ chúng tôi!
         </h3>
-        <button className="mx-auto lg:mx-0 bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+        <button className="mx-auto border-none lg:mx-0 bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
           Đặt Sân Ngay
         </button>
       </section>

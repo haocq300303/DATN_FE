@@ -128,19 +128,21 @@ console.log(banners);
 
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
-      const urls = values?.url[0]?.fileList?.map(
+      const urls = values?.url?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
         );
         
-        const newValues = { ...values, urls };
-        
+        const url = urls[0];
+        console.log(url);
+        const newValues = { ...values, url };
+
       await dispatch(createBannerMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
       const newImages = values.url.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.url[0].fileList.map(({ response }: any) => response.data.url)
+          values.url.fileList.map(({ response }: any) => response.data.url)
         : values.url;
 
       const newValues = { ...values, url: newImages };
