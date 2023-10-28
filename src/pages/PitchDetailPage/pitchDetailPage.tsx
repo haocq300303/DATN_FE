@@ -295,7 +295,7 @@ const PitchDetailPage = () => {
       </div>
 
       {/* thôn tin sân và đặt lịch ở đây  */}
-      <div className="container flex justify-between my-[50px]">
+      <div className="container flex justify-between mx-auto my-[50px]">
         <div className="info-pitch">
           <h1 className="text-pitch">{Pitch.name}</h1>
           <p>
@@ -322,7 +322,7 @@ const PitchDetailPage = () => {
           </Form>
         </div>
       </div>
-      <div id="timca" className="container booking_detail items-center">
+      <div id="timca" className="container mx-auto booking_detail items-center">
         <div className="left_booking">
           <Table
             pagination={{ pageSize: 8 }}

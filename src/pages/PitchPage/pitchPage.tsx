@@ -207,7 +207,7 @@ const PitchPage = () => {
         {/* chọn địa điêrm ở đây */}
       </div>
 
-      <div className="container">
+      <div className=" container flex justify-center w-full mx-auto">
         <div className="pitch flex gap-[30px] mt-[40px]">
           <div className="sidebar-pitch xl:w-[25%] md:w-[100%]">
             <div className="maps bg-[#fff]">
