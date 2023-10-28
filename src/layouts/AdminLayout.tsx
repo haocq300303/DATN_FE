@@ -34,36 +34,35 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem(<Link to={"/admin"}>Thống kê</Link>, "sub1", <PieChartOutlined />),
+  getItem(<Link className="text-[#fff]" to={"/admin"}>Thống kê</Link>, "sub1", <PieChartOutlined />),
   getItem("Pitch", "sub2", <AppstoreOutlined />, [
-    getItem(<Link to={"/admin/pitch/add"}>Create Pich</Link>, "2"),
-    getItem(<Link to={"/admin/pitch"}>Pitch List</Link>, "3"),
+    getItem(<Link className="text-[#fff]" to={"/admin/pitch"}>Pitch List</Link>, "3"),
   ]),
 
   getItem("Post", "sub3", <SolutionOutlined />, [
-    getItem(<Link to={"/admin/post/add"}>Create Post</Link>, "4"),
-    getItem(<Link to={"/admin/post"}>Post List</Link>, "5"),
+    getItem(<Link className="text-[#fff]" to={"/admin/post/add"}>Create Post</Link>, "4"),
+    getItem(<Link className="text-[#fff]" to={"/admin/post"}>Post List</Link>, "5"),
   ]),
   getItem("Banner", "sub4", <FileImageOutlined />, [
-    getItem(<Link to={"/admin/banner/add"}>Create Banner</Link>, "6"),
-    getItem(<Link to={"/admin/banner"}>Banner List</Link>, "7"),
+    getItem(<Link className="text-[#fff]" to={"/admin/banner/add"}>Create Banner</Link>, "6"),
+    getItem(<Link className="text-[#fff]" to={"/admin/banner"}>Banner List</Link>, "7"),
   ]),
   getItem(
-    <Link to={"/admin/payment"}>Payment</Link>,
+    <Link className="text-[#fff]" to={"/admin/payment"}>Payment</Link>,
     "sub5",
     <SolutionOutlined />
   ),
   getItem(
-    <Link to={"/admin/booking"}>Booking</Link>,
+    <Link className="text-[#fff]" to={"/admin/booking"}>Booking</Link>,
     "sub6",
     <SolutionOutlined />
   ),
   getItem("Location", "sub7", <EnvironmentOutlined />, [
-    getItem(<Link to={"/admin/location"}>Location List</Link>, "8"),
+    getItem(<Link className="text-[#fff]" to={"/admin/location"}>Location List</Link>, "8"),
   ]),
   getItem("Service", "sub8", <ProfileOutlined />, [
-    getItem(<Link to={"/admin/service/add"}>Create Service</Link>, "9"),
-    getItem(<Link to={"/admin/service"}>Service List</Link>, "10"),
+    getItem(<Link className="text-[#fff]" to={"/admin/service/add"}>Create Service</Link>, "9"),
+    getItem(<Link className="text-[#fff]" to={"/admin/service"}>Service List</Link>, "10"),
   ]),
 ];
 const AdminLayout = () => {
@@ -98,6 +97,7 @@ const AdminLayout = () => {
           defaultOpenKeys={["sub1"]}
           selectedKeys={[current]}
           mode="inline"
+          style={{ color: '#fff !important' }}
           items={items}
         />
       </Sider>
