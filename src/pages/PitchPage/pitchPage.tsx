@@ -10,6 +10,7 @@ import {
   Slider,
   InputNumber,
   Space,
+  Empty,
 } from "antd";
 import { Input } from "@material-tailwind/react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -310,50 +311,54 @@ const PitchPage = () => {
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
               <div className="list-pitch mt-[40px]">
-                {pitchs?.map((pitch: IPitch) => (
-                  <Link to="detail">
-                    <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                      <div className="imgae-item-pitch col-span-5">
-                        <img
-                          src={pitch.avatar}
-                          className="rounded-l-[20px]"
-                          width="100%"
-                          alt=""
-                        />
-                      </div>
+                {pitchs && pitchs.length > 0 ? (
+                  pitchs?.map((pitch: IPitch) => (
+                    <Link to={`/pitch/detail/${pitch._id}`}>
+                      <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
+                        <div className="imgae-item-pitch col-span-5">
+                          <img
+                            src={pitch.avatar}
+                            className="rounded-l-[20px]"
+                            width="100%"
+                            alt=""
+                          />
+                        </div>
 
-                      <div className="text-item-pitch col-span-7 ml-[20px]">
-                        <h3 className=" text-[23px] font-[600] font-sans">
-                          {pitch.name}
-                        </h3>
-                        <Rate defaultValue={4.5} />
-                        <span>( 1 Review)</span>
-                        <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                        <p>Số Sân Trống : 3/4</p>
-                        <p className="flex justify-between my-[10px]">
-                          Dịch Vụ :
-                          <span>
-                            <i className="fa-solid fa-check"></i> WIFI
-                          </span>
-                          <span>
-                            <i className="fa-solid fa-check"></i> CANGTEEN
-                          </span>
-                        </p>
-                        <p className="flex justify-between">
-                          Giá :
-                          <span>
-                            <del className="italic text-[13px]">
-                              300.000-1.200.000
-                            </del>
-                          </span>
-                          <span className="text-[23px] text-[#ffb932] text-bold">
-                            150.000 - 850.000
-                          </span>
-                        </p>
+                        <div className="text-item-pitch col-span-7 ml-[20px]">
+                          <h3 className=" text-[23px] font-[600] font-sans">
+                            {pitch.name}
+                          </h3>
+                          <Rate defaultValue={4.5} />
+                          <span>( 1 Review)</span>
+                          <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
+                          <p>Số Sân Trống : 3/4</p>
+                          <p className="flex justify-between my-[10px]">
+                            Dịch Vụ :
+                            <span>
+                              <i className="fa-solid fa-check"></i> WIFI
+                            </span>
+                            <span>
+                              <i className="fa-solid fa-check"></i> CANGTEEN
+                            </span>
+                          </p>
+                          <p className="flex justify-between">
+                            Giá :
+                            <span>
+                              <del className="italic text-[13px]">
+                                300.000-1.200.000
+                              </del>
+                            </span>
+                            <span className="text-[23px] text-[#ffb932] text-bold">
+                              {pitch.deposit_price} - 850.000
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))
+                ) : (
+                  <div><Empty /></div>
+                )}
               </div>
             </div>
           </div>

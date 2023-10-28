@@ -4,7 +4,7 @@ import instance from "./config";
 export const getAllPitch = (query?: string) => {
   return instance.get(`/pitch${query ?? ""}`);
 };
-export const getOnePitch = (idPitch: any) => {
+export const getOnePitch = (idPitch: string) => {
   return instance.get(`/pitch/${idPitch}`);
 };
 export const getCreatPitch = (pitch: any) => {
