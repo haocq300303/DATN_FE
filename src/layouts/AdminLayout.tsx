@@ -61,7 +61,6 @@ const items: MenuItem[] = [
     getItem(<Link className="text-[#fff]" to={"/admin/location"}>Location List</Link>, "8"),
   ]),
   getItem("Service", "sub8", <ProfileOutlined />, [
-    getItem(<Link className="text-[#fff]" to={"/admin/service/add"}>Create Service</Link>, "9"),
     getItem(<Link className="text-[#fff]" to={"/admin/service"}>Service List</Link>, "10"),
   ]),
 ];
