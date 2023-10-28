@@ -16,10 +16,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "./pitchPage.css";
 import "swiper/css";
 import banner from "../../assets/img/Web/bannerr.mp4";
-import item1 from "../../assets/img/Web/itempitch.jpg";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { Link } from "react-router-dom";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
+import { useAppDispatch, useAppSelector } from "~/Redux/hook";
+import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+import IPitch from "~/interfaces/pitch";
 
 const fixedOptions = [
   { value: "bong-da", label: "Bóng đá" },
@@ -36,49 +38,46 @@ const onChange = (e: CheckboxChangeEvent) => {
 };
 
 const PitchPage = () => {
-  const host = "https://provinces.open-api.vn/api/";
+  const host = "http://localhost:8080/api/location/";
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
-  // const [dotPosition, setDotPosition] = useState<DotPosition>("right");
+
+  const dispatch = useAppDispatch();
+  const pitchs = useAppSelector((state) => state.pitch.pitchs);
 
   const { Option } = Select;
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(`${host}?depth=1`);
+      const response = await axios.get(`${host}provinces`);
       setCities(response.data);
     };
     fetchData();
   }, []);
 
+  useEffect(() => {
+    dispatch(fetchAllPitch(""));
+  }, [dispatch]);
+
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
-    setSelectedDistrict("");
-    setSelectedWard("");
 
     if (value !== "") {
-      const response = await axios.get(`${host}p/${value}?depth=2`);
-      console.log(response.data.name);
-      setDistricts(response.data.districts);
-    } else {
-      setDistricts([]);
-      setWards([]);
+      const response = await axios.get(`${host}districts?parent=${value}`);
+      setDistricts(response.data);
     }
   };
 
   const handleDistrictChange = async (value: string) => {
     setSelectedDistrict(value);
-    setSelectedWard("");
 
     if (value !== "") {
-      const response = await axios.get(`${host}d/${value}?depth=2`);
-      setWards(response.data.wards);
-    } else {
-      setWards([]);
+      const response = await axios.get(`${host}wards?parent=${value}`);
+      setWards(response.data);
     }
   };
 
@@ -88,17 +87,29 @@ const PitchPage = () => {
   // nếu ai muốn lấy
   const printResult = () => {
     if (selectedCity !== "" && selectedDistrict !== "" && selectedWard !== "") {
-      const city: any = cities.find((c: any) => c.code === selectedCity);
+      const city: any = cities.find((c: any) => c.id === selectedCity);
       const district: any = districts.find(
-        (d: any) => d.code === selectedDistrict
+        (d: any) => d.id === selectedDistrict
       );
-      const ward: any = wards.find((w: any) => w.code === selectedWard);
+      const ward: any = wards.find((w: any) => w.id === selectedWard);
       if (city && district && ward) {
         const result = `Khu Vực ${city.name} | ${district.name} | ${ward.name}`;
         return result;
       }
     }
     return "";
+  };
+
+  const onHandleSubmitSearch = async () => {
+    if (selectedWard === "" || selectedWard === undefined) {
+      if (selectedDistrict === "" || selectedDistrict === undefined) {
+        await dispatch(fetchAllPitch(``));
+      } else {
+        await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
+      }
+    } else {
+      await dispatch(fetchAllPitch(`?wardId=${selectedWard}`));
+    }
   };
 
   const IntegerStep = () => {
@@ -148,12 +159,12 @@ const PitchPage = () => {
               <Select
                 className="w-[25%] h-[45px]"
                 placeholder="Thành Phố"
-                value={selectedCity}
                 onChange={handleCityChange}
+                allowClear
                 showSearch
               >
-                {cities.map((city: any) => (
-                  <Option key={city.code} value={city.code}>
+                {cities?.map((city: { id: string; name: string }) => (
+                  <Option key={city.id} value={city.id}>
                     {city.name}
                   </Option>
                 ))}
@@ -162,12 +173,10 @@ const PitchPage = () => {
               <Select
                 className="w-[25%] h-[45px]"
                 placeholder="Quận Huyện"
-                value={selectedDistrict}
                 onChange={handleDistrictChange}
-                defaultValue={""}
               >
-                {districts.map((district: any) => (
-                  <Option key={district.code} value={district.code}>
+                {districts?.map((district: { id: string; name: string }) => (
+                  <Option key={district.id} value={district.id}>
                     {district.name}
                   </Option>
                 ))}
@@ -175,12 +184,10 @@ const PitchPage = () => {
               <Select
                 className="w-[25%] h-[45px]"
                 placeholder="Phường Xã"
-                value={selectedWard}
                 onChange={handleWardChange}
-                defaultValue={undefined}
               >
-                {wards.map((ward: any) => (
-                  <Option key={ward.code} value={ward.code}>
+                {wards?.map((ward: { id: string; name: string }) => (
+                  <Option key={ward.id} value={ward.id}>
                     {ward.name}
                   </Option>
                 ))}
@@ -188,6 +195,7 @@ const PitchPage = () => {
 
               <button
                 type="submit"
+                onClick={onHandleSubmitSearch}
                 className="bg-[#128277] hover:bg-[#004d47] hover:text-white text-white rounded-[30px] py-[13px] px-[18px]"
               >
                 Search <i className="fa-brands fa-searchengin ml-[10px]"></i>
@@ -292,7 +300,7 @@ const PitchPage = () => {
                   placeholder="Môn thể thao"
                   onChange={handleChange}
                 >
-                  {fixedOptions.map((option) => (
+                  {fixedOptions?.map((option) => (
                     <Option key={option.value} value={option.value}>
                       {option.label}
                     </Option>
@@ -302,215 +310,50 @@ const PitchPage = () => {
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
               <div className="list-pitch mt-[40px]">
-                <Link to="detail" >
-                  <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                    <div className="imgae-item-pitch col-span-5">
-                      <img src={item1}className="rounded-l-[20px]" width="100%"  alt="" />
-                    </div>
+                {pitchs?.map((pitch: IPitch) => (
+                  <Link to="detail">
+                    <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
+                      <div className="imgae-item-pitch col-span-5">
+                        <img
+                          src={pitch.avatar}
+                          className="rounded-l-[20px]"
+                          width="100%"
+                          alt=""
+                        />
+                      </div>
 
-                    <div className="text-item-pitch col-span-7 ml-[20px]">
-                      <h3 className=" text-[23px] font-[600] font-sans">SÂN BÓNG MẠNH CƯỜNG</h3>
-                      <Rate  defaultValue={4.5} />
-                      <span>( 1 Review)</span>
-                      <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                      <p>Số Sân Trống : 3/4</p>
-                      <p className="flex justify-between my-[10px]">
-                        Dịch Vụ :
-                        <span>
-                          <i className="fa-solid fa-check"></i> WIFI
-                        </span>
-                        <span>
-                          <i className="fa-solid fa-check"></i> CANGTEEN
-                        </span>
-                      </p>
-                      <p className="flex justify-between">
-                        Giá :
-                        <span>
-                          <del className="italic text-[13px]">
-                            300.000-1.200.000
-                          </del>
-                        </span>
-                        <span className="text-[23px] text-[#ffb932] text-bold">
-                          150.000 - 850.000
-                        </span>
-                      </p>
+                      <div className="text-item-pitch col-span-7 ml-[20px]">
+                        <h3 className=" text-[23px] font-[600] font-sans">
+                          {pitch.name}
+                        </h3>
+                        <Rate defaultValue={4.5} />
+                        <span>( 1 Review)</span>
+                        <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
+                        <p>Số Sân Trống : 3/4</p>
+                        <p className="flex justify-between my-[10px]">
+                          Dịch Vụ :
+                          <span>
+                            <i className="fa-solid fa-check"></i> WIFI
+                          </span>
+                          <span>
+                            <i className="fa-solid fa-check"></i> CANGTEEN
+                          </span>
+                        </p>
+                        <p className="flex justify-between">
+                          Giá :
+                          <span>
+                            <del className="italic text-[13px]">
+                              300.000-1.200.000
+                            </del>
+                          </span>
+                          <span className="text-[23px] text-[#ffb932] text-bold">
+                            150.000 - 850.000
+                          </span>
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-                <Link to="detail" >
-                  <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                    <div className="imgae-item-pitch col-span-5">
-                      <img src={item1}className="rounded-l-[20px]" width="100%"  alt="" />
-                    </div>
-
-                    <div className="text-item-pitch col-span-7 ml-[20px]">
-                      <h3 className=" text-[23px] font-[600] font-sans">SÂN BÓNG MẠNH CƯỜNG</h3>
-                      <Rate  defaultValue={4.5} />
-                      <span>( 1 Review)</span>
-                      <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                      <p>Số Sân Trống : 3/4</p>
-                      <p className="flex justify-between my-[10px]">
-                        Dịch Vụ :
-                        <span>
-                          <i className="fa-solid fa-check"></i> WIFI
-                        </span>
-                        <span>
-                          <i className="fa-solid fa-check"></i> CANGTEEN
-                        </span>
-                      </p>
-                      <p className="flex justify-between">
-                        Giá :
-                        <span>
-                          <del className="italic text-[13px]">
-                            300.000-1.200.000
-                          </del>
-                        </span>
-                        <span className="text-[23px] text-[#ffb932] text-bold">
-                          150.000 - 850.000
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="detail" >
-                  <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                    <div className="imgae-item-pitch col-span-5">
-                      <img src={item1}className="rounded-l-[20px]" width="100%"  alt="" />
-                    </div>
-
-                    <div className="text-item-pitch col-span-7 ml-[20px]">
-                      <h3 className=" text-[23px] font-[600] font-sans">SÂN BÓNG MẠNH CƯỜNG</h3>
-                      <Rate  defaultValue={4.5} />
-                      <span>( 1 Review)</span>
-                      <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                      <p>Số Sân Trống : 3/4</p>
-                      <p className="flex justify-between my-[10px]">
-                        Dịch Vụ :
-                        <span>
-                          <i className="fa-solid fa-check"></i> WIFI
-                        </span>
-                        <span>
-                          <i className="fa-solid fa-check"></i> CANGTEEN
-                        </span>
-                      </p>
-                      <p className="flex justify-between">
-                        Giá :
-                        <span>
-                          <del className="italic text-[13px]">
-                            300.000-1.200.000
-                          </del>
-                        </span>
-                        <span className="text-[23px] text-[#ffb932] text-bold">
-                          150.000 - 850.000
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </Link>  <Link to="detail" >
-                  <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                    <div className="imgae-item-pitch col-span-5">
-                      <img src={item1}className="rounded-l-[20px]" width="100%"  alt="" />
-                    </div>
-
-                    <div className="text-item-pitch col-span-7 ml-[20px]">
-                      <h3 className=" text-[23px] font-[600] font-sans">SÂN BÓNG MẠNH CƯỜNG</h3>
-                      <Rate  defaultValue={4.5} />
-                      <span>( 1 Review)</span>
-                      <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                      <p>Số Sân Trống : 3/4</p>
-                      <p className="flex justify-between my-[10px]">
-                        Dịch Vụ :
-                        <span>
-                          <i className="fa-solid fa-check"></i> WIFI
-                        </span>
-                        <span>
-                          <i className="fa-solid fa-check"></i> CANGTEEN
-                        </span>
-                      </p>
-                      <p className="flex justify-between">
-                        Giá :
-                        <span>
-                          <del className="italic text-[13px]">
-                            300.000-1.200.000
-                          </del>
-                        </span>
-                        <span className="text-[23px] text-[#ffb932] text-bold">
-                          150.000 - 850.000
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="detail" >
-                  <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                    <div className="imgae-item-pitch col-span-5">
-                      <img src={item1}className="rounded-l-[20px]" width="100%"  alt="" />
-                    </div>
-
-                    <div className="text-item-pitch col-span-7 ml-[20px]">
-                      <h3 className=" text-[23px] font-[600] font-sans">SÂN BÓNG MẠNH CƯỜNG</h3>
-                      <Rate  defaultValue={4.5} />
-                      <span>( 1 Review)</span>
-                      <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                      <p>Số Sân Trống : 3/4</p>
-                      <p className="flex justify-between my-[10px]">
-                        Dịch Vụ :
-                        <span>
-                          <i className="fa-solid fa-check"></i> WIFI
-                        </span>
-                        <span>
-                          <i className="fa-solid fa-check"></i> CANGTEEN
-                        </span>
-                      </p>
-                      <p className="flex justify-between">
-                        Giá :
-                        <span>
-                          <del className="italic text-[13px]">
-                            300.000-1.200.000
-                          </del>
-                        </span>
-                        <span className="text-[23px] text-[#ffb932] text-bold">
-                          150.000 - 850.000
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-                <Link to="detail" >
-                  <div className="grid grid-cols-12 gap-[40px] shadow-lg shad4w-lg my-[30px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                    <div className="imgae-item-pitch col-span-5">
-                      <img src={item1}className="rounded-l-[20px]" width="100%"  alt="" />
-                    </div>
-
-                    <div className="text-item-pitch col-span-7 ml-[20px]">
-                      <h3 className=" text-[23px] font-[600] font-sans">SÂN BÓNG MẠNH CƯỜNG</h3>
-                      <Rate  defaultValue={4.5} />
-                      <span>( 1 Review)</span>
-                      <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                      <p>Số Sân Trống : 3/4</p>
-                      <p className="flex justify-between my-[10px]">
-                        Dịch Vụ :
-                        <span>
-                          <i className="fa-solid fa-check"></i> WIFI
-                        </span>
-                        <span>
-                          <i className="fa-solid fa-check"></i> CANGTEEN
-                        </span>
-                      </p>
-                      <p className="flex justify-between">
-                        Giá :
-                        <span>
-                          <del className="italic text-[13px]">
-                            300.000-1.200.000
-                          </del>
-                        </span>
-                        <span className="text-[23px] text-[#ffb932] text-bold">
-                          150.000 - 850.000
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </Link>   
+                  </Link>
+                ))}
               </div>
             </div>
           </div>

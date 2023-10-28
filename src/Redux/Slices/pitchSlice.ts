@@ -33,9 +33,9 @@ export const fetchAllPitch = createAsyncThunk(
 
 export const fetchCreatPitch = createAsyncThunk(
   "pitch/fetchCreatPitch",
-  async (location: any, thunkAPI) => {
+  async (pitch: any, thunkAPI) => {
     try {
-      const { data } = await getCreatPitch(location);
+      const { data } = await getCreatPitch(pitch);
 
       return data.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
