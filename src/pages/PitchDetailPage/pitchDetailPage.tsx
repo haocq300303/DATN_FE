@@ -11,19 +11,22 @@ import { Rate, Space, Table } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { ColumnsType } from "antd/es/table";
 import img1 from "../../assets/img/Web/banner1.png";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useAppDispatch, useAppSelector } from "../../Redux/hook";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchAllShift } from "../../Redux/Slices/shiftSlice";
 import IShift from "~/interfaces/shift";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { getOnePitch } from "~/api/pitch";
+import IPitch from "~/interfaces/pitch";
 dayjs.extend(customParseFormat);
 
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 const today = dayjs();
 const PitchDetailPage = () => {
+  const { id } = useParams();
   const dispatch = useAppDispatch();
   const shifts = useAppSelector((state) => state.shift.shift);
   console.log(shifts);
@@ -31,6 +34,14 @@ const PitchDetailPage = () => {
     ...item,
     key: index,
   }));
+
+  // xử lí detailPitch
+  const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
+  useEffect(() => {
+    getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
+  }, [])
+  console.log('detailPitch', Pitch);
+  //end detailPitch
 
   useEffect(() => {
     dispatch(fetchAllShift());
@@ -111,15 +122,20 @@ const PitchDetailPage = () => {
           <div className="flex img-pitch gap-[20px]">
             <div className="left-img w-[65%] md:w-[100%]">
               <Image.PreviewGroup
-                items={[`${img1}`, `${img1}`, `${img1}`, `${img1}`]}
+                items={[`${Pitch.images}`, `${Pitch.images}`, `${Pitch.images}`, `${Pitch.images}`]}
               >
-                <Image className="w-[100%] h-[100%]" src={img1} />
+                {Pitch?.images && Pitch.images.length > 0 && (
+                  <Image className="w-[100%] h-[100%]" src={Pitch.images[0]} />
+                )}
               </Image.PreviewGroup>
             </div>
-            <div className="right-img w-[30%] xl:grid md:hidden">
-              <img src={img1} alt="" className="w-[100%] h-[100%]" />
-              <img src={img1} alt="" className="w-[100%] h-[100%]" />
-            </div>
+            {Pitch?.images && Pitch.images.length > 0 && (
+              <div className="right-img w-[30%] xl:grid md:hidden">
+                <img src={Pitch?.images[1]} alt="No Image 1" className="w-[100%] h-[100%]" />
+                <img src={Pitch?.images[2]} alt="No Image 2" className="w-[100%] h-[100%]" />
+              </div>
+            )}
+
           </div>
         </>
       ),
@@ -208,7 +224,7 @@ const PitchDetailPage = () => {
             <p className="flex items-center justify-between">
               <i className="fa-solid fa-tag"></i>
               <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
-              <span className="text-[#ffb932]">150.000</span> -{" "}
+              <span className="text-[#ffb932]">{Pitch.deposit_price}</span> -{" "}
               <span className="text-[#fd9e4b]">850.000</span>
             </p>
             <p className="my-[20px]">
@@ -250,7 +266,7 @@ const PitchDetailPage = () => {
       {/* thôn tin sân và đặt lịch ở đây  */}
       <div className="container flex justify-between my-[50px]">
         <div className="info-pitch">
-          <h1 className="text-pitch">SÂN BÓNG MẠNH CƯỜNG</h1>
+          <h1 className="text-pitch">{Pitch.name}</h1>
           <p>
             <Rate allowHalf defaultValue={5} /> <span> ( 2 Reviews )</span>
           </p>

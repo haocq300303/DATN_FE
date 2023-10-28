@@ -17,7 +17,7 @@ const routes = {
     payment: "/admin/payment",
     booking: "/admin/booking",
     pitch_client: "/pitch",
-    pitch_detail: "/pitch/detail",
+    pitch_detail: "/pitch/detail/:id",
     bookingHistory: "/booking/history",
 
     about: "/about",
