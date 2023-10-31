@@ -176,7 +176,7 @@ const BookingAdminPage = () => {
         [isModalOpen]
     );
 
-    const { data: booking, isFetching } = useGetAllBookingByUserIdQuery();
+    const { data: booking, isFetching } = useGetAllBookingByUserIdQuery(null);
 
     useEffect(() => {
         const _dataSource = booking?.data?.map((item, index) => ({
