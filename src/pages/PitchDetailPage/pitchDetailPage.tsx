@@ -14,7 +14,7 @@ import {
 import { Rate, Space, Table } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { ColumnsType } from "antd/es/table";
-import img1 from "../../assets/img/Web/banner1.png";
+// import img1 from "../../assets/img/Web/banner1.png";
 import { Link, useParams } from "react-router-dom";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useEffect, useState } from "react";
@@ -38,14 +38,14 @@ const PitchDetailPage = () => {
 
   const services = useAppSelector((state) => state.service.services);
   console.log(services);
-
+ 
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
 
 
   const shifts = useAppSelector((state) => state.shift.shift);
-  console.log(shifts);
+  // console.log(shifts);
   const dataTable = shifts.map((item: IShift, index: number) => ({
     ...item,
     key: index,
@@ -56,11 +56,14 @@ const PitchDetailPage = () => {
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, [])
-  console.log('detailPitch', Pitch);
+  // console.log('detailPitch', Pitch);
   //end detailPitch
+
   useEffect(() => {
     dispatch(fetchAllShift());
   }, [dispatch]);
+  const servicesForPitch = services.filter((service: IService) => service?.id_Pitch?._id === Pitch._id);
+console.log(servicesForPitch);
 
   const handleButtonClick = (id: any) => {
     const selectedShift = shifts.find((shift: any) => shift._id === id);
@@ -174,10 +177,12 @@ const PitchDetailPage = () => {
       value: "angular",
       desc: (
         <div className="flex flex-wrap ">
-          {services?.map((service: IService) => (
-            <Card className="mt-6 w-48 md:w-1/2 lg:w-1/4 px-4 mb-4" key={service._id}>
-              <CardHeader color="blue-gray" className="relative h-36 w-full">
+          {servicesForPitch?.map((service: IService) => (
+            <Card className="mt-6 w-48 md:w-1/2 lg:w-1/4 mb-4 mr-2" key={service._id}>
+              {service.name}
+              <CardHeader color="blue-gray" className="relative h-36 pl-0">
                 <img
+                className="w-full"
                   src={service.image}
                   alt="card-image"
                 />
@@ -186,7 +191,7 @@ const PitchDetailPage = () => {
                 <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
                   {service.name}
                 </Typography>
-                <Typography>{service.price}</Typography>
+                <Typography>{service.price} đ</Typography>
               </CardBody>
             </Card>
           ))}

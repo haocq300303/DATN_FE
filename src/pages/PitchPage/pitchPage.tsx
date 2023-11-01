@@ -19,10 +19,12 @@ import "swiper/css";
 import banner from "../../assets/img/Web/bannerr.mp4";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { Link } from "react-router-dom";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
+// import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 import IPitch from "~/interfaces/pitch";
+import { IService } from "~/interfaces/service";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 
 const fixedOptions = [
   { value: "bong-da", label: "Bóng đá" },
@@ -34,9 +36,9 @@ const fixedOptions = [
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
 };
-const onChange = (e: CheckboxChangeEvent) => {
-  console.log(`checked = ${e.target.checked}`);
-};
+// const onChange = (e: CheckboxChangeEvent) => {
+//   console.log(`checked = ${e.target.checked}`);
+// };
 
 const PitchPage = () => {
   const host = "http://localhost:8080/api/location/";
@@ -49,7 +51,8 @@ const PitchPage = () => {
 
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
-
+  const services = useAppSelector((state) => state.service.services);
+  console.log(services);
   const { Option } = Select;
 
   useEffect(() => {
@@ -63,6 +66,38 @@ const PitchPage = () => {
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllServiceMid());
+  }, [dispatch]);
+  const [selectedServiceFilters, setSelectedServiceFilters] = useState<
+    string[]
+  >([]);
+
+  // const servicesForPitch = services.filter(
+  //   (service: IService) => service?.id_Pitch?._id === Pitch._id
+  // );
+  // console.log(servicesForPitch);
+
+  const handleServiceFilterChange = (filterValue: string) => {
+    if (selectedServiceFilters.includes(filterValue)) {
+      setSelectedServiceFilters(
+        selectedServiceFilters.filter((item) => item !== filterValue)
+      );
+    } else {
+      setSelectedServiceFilters([...selectedServiceFilters, filterValue]);
+    }
+  };
+
+  const filteredPitchs = pitchs.filter((pitch: any) => {
+    if (selectedServiceFilters.length === 0) {
+      return true;
+    } else {
+      return selectedServiceFilters.some((filter) => {
+        return pitch.services.includes(filter);
+      });
+    }
+  });
 
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
@@ -242,24 +277,24 @@ const PitchPage = () => {
                 </p>
                 <span className="font-[600]">Bộ lọc phổ biến nhất</span>
                 <div className="grid mt-4 gap-[10px]">
-                  <div>
-                    <Checkbox onChange={onChange}>Wifi</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Thuê áo bít</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Canteen</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Thuê bóng</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Cổ vũ</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Nước hỗ trợ</Checkbox>
-                  </div>
+                  {services.map((service: IService) => (
+                    <div key={service._id}>
+                      <Checkbox
+                        onChange={() => {
+                          if (service._id) {
+                            handleServiceFilterChange(service._id);
+                          }
+                        }}
+                        checked={
+                          service._id
+                            ? selectedServiceFilters.includes(service._id)
+                            : false
+                        }
+                      >
+                        {service.name}
+                      </Checkbox>
+                    </div>
+                  ))}
                 </div>
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
@@ -312,7 +347,7 @@ const PitchPage = () => {
             <div className="content-pitch container mx-auto max-w-screen-2xl">
               <div className="list-pitch mt-[40px]">
                 {pitchs && pitchs.length > 0 ? (
-                  pitchs?.map((pitch: IPitch) => (
+                  filteredPitchs?.map((pitch: IPitch) => (
                     <Link to={`/pitch/detail/${pitch._id}`}>
                       <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
                         <div className="imgae-item-pitch col-span-5">
@@ -357,7 +392,9 @@ const PitchPage = () => {
                     </Link>
                   ))
                 ) : (
-                  <div><Empty /></div>
+                  <div>
+                    <Empty />
+                  </div>
                 )}
               </div>
             </div>
