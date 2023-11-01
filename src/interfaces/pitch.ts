@@ -5,6 +5,7 @@ interface IPitch {
   admin_pitch_id: string;
   numberPitch: number;
   images: string[];
+  services: string[];
   description: string[];
   location_id?: string;
   deposit_price: number;
