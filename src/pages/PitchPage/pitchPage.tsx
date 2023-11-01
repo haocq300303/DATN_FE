@@ -345,9 +345,9 @@ const PitchPage = () => {
               </div>
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
-              <div className="list-pitch mt-[40px]">
                 {pitchs && pitchs.length > 0 ? (
                   filteredPitchs?.map((pitch: IPitch) => (
+              <div className="list-pitch mt-[40px]" key={pitch._id}>
                     <Link to={`/pitch/detail/${pitch._id}`}>
                       <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
                         <div className="imgae-item-pitch col-span-5">
@@ -390,13 +390,13 @@ const PitchPage = () => {
                         </div>
                       </div>
                     </Link>
+              </div>
                   ))
                 ) : (
                   <div>
                     <Empty />
                   </div>
                 )}
-              </div>
             </div>
           </div>
         </div>
