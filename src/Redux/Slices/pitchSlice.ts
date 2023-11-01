@@ -6,15 +6,23 @@ import {
   getDeletePitch,
   getUpdatePitch,
 } from "../../api/pitch";
+import IPitch from "~/interfaces/pitch";
 
 interface initialState {
   pitchs: any;
   isLoading: boolean;
+  listData: IPitch[];
+  filterPrice: {
+    minPrice: number;
+    maxPrice: number;
+  } | null; // filterPrice là một đối tượng chứa minPrice và maxPrice, hoặc null nếu không có giá trị
 }
 
 const initialState: initialState = {
   pitchs: [],
   isLoading: false,
+  listData: [],
+  filterPrice: null, // Khởi tạo filterPrice ban đầu là null
 };
 
 export const fetchAllPitch = createAsyncThunk(
@@ -74,9 +82,33 @@ export const fetchDeletePitch = createAsyncThunk(
 );
 
 const pitchSlice = createSlice({
-  name: "location",
+  name: "pitch",
   initialState,
-  reducers: {},
+  reducers: {
+    filter(state, action) {
+      const filteredPitch = state.listData.filter((pitch) => pitch.name.toLowerCase().includes(action.payload.toLowerCase()))
+      state.pitchs = filteredPitch;
+    },
+    filterPrice(state, action) {
+      const { minPrice, maxPrice } = action.payload;
+
+      const filteredByPrice = state.listData.filter((pitch) =>
+        pitch.deposit_price >= minPrice &&
+        pitch.deposit_price <= maxPrice
+      );
+
+      return {
+        ...state,
+        pitchs: filteredByPrice,
+        filterPrice: {
+          minPrice,
+          maxPrice
+        },
+
+      };
+    }
+
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAllPitch.pending, (state) => {
@@ -84,6 +116,7 @@ const pitchSlice = createSlice({
       })
       .addCase(fetchAllPitch.fulfilled, (state, action) => {
         state.pitchs = action.payload;
+        state.listData = action.payload;
         state.isLoading = false;
       })
       .addCase(fetchAllPitch.rejected, (state) => {
@@ -132,4 +165,5 @@ const pitchSlice = createSlice({
   },
 });
 
+export const { filter, filterPrice } = pitchSlice.actions
 export default pitchSlice.reducer;
