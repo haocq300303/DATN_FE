@@ -21,7 +21,7 @@ import item2 from "../../assets/img/Web/stadium1.jfif";
 import { Link } from "react-router-dom";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+import { fetchAllPitch, filter, filterPrice } from "~/Redux/Slices/pitchSlice";
 import IPitch from "~/interfaces/pitch";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 
@@ -125,18 +125,28 @@ const PitchPage = () => {
 
   const IntegerStep = () => {
     const [inputValue, setInputValue] = useState(1);
+    console.log("valueInput", inputValue);
+    const maxPrice = useAppSelector((state) => state.pitch.filterPrice?.maxPrice);
+    console.log("maxPrice", maxPrice);
 
     const onChangePrice = (newValue: number | null) => {
       if (newValue !== null) {
         setInputValue(newValue);
+        dispatch(filterPrice({ minPrice: 1, maxPrice: newValue }));
       }
     };
+    useEffect(() => {
+      if (typeof maxPrice === 'number') {
+        return setInputValue(maxPrice);
+      }
+    }, [maxPrice]);
+
     return (
       <Row>
         <Col span={12}>
           <Slider
             min={1}
-            max={200000}
+            max={850000}
             onChange={onChangePrice}
             value={typeof inputValue === "number" ? inputValue : 0}
           />
@@ -144,7 +154,7 @@ const PitchPage = () => {
         <Col span={8}>
           <InputNumber
             min={1}
-            max={20}
+            max={850000}
             style={{ margin: "0 16px" }}
             value={inputValue}
             onChange={onChangePrice}
@@ -153,6 +163,17 @@ const PitchPage = () => {
       </Row>
     );
   };
+  // Tìm Kiếm Theo sân
+  const handlefil = (value: any) => {
+    const filteredItems = pitchs.filter((item: any) =>
+      item.name.toLowerCase().includes(value.toLowerCase())
+    );
+    console.log(filteredItems);
+    if (value === "") {
+      dispatch(fetchAllPitch(""));
+    }
+    dispatch(filter(value.trim()))
+  }
 
   return (
     <div className="bg-[#f3f3f5]">
@@ -243,6 +264,7 @@ const PitchPage = () => {
                   label="Tìm Tên Sân ..."
                   className=" bg-[white]"
                   crossOrigin="anonymous"
+                  onChange={(e) => handlefil(e.target.value)}
                 />
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
