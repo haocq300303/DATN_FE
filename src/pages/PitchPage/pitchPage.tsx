@@ -19,10 +19,10 @@ import "swiper/css";
 import banner from "../../assets/img/Web/bannerr.mp4";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { Link } from "react-router-dom";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { fetchAllPitch, filter, filterPrice } from "~/Redux/Slices/pitchSlice";
 import IPitch from "~/interfaces/pitch";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 
 const fixedOptions = [
   { value: "bong-da", label: "Bóng đá" },
@@ -34,9 +34,7 @@ const fixedOptions = [
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
 };
-const onChange = (e: CheckboxChangeEvent) => {
-  console.log(`checked = ${e.target.checked}`);
-};
+
 
 const PitchPage = () => {
   const host = "http://localhost:8080/api/location/";
@@ -46,10 +44,11 @@ const PitchPage = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
 
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
-
+  const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
 
   useEffect(() => {
@@ -63,6 +62,30 @@ const PitchPage = () => {
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllServiceMid());
+  }, [dispatch]);
+
+  // const servicesForPitch = services.filter(
+  //   (service: IService) => service?.id_Pitch?._id === Pitch._id
+  // );
+  // console.log(servicesForPitch);
+
+  const handleServiceChange = (serviceValue: string) => {
+    const updatedServices = selectedServices.includes(serviceValue)
+      ? selectedServices.filter((service) => service !== serviceValue)
+      : [...selectedServices, serviceValue];
+    setSelectedServices(updatedServices);
+    console.log("Fillter Service", updatedServices);
+  };
+
+  const filteredPitchs = pitchs.filter((pitch: any) => {
+    console.log("Pitch Services:", pitch.services);
+    return selectedServices.every((service) =>
+      pitch.services.some((item: any) => item._id === service)
+    );
+  });
 
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
@@ -116,7 +139,9 @@ const PitchPage = () => {
   const IntegerStep = () => {
     const [inputValue, setInputValue] = useState(1);
     console.log("valueInput", inputValue);
-    const maxPrice = useAppSelector((state) => state.pitch.filterPrice?.maxPrice);
+    const maxPrice = useAppSelector(
+      (state) => state.pitch.filterPrice?.maxPrice
+    );
     console.log("maxPrice", maxPrice);
 
     const onChangePrice = (newValue: number | null) => {
@@ -126,7 +151,7 @@ const PitchPage = () => {
       }
     };
     useEffect(() => {
-      if (typeof maxPrice === 'number') {
+      if (typeof maxPrice === "number") {
         return setInputValue(maxPrice);
       }
     }, [maxPrice]);
@@ -162,8 +187,8 @@ const PitchPage = () => {
     if (value === "") {
       dispatch(fetchAllPitch(""));
     }
-    dispatch(filter(value.trim()))
-  }
+    dispatch(filter(value.trim()));
+  };
 
   return (
     <div className="bg-[#f3f3f5]">
@@ -264,24 +289,15 @@ const PitchPage = () => {
                 </p>
                 <span className="font-[600]">Bộ lọc phổ biến nhất</span>
                 <div className="grid mt-4 gap-[10px]">
-                  <div>
-                    <Checkbox onChange={onChange}>Wifi</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Thuê áo bít</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Canteen</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Thuê bóng</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Cổ vũ</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Nước hỗ trợ</Checkbox>
-                  </div>
+                  {services.map((service: any) => (
+                    <div key={service._id}>
+                      <Checkbox
+                        onChange={() => handleServiceChange(service._id)}
+                      >
+                        {service.name}
+                      </Checkbox>
+                    </div>
+                  ))}
                 </div>
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
@@ -332,10 +348,10 @@ const PitchPage = () => {
               </div>
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
-              <div className="list-pitch mt-[40px]">
-                {pitchs && pitchs.length > 0 ? (
-                  pitchs?.map((pitch: IPitch) => (
-                    <Link key={pitch._id} to={`/pitch/detail/${pitch._id}`}>
+              {filteredPitchs && filteredPitchs.length > 0 ? (
+                filteredPitchs.map((pitch: IPitch) => (
+                  <div className="list-pitch mt-[40px]" key={pitch._id}>
+                    <Link to={`/pitch/detail/${pitch._id}`}>
                       <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
                         <div className="imgae-item-pitch col-span-5">
                           <img
@@ -356,12 +372,18 @@ const PitchPage = () => {
                           <p>Số Sân Trống : 3/4</p>
                           <p className="flex justify-between my-[10px]">
                             Dịch Vụ :
-                            <span>
-                              <i className="fa-solid fa-check"></i> WIFI
-                            </span>
-                            <span>
-                              <i className="fa-solid fa-check"></i> CANGTEEN
-                            </span>
+                            {pitch.services.map((data: any) => {
+                              console.log(data);
+                              const service = services.find(
+                                (item) => item._id == data._id
+                              );
+                              return (
+                                <span key={data._id!}>
+                                  <i className="fa-solid fa-check"></i>{" "}
+                                  {service ? service.name : "Chưa có dịch vụ"}
+                                </span>
+                              );
+                            })}
                           </p>
                           <p className="flex justify-between">
                             Giá :
@@ -377,11 +399,13 @@ const PitchPage = () => {
                         </div>
                       </div>
                     </Link>
-                  ))
-                ) : (
-                  <div><Empty /></div>
-                )}
-              </div>
+                  </div>
+                ))
+              ) : (
+                <div>
+                  <Empty />
+                </div>
+              )}
             </div>
           </div>
         </div>

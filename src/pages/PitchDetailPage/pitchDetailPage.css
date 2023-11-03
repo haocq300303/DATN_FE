@@ -79,3 +79,6 @@
 .ant-table-content .ant-table-tbody{
   text-align: center !important;
 }
+.box-service-pitch-detail > .lg\:w-1\/4 {
+  width: 24%;
+}

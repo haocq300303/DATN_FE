@@ -14,21 +14,20 @@ import {
 import { Rate, Space, Table } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { ColumnsType } from "antd/es/table";
-import img1 from "../../assets/img/Web/banner1.png";
+// import img1 from "../../assets/img/Web/banner1.png";
 import { Link, useParams } from "react-router-dom";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useEffect, useState } from "react";
 import { fetchAllShift } from "../../Redux/Slices/shiftSlice";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
-import { IService } from "~/interfaces/service";
+// import { IService } from "~/interfaces/service";
 import IShift from "~/interfaces/shift";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
 dayjs.extend(customParseFormat);
-
 
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 const today = dayjs();
@@ -43,24 +42,27 @@ const PitchDetailPage = () => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
 
-
   const shifts = useAppSelector((state) => state.shift.shift);
-  console.log(shifts);
+  // console.log(shifts);
   const dataTable = shifts.map((item: IShift, index: number) => ({
     ...item,
     key: index,
   }));
 
+    console.log(dataTable);
+    
   // xử lí detailPitch
   const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
-  }, [])
-  console.log('detailPitch', Pitch);
+  }, []);
+  console.log('detailPitch', Pitch.services);
   //end detailPitch
+
   useEffect(() => {
     dispatch(fetchAllShift());
   }, [dispatch]);
+  //
 
   const handleButtonClick = (id: any) => {
     const selectedShift = shifts.find((shift: any) => shift._id === id);
@@ -137,7 +139,12 @@ const PitchDetailPage = () => {
           <div className="flex img-pitch gap-[20px]">
             <div className="left-img w-[65%] md:w-[100%]">
               <Image.PreviewGroup
-                items={[`${Pitch.images}`, `${Pitch.images}`, `${Pitch.images}`, `${Pitch.images}`]}
+                items={[
+                  `${Pitch.images}`,
+                  `${Pitch.images}`,
+                  `${Pitch.images}`,
+                  `${Pitch.images}`,
+                ]}
               >
                 {Pitch?.images && Pitch.images.length > 0 && (
                   <Image className="w-[100%] h-[100%]" src={Pitch.images[0]} />
@@ -146,8 +153,16 @@ const PitchDetailPage = () => {
             </div>
             {Pitch?.images && Pitch.images.length > 0 && (
               <div className="right-img w-[30%] xl:grid md:hidden">
-                <img src={Pitch?.images[1]} alt="No Image 1" className="w-[100%] h-[100%]" />
-                <img src={Pitch?.images[2]} alt="No Image 2" className="w-[100%] h-[100%]" />
+                <img
+                  src={Pitch?.images[1]}
+                  alt="No Image 1"
+                  className="w-[100%] h-[100%]"
+                />
+                <img
+                  src={Pitch?.images[2]}
+                  alt="No Image 2"
+                  className="w-[100%] h-[100%]"
+                />
               </div>
             )}
           </div>
@@ -173,24 +188,28 @@ const PitchDetailPage = () => {
       label: "Dịch VỤ",
       value: "angular",
       desc: (
-        <div className="flex flex-wrap ">
-          {services?.map((service: IService) => (
-            <Card className="mt-6 w-48 md:w-1/2 lg:w-1/4 px-4 mb-4" key={service._id}>
-              <CardHeader color="blue-gray" className="relative h-36 w-full">
+        <div className="flex flex-wrap box-service-pitch-detail">
+        {Pitch.services ? Pitch.services.map((serviceId: string) => {
+          const service = services.find((item) => item._id === serviceId);
+          return (
+            <Card className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2" key={service?._id}>
+              <CardHeader color="blue-gray" className="relative w- h-28 pl-0">
                 <img
-                  src={service.image}
+                className="w-full"
+                  src={service?.image}
                   alt="card-image"
                 />
               </CardHeader>
               <CardBody>
                 <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
-                  {service.name}
+                  {service?.name}
                 </Typography>
-                <Typography>{service.price}</Typography>
+                <Typography>{service?.price.toLocaleString("vi-VN")}đ</Typography>
               </CardBody>
-            </Card>
-          ))}
-        </div>
+          </Card>
+          );
+        }) : "Không có dịch vụ"}
+      </div>
       ),
     },
     {
@@ -255,8 +274,9 @@ const PitchDetailPage = () => {
             <p className="flex items-center justify-between">
               <i className="fa-solid fa-tag"></i>
               <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
-              <span className="text-[#ffb932]">{Pitch.deposit_price}</span> -{" "}
-              <span className="text-[#fd9e4b]">850.000</span>
+              <span className="text-[#ffb932]">
+                {Pitch.deposit_price}
+              </span> - <span className="text-[#fd9e4b]">850.000</span>
             </p>
             <p className="my-[20px]">
               Sân trống : <span>10</span>
@@ -310,10 +330,7 @@ const PitchDetailPage = () => {
                   <i className="fa-regular fa-calendar mr-[20px]"></i>CHỌN LỊCH
                   NGÀY :
                 </p>
-                <Space
-                  direction="vertical"
-                  size={12}
-                >
+                <Space direction="vertical" size={12}>
                   <DatePicker defaultValue={today} format={dateFormatList} />
                 </Space>
               </div>
