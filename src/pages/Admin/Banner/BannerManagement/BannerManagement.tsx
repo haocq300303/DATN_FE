@@ -19,22 +19,27 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import ModalForm from "../../../../components/ModalForm/ModalForm";
-import { useAppDispatch, useAppSelector } from '../../../../Redux/hook';
+import { useAppDispatch, useAppSelector } from "../../../../Redux/hook";
 import axios from "axios";
 import IBanner from "../../../../interfaces/Banner";
-import { createBannerMid, deleteBannerMid, getAllBannerMid, updateBannerMid } from "../../../../Redux/Slices/bannerSlice";
+import {
+  createBannerMid,
+  deleteBannerMid,
+  getAllBannerMid,
+  updateBannerMid,
+} from "../../../../Redux/Slices/bannerSlice";
 
 const { Dragger } = Upload;
 
 const BannerManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
-
+  
 
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
-  
-console.log(banners);
+
+  console.log(banners);
 
   useEffect(() => {
     dispatch(getAllBannerMid());
@@ -45,32 +50,39 @@ console.log(banners);
   };
 
   const cancel = () => {
-    message.error('Đã hủy!');
+    message.error("Đã hủy!");
   };
-
 
   const columns: ColumnsType<IBanner> = [
     {
-      title: 'Image',
-      dataIndex: 'url',
-      key: 'url',
+      title: "Image",
+      dataIndex: "url",
+      key: "url",
       render: (image: string) => <img width={200} src={image} alt="Banner" />,
+    },
+    {
+      title: "Title",
+      key: "title",
+      dataIndex: "title",
+      render: (text: string) => {
+        return text.slice(0, 30).concat(" . . .");
+      },
     },
     Table.EXPAND_COLUMN,
     {
-      title: 'Description',
-      key: 'content',
-      dataIndex: 'content',
+      title: "Description",
+      key: "content",
+      dataIndex: "content",
       render: (text: string) => {
-        return text.slice(0, 50).concat(' . . .');
+        return text.slice(0, 40).concat(" . . .");
       },
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (record: any) => (
         <Space size="middle">
-         <Button
+          <Button
             type="primary"
             onClick={() => {
               const banner = banners?.find(
@@ -80,6 +92,7 @@ console.log(banners);
               form.setFieldsValue({
                 _id: banner?._id,
                 url: banner?.url,
+                title: banner?.title,
                 content: banner?.content,
               });
               showModal("edit");
@@ -93,7 +106,7 @@ console.log(banners);
             placement="topRight"
             title="Xóa bài viết?"
             description="Bạn có chắc chắn xóa bài viết này không?"
-            onConfirm={()=>confirm(record._id)}
+            onConfirm={() => confirm(record._id)}
             onCancel={cancel}
             okText="Đồng ý"
             cancelText="Không"
@@ -131,25 +144,25 @@ console.log(banners);
       const urls = values?.url?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
-        );
-        
-        const url = urls[0];
-        console.log(url);
-        const newValues = { ...values, url };
+      );
+
+      const url = urls[0];
+      console.log(url);
+      const newValues = { ...values, url };
 
       await dispatch(createBannerMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
-      const newImages = values.url.fileList
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.url.fileList.map(({ response }: any) => response.data.url)
-        : values.url;
+      const newImages = values.url.fileList;
+      const url =
+        newImages.length > 0 ? newImages[0].response.data.url : values.url;
 
-      const newValues = { ...values, url: newImages };
-      
+      const newValues = { ...values, url };
+
       const { _id, ...banner } = newValues;
-      
-      await dispatch(updateBannerMid({ _id, banner }));
+
+      await dispatch(updateBannerMid({ _id, banner: newValues }));
+
       message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);
@@ -183,7 +196,6 @@ console.log(banners);
       if (response?.status === 200) {
         message.success(`${file.name} uploaded successfully`);
         onSuccess(response, file);
-
       } else {
         message.error(`${file.name} upload failed.`);
         onError(response);
@@ -196,7 +208,6 @@ console.log(banners);
   };
 
   const [form] = Form.useForm();
-
 
   return (
     <>
@@ -249,6 +260,17 @@ console.log(banners);
             <Dragger multiple listType="picture" customRequest={customRequest}>
               <Button icon={<UploadOutlined />}>Upload Images</Button>
             </Dragger>
+          </Form.Item>
+
+          <Form.Item
+            name="title"
+            label="Title"
+            rules={[
+              { required: true },
+              { whitespace: true, message: "${label} is required!" },
+            ]}
+          >
+            <Input placeholder="Title" />
           </Form.Item>
 
           <Form.Item

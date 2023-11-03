@@ -161,13 +161,11 @@ const ServiceManagement = () => {
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
-      const newImages = values.image.fileList
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.image[0].fileList.map(({ response }: any) => response.data.url)
-        : values.image;
+      const newImages = values.image.fileList;
+      const image =
+        newImages.length > 0 ? newImages[0].response.data.url : values.url;
 
-        
-      const newValues = { ...values,image: newImages };
+      const newValues = { ...values, image };
 
       const { _id, ...service } = newValues;
 
