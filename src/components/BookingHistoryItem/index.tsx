@@ -34,13 +34,13 @@ const BookingHistoryItem = () => {
   };
   return (
     <section className="">
-      
-      <div className="">
-      <Space direction="vertical">
-        <DatePicker onChange={onChange} />
 
-      </Space>
-        <table className="font-inter w-full table-auto border-separate border-spacing-y-1 overflow-scroll text-left md:overflow-auto">
+      <div className="">
+        <Space direction="vertical">
+          <DatePicker onChange={onChange} />
+
+        </Space>
+        <table className="font-inter w-full table-auto border-separate border-spacing-y-3 overflow-scroll text-left md:overflow-auto">
           <thead className="w-full rounded-lg bg-gray-200 text-base font-semibold text-white">
             <tr className="">
               <th className="whitespace-nowrap rounded-l-lg py-3 pl-3 text-sm font-normal text-[#212B36]">Tên sân</th>
@@ -50,17 +50,17 @@ const BookingHistoryItem = () => {
               <th className="whitespace-nowrap py-3 text-sm font-normal text-[#212B36]">Giá tiền</th>
               <th className="whitespace-nowrap px-2.5 py-3 text-sm font-normal text-[#212B36]">Ngày đặt</th>
 
-              <th className="whitespace-nowrap rounded-r-lg py-3 pl-1 text-sm font-normal text-[#212B36]">Customer</th>
+              <th className="whitespace-nowrap rounded-r-lg py-3 pl-10 text-sm font-normal text-[#212B36] ">Status</th>
             </tr>
           </thead>
           <tbody>
             {bookingHistory?.data.map((booking: any) => {
               return (
-                <tr key={booking._id} className="cursor-pointer bg-[#f6f8fa] drop-shadow-[0_0_10px_rgba(34,46,58,0.02)] hover:shadow-2xl">
-                  <td className="rounded-r-[8px] px-1 py-4 text-sm font-normal text-[#637381]">
-                    <div className="relative flex items-center gap-1">
-                      <div className="h-[50px] w-[50px]"><img src={booking.pitch?.avatar} alt="hepta-brown" className="min-h-[50px] min-w-[22px]" /></div>
-                      {booking.pitch?.name}
+                <tr key={booking._id} className="cursor-pointer bg-[#f6f8fa] drop-shadow-[0_0_10px_rgba(34,46,58,0.02)] hover:shadow-2xl ">
+                  <td className="rounded-r-[8px] px-3 py-4 text-sm font-normal text-[#637381]">
+                    <div className="relative  items-center gap-1 md:flex lg:flex ">
+                      <div className="h-[50px] w-[50px]"><img src={booking.pitch?.avatar} alt="hepta-brown" className="min-h-[50px] min-w-[22px] rounded-md" /></div>
+                      <div>{booking.pitch?.name}</div>
                     </div>
                   </td>
                   <td className="rounded-l-lg py-4 pl-3 text-sm font-normal text-[#637381]">{booking.pitch?.address}</td>
@@ -73,8 +73,8 @@ const BookingHistoryItem = () => {
                   <td className="px-1 py-4 " >
 
 
-                    <button onClick={handleCancelBooking} className={`p-4 bg-${booking.status === "success" ? "green-600" : "red-600"}`}>
-                      <span className="text-white">
+                    <button onClick={handleCancelBooking} className={`p-4 rounded-lg bg-${booking.status === "success" ? "green-600" : "red-600"} `}>
+                      <span className="text-white ">
                         {booking.status === "success" ? "Đặt thành công" : "Bạn đã hủy lịch"}
                       </span>
                     </button>
