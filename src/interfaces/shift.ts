@@ -5,8 +5,8 @@ interface IShift{
     price : number;
     time_start:string;
     time_end:string;
-    number_remain:number;
     statusPitch?: boolean;
+    date:string;
     createdAt?: string;
     updatedAt?: string;
 }

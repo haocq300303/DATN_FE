@@ -28,7 +28,7 @@
 .btn-call {
   text-decoration: none;
   padding: 15px 20px;
-  background-color: #fd9e4b;
+  background-color: #1fd392;
   color: #fff;
   border-radius: 15px;
   width: 100%;
@@ -78,4 +78,7 @@
 }
 .ant-table-content .ant-table-tbody{
   text-align: center !important;
+}
+.ant-image {
+  width: 100%;
 }
