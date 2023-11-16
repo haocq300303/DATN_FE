@@ -188,7 +188,7 @@ const PitchDetailPage = () => {
       label: "Dịch VỤ",
       value: "angular",
       desc: (
-        <div className="flex flex-wrap box-service-pitch-detail">
+        <div className="flex flex-wrap box-service-pitch-detail w-86 overflow-x-scroll">
         {Pitch.services ? Pitch.services.map((serviceId: string) => {
           const service = services.find((item) => item._id === serviceId);
           return (
