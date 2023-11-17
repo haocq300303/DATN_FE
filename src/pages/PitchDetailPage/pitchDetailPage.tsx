@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardBody,
   Typography,
+  Checkbox,
 } from "@material-tailwind/react";
 import { Rate, Space, Table } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -36,7 +37,26 @@ const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
 
   const services = useAppSelector((state) => state.service.services);
-  console.log(services);
+  const [selectedServices, setSelectedServices] = useState<any>([]);
+
+  const handleServiceSelection = (serviceId: any) => {
+    const isSelected = selectedServices.includes(serviceId);
+    if (isSelected) {
+      setSelectedServices(selectedServices.filter((id: any) => id !== serviceId));
+    } else {
+      setSelectedServices([...selectedServices, serviceId]);
+    }
+  };
+  const ClickService = () => {
+    const selectedInfo = services.filter((service: any) => selectedServices.includes(service._id));
+    const selectedServiceNames = selectedInfo.map((service) => service.name);
+    const selectedServicePrices = selectedInfo.map((service) => service.price);
+    const totalPrice = selectedServicePrices.reduce((acc, price) => acc + price, 0);
+
+    console.log('Tên dịch vụ:', selectedServiceNames);
+    console.log('Giá dịch vụ:', selectedServicePrices);
+    console.log('Tổng:', totalPrice);
+  };
 
   useEffect(() => {
     dispatch(getAllServiceMid());
@@ -188,12 +208,15 @@ const PitchDetailPage = () => {
       label: "Dịch VỤ",
       value: "angular",
       desc: (
-        <div className="flex flex-wrap box-service-pitch-detail w-86 overflow-x-scroll">
+        <>
+      
+        <div className="flex h-[400px] w-[950px] overflow-x-scroll">
         {Pitch.services ? Pitch.services.map((serviceId: string) => {
           const service = services.find((item) => item._id === serviceId);
           return (
-            <Card className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2" key={service?._id}>
-              <CardHeader color="blue-gray" className="relative w- h-28 pl-0">
+            <Card className="mt-6 w-[250px] mr-2 h-60" key={service?._id}>
+               <Checkbox crossOrigin={undefined}  onChange={() => handleServiceSelection(service?._id)}/>
+              <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 mt-">
                 <img
                 className="w-full"
                   src={service?.image}
@@ -210,6 +233,10 @@ const PitchDetailPage = () => {
           );
         }) : "Không có dịch vụ"}
       </div>
+        {selectedServices.length > 0 && (
+        <button className=" bg-light-green-800 px-4 py-3 rounded-xl text-white mt-5" onClick={ClickService}>Thêm dịch vụ</button>
+      )}
+        </>
       ),
     },
     {

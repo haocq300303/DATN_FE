@@ -131,7 +131,7 @@ const Header = () => {
                <UserOutlined />
               </Button>
               <Button className="hidden lg:inline-block bg-green-800 border-none">
-                <Link to="/login" className="flex items-center text-white no-underline shadow-none">
+                <Link to="#dkdt" className="flex items-center text-white no-underline shadow-none">
                  Đăng Kí Đối Tác
                 </Link>
               </Button>
