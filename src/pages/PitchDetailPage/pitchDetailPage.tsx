@@ -25,21 +25,21 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
+
 // import img1 from "../../assets/img/Web/banner1.png";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+
 import { IService } from "~/interfaces/service";
 // import IShift from "~/interfaces/shift";
-
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
 import { fetchAllChildrenPitch } from "~/Redux/Slices/childrentPitch";
 dayjs.extend(customParseFormat);
-
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
@@ -55,6 +55,7 @@ const PitchDetailPage = () => {
     setIsModalOpen(false);
   };
 
+
   // form modal
   const onFinish = (values: any) => {
     console.log("Success:", values);
@@ -64,6 +65,7 @@ const PitchDetailPage = () => {
     console.log("Failed:", errorInfo);
   };
 //  form add đặt nhiều ngày
+
 
   const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   useEffect(() => {
@@ -132,9 +134,11 @@ const PitchDetailPage = () => {
     (state) => state.childrenPitch.childrentpitchs
   );
   console.log(services);
+
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
+  //
 
   useEffect(() => {
     dispatch(fetchAllChildrenPitch());
@@ -216,6 +220,7 @@ const PitchDetailPage = () => {
       label: "Dịch VỤ",
       value: "angular",
       desc: (
+
         <div className="flex flex-wrap ">
           {services?.map((service: IService) => (
             <Card
@@ -231,12 +236,14 @@ const PitchDetailPage = () => {
                   className="mb-2 text-base font-bold w-max"
                 >
                   {service.name}
+
                 </Typography>
-                <Typography>{service.price}</Typography>
+                <Typography>{service?.price.toLocaleString("vi-VN")}đ</Typography>
               </CardBody>
-            </Card>
-          ))}
-        </div>
+          </Card>
+          );
+        }) : "Không có dịch vụ"}
+      </div>
       ),
     },
     {
@@ -330,7 +337,9 @@ const PitchDetailPage = () => {
               <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
               <span className="text-[#ffb932]">
                 {Pitch.deposit_price}
+
               </span> - <span className="text-[#fd9e4b]">1.150.000</span>
+
             </p>
             <p className="my-[20px]">
               Sân trống : <span>10</span>

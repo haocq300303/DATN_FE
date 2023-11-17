@@ -79,7 +79,6 @@
 .ant-table-content .ant-table-tbody{
   text-align: center !important;
 }
-.ant-image {
   width: 100%;
 }
 :where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary{
@@ -87,4 +86,6 @@
 }
 .ant-modal{
   width: max-content !important;
-}
+.box-service-pitch-detail > .lg\:w-1\/4 {
+  width: 24%;
+x}

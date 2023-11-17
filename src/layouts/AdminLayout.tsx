@@ -44,8 +44,7 @@ const items: MenuItem[] = [
     getItem(<Link className="text-[#fff]" to={"/admin/post"}>Post List</Link>, "5"),
   ]),
   getItem("Banner", "sub4", <FileImageOutlined />, [
-    getItem(<Link className="text-[#fff]" to={"/admin/banner/add"}>Create Banner</Link>, "6"),
-    getItem(<Link className="text-[#fff]" to={"/admin/banner"}>Banner List</Link>, "7"),
+    getItem(<Link className="text-[#fff]" to={"/admin/banner"}>Banner List</Link>, "6"),
   ]),
   getItem(
     <Link className="text-[#fff]" to={"/admin/payment"}>Payment</Link>,
@@ -58,10 +57,10 @@ const items: MenuItem[] = [
     <SolutionOutlined />
   ),
   getItem("Location", "sub7", <EnvironmentOutlined />, [
-    getItem(<Link className="text-[#fff]" to={"/admin/location"}>Location List</Link>, "8"),
+    getItem(<Link className="text-[#fff]" to={"/admin/location"}>Location List</Link>, "7"),
   ]),
   getItem("Service", "sub8", <ProfileOutlined />, [
-    getItem(<Link className="text-[#fff]" to={"/admin/service"}>Service List</Link>, "10"),
+    getItem(<Link className="text-[#fff]" to={"/admin/service"}>Service List</Link>, "8"),
   ]),
 ];
 const AdminLayout = () => {

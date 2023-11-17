@@ -14,6 +14,7 @@ import {
 } from "~/Redux/Slices/navbarSlice";
 import "./Header.css";
 import { CloseOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [openNav, setOpenNav] = React.useState(false);
@@ -33,9 +34,9 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
       >
-        <a href="/" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+        <Link to="/" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Trang Chủ
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -43,9 +44,9 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="/pitch" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+        <Link to="/pitch" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Sân Bóng
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -53,9 +54,9 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="#" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+        <Link to="#" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Tìm Đối
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -63,9 +64,9 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="/post" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+        <Link to="/post" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Tin Tức
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -73,9 +74,9 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a href="/contact" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+        <Link to="/contact" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Liên Hệ
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -83,9 +84,9 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all"
       >
-        <a href="/about" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+        <Link to="/about" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
           Về Chúng Tôi
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
@@ -130,9 +131,9 @@ const Header = () => {
                <UserOutlined />
               </Button>
               <Button className="hidden lg:inline-block bg-green-800 border-none">
-                <a href="/contact" className="flex items-center text-white no-underline shadow-none">
+                <Link to="/login" className="flex items-center text-white no-underline shadow-none">
                  Đăng Kí Đối Tác
-                </a>
+                </Link>
               </Button>
             </div>
             <IconButton
@@ -159,14 +160,14 @@ const Header = () => {
               size="sm"
               className="border-2 border-current"
             >
-             <a href="/login" className="flex items-center gap-2 justify-center no-underline text-black">
+             <Link to="/login" className="flex items-center gap-2 justify-center no-underline text-black">
              <UserOutlined /> <span>Đăng Nhập</span>
-                </a>
+                </Link>
             </Button>
             <Button fullWidth size="sm" className="bg-green-800 border-none">
-            <a href="/contact" className="flex items-center justify-center no-underline text-white">
+            <Link to="/login" className="flex items-center justify-center no-underline text-white">
                  Đăng Kí Đối Tác
-                </a>
+                </Link>
             </Button>
           </div>
         </Collapse>
