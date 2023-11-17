@@ -1,4 +1,4 @@
-import { Button, Carousel, DatePicker, Form, Image } from "antd";
+import { Button, Carousel, DatePicker, Empty, Form, Image } from "antd";
 import "./pitchDetailPage.css";
 import {
   Tabs,
@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
+import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 dayjs.extend(customParseFormat);
 
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
@@ -37,6 +38,7 @@ const PitchDetailPage = () => {
 
   const services = useAppSelector((state) => state.service.services);
   console.log(services);
+  const pitchAll = useAppSelector((state) => state.pitch.pitchs);
 
   useEffect(() => {
     dispatch(getAllServiceMid());
@@ -49,15 +51,29 @@ const PitchDetailPage = () => {
     key: index,
   }));
 
-    console.log(dataTable);
-    
+  console.log(dataTable);
+
   // xử lí detailPitch
   const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, []);
-  console.log('detailPitch', Pitch.services);
+  console.log('detailPitch', Pitch);
   //end detailPitch
+
+  // Xử lí đội bóng liên quan 
+  const districtsId = Pitch.districts_id; // ID của danh mục bạn muốn lọc
+  console.log("id distris", districtsId);
+  console.log("All Pitch", pitchAll);
+
+  useEffect(() => {
+    dispatch(fetchAllPitch(""));
+  }, [dispatch]);
+
+  const filteredPitch = pitchAll.filter((pitch: IPitch) => pitch.districts_id === districtsId);
+  console.log("ĐBLQ", filteredPitch);
+
+  // end xử lí đội bóng liên quan
 
   useEffect(() => {
     dispatch(fetchAllShift());
@@ -140,10 +156,13 @@ const PitchDetailPage = () => {
             <div className="left-img w-[65%] md:w-[100%]">
               <Image.PreviewGroup
                 items={[
-                  `${Pitch.images}`,
-                  `${Pitch.images}`,
-                  `${Pitch.images}`,
-                  `${Pitch.images}`,
+                  `
+                  ${Pitch?.images && Pitch.images.length > 0 && (
+                    Pitch.images[0],
+                    Pitch.images[1],
+                    Pitch.images[2]
+                  )}
+                  `
                 ]}
               >
                 {Pitch?.images && Pitch.images.length > 0 && (
@@ -172,8 +191,68 @@ const PitchDetailPage = () => {
     {
       label: "ĐỘI BÓNG LIÊN QUAN",
       value: "react",
-      desc: `Because it's about motivating the doers. Because I'm here
-          to follow my dreams and inspire other people to follow their dreams, too.`,
+      desc: (
+        <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
+          <Swiper
+            spaceBetween={80}
+            slidesPerView={2}
+            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
+            {filteredPitch && filteredPitch.length > 0 ? (
+              filteredPitch.map((item: IPitch) => (
+                <SwiperSlide>
+                  <div className="item-pitch ">
+                    {/* <Link to={`/pitch/detail/${item._id}`}>
+                      
+                    </Link> */}
+                    <a href={`/pitch/detail/${item._id}`}>
+                      <div className="imgae-item-pitch">
+                        <img src={item.avatar} width="100%" className="h-[250px]" alt="" />
+                      </div>
+                      <div className="text-item-pitch">
+                        <Rate allowHalf defaultValue={4.5} /> <span>( 99+ Review)</span>
+                        <h3>{item.name}</h3>
+                        <p>Số Người :7 Người</p>
+                        <p className="flex justify-between my-[10px]">
+                          Dịch Vụ :
+                          {item.services.map((data: any) => {
+                            console.log(data);
+                            const service = services.find(
+                              (item) => item._id == data._id
+                            );
+                            return (
+                              <span key={data._id!}>
+                                <i className="fa-solid fa-check"></i>{" "}
+                                {service ? service.name : "Chưa có dịch vụ"}
+                              </span>
+                            );
+                          })}
+                        </p>
+                        <p className="flex justify-between">
+                          Giá :
+                          <span>
+                            <del className="italic text-[13px]">
+                              500.000-1.200.000
+                            </del>
+                          </span>
+                          <span className="text-[23px] text-[#ffb932] text-bold">
+                            {item.deposit_price.toLocaleString('vi-VN')} - 850.000
+                          </span>
+                        </p>
+                      </div>
+                    </a>
+
+                  </div>
+                </SwiperSlide>
+              ))
+            ) : (
+              <div> <Empty /></div>
+            )}
+
+          </Swiper>
+        </div>
+      ),
     },
 
     {
@@ -189,27 +268,27 @@ const PitchDetailPage = () => {
       value: "angular",
       desc: (
         <div className="flex flex-wrap box-service-pitch-detail">
-        {Pitch.services ? Pitch.services.map((serviceId: string) => {
-          const service = services.find((item) => item._id === serviceId);
-          return (
-            <Card className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2" key={service?._id}>
-              <CardHeader color="blue-gray" className="relative w- h-28 pl-0">
-                <img
-                className="w-full"
-                  src={service?.image}
-                  alt="card-image"
-                />
-              </CardHeader>
-              <CardBody>
-                <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
-                  {service?.name}
-                </Typography>
-                <Typography>{service?.price.toLocaleString("vi-VN")}đ</Typography>
-              </CardBody>
-          </Card>
-          );
-        }) : "Không có dịch vụ"}
-      </div>
+          {Pitch.services ? Pitch.services.map((serviceId: string) => {
+            const service = services.find((item) => item._id === serviceId);
+            return (
+              <Card className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2" key={service?._id}>
+                <CardHeader color="blue-gray" className="relative w- h-28 pl-0">
+                  <img
+                    className="w-full"
+                    src={service?.image}
+                    alt="card-image"
+                  />
+                </CardHeader>
+                <CardBody>
+                  <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                    {service?.name}
+                  </Typography>
+                  <Typography>{service?.price.toLocaleString("vi-VN")}đ</Typography>
+                </CardBody>
+              </Card>
+            );
+          }) : "Không có dịch vụ"}
+        </div>
       ),
     },
     {

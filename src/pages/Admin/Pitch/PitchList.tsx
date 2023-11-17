@@ -9,7 +9,9 @@ import {
   Upload,
   Select,
   InputNumber,
+  Checkbox, Col, Row, Empty
 } from "antd";
+import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import type { ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
@@ -33,6 +35,8 @@ import {
 import IPitch from "../../../interfaces/pitch";
 import { Option } from "antd/es/mentions";
 import { Link } from "react-router-dom";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+import { IService } from "~/interfaces/service";
 
 const PitchList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,6 +45,7 @@ const PitchList = () => {
   const dispatch = useAppDispatch();
 
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
+  const services = useAppSelector((state) => state.service.services);
   const host = "http://localhost:8080/api/location/";
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -57,6 +62,11 @@ const PitchList = () => {
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
+  useEffect(() => {
+    dispatch(getAllServiceMid());
+  }, [dispatch]);
+  console.log("service", services);
+
 
   const confirm = async (idPost: string) => {
     await dispatch(fetchDeletePitch(idPost));
@@ -117,8 +127,10 @@ const PitchList = () => {
                 images: pitch?.images,
                 numberPitch: pitch?.numberPitch,
                 description: pitch?.description,
+                districts_id: pitch?.districts_id,
                 location_id: pitch?.location_id,
                 deposit_price: pitch?.deposit_price,
+                services: pitch?.services,
                 avatar: pitch?.avatar,
               });
               showModal("edit");
@@ -169,6 +181,11 @@ const PitchList = () => {
 
   const [form] = Form.useForm();
 
+  const onChange = (checkedValues: CheckboxValueType[]) => {
+    console.log('checked = ', checkedValues);
+  };
+
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
@@ -179,13 +196,14 @@ const PitchList = () => {
       const avatar = values?.avatar?.fileList[0]?.response?.data?.url;
 
       const newValues = { ...values, avatar, images };
+      console.log("valueAbc:", newValues);
 
       await dispatch(fetchCreatPitch(newValues));
       message.success(`Tạo Sân Bóng thành công!`);
     } else if (modalMode === "edit") {
       const images = values.images.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.images.fileList.map(({ response }: any) => response.data.url)
+        values.images.fileList.map(({ response }: any) => response.data.url)
         : values.images;
       const avatar = values.avatar.fileList
         ? values?.avatar?.fileList[0]?.response?.data?.url
@@ -372,7 +390,7 @@ const PitchList = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item label="Quận, Huyện" rules={[{ required: true }]}>
+          <Form.Item name="districts_id" label="Quận, Huyện" rules={[{ required: true }]}>
             <Select
               onChange={handleDistrictChange}
               size="large"
@@ -406,6 +424,26 @@ const PitchList = () => {
               placeholder="deposit_price"
               style={{ width: "100%" }}
             />
+          </Form.Item>
+
+          <Form.Item
+            name="services"
+            label="Services"
+            rules={[{ required: true, }]}
+          >
+            <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+              <Row>
+                {services && services.length > 0 ? (
+                  services.map((item: IService) => (
+                    <Col span={8}>
+                      <Checkbox value={item._id}>{item.name}</Checkbox>
+                    </Col>
+                  ))
+                ) : (
+                  <div> <Empty /></div>
+                )}
+              </Row>
+            </Checkbox.Group>
           </Form.Item>
 
           <Form.Item name="avatar" label="Avatar" rules={[{ required: true }]}>
