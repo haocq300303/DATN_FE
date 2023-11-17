@@ -79,13 +79,26 @@
 .ant-table-content .ant-table-tbody {
   text-align: center !important;
 }
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
 
-:where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary {
-  background-color: #1fd392 !important;
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
 }
-.ant-modal {
-  width: max-content !important;
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 30px;
+  background: #888; 
 }
-.box-service-pitch-detail > .lg\:w-1\/4 {
-  width: 24%;
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
+
+

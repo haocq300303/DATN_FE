@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Navbar, Typography, Button, Collapse, IconButton } from "@material-tailwind/react";
+import { Navbar, Typography, Button, IconButton } from "@material-tailwind/react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectIsFixed, setFixed, setVisibleTitle } from "~/Redux/Slices/navbarSlice";
 import "./Header.css";
@@ -104,60 +104,53 @@ const Header = () => {
 
         window.addEventListener("scroll", handleScroll);
 
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, [dispatch]);
-    return (
-        <div id="header" className={`fixed-header ${isFixed ? "active" : ""}`}>
-            <Navbar className="sticky box-border top-0 z-10 h-max max-w-full rounded-none px-4 py-2 container ">
-                <div className="flex items-center justify-between text-blue-gray-900">
-                    <div className=" flex items-center">
-                        <img
-                            className="w-28 lg:w-40"
-                            src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1696192598/ImageOther/z4718088485311_234f31f313ef91652f1da8c544568ddb-removebg-preview_yhtdtr.png"
-                            alt=""
-                        />
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="mr-4 hidden lg:block">{navList}</div>
-                        <div className="flex items-center gap-x-1">
-                            <Button variant="text" size="sm" className="hidden lg:inline-block border-none">
-                                <UserOutlined />
-                            </Button>
-                            <Button className="hidden lg:inline-block bg-green-800 border-none">
-                                <a href="/contact" className="flex items-center text-white no-underline shadow-none">
-                                    Đăng Kí Đối Tác
-                                </a>
-                            </Button>
-                        </div>
-                        <IconButton
-                            variant="text"
-                            className=" h-14 w-14  no-underline border-none shadow-none hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden flex items-center justify-center"
-                            ripple={false}
-                            onClick={() => setOpenNav(!openNav)}
-                        >
-                            {openNav ? <CloseOutlined className="text-gray-500 text-2xl" /> : <MenuOutlined className="text-gray-500 text-2xl" />}
-                        </IconButton>
-                    </div>
-                </div>
-                <Collapse open={openNav}>
-                    <hr className="bg-gray-200" />
-                    {navList}
-                    <div className="flex items-center gap-x-1">
-                        <Button fullWidth variant="text" size="sm" className="border-2 border-current">
-                            <a href="/login" className="flex items-center gap-2 justify-center no-underline text-black">
-                                <UserOutlined /> <span>Đăng Nhập</span>
-                            </a>
-                        </Button>
-                        <Button fullWidth size="sm" className="bg-green-800 border-none">
-                            <a href="/contact" className="flex items-center justify-center no-underline text-white">
-                                Đăng Kí Đối Tác
-                            </a>
-                        </Button>
-                    </div>
-                </Collapse>
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [dispatch]);
+  return (
+    <div id="header" className={`fixed-header ${isFixed ? "active" : ""}`}>
+      <Navbar className="sticky box-border top-0 z-10 h-max max-w-full rounded-none px-4 py-2 container ">
+        <div className="flex items-center justify-between text-blue-gray-900">
+          <div className=" flex items-center">
+            <img
+            className="w-28 lg:w-40"
+              src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1696192598/ImageOther/z4718088485311_234f31f313ef91652f1da8c544568ddb-removebg-preview_yhtdtr.png"
+              alt=""
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="mr-4 hidden lg:block">{navList}</div>
+            <div className="flex items-center gap-x-1">
+              <Button
+                variant="text"
+                size="sm"
+                className="hidden lg:inline-block border-none"
+              >
+               <UserOutlined />
+              </Button>
+              <Button className="hidden lg:inline-block bg-green-800 border-none">
+                <Link to="#dkdt" className="flex items-center text-white no-underline shadow-none">
+                 Đăng Kí Đối Tác
+                </Link>
+              </Button>
+            </div>
+            <IconButton
+              variant="text"
+              className=" h-14 w-14  no-underline border-none shadow-none hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden flex items-center justify-center"
+              ripple={false}
+              onClick={() => setOpenNav(!openNav)}
+            >
+              {openNav ? (
+                <CloseOutlined className="text-gray-500 text-2xl"/>
+              ) : (
+                <MenuOutlined className="text-gray-500 text-2xl"/>
+              )}
+            </IconButton>
+          </div>
+          </div>
             </Navbar>
+
         </div>
     );
 };
