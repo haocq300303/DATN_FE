@@ -31,7 +31,7 @@ import {
 import { IService } from "../../../../interfaces/service";
 import "./ServiceManagement.css";
 import { Option } from "antd/es/mentions";
-import { fetchAllPitch } from "../../../../Redux/Slices/pitchSlice";
+import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 
 const { Dragger } = Upload;
 
@@ -47,7 +47,7 @@ const ServiceManagement = () => {
 
   useEffect(() => {
     dispatch(getAllServiceMid());
-    dispatch(fetchAllPitch());
+    dispatch(fetchAllPitch(""));
   }, [dispatch]);
 
   const confirm = (id: string) => {
@@ -74,7 +74,7 @@ const ServiceManagement = () => {
       title: "Id_Pitch",
       dataIndex: "id_Pitch",
       key: "id_Pitch",
-      render: (id_Pitch) => <span>{id_Pitch.name}</span>,
+      // render: (id_Pitch) => <span>{id_Pitch.name}</span>,
     },
     {
       title: "Image",
@@ -98,7 +98,7 @@ const ServiceManagement = () => {
                 _id: service?._id,
                 name: service?.name,
                 price: service?.price,
-                id_Pitch: service?.id_Pitch?._id ?? service?._id,
+                // id_Pitch: service?.id_Pitch?._id ?? service?._id,
                 image: service?.image,
               });
               showModal("edit");
@@ -155,23 +155,21 @@ const ServiceManagement = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
       );
-      const newValues = { ...values, image: urls[0] };
-        console.log(newValues);
+      const url = urls[0]
+      const newValues = { ...values, image: url };
         
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
-      const newImages = values.image.fileList
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.image[0].fileList.map(({ response }: any) => response.data.url)
-        : values.image;
+      const newImages = values.image.fileList;
+      const image =
+        newImages.length > 0 ? newImages[0].response.data.url : values.url;
 
-      const newValues = { ...values,image: newImages };
+      const newValues = { ...values, image };
 
       const { _id, ...service } = newValues;
-console.log({ _id, service });
 
-      // await dispatch(updateServiceMid({ _id, service }));
+      await dispatch(updateServiceMid({ _id, service }));
       message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);

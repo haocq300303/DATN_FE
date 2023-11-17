@@ -25,6 +25,7 @@ import PostPage from "./pages/PostPage/PostPage";
 import PostDetailPage from "./pages/PostDetailPage/PostDetailPage";
 import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
+import Shift from "./pages/Admin/shift/shift";
 import FindOpponentPage from "./pages/FindOpponent/FindOpponentPage";
 
 function App() {
@@ -67,6 +68,7 @@ function App() {
           <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />
+          <Route path={routes.shift} element={<Shift />} />
         </Route>
       </Routes>
     </Router>

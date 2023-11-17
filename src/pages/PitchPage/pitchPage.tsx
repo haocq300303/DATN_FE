@@ -11,6 +11,7 @@ import {
   InputNumber,
   Space,
   Empty,
+  Pagination,
 } from "antd";
 import { Input } from "@material-tailwind/react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -18,11 +19,12 @@ import "./pitchPage.css";
 import "swiper/css";
 import banner from "../../assets/img/Web/bannerr.mp4";
 import item2 from "../../assets/img/Web/stadium1.jfif";
-import { Link } from "react-router-dom";
-import type { CheckboxChangeEvent } from "antd/es/checkbox";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+import { fetchAllPitch, search } from "~/Redux/Slices/pitchSlice";
 import IPitch from "~/interfaces/pitch";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+import { PitchPagination, getAllPitch, searchPitch } from "~/api/pitch";
 
 const fixedOptions = [
   { value: "bong-da", label: "Bóng đá" },
@@ -34,11 +36,10 @@ const fixedOptions = [
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
 };
-const onChange = (e: CheckboxChangeEvent) => {
-  console.log(`checked = ${e.target.checked}`);
-};
+
 
 const PitchPage = () => {
+  const navigate = useNavigate();
   const host = "http://localhost:8080/api/location/";
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -46,10 +47,16 @@ const PitchPage = () => {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedWard, setSelectedWard] = useState("");
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [valueSearch, setValueSearch] = useState('');
+  const [totalItems, setTotalItems] = useState(Number);//phantrang
+  const [currentPage, setCurrentPage] = useState(1);//phantrang
+
 
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
-
+  console.log("LogPitchs", pitchs);
+  const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
 
   useEffect(() => {
@@ -63,6 +70,39 @@ const PitchPage = () => {
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllServiceMid());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllPitch(); // Gửi yêu cầu GET đến URL_API
+        const allItemsPitch = response?.data?.data?.totalDocs;
+        setTotalItems(allItemsPitch)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+
+  }, []);
+
+  const handleServiceChange = (serviceValue: string) => {
+    const updatedServices = selectedServices.includes(serviceValue)
+      ? selectedServices.filter((service) => service !== serviceValue)
+      : [...selectedServices, serviceValue];
+    setSelectedServices(updatedServices);
+    console.log("Fillter Service", updatedServices);
+  };
+
+  const filteredPitchs = pitchs.filter((pitch: any) => {
+    // console.log("Pitch Services:", pitch.services);
+    return selectedServices.every((service) =>
+      pitch.services.some((item: any) => item._id === service)
+    );
+  });
 
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
@@ -113,36 +153,49 @@ const PitchPage = () => {
     }
   };
 
-  const IntegerStep = () => {
-    const [inputValue, setInputValue] = useState(1);
+  const onChangePrice = async (checkedValues: any) => {
+    console.log('checked = ', checkedValues[0]);
+    if (checkedValues) {
+      const response = await searchPitch({
+        paramPrice: {
+          minPrice: checkedValues[0]?.[0] ?? '',
+          maxPrice: checkedValues[0]?.[1] ?? '',
+        },
+        searchText: valueSearch
+      })
+      console.log("checkFIll", response);
 
-    const onChangePrice = (newValue: number | null) => {
-      if (newValue !== null) {
-        setInputValue(newValue);
+      await dispatch(search(response?.data?.data?.data));
+      if (response) {
+        setTotalItems(response?.data?.data?.data?.length)
       }
-    };
-    return (
-      <Row>
-        <Col span={12}>
-          <Slider
-            min={1}
-            max={200000}
-            onChange={onChangePrice}
-            value={typeof inputValue === "number" ? inputValue : 0}
-          />
-        </Col>
-        <Col span={8}>
-          <InputNumber
-            min={1}
-            max={20}
-            style={{ margin: "0 16px" }}
-            value={inputValue}
-            onChange={onChangePrice}
-          />
-        </Col>
-      </Row>
-    );
+
+    }
   };
+
+  // Tìm Kiếm Theo sân
+  const handlefil = async (value: string) => {
+    setValueSearch(value)
+    const response = await searchPitch({ searchText: value })
+    console.log("searchHandfill", response?.data);
+    dispatch(search(response?.data?.data?.data))
+
+  }
+  // phân trang
+  const handlePageChange = async (pageNumber: number, pageSize: number) => {
+    setCurrentPage(pageNumber);
+    const response = await PitchPagination(pageNumber, pageSize = 7);
+    console.log("phantrang", response?.data);
+    const totalItems = response?.data?.data?.totalDocs;
+    console.log("téttsst", totalItems);
+    if (totalItems) {
+      setTotalItems(totalItems);
+    }
+    dispatch(search(response?.data?.data?.data));
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
+  console.log("vck", totalItems);
+
 
   return (
     <div className="bg-[#f3f3f5]">
@@ -233,6 +286,7 @@ const PitchPage = () => {
                   label="Tìm Tên Sân ..."
                   className=" bg-[white]"
                   crossOrigin="anonymous"
+                  onChange={(e) => handlefil(e.target.value)}
                 />
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
@@ -242,24 +296,15 @@ const PitchPage = () => {
                 </p>
                 <span className="font-[600]">Bộ lọc phổ biến nhất</span>
                 <div className="grid mt-4 gap-[10px]">
-                  <div>
-                    <Checkbox onChange={onChange}>Wifi</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Thuê áo bít</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Canteen</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Thuê bóng</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Cổ vũ</Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox onChange={onChange}>Nước hỗ trợ</Checkbox>
-                  </div>
+                  {services.map((service: any) => (
+                    <div key={service._id}>
+                      <Checkbox
+                        onChange={() => handleServiceChange(service._id)}
+                      >
+                        {service.name}
+                      </Checkbox>
+                    </div>
+                  ))}
                 </div>
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
@@ -274,9 +319,23 @@ const PitchPage = () => {
               <Form.Item>
                 <p className="mb-[10px] text-[23px] font-[600]">Lọc theo giá</p>
 
-                <Space style={{ width: "100%" }} direction="vertical">
-                  <IntegerStep />
-                </Space>
+                <Checkbox.Group style={{ width: '100%' }} onChange={onChangePrice}>
+                  <Row>
+                    <Col span={12}>
+                      <Checkbox value={['0', '850000']}>Tất Cả</Checkbox>
+                    </Col>
+                    <Col span={12}>
+                      <Checkbox value={['0', '300000']}>0đ - 300.000đ</Checkbox>
+                    </Col>
+                    <Col span={12}>
+                      <Checkbox value={['300000', '500000']}>300.000đ - 500.000đ</Checkbox>
+                    </Col>
+                    <Col span={12}>
+                      <Checkbox value={['500000', '850000']}>500.000đ - 850.000đ</Checkbox>
+                    </Col>
+
+                  </Row>
+                </Checkbox.Group>
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
             </Form>
@@ -310,15 +369,15 @@ const PitchPage = () => {
               </div>
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
-              <div className="list-pitch mt-[40px]">
-                {pitchs && pitchs.length > 0 ? (
-                  pitchs?.map((pitch: IPitch) => (
+              {filteredPitchs && filteredPitchs.length > 0 ? (
+                filteredPitchs.map((pitch: IPitch) => (
+                  <div className="list-pitch mt-[40px]" key={pitch._id}>
                     <Link to={`/pitch/detail/${pitch._id}`}>
                       <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
                         <div className="imgae-item-pitch col-span-5">
                           <img
                             src={pitch.avatar}
-                            className="rounded-l-[20px]"
+                            className="rounded-l-[20px] h-[100%] object-cover"
                             width="100%"
                             alt=""
                           />
@@ -328,18 +387,24 @@ const PitchPage = () => {
                           <h3 className=" text-[23px] font-[600] font-sans">
                             {pitch.name}
                           </h3>
-                          <Rate defaultValue={4.5} />
-                          <span>( 1 Review)</span>
+                          <Rate defaultValue={5} />
+                          <span>( 99+ Review)</span>
                           <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
                           <p>Số Sân Trống : 3/4</p>
                           <p className="flex justify-between my-[10px]">
                             Dịch Vụ :
-                            <span>
-                              <i className="fa-solid fa-check"></i> WIFI
-                            </span>
-                            <span>
-                              <i className="fa-solid fa-check"></i> CANGTEEN
-                            </span>
+                            {pitch.services.map((data: any) => {
+                              // console.log("data Sê vít", data);
+                              const service = services.find(
+                                (item) => item._id == data._id
+                              );
+                              return (
+                                <span key={data._id!}>
+                                  <i className="fa-solid fa-check"></i>{" "}
+                                  {service ? service.name : "Chưa có dịch vụ"}
+                                </span>
+                              );
+                            })}
                           </p>
                           <p className="flex justify-between">
                             Giá :
@@ -349,17 +414,26 @@ const PitchPage = () => {
                               </del>
                             </span>
                             <span className="text-[23px] text-[#ffb932] text-bold">
-                              {pitch.deposit_price} - 850.000
+                              {pitch.deposit_price.toLocaleString('vi-VN')} - 850.000
                             </span>
                           </p>
                         </div>
                       </div>
                     </Link>
-                  ))
-                ) : (
-                  <div><Empty /></div>
-                )}
-              </div>
+                  </div>
+                ))
+              ) : (
+                <div>
+                  <Empty />
+                </div>
+              )}
+              <Pagination
+
+                current={currentPage}
+                total={totalItems}
+                pageSize={5}
+                onChange={handlePageChange}
+              />
             </div>
           </div>
         </div>
@@ -367,7 +441,7 @@ const PitchPage = () => {
 
       {/* các sân bongs ưu tiên */}
       <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
-        <h1>CÓ THỂ BẠN KHUM THÍCH</h1>
+        <h1>Sân Bóng Đánh Giá Cao</h1>
         <Swiper
           spaceBetween={80}
           slidesPerView={3}
@@ -378,7 +452,7 @@ const PitchPage = () => {
             <div className="item-pitch ">
               <Link to="detail">
                 <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
+                  <img src={item2} className="h-[100%] object-cover" width="100%" alt="" />
                 </div>
                 <div className="text-item-pitch">
                   <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>

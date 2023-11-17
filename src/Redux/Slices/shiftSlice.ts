@@ -61,6 +61,21 @@ export const fetchFindOpponent = createAsyncThunk(
     }
   }
 );
+// export const fetchFilterDate = createAsyncThunk(
+//     "shift/fetchAllShift",
+//     async (_, thunkAPI) => {
+//         try {
+//             const { data } = await getAllShift("");
+            
+//             console.log("ahaha",data);
+            
+//             return data.data;
+//             // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//         } catch (error: any) {
+//             return thunkAPI.rejectWithValue({ message: error.message });
+//         }
+//     }
+// );
 
 export const fetchCreatShift = createAsyncThunk(
   "Shift/fetchCreatShift",
