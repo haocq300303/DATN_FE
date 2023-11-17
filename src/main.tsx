@@ -8,14 +8,16 @@ import App from "./App.tsx";
 import store from "./Redux/store.ts";
 import "./index.scss";
 import "./styles/global-style.scss";
+import LoaderAllPage from "./components/LoaderAllPage/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  // <React.StrictMode>
-  <Provider store={store}>
-    <ThemeProvider>
-      <App />
-      <ToastContainer />
-    </ThemeProvider>
-  </Provider>
-  // </React.StrictMode>
+    // <React.StrictMode>
+    <Provider store={store}>
+        <ThemeProvider>
+            <App />
+            <ToastContainer />
+            <LoaderAllPage />
+        </ThemeProvider>
+    </Provider>
+    // </React.StrictMode>
 );
