@@ -356,7 +356,7 @@ const PitchPage = () => {
                         <div className="imgae-item-pitch col-span-5">
                           <img
                             src={pitch.avatar}
-                            className="rounded-l-[20px]"
+                            className="rounded-l-[20px] h-[100%] object-cover"
                             width="100%"
                             alt=""
                           />
@@ -424,7 +424,7 @@ const PitchPage = () => {
             <div className="item-pitch ">
               <Link to="detail">
                 <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
+                  <img src={item2} className="h-[100%] object-cover" width="100%" alt="" />
                 </div>
                 <div className="text-item-pitch">
                   <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
