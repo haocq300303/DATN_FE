@@ -1,5 +1,35 @@
+import { message } from 'antd';
+import emailjs from 'emailjs-com'
 
 const Contact = () => {
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const serviceID = 'service_5hgv1m3';
+        const templateID = 'template_xyhcgho';
+        const userID = 'gz8XBteB4Ltx_gk8N';
+
+
+        const form_name = e.currentTarget.elements.namedItem('from_name') as HTMLInputElement;
+        const email_id = e.currentTarget.elements.namedItem('email_id') as HTMLInputElement;
+        const adress = e.currentTarget.elements.namedItem('adress') as HTMLInputElement;
+        const messages = e.currentTarget.elements.namedItem('messages') as HTMLTextAreaElement;
+
+        if (!form_name.value || !email_id.value || !adress.value || !messages.value) {
+            message.warning('Please fill in all fields.');
+            return;
+        }
+        emailjs.sendForm(serviceID, templateID, e.currentTarget, userID)
+            .then((response) => {
+                console.log('Email sent:', response);
+                message.success('Email sent!');
+                e.currentTarget.reset();
+            })
+            .catch((error) => {
+                console.error('Email error:', error);
+                // message.error('Failed to send email.');
+            });
+    }
     return (
         <>
             <section className="">
@@ -89,11 +119,12 @@ const Contact = () => {
                         </div>
                         <div className="w-full px-4 lg:w-1/2 xl:w-5/12">
                             <div className="relative p-8 bg-white rounded-lg shadow-lg sm:p-12">
-                                <form>
+                                <form onSubmit={(e) => handleSubmit(e)}>
                                     <div className="mb-6">
                                         <input
                                             type="text"
                                             placeholder="Your name"
+                                            name='from_name'
                                             className="border-[f0f0f0] w-full rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                                         />
                                     </div>
@@ -101,6 +132,7 @@ const Contact = () => {
                                         <input
                                             type="text"
                                             placeholder="Your email"
+                                            name='email_id'
                                             className="border-[f0f0f0] w-full rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                                         />
                                     </div>
@@ -108,13 +140,15 @@ const Contact = () => {
                                         <input
                                             type="text"
                                             placeholder="Your adress"
+                                            name='adress'
                                             className="border-[f0f0f0] w-full rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                                         />
                                     </div>
                                     <div className="mb-6">
                                         <textarea
-                                            rows="6"
+                                            rows={6}
                                             placeholder="Message"
+                                            name='messages'
                                             className="border-[#f0f0f0] w-full resize-none rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                                         />
 

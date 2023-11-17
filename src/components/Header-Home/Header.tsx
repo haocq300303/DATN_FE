@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectIsFixed, setFixed, setVisibleTitle } from "~/Redux/Slices/navbarSlice";
 import "./Header.css";
 import { CloseOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     const [openNav, setOpenNav] = React.useState(false);

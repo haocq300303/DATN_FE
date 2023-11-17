@@ -5,8 +5,9 @@ import { DataBookingType, ShiftInfoType } from ".";
 const SelectShiftItem = () => {
     return (
         <div className="flex flex-col items-center">
-            <button className="border border-[#00e0ff] hover:bg-[linear-gradient(83.63deg,#00b5f1_33.34%,#00e0ff_113.91%)] hover:text-white text-base px-5 py-2 rounded-md">
+            <button className="items-center flex flex-col border border-[#00e0ff] hover:bg-[linear-gradient(83.63deg,#00b5f1_33.34%,#00e0ff_113.91%)] hover:text-white text-base px-5 py-2 rounded-md">
                 <span>07:00 - 08:00</span>
+                <span className="text-[#67922c] mt-2 text-base">(800.000 VND)</span>
             </button>
 
             <span className="text-base">Ca 1</span>

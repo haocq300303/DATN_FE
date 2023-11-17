@@ -169,7 +169,6 @@ function ProfileMenu() {
         </Button>
       </MenuHandler>
 
-
       <MenuList className="p-1">
         {profileMenuItems.map(({ label, icon }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
