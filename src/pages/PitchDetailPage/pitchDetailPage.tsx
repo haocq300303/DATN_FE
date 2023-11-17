@@ -14,7 +14,7 @@ import {
 import { Rate, Space, Table } from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { ColumnsType } from "antd/es/table";
-import img1 from "../../assets/img/Web/banner1.png";
+// import img1 from "../../assets/img/Web/banner1.png";
 import { Link, useParams } from "react-router-dom";
 import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useEffect, useState } from "react";
@@ -27,8 +27,8 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
+import FindOpponent from "~/components/FindOpponent/FindOpponent";
 dayjs.extend(customParseFormat);
-
 
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 const today = dayjs();
@@ -43,7 +43,6 @@ const PitchDetailPage = () => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
 
-
   const shifts = useAppSelector((state) => state.shift.shift);
   console.log(shifts);
   const dataTable = shifts.map((item: IShift, index: number) => ({
@@ -55,8 +54,8 @@ const PitchDetailPage = () => {
   const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
-  }, [])
-  console.log('detailPitch', Pitch);
+  }, [id]);
+  
   //end detailPitch
   useEffect(() => {
     dispatch(fetchAllShift());
@@ -137,7 +136,12 @@ const PitchDetailPage = () => {
           <div className="flex img-pitch gap-[20px]">
             <div className="left-img w-[65%] md:w-[100%]">
               <Image.PreviewGroup
-                items={[`${Pitch.images}`, `${Pitch.images}`, `${Pitch.images}`, `${Pitch.images}`]}
+                items={[
+                  `${Pitch.images}`,
+                  `${Pitch.images}`,
+                  `${Pitch.images}`,
+                  `${Pitch.images}`,
+                ]}
               >
                 {Pitch?.images && Pitch.images.length > 0 && (
                   <Image className="w-[100%] h-[100%]" src={Pitch.images[0]} />
@@ -146,8 +150,16 @@ const PitchDetailPage = () => {
             </div>
             {Pitch?.images && Pitch.images.length > 0 && (
               <div className="right-img w-[30%] xl:grid md:hidden">
-                <img src={Pitch?.images[1]} alt="No Image 1" className="w-[100%] h-[100%]" />
-                <img src={Pitch?.images[2]} alt="No Image 2" className="w-[100%] h-[100%]" />
+                <img
+                  src={Pitch?.images[1]}
+                  alt="No Image 1"
+                  className="w-[100%] h-[100%]"
+                />
+                <img
+                  src={Pitch?.images[2]}
+                  alt="No Image 2"
+                  className="w-[100%] h-[100%]"
+                />
               </div>
             )}
           </div>
@@ -162,11 +174,8 @@ const PitchDetailPage = () => {
     },
 
     {
-      label: "TIỆN ÍCH",
-      value: "vue",
-      desc: `We're not always in the position that we want to be at.
-          We're constantly growing. We're constantly making mistakes. We're
-          constantly trying to express ourselves and actualize our dreams.`,
+      label: "Tìm Đối",
+      desc: <FindOpponent idPitch={id!} />,
     },
 
     {
@@ -175,15 +184,18 @@ const PitchDetailPage = () => {
       desc: (
         <div className="flex flex-wrap ">
           {services?.map((service: IService) => (
-            <Card className="mt-6 w-48 md:w-1/2 lg:w-1/4 px-4 mb-4" key={service._id}>
+            <Card
+              className="mt-6 w-48 md:w-1/2 lg:w-1/4 px-4 mb-4"
+              key={service._id}
+            >
               <CardHeader color="blue-gray" className="relative h-36 w-full">
-                <img
-                  src={service.image}
-                  alt="card-image"
-                />
+                <img src={service.image} alt="card-image" />
               </CardHeader>
               <CardBody>
-                <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                <Typography
+                  color="blue-gray"
+                  className="mb-2 text-base font-bold w-max"
+                >
                   {service.name}
                 </Typography>
                 <Typography>{service.price}</Typography>
@@ -223,7 +235,7 @@ const PitchDetailPage = () => {
           <Tabs id="custom-animation" value="html">
             <TabsHeader className="">
               {data.map(({ label, value }) => (
-                <Tab key={value} value={value}>
+                <Tab key={value} value={value!}>
                   {label}
                 </Tab>
               ))}
@@ -237,7 +249,7 @@ const PitchDetailPage = () => {
               }}
             >
               {data.map(({ value, desc }) => (
-                <TabPanel key={value} value={value}>
+                <TabPanel key={value} value={value!}>
                   {desc}
                 </TabPanel>
               ))}
@@ -255,8 +267,9 @@ const PitchDetailPage = () => {
             <p className="flex items-center justify-between">
               <i className="fa-solid fa-tag"></i>
               <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
-              <span className="text-[#ffb932]">{Pitch.deposit_price}</span> -{" "}
-              <span className="text-[#fd9e4b]">850.000</span>
+              <span className="text-[#ffb932]">
+                {Pitch.deposit_price}
+              </span> - <span className="text-[#fd9e4b]">850.000</span>
             </p>
             <p className="my-[20px]">
               Sân trống : <span>10</span>
@@ -310,10 +323,7 @@ const PitchDetailPage = () => {
                   <i className="fa-regular fa-calendar mr-[20px]"></i>CHỌN LỊCH
                   NGÀY :
                 </p>
-                <Space
-                  direction="vertical"
-                  size={12}
-                >
+                <Space direction="vertical" size={12}>
                   <DatePicker defaultValue={today} format={dateFormatList} />
                 </Space>
               </div>
