@@ -30,7 +30,7 @@ export const fetchAllPitch = createAsyncThunk(
   async (query: string, thunkAPI) => {
     try {
       const { data } = await getAllPitch(query);
-
+      console.log("dataPitchRedux", data);
       return data.data.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -38,6 +38,7 @@ export const fetchAllPitch = createAsyncThunk(
     }
   }
 );
+
 
 export const fetchCreatPitch = createAsyncThunk(
   "pitch/fetchCreatPitch",
@@ -85,6 +86,9 @@ const pitchSlice = createSlice({
   name: "pitch",
   initialState,
   reducers: {
+    search(state, action) {
+      state.pitchs = action.payload;
+    },
     filter(state, action) {
       const filteredPitch = state.listData.filter((pitch) => pitch.name.toLowerCase().includes(action.payload.toLowerCase()))
       state.pitchs = filteredPitch;
@@ -165,5 +169,5 @@ const pitchSlice = createSlice({
   },
 });
 
-export const { filter, filterPrice } = pitchSlice.actions
+export const { filter, filterPrice, search } = pitchSlice.actions
 export default pitchSlice.reducer;

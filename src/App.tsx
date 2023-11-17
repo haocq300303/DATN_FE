@@ -25,6 +25,8 @@ import PostPage from "./pages/PostPage/PostPage";
 import PostDetailPage from "./pages/PostDetailPage/PostDetailPage";
 import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
+import Shift from "./pages/Admin/shift/shift";
+import FindOpponentPage from "./pages/FindOpponent/FindOpponentPage";
 
 function App() {
     return (
@@ -43,6 +45,7 @@ function App() {
                 <Route path="/pitch" element={<LayoutPage />}>
                     <Route index path={routes.pitch_client} element={<PitchPage />} />
                     <Route path={routes.pitch_detail} element={<PitchDetailPage />} />
+                    <Route path={routes.find_opponent} element={<FindOpponentPage />} />
                 </Route>
                 <Route path="/post" element={<LayoutPage />}>
                     <Route index path={routes.post_client} element={<PostPage />} />
@@ -61,6 +64,7 @@ function App() {
                     <Route path={routes.location} element={<LocationList />} />
                     <Route path={routes.payment} element={<PaymentAdminPage />} />
                     <Route path={routes.booking} element={<BookingAdminPage />} />
+                    <Route path={routes.shift} element={<Shift />} />
                 </Route>
             </Routes>
         </Router>

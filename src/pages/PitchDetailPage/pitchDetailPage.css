@@ -28,7 +28,7 @@
 .btn-call {
   text-decoration: none;
   padding: 15px 20px;
-  background-color: #fd9e4b;
+  background-color: #1fd392;
   color: #fff;
   border-radius: 15px;
   width: 100%;
@@ -71,12 +71,12 @@
   font-size: 30px;
   font-weight: 700;
 }
-.ant-table-content .ant-table-thead .ant-table-cell{
+.ant-table-content .ant-table-thead .ant-table-cell {
   background-color: #f4eade !important;
   text-align: center !important;
   color: #000 !important;
 }
-.ant-table-content .ant-table-tbody{
+.ant-table-content .ant-table-tbody {
   text-align: center !important;
 }
 /* width */
@@ -100,4 +100,5 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
 

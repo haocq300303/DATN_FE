@@ -1,42 +1,144 @@
-import { Button, Carousel, DatePicker, Form, Image } from "antd";
-import "./pitchDetailPage.css";
 import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
+  Card,
+  CardBody,
+  CardHeader,
   Tab,
   TabPanel,
-  Card,
-  CardHeader,
-  CardBody,
+  Tabs,
+  TabsBody,
+  TabsHeader,
   Typography,
   Checkbox,
 } from "@material-tailwind/react";
-import { Rate, Space, Table } from "antd";
+import {
+  Button,
+  Carousel,
+  DatePicker,
+  Empty,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  Modal,
+  Rate,
+  Select,
+  Slider,
+  Space,
+  Table,
+} from "antd";
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { ColumnsType } from "antd/es/table";
-// import img1 from "../../assets/img/Web/banner1.png";
-import { Link, useParams } from "react-router-dom";
-import item2 from "../../assets/img/Web/stadium1.jfif";
+import "./pitchDetailPage.css";
+// import type { ColumnsType } from "antd/es/table";
+import { useParams } from "react-router-dom";
+// import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useEffect, useState } from "react";
-import { fetchAllShift } from "../../Redux/Slices/shiftSlice";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+
 // import { IService } from "~/interfaces/service";
-import IShift from "~/interfaces/shift";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
+import FindOpponent from "~/components/FindOpponent/FindOpponent";
+import IPitch from "~/interfaces/pitch";
+import IShift from "~/interfaces/shift";
+import { fetchAllChildrenPitch } from "~/Redux/Slices/childrentPitch";
+import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 dayjs.extend(customParseFormat);
-
 const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
 const today = dayjs();
+
 const PitchDetailPage = () => {
-  const { id } = useParams();
   const dispatch = useAppDispatch();
+  const { id } = useParams();
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
   const services = useAppSelector((state) => state.service.services);
+
+  const pitchAll = useAppSelector((state) => state.pitch.pitchs);
+  // const showModal = () => {
+  //   setIsModalOpen(true);
+  // };
+  // const handleOk = () => {
+  //   setIsModalOpen(false);
+  // };
+  // const handleCancel = () => {
+  //   setIsModalOpen(false);
+  // };
+
+  // form modal
+  // const onFinish = (values: any) => {
+  //   console.log("Success:", values);
+  // };
+
+  // const onFinishFailed = (errorInfo: any) => {
+  //   console.log("Failed:", errorInfo);
+  // };
+  //  form add đặt nhiều ngày
+
+  // xử lí detailPitch
+
+  const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
+  useEffect(() => {
+    getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
+  }, []);
+
+  // console.log("số lượng sân", Pitch.numberPitch);
+  const renderPitchCards = () => {
+    const pitchCards = [];
+    for (let i = 1; i <= Pitch.numberPitch; i++) {
+      pitchCards.push(
+        <div
+          className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
+          key={i}
+        >
+          <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
+            Sân {i}
+          </h3>
+          <p className="mx-[20px] mt-[20px]">
+            Thời Gian: 7:00
+            <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
+          </p>
+          <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
+          <p className="mx-[20px] mt-[20px]">
+            Ca Sân :
+            <div className="flex flex-wrap justify-between my-[20px]">
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 1
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 2
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 3
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 4
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 5
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 6
+              </button>
+            </div>
+          </p>
+          <div className="grid grid-cols-2 border mt-[20px] ">
+            <button className="justify-center mx-auto flex border-r py-3 w-full items-center">
+              <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
+              Đặt Sân
+            </button>
+            <button>
+              <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
+              Tìm Đối
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return pitchCards;
+  };
+
   const [selectedServices, setSelectedServices] = useState<any>([]);
 
   const handleServiceSelection = (serviceId: any) => {
@@ -58,98 +160,60 @@ const PitchDetailPage = () => {
     console.log('Tổng:', totalPrice);
   };
 
+
+  // Xử lí đội bóng liên quan
+  const districtsId = Pitch.districts_id; // ID của danh mục bạn muốn lọc
+  console.log("All Pitch", pitchAll);
+
+  useEffect(() => {
+    dispatch(fetchAllPitch(""));
+  }, [dispatch]);
+
+  const filteredPitch = pitchAll.filter(
+    (pitch: IPitch) => pitch.districts_id === districtsId
+  );
+  console.log("ĐBLQ", filteredPitch);
+
+  // end xử lí đội bóng liên quan
+
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
+  //
 
   const shifts = useAppSelector((state) => state.shift.shift);
-  // console.log(shifts);
+  console.log(shifts);
   const dataTable = shifts.map((item: IShift, index: number) => ({
     ...item,
     key: index,
   }));
 
-    console.log(dataTable);
-    
   // xử lí detailPitch
-  const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
-  useEffect(() => {
-    getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
-  }, []);
-  console.log('detailPitch', Pitch.services);
+  // const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
+  // useEffect(() => {
+  //   getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
+  // }, [id]);
+
   //end detailPitch
-
   useEffect(() => {
-    dispatch(fetchAllShift());
+    // dispatch(fetchAllShift());
+    dispatch(fetchAllChildrenPitch());
   }, [dispatch]);
-  //
 
-  const handleButtonClick = (id: any) => {
-    const selectedShift = shifts.find((shift: any) => shift._id === id);
-    if (selectedShift) {
-      console.log("id: ", selectedShift._id);
-    }
-  };
-  const columns: ColumnsType<IShift> = [
-    {
-      title: "Ca Sân",
-      dataIndex: "number_shift",
-      key: "number_shift",
-      render: (text) => <span> Ca {text} </span>,
-    },
-    {
-      title: "Giờ Bắt Đầu",
-      dataIndex: "time_start",
-      key: "time_start",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Giờ Kết Thúc",
-      dataIndex: "time_end",
-      key: "time_end",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Số Sân Trống",
-      dataIndex: "number_remain",
-      key: "number_remain",
-      render: (text) => (
-        <span>
-          <Space>{text} / 4</Space>
-        </span>
-      ),
-    },
-    {
-      title: "Giá Sân",
-      dataIndex: "price",
-      key: "price",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "Trạng Thái Sân",
-      dataIndex: "statusPitch",
-      key: "statusPitch",
-      render: (text) => (
-        <span
-          className={
-            text
-              ? "text-[#fff] bg-green-600 p-[10px] rounded-[10px]"
-              : "p-[10px] rounded-[10px] text-[#fff] bg-red-600"
-          }
-        >
-          {text ? "Sân Trống" : "Sân Bận"}
-        </span>
-      ),
-    },
-    {
-      title: "Đặt Sân",
-      render: (record) => (
-        <Button onClick={() => handleButtonClick(record._id)}>
-          Đặt Sân Ca {record.number_shift}
-        </Button>
-      ),
-    },
-  ];
+  // const datachildrentPitch = childrenPitchs.data;
+  // datachildrentPitch.forEach((element:any) => {
+  //   console.log(element);
+
+  //   // if (element.idShifts) {
+  //   //     const idShifts = element.idShifts;
+  //   //     // idShifts.forEach((shift:any) => {
+  //   //     //     console.log(shift);
+  //   //     // });
+  //   //     console.log(idShifts.length);
+
+  //   // }
+  // });
+
   const data = [
     {
       label: "THÔNG TIN CƠ BẢN",
@@ -160,14 +224,20 @@ const PitchDetailPage = () => {
             <div className="left-img w-[65%] md:w-[100%]">
               <Image.PreviewGroup
                 items={[
-                  `${Pitch.images}`,
-                  `${Pitch.images}`,
-                  `${Pitch.images}`,
-                  `${Pitch.images}`,
+                  `
+                  ${
+                    Pitch?.images &&
+                    Pitch.images.length > 0 &&
+                    (Pitch.images[0], Pitch.images[1], Pitch.images[2])
+                  }
+                  `,
                 ]}
               >
                 {Pitch?.images && Pitch.images.length > 0 && (
-                  <Image className="w-[100%] h-[100%]" src={Pitch.images[0]} />
+                  <Image
+                    className="w-[100%] h-[100%] object-cover"
+                    src={Pitch.images[0]}
+                  />
                 )}
               </Image.PreviewGroup>
             </div>
@@ -192,16 +262,81 @@ const PitchDetailPage = () => {
     {
       label: "ĐỘI BÓNG LIÊN QUAN",
       value: "react",
-      desc: `Because it's about motivating the doers. Because I'm here
-          to follow my dreams and inspire other people to follow their dreams, too.`,
+      desc: (
+        <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
+          <Swiper
+            spaceBetween={80}
+            slidesPerView={2}
+            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
+            {filteredPitch && filteredPitch.length > 0 ? (
+              filteredPitch.map((item: IPitch) => (
+                <SwiperSlide>
+                  <div className="item-pitch ">
+                    {/* <Link to={`/pitch/detail/${item._id}`}>
+                      
+                    </Link> */}
+                    <a href={`/pitch/detail/${item._id}`}>
+                      <div className="imgae-item-pitch">
+                        <img
+                          src={item.avatar}
+                          width="100%"
+                          className="h-[250px]"
+                          alt=""
+                        />
+                      </div>
+                      <div className="text-item-pitch">
+                        <Rate allowHalf defaultValue={4.5} />{" "}
+                        <span>( 99+ Review)</span>
+                        <h3>{item.name}</h3>
+                        <p>Số Người :7 Người</p>
+                        <p className="flex justify-between my-[10px]">
+                          Dịch Vụ :
+                          {item.services.map((data: any) => {
+                            console.log(data);
+                            const service = services.find(
+                              (item) => item._id == data._id
+                            );
+                            return (
+                              <span key={data._id!}>
+                                <i className="fa-solid fa-check"></i>{" "}
+                                {service ? service.name : "Chưa có dịch vụ"}
+                              </span>
+                            );
+                          })}
+                        </p>
+                        <p className="flex justify-between">
+                          Giá :
+                          <span>
+                            <del className="italic text-[13px]">
+                              500.000-1.200.000
+                            </del>
+                          </span>
+                          <span className="text-[23px] text-[#ffb932] text-bold">
+                            {item.deposit_price.toLocaleString("vi-VN")} -
+                            850.000
+                          </span>
+                        </p>
+                      </div>
+                    </a>
+                  </div>
+                </SwiperSlide>
+              ))
+            ) : (
+              <div>
+                {" "}
+                <Empty />
+              </div>
+            )}
+          </Swiper>
+        </div>
+      ),
     },
 
     {
-      label: "TIỆN ÍCH",
-      value: "vue",
-      desc: `We're not always in the position that we want to be at.
-          We're constantly growing. We're constantly making mistakes. We're
-          constantly trying to express ourselves and actualize our dreams.`,
+      label: "Tìm Đối",
+      desc: <FindOpponent idPitch={id!} />,
     },
 
     {
@@ -209,7 +344,6 @@ const PitchDetailPage = () => {
       value: "angular",
       desc: (
         <>
-      
         <div className="flex h-[400px] w-[950px] overflow-x-scroll">
         {Pitch.services ? Pitch.services.map((serviceId: string) => {
           const service = services.find((item) => item._id === serviceId);
@@ -248,6 +382,33 @@ const PitchDetailPage = () => {
     },
   ];
 
+  // form lọc theo giá sân :
+  const IntegerStep = () => {
+    const [inputValue, setInputValue] = useState(1);
+
+    const onChangePrice = (newValue: number | null) => {
+      if (newValue !== null) {
+        setInputValue(newValue);
+      }
+    };
+    return (
+      <div className="flex items-center justify-between">
+        <Slider
+          className="w-[80%]"
+          min={1}
+          max={200000}
+          onChange={onChangePrice}
+          value={typeof inputValue === "number" ? inputValue : 0}
+        />
+
+        <InputNumber
+          style={{ margin: "0 16px" }}
+          value={inputValue}
+          onChange={onChangePrice}
+        />
+      </div>
+    );
+  };
   return (
     <div className="bg-[#f3f3f5]">
       {/* =========banner========= */}
@@ -263,13 +424,13 @@ const PitchDetailPage = () => {
       </div>
       {/* -===========detail pitch============ */}
       {/* ảnh ọt thôi */}
-      <div className="mx-auto max-w-screen-2xl gap-10 flex md:block relative">
+      <div className="mx-auto max-w-screen-2xl  xl:flex gap-10 md:block relative">
         {/* left */}
-        <div className="sm:w-full md:w-full xl:w-[75%]">
+        <div className="sm:w-full md:w-full xl:w-[72%]">
           <Tabs id="custom-animation" value="html">
             <TabsHeader className="">
               {data.map(({ label, value }) => (
-                <Tab key={value} value={value}>
+                <Tab key={value} value={value!}>
                   {label}
                 </Tab>
               ))}
@@ -283,15 +444,15 @@ const PitchDetailPage = () => {
               }}
             >
               {data.map(({ value, desc }) => (
-                <TabPanel key={value} value={value}>
+                <TabPanel key={value} value={value!}>
                   {desc}
                 </TabPanel>
               ))}
             </TabsBody>
           </Tabs>
         </div>
-        <div className="right-detail-pitch xl:w-[25%] md:w-[100%] md:relative md:mt-[10px] xl:absolute xl:top-[-120px] right-0">
-          <div className=" bg-white p-[40px] rounded-[20px] shadow">
+        <div className="right-detail-pitch xl:w-[25%] mt-[-50px]">
+          <div className=" bg-white p-[40px] rounded-[10px] shadow-xl">
             <p className="mb-[30px] flex justify-between">
               HOT PITCH{" "}
               <span>
@@ -303,7 +464,8 @@ const PitchDetailPage = () => {
               <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
               <span className="text-[#ffb932]">
                 {Pitch.deposit_price}
-              </span> - <span className="text-[#fd9e4b]">850.000</span>
+              </span> - <span className="text-[#fd9e4b]">850.000</span> -{" "}
+              <span className="text-[#fd9e4b]">1.150.000</span>
             </p>
             <p className="my-[20px]">
               Sân trống : <span>10</span>
@@ -318,7 +480,6 @@ const PitchDetailPage = () => {
             <p></p>
             <p>
               <a href="#timca" className="text-[#3a75da]">
-                {" "}
                 <i className="fa-solid fa-right-long fa-shake mr-[20px]"></i>Tìm
                 Ca Sân
               </a>
@@ -340,17 +501,62 @@ const PitchDetailPage = () => {
           </div>
         </div>
       </div>
-
       {/* thôn tin sân và đặt lịch ở đây  */}
-      <div className="container flex justify-between mx-auto my-[50px]">
+      <div className="container flex justify-between mx-auto my-[50px] mt-[100px]">
         <div className="info-pitch">
           <h1 className="text-pitch">{Pitch.name}</h1>
           <p>
             <Rate allowHalf defaultValue={5} /> <span> ( 2 Reviews )</span>
           </p>
         </div>
-        <div className="calendar">
-          <Form>
+      </div>
+      <div
+        id="timca"
+        className="container mx-auto booking_detail grid grid-cols-7 gap-10"
+      >
+        {/* khu vực hiển thị ca sân  */}
+        <div className="left_booking col-span-5">
+          <div className="grid grid-cols-2 gap-[40px] list_shift">
+            {renderPitchCards()}
+          </div>
+        </div>
+        {/* khu vực lọc theo tìm kiếm */}
+        <div className="right_booking col-span-2 p-[20px] bg-[#fff] shadow-md rounded-[12px]">
+          <h1 className="text-center mb-[20px] text-[25px] font-[700] font-body ">
+            TÌM NHANH
+          </h1>
+          {/* lichj */}
+          <div className="calendar">
+            <Form>
+              <Form.Item>
+                <div className="flex items-center justify-between">
+                  <p className="text-20px font-[600] w-max mr-[10px]">
+                    <i className="fa-regular fa-calendar mr-[10px]"></i>CHỌN
+                    LỊCH NGÀY :
+                  </p>
+                  <Space direction="vertical">
+                    <DatePicker />
+                  </Space>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
+          {/* mã số sân */}
+          <div className="code_childrent_pitch">
+            <Form>
+              <Form.Item>
+                <div className="flex items-center justify-between">
+                  <p className="text-20px font-[600] w-max mr-[10px]">
+                    <i className="fa-regular fa-calendar mr-[20px]"></i>CHỌN SÂN
+                    :
+                  </p>
+                  <Select labelInValue style={{ width: "60%" }} />
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
+          {/* giá sân */}
+          <div className="price_pitch">
             <Form.Item>
               <div className="flex items-center">
                 <p className="text-20px font-[600] w-max mr-[30px]">
@@ -363,162 +569,138 @@ const PitchDetailPage = () => {
               </div>
             </Form.Item>
             <Form.Item></Form.Item>
-          </Form>
+          </div>
         </div>
-      </div>
-      <div id="timca" className="container mx-auto booking_detail items-center">
-        <div className="left_booking">
-          <Table
-            pagination={{ pageSize: 8 }}
-            columns={columns}
-            dataSource={dataTable}
-          />
+        <div
+          id="timca"
+          className="container mx-auto booking_detail items-center"
+        >
+          <div className="left_booking">
+            <Table
+              pagination={{ pageSize: 8 }}
+              // columns={columns}
+              dataSource={dataTable}
+            />
+          </div>
         </div>
+        <Form.Item>
+          <Space style={{ width: "100%" }} direction="vertical">
+            <IntegerStep />
+          </Space>
+        </Form.Item>
       </div>
+      {/* button submit form tìm đối */}
+      <div className="submit_form text-center mt-5 border-b border-b-[#1fd392] pb-[20px]">
+        <Button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
+          Tìm Nhanh
+        </Button>
+      </div>
+      <h3 className="my-[30px]">Hoặc bạn có thể :</h3>
+      {/* form đặt nhiều hoặc đăng ký theo tháng */}
+      <div className="flex justify-between">
+        <button
+          // onClick={showModal}
+          className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]"
+        >
+          Đặt Nhiều Sân
+        </button>
+        <button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
+          Đăng Ký Gói Tháng
+        </button>
 
-      {/* các sân bongs ưu tiên */}
-      <div className="hot-pitch mt-[100px] mx-auto max-w-screen-2xl xl px-[30px]">
-        <h1>CÓ THỂ BẠN KHUM THÍCH</h1>
-        <Swiper spaceBetween={80} slidesPerView={3}>
-          <SwiperSlide>
-            <div className="item-pitch ">
-              <Link to="detail">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
+        <Modal
+          title="ĐẶT NHIỀU SÂN"
+          // open={isModalOpen}
+          // onOk={handleOk}
+          // onCancel={handleCancel}
+        >
+          <Form
+          // onFinish={onFinish}
+          // onFinishFailed={onFinishFailed}
+          >
+            <div className="flex items-center gap-10">
+              <Form.Item
+                label="Chọn Ngày"
+                name="date"
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa chọn ngày!",
+                  },
+                ]}
+              >
+                <DatePicker />
+              </Form.Item>
+              <Form.Item
+                label="Chọn Sân"
+                name="pitch"
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa chọn sân!",
+                  },
+                ]}
+              >
+                <Select
+                  style={{ width: "120px" }}
+                  options={[
+                    { value: "1", label: "Sân 1" },
+                    { value: "2", label: "Sân 2" },
+                    { value: "3", label: "Sân 3" },
+                    {
+                      value: "disabled",
+                      label: "Disabled",
+                      disabled: true,
+                    },
+                  ]}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Chọn Ca"
+                name="shift"
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa chọn sân!",
+                  },
+                ]}
+              >
+                <Select
+                  style={{ width: "120px" }}
+                  options={[
+                    { value: "1", label: "Sân 1" },
+                    { value: "2", label: "Sân 2" },
+                    { value: "3", label: "Sân 3" },
+                    {
+                      value: "disabled",
+                      label: "Disabled",
+                      disabled: true,
+                    },
+                  ]}
+                />
+              </Form.Item>
+              <Form.Item label="Giá Sân" name="price">
+                <Input />
+              </Form.Item>
+              <Button className="rounded-[50%] border-[#f71515bb]"> X </Button>
             </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="item-pitch">
-              <Link to="detail">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
+            <div>
+              <Button className="rounded-[50%] bg-[#1fd392] text-[#fff] w-[25px] h-[25px] flex justify-center items-center">
+                +
+              </Button>
             </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="item-pitch">
-              <Link to="detail">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="item-pitch ">
-              <Link to="">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </SwiperSlide>
-        </Swiper>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Thanh Toán
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
     </div>
+    // </div>
+    /* các sân bongs ưu tiên */
+    // </div>
   );
 };
 

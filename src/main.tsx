@@ -8,6 +8,7 @@ import App from "./App.tsx";
 import store from "./Redux/store.ts";
 import "./index.scss";
 import "./styles/global-style.scss";
+import LoaderAllPage from "./components/LoaderAllPage/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <ThemeProvider>
             <App />
             <ToastContainer />
+            <LoaderAllPage />
         </ThemeProvider>
     </Provider>
     // </React.StrictMode>

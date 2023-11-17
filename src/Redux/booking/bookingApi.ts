@@ -7,12 +7,12 @@ const bookingApi = createApi({
         baseUrl: "http://localhost:8080",
     }),
     endpoints: (builder) => ({
-        getAllBookingByUserId: builder.query<{ data: IBooking[] }, void>({
-            query: () => "/api/bookings",
+        getAllBookingByUserId: builder.query<{ data: IBooking[] }, any>({
+            query: (params) => ({ url: "/api/bookings", params }),
         }),
-        getBookingByPaymentId: builder.query<{ data: IBooking[] }, { payment_id: string }>({
+        getBookingByField: builder.query<{ data: IBooking }, { payment_id?: string; _id?: string }>({
             query: (params) => ({
-                url: "/api/bookings/get-by-code",
+                url: "/api/bookings/get-by-field",
                 params,
             }),
         }),
@@ -26,5 +26,5 @@ const bookingApi = createApi({
     }),
 });
 
-export const { useGetAllBookingByUserIdQuery, useGetBookingByPaymentIdQuery, useNewBookingAffterPayMutation } = bookingApi;
+export const { useGetAllBookingByUserIdQuery, useGetBookingByFieldQuery, useNewBookingAffterPayMutation } = bookingApi;
 export default bookingApi;
