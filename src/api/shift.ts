@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import instance from "./config"
 
-export const getAllShift = () => {
-    return instance.get(`/shift`)
+export const getAllShift = (query:any) => {
+    return instance.get(`/shift${query}`)
 }
 export const getOneShift = (idShift: any) => {
     return instance.get(`/shift/${idShift}`)
