@@ -71,21 +71,21 @@
   font-size: 30px;
   font-weight: 700;
 }
-.ant-table-content .ant-table-thead .ant-table-cell{
+.ant-table-content .ant-table-thead .ant-table-cell {
   background-color: #f4eade !important;
   text-align: center !important;
   color: #000 !important;
 }
-.ant-table-content .ant-table-tbody{
+.ant-table-content .ant-table-tbody {
   text-align: center !important;
 }
-  width: 100%;
-}
-:where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary{
+
+:where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary {
   background-color: #1fd392 !important;
 }
-.ant-modal{
+.ant-modal {
   width: max-content !important;
+}
 .box-service-pitch-detail > .lg\:w-1\/4 {
   width: 24%;
-x}
+}

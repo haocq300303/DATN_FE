@@ -10,12 +10,12 @@ import "./index.scss";
 import "./styles/global-style.scss";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    // <React.StrictMode>
-    <Provider store={store}>
-        <ThemeProvider>
-            <App />
-            <ToastContainer />
-        </ThemeProvider>
-    </Provider>
-    // </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <ThemeProvider>
+      <App />
+      <ToastContainer />
+    </ThemeProvider>
+  </Provider>
+  // </React.StrictMode>
 );

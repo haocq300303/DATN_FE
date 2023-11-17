@@ -1,81 +1,79 @@
-
 import {
-  Carousel,
-  DatePicker,
-  Form,
-  Image,
-  InputNumber,
-  Select,
-  Slider,
-  Rate,
-  Space,
-  Button,
-  Modal,
-  Input,
-   Empty,
-} from "antd";
-import "./pitchDetailPage.css";
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
+  Card,
+  CardBody,
+  CardHeader,
   Tab,
   TabPanel,
-  Card,
-  CardHeader,
-  CardBody,
+  Tabs,
+  TabsBody,
+  TabsHeader,
   Typography,
 } from "@material-tailwind/react";
-
-
-// import img1 from "../../assets/img/Web/banner1.png";
+import {
+  Button,
+  Carousel,
+  DatePicker,
+  Empty,
+  Form,
+  Image,
+  Input,
+  InputNumber,
+  Modal,
+  Rate,
+  Select,
+  Slider,
+  Space,
+  Table,
+} from "antd";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "./pitchDetailPage.css";
+// import type { ColumnsType } from "antd/es/table";
 import { useParams } from "react-router-dom";
+// import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 
-import { IService } from "~/interfaces/service";
-// import IShift from "~/interfaces/shift";
+// import { IService } from "~/interfaces/service";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
-import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+import FindOpponent from "~/components/FindOpponent/FindOpponent";
+import IPitch from "~/interfaces/pitch";
+import IShift from "~/interfaces/shift";
 import { fetchAllChildrenPitch } from "~/Redux/Slices/childrentPitch";
+import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 dayjs.extend(customParseFormat);
+const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+const today = dayjs();
+
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // const services = useAppSelector((state) => state.service.services);
 
-  const services = useAppSelector((state) => state.service.services);
-  console.log(services);
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
+  // const showModal = () => {
+  //   setIsModalOpen(true);
+  // };
+  // const handleOk = () => {
+  //   setIsModalOpen(false);
+  // };
+  // const handleCancel = () => {
+  //   setIsModalOpen(false);
+  // };
 
   // form modal
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
+  // const onFinish = (values: any) => {
+  //   console.log("Success:", values);
+  // };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
-//  form add đặt nhiều ngày
-
-
-
-  console.log(dataTable);
+  // const onFinishFailed = (errorInfo: any) => {
+  //   console.log("Failed:", errorInfo);
+  // };
+  //  form add đặt nhiều ngày
 
   // xử lí detailPitch
 
@@ -84,10 +82,7 @@ const PitchDetailPage = () => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, []);
 
-  console.log('detailPitch', Pitch);
-
-  console.log("detailPitch", Pitch);
-  console.log("số lượng sân", Pitch.numberPitch);
+  // console.log("số lượng sân", Pitch.numberPitch);
   const renderPitchCards = () => {
     const pitchCards = [];
     for (let i = 1; i <= Pitch.numberPitch; i++) {
@@ -143,24 +138,24 @@ const PitchDetailPage = () => {
     return pitchCards;
   };
 
-
   //end detailPitch
   const services = useAppSelector((state) => state.service.services);
-  const childrenPitchs = useAppSelector(
-    (state) => state.childrenPitch.childrentpitchs
-  );
+  // const childrenPitchs = useAppSelector(
+  //   (state) => state.childrenPitch.childrentpitchs
+  // );
   console.log(services);
 
-  // Xử lí đội bóng liên quan 
+  // Xử lí đội bóng liên quan
   const districtsId = Pitch.districts_id; // ID của danh mục bạn muốn lọc
-  console.log("id distris", districtsId);
   console.log("All Pitch", pitchAll);
 
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
 
-  const filteredPitch = pitchAll.filter((pitch: IPitch) => pitch.districts_id === districtsId);
+  const filteredPitch = pitchAll.filter(
+    (pitch: IPitch) => pitch.districts_id === districtsId
+  );
   console.log("ĐBLQ", filteredPitch);
 
   // end xử lí đội bóng liên quan
@@ -170,10 +165,24 @@ const PitchDetailPage = () => {
   }, [dispatch]);
   //
 
+  const shifts = useAppSelector((state) => state.shift.shift);
+  console.log(shifts);
+  const dataTable = shifts.map((item: IShift, index: number) => ({
+    ...item,
+    key: index,
+  }));
+
+  // xử lí detailPitch
+  // const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
+  // useEffect(() => {
+  //   getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
+  // }, [id]);
+
+  //end detailPitch
   useEffect(() => {
+    // dispatch(fetchAllShift());
     dispatch(fetchAllChildrenPitch());
   }, [dispatch]);
-  console.log("dataChillrentPitch", childrenPitchs.data);
 
   // const datachildrentPitch = childrenPitchs.data;
   // datachildrentPitch.forEach((element:any) => {
@@ -200,12 +209,12 @@ const PitchDetailPage = () => {
               <Image.PreviewGroup
                 items={[
                   `
-                  ${Pitch?.images && Pitch.images.length > 0 && (
-                    Pitch.images[0],
-                    Pitch.images[1],
-                    Pitch.images[2]
-                  )}
-                  `
+                  ${
+                    Pitch?.images &&
+                    Pitch.images.length > 0 &&
+                    (Pitch.images[0], Pitch.images[1], Pitch.images[2])
+                  }
+                  `,
                 ]}
               >
                 {Pitch?.images && Pitch.images.length > 0 && (
@@ -254,10 +263,16 @@ const PitchDetailPage = () => {
                     </Link> */}
                     <a href={`/pitch/detail/${item._id}`}>
                       <div className="imgae-item-pitch">
-                        <img src={item.avatar} width="100%" className="h-[250px]" alt="" />
+                        <img
+                          src={item.avatar}
+                          width="100%"
+                          className="h-[250px]"
+                          alt=""
+                        />
                       </div>
                       <div className="text-item-pitch">
-                        <Rate allowHalf defaultValue={4.5} /> <span>( 99+ Review)</span>
+                        <Rate allowHalf defaultValue={4.5} />{" "}
+                        <span>( 99+ Review)</span>
                         <h3>{item.name}</h3>
                         <p>Số Người :7 Người</p>
                         <p className="flex justify-between my-[10px]">
@@ -283,85 +298,70 @@ const PitchDetailPage = () => {
                             </del>
                           </span>
                           <span className="text-[23px] text-[#ffb932] text-bold">
-                            {item.deposit_price.toLocaleString('vi-VN')} - 850.000
+                            {item.deposit_price.toLocaleString("vi-VN")} -
+                            850.000
                           </span>
                         </p>
                       </div>
                     </a>
-
                   </div>
                 </SwiperSlide>
               ))
             ) : (
-              <div> <Empty /></div>
+              <div>
+                {" "}
+                <Empty />
+              </div>
             )}
-
           </Swiper>
         </div>
       ),
     },
 
     {
-      label: "TIỆN ÍCH",
-      value: "vue",
-      desc: `We're not always in the position that we want to be at.
-          We're constantly growing. We're constantly making mistakes. We're
-          constantly trying to express ourselves and actualize our dreams.`,
+      label: "Tìm Đối",
+      desc: <FindOpponent idPitch={id!} />,
     },
 
     {
       label: "Dịch VỤ",
       value: "angular",
       desc: (
-
         <div className="flex flex-wrap box-service-pitch-detail">
-          {Pitch.services ? Pitch.services.map((serviceId: string) => {
-            const service = services.find((item) => item._id === serviceId);
-            return (
-              <Card className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2" key={service?._id}>
-                <CardHeader color="blue-gray" className="relative w- h-28 pl-0">
-                  <img
-                    className="w-full"
-                    src={service?.image}
-                    alt="card-image"
-                  />
-                </CardHeader>
-                <CardBody>
-                  <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
-                    {service?.name}
-                  </Typography>
-                  <Typography>{service?.price.toLocaleString("vi-VN")}đ</Typography>
-                </CardBody>
-              </Card>
-            );
-          }) : "Không có dịch vụ"}
+          {Pitch.services
+            ? Pitch.services.map((serviceId: string) => {
+                const service = services.find((item) => item._id === serviceId);
+                return (
+                  <Card
+                    className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2"
+                    key={service?._id}
+                  >
+                    <CardHeader
+                      color="blue-gray"
+                      className="relative w- h-28 pl-0"
+                    >
+                      <img
+                        className="w-full"
+                        src={service?.image}
+                        alt="card-image"
+                      />
+                    </CardHeader>
+                    <CardBody>
+                      <Typography
+                        color="blue-gray"
+                        className="mb-2 text-base font-bold w-max"
+                      >
+                        {service?.name}
+                      </Typography>
+                      <Typography>
+                        {service?.price.toLocaleString("vi-VN")}đ
+                      </Typography>
+                    </CardBody>
+                  </Card>
+                );
+              })
+            : "Không có dịch vụ"}
         </div>
-
-
-        <div className="flex flex-wrap ">
-          {services?.map((service: IService) => (
-            <Card
-              className="mt-6 w-48 md:w-1/2 lg:w-1/4 px-4 mb-4"
-              key={service._id}
-            >
-              <CardHeader color="blue-gray" className="relative h-36 w-full">
-                <img src={service.image} alt="card-image" />
-              </CardHeader>
-              <CardBody>
-                <Typography
-                  color="blue-gray"
-                  className="mb-2 text-base font-bold w-max"
-                >
-                  {service.name}
-
-                </Typography>
-                <Typography>{service?.price.toLocaleString("vi-VN")}đ</Typography>
-              </CardBody>
-          </Card>
-          );
-        }) : "Không có dịch vụ"}
-      </div>
-
       ),
     },
     {
@@ -421,7 +421,7 @@ const PitchDetailPage = () => {
           <Tabs id="custom-animation" value="html">
             <TabsHeader className="">
               {data.map(({ label, value }) => (
-                <Tab key={value} value={value}>
+                <Tab key={value} value={value!}>
                   {label}
                 </Tab>
               ))}
@@ -435,7 +435,7 @@ const PitchDetailPage = () => {
               }}
             >
               {data.map(({ value, desc }) => (
-                <TabPanel key={value} value={value}>
+                <TabPanel key={value} value={value!}>
                   {desc}
                 </TabPanel>
               ))}
@@ -455,9 +455,8 @@ const PitchDetailPage = () => {
               <span className="text-[13px]">GIÁ THUÊ CHỈ</span>
               <span className="text-[#ffb932]">
                 {Pitch.deposit_price}
-
-              </span> - <span className="text-[#fd9e4b]">1.150.000</span>
-
+              </span> - <span className="text-[#fd9e4b]">850.000</span> -{" "}
+              <span className="text-[#fd9e4b]">1.150.000</span>
             </p>
             <p className="my-[20px]">
               Sân trống : <span>10</span>
@@ -550,128 +549,149 @@ const PitchDetailPage = () => {
           {/* giá sân */}
           <div className="price_pitch">
             <Form.Item>
-              <p className="mb-[10px] text-[23px] font-[600]">Lọc theo giá</p>
-
-              <Space style={{ width: "100%" }} direction="vertical">
-                <IntegerStep />
-              </Space>
+              <div className="flex items-center">
+                <p className="text-20px font-[600] w-max mr-[30px]">
+                  <i className="fa-regular fa-calendar mr-[20px]"></i>CHỌN LỊCH
+                  NGÀY :
+                </p>
+                <Space direction="vertical" size={12}>
+                  <DatePicker defaultValue={today} format={dateFormatList} />
+                </Space>
+              </div>
             </Form.Item>
-          </div>
-          {/* button submit form tìm đối */}
-          <div className="submit_form text-center mt-5 border-b border-b-[#1fd392] pb-[20px]">
-            <Button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
-              Tìm Nhanh
-            </Button>
-          </div>
-          <h3 className="my-[30px]">Hoặc bạn có thể :</h3>
-          {/* form đặt nhiều hoặc đăng ký theo tháng */}
-          <div className="flex justify-between">
-            <button
-              onClick={showModal}
-              className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]"
-            >
-              Đặt Nhiều Sân
-            </button>
-            <button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
-              Đăng Ký Gói Tháng
-            </button>
-
-            <Modal
-              title="ĐẶT NHIỀU SÂN"
-              open={isModalOpen}
-              onOk={handleOk}
-              onCancel={handleCancel}
-            >
-              <Form
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-              >
-                <div className="flex items-center gap-10">
-                  <Form.Item
-                    label="Chọn Ngày"
-                    name="date"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Bạn chưa chọn ngày!",
-                      },
-                    ]}
-                  >
-                    <DatePicker />
-                  </Form.Item>
-                  <Form.Item
-                    label="Chọn Sân"
-                    name="pitch"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Bạn chưa chọn sân!",
-                      },
-                    ]}
-                  >
-                    <Select
-                    style={{width: '120px'}}
-                      options={[
-                        { value: "1", label: "Sân 1" },
-                        { value: "2", label: "Sân 2" },
-                        { value: "3", label: "Sân 3" },
-                        {
-                          value: "disabled",
-                          label: "Disabled",
-                          disabled: true,
-                        },
-                      ]}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="Chọn Ca"
-                    name="shift"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Bạn chưa chọn sân!",
-                      },
-                    ]}
-                  >
-                    <Select
-                    style={{width: '120px'}}
-                      options={[
-                        { value: "1", label: "Sân 1" },
-                        { value: "2", label: "Sân 2" },
-                        { value: "3", label: "Sân 3" },
-                        {
-                          value: "disabled",
-                          label: "Disabled",
-                          disabled: true,
-                        },
-                      ]}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="Giá Sân"
-                    name="price"
-                  >
-                    <Input />
-                  </Form.Item>
-                    <Button className="rounded-[50%] border-[#f71515bb]"> X </Button>
-                </div>
-                <div>
-                  <Button className="rounded-[50%] bg-[#1fd392] text-[#fff] w-[25px] h-[25px] flex justify-center items-center">
-                    +
-                  </Button>
-                </div>
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                  <Button type="primary" htmlType="submit">
-                    Thanh Toán
-                  </Button>
-                </Form.Item>
-              </Form>
-            </Modal>
+            <Form.Item></Form.Item>
           </div>
         </div>
+        <div
+          id="timca"
+          className="container mx-auto booking_detail items-center"
+        >
+          <div className="left_booking">
+            <Table
+              pagination={{ pageSize: 8 }}
+              // columns={columns}
+              dataSource={dataTable}
+            />
+          </div>
+        </div>
+        <Form.Item>
+          <Space style={{ width: "100%" }} direction="vertical">
+            <IntegerStep />
+          </Space>
+        </Form.Item>
       </div>
-      {/* các sân bongs ưu tiên */}x
+      {/* button submit form tìm đối */}
+      <div className="submit_form text-center mt-5 border-b border-b-[#1fd392] pb-[20px]">
+        <Button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
+          Tìm Nhanh
+        </Button>
+      </div>
+      <h3 className="my-[30px]">Hoặc bạn có thể :</h3>
+      {/* form đặt nhiều hoặc đăng ký theo tháng */}
+      <div className="flex justify-between">
+        <button
+          // onClick={showModal}
+          className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]"
+        >
+          Đặt Nhiều Sân
+        </button>
+        <button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
+          Đăng Ký Gói Tháng
+        </button>
+
+        <Modal
+          title="ĐẶT NHIỀU SÂN"
+          // open={isModalOpen}
+          // onOk={handleOk}
+          // onCancel={handleCancel}
+        >
+          <Form
+          // onFinish={onFinish}
+          // onFinishFailed={onFinishFailed}
+          >
+            <div className="flex items-center gap-10">
+              <Form.Item
+                label="Chọn Ngày"
+                name="date"
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa chọn ngày!",
+                  },
+                ]}
+              >
+                <DatePicker />
+              </Form.Item>
+              <Form.Item
+                label="Chọn Sân"
+                name="pitch"
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa chọn sân!",
+                  },
+                ]}
+              >
+                <Select
+                  style={{ width: "120px" }}
+                  options={[
+                    { value: "1", label: "Sân 1" },
+                    { value: "2", label: "Sân 2" },
+                    { value: "3", label: "Sân 3" },
+                    {
+                      value: "disabled",
+                      label: "Disabled",
+                      disabled: true,
+                    },
+                  ]}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Chọn Ca"
+                name="shift"
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa chọn sân!",
+                  },
+                ]}
+              >
+                <Select
+                  style={{ width: "120px" }}
+                  options={[
+                    { value: "1", label: "Sân 1" },
+                    { value: "2", label: "Sân 2" },
+                    { value: "3", label: "Sân 3" },
+                    {
+                      value: "disabled",
+                      label: "Disabled",
+                      disabled: true,
+                    },
+                  ]}
+                />
+              </Form.Item>
+              <Form.Item label="Giá Sân" name="price">
+                <Input />
+              </Form.Item>
+              <Button className="rounded-[50%] border-[#f71515bb]"> X </Button>
+            </div>
+            <div>
+              <Button className="rounded-[50%] bg-[#1fd392] text-[#fff] w-[25px] h-[25px] flex justify-center items-center">
+                +
+              </Button>
+            </div>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Thanh Toán
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
     </div>
+    // </div>
+    /* các sân bongs ưu tiên */
+    // </div>
   );
 };
 
