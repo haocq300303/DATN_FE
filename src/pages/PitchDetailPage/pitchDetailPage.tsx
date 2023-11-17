@@ -1,5 +1,4 @@
 import {
-  Button,
   Carousel,
   DatePicker,
   Form,
@@ -7,7 +6,11 @@ import {
   InputNumber,
   Select,
   Slider,
-  message,
+  Rate,
+  Space,
+  Button,
+  Modal,
+  Input,
 } from "antd";
 import "./pitchDetailPage.css";
 import {
@@ -21,168 +24,136 @@ import {
   CardBody,
   Typography,
 } from "@material-tailwind/react";
-import { Rate, Space } from "antd";
-import { Swiper, SwiperSlide } from "swiper/react";
+
 // import img1 from "../../assets/img/Web/banner1.png";
-import { Link, useParams } from "react-router-dom";
-import item2 from "../../assets/img/Web/stadium1.jfif";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { fetchAllShift } from "../../Redux/Slices/shiftSlice";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 import { IService } from "~/interfaces/service";
 // import IShift from "~/interfaces/shift";
+
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import IPitch from "~/interfaces/pitch";
 import { getOnePitch } from "~/api/pitch";
+import { fetchAllChildrenPitch } from "~/Redux/Slices/childrentPitch";
 dayjs.extend(customParseFormat);
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  // xử lí detailPitch Hải + Hiếu
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  // form modal
+  const onFinish = (values: any) => {
+    console.log("Success:", values);
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+//  form add đặt nhiều ngày
+
   const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, []);
   console.log("detailPitch", Pitch);
+  console.log("số lượng sân", Pitch.numberPitch);
+  const renderPitchCards = () => {
+    const pitchCards = [];
+    for (let i = 1; i <= Pitch.numberPitch; i++) {
+      pitchCards.push(
+        <div
+          className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
+          key={i}
+        >
+          <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
+            Sân {i}
+          </h3>
+          <p className="mx-[20px] mt-[20px]">
+            Thời Gian: 7:00
+            <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
+          </p>
+          <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
+          <p className="mx-[20px] mt-[20px]">
+            Ca Sân :
+            <div className="flex flex-wrap justify-between my-[20px]">
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 1
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 2
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 3
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 4
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 5
+              </button>
+              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+                Ca 6
+              </button>
+            </div>
+          </p>
+          <div className="grid grid-cols-2 border mt-[20px] ">
+            <button className="justify-center mx-auto flex border-r py-3 w-full items-center">
+              <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
+              Đặt Sân
+            </button>
+            <button>
+              <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
+              Tìm Đối
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return pitchCards;
+  };
+
   //end detailPitch
   const services = useAppSelector((state) => state.service.services);
+  const childrenPitchs = useAppSelector(
+    (state) => state.childrenPitch.childrentpitchs
+  );
   console.log(services);
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
 
-  // xử lý chọn ngày  Mcuong
-  const [selectedDate, setSelectedDate] = useState(dayjs());
-  const dateFormatList = ["DD/MM/YYYY"];
-  // list sân mặc định nếu không có data từ db gửi lên
-  //   const [defaultShifts, setDefaultShifts] = useState([
-  //     {
-  //       number_shift: 2,
-  //       time_start: "09:00",
-  //       time_end: "10:00",
-  //       price: "200.000",
-  //       number_remain: 0,
-  //     }, // số 0 ở đây chỉ để tượng trưng thôi nhé, mục đích là số sân sẽ được gọi theo số sân trống hệ thống
-  //     {
-  //       number_shift: 1,
-  //       time_start: "08:00",
-  //       time_end: "09:00",
-  //       price: "200.000",
-  //       number_remain: 0,
-  //     },
-  //     {
-  //       number_shift: 3,
-  //       time_start: "10:00",
-  //       time_end: "11:00",
-  //       price: "200.000",
-  //       number_remain: 0,
-  //     },
-  //     {
-  //       number_shift: 4,
-  //       time_start: "11:00",
-  //       time_end: "12:00",
-  //       price: "200.000",
-  //       number_remain: 0,
-  //     },
-  //     {
-  //       number_shift: 5,
-  //       time_start: "13:00",
-  //       time_end: "14:00",
-  //       price: "200.000",
-  //       number_remain: 0,
-  //     },
-  //     {
-  //       number_shift: 6,
-  //       time_start: "14:00",
-  //       time_end: "15:00",
-  //       price: "200.000",
-  //       number_remain: 0,
-  //     },
-  //   ]);
-  //   const [pitchNumberShift, setPitchNumberShift] = useState(0);
-  //   console.log(pitchNumberShift);
-  //   //  lấy dữ liệu sân trống khi không có ca đặt sân
-  //   useEffect(() => {
-  //     getOnePitch(String(id)).then(({ data: { data } }) => {
-  //       setPitch(data);
-  //       // Cập nhật pitchNumberShift. Mục đích là biết được số sân của doanh nghiệp đó ( nếu không có ca đặt lịch nào thì mặc định toàn bộ sân trống, tương đương mí cả số sân của doanh nghiệp đó)
-  //       setPitchNumberShift(data.numberPitch);
-  //       // Nếu không có data từ Redux, lấy data ở defaultShifts
-  //       if (shifts.length === 0) {
-  //         const updatedDefaultShifts = defaultShifts.map((shift) => ({
-  //           ...shift,
-  //           number_remain: data.numberPitch,
-  //         }));
-  //         setDefaultShifts(updatedDefaultShifts);
-  //       }
-  //     });
-  //   }, []);
-
-  //   console.log(defaultShifts);
-
-  //  xử lý logic khi có sân đặt trong hệ thống
-  //   const shifts = useAppSelector((state) => state.shift.shift);
-
-  //   console.log(shifts);
-  //   let shiftOptions = [];
-  //   shiftOptions = defaultShifts.map((shift) => ({
-  //           label: `Ca ${shift.number_shift}`,
-  //           value: shift.number_shift,
-  //         }));
-  //   let dataTable = [];
-  //   if (shifts.length > 0) {
-  //     shiftOptions = shifts.map((shift: any) => {
-  //       const numberRemain = shift.number_remain - 1;
-  //       return {
-  //         label: `Ca ${shift.number_shift}`,
-  //         value: shift._id,
-  //         number_remain: numberRemain,
-  //       };
-  //     });
-  //     dataTable = shifts.map((item: IShift, index: number) => ({
-  //       ...item,
-  //       key: index,
-  //     }));
-  //   } else {
-  //     shiftOptions = defaultShifts.map((shift) => ({
-  //       label: `Ca ${shift.number_shift}`,
-  //       value: shift.number_shift,
-  //     }));
-
-  //     dataTable = defaultShifts.map((shift, index) => ({
-  //       ...shift,
-  //       key: index,
-  //     }));
-  //   }
-
-  console.log("====================================");
-  //   console.log(dataTable);
-  console.log("====================================");
-
-  // lấy ca sân theo ngày
-  const handleDateChange = (date: any, dateString: any) => {
-    setSelectedDate(dayjs(dateString, "DD/MM/YYYY"));
-    console.log(date);
-  };
-
-  const fetchDataByDate = async () => {
-    const formattedDate = selectedDate.format("DD/MM/YYYY");
-    await dispatch(fetchAllShift(`?date=${formattedDate}`));
-    console.log(formattedDate);
-    message.success(`Tải dữ liệu thành công ngày ${formattedDate}`);
-  };
-  // ==============
-
-  const handleChange = (value: { value: string; label: React.ReactNode }) => {
-    console.log(value);
-  };
-
   useEffect(() => {
-    fetchDataByDate();
-  }, [selectedDate]);
+    dispatch(fetchAllChildrenPitch());
+  }, [dispatch]);
+  console.log("dataChillrentPitch", childrenPitchs.data);
+
+  // const datachildrentPitch = childrenPitchs.data;
+  // datachildrentPitch.forEach((element:any) => {
+  //   console.log(element);
+
+  //   // if (element.idShifts) {
+  //   //     const idShifts = element.idShifts;
+  //   //     // idShifts.forEach((shift:any) => {
+  //   //     //     console.log(shift);
+  //   //     // });
+  //   //     console.log(idShifts.length);
+
+  //   // }
+  // });
 
   const data = [
     {
@@ -319,9 +290,9 @@ const PitchDetailPage = () => {
       </div>
       {/* -===========detail pitch============ */}
       {/* ảnh ọt thôi */}
-      <div className="mx-auto max-w-screen-2xl gap-10 flex md:block relative">
+      <div className="mx-auto max-w-screen-2xl  xl:flex gap-10 md:block relative">
         {/* left */}
-        <div className="sm:w-full md:w-full xl:w-[75%]">
+        <div className="sm:w-full md:w-full xl:w-[72%]">
           <Tabs id="custom-animation" value="html">
             <TabsHeader className="">
               {data.map(({ label, value }) => (
@@ -346,8 +317,8 @@ const PitchDetailPage = () => {
             </TabsBody>
           </Tabs>
         </div>
-        <div className="right-detail-pitch xl:w-[25%] md:w-[100%] md:relative md:mt-[10px] xl:absolute xl:top-[-120px] right-0">
-          <div className=" bg-white p-[40px] rounded-[20px] shadow">
+        <div className="right-detail-pitch xl:w-[25%] mt-[-50px]">
+          <div className=" bg-white p-[40px] rounded-[10px] shadow-xl">
             <p className="mb-[30px] flex justify-between">
               HOT PITCH{" "}
               <span>
@@ -395,7 +366,6 @@ const PitchDetailPage = () => {
           </div>
         </div>
       </div>
-
       {/* thôn tin sân và đặt lịch ở đây  */}
       <div className="container flex justify-between mx-auto my-[50px] mt-[100px]">
         <div className="info-pitch">
@@ -412,187 +382,8 @@ const PitchDetailPage = () => {
         {/* khu vực hiển thị ca sân  */}
         <div className="left_booking col-span-5">
           <div className="grid grid-cols-2 gap-[40px] list_shift">
-
-            
-            <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden">
-              <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
-                Sân 1
-              </h3>
-              <p className="mx-[20px] mt-[20px]">
-                Thời Gian: 7:00
-                <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
-              </p>
-              <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
-              <p className="mx-[20px] mt-[20px]">
-                Ca Sân :
-                <div className="flex flex-wrap justify-between my-[20px]">
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 1
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 2
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 3
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 4
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 5
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 6
-                  </button>
-                </div>
-              </p>
-
-              <div className="grid grid-cols-2 border mt-[20px] ">
-                <button className=" justify-center mx-auto flex border-r py-3 w-full items-center">
-                  <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
-                  Đặt Sân
-                </button>
-                <button>
-                  <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
-                  Tìm Đối
-                </button>
-              </div>
-            </div>
-            <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden">
-              <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
-                Sân 2
-              </h3>
-              <p className="mx-[20px] mt-[20px]">
-                Thời Gian: 7:00
-                <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
-              </p>
-              <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
-              <p className="mx-[20px] mt-[20px]">
-                Ca Sân :
-                <div className="flex flex-wrap justify-between my-[20px]">
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px] bg-[#1fd392]">
-                    Ca 1
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 2
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 3
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 4
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 5
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 6
-                  </button>
-                </div>
-              </p>
-
-              <div className="grid grid-cols-2 border mt-[20px] ">
-                <button className=" justify-center mx-auto flex border-r py-3 w-full items-center">
-                  <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
-                  Đặt Sân
-                </button>
-                <button>
-                  <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
-                  Tìm Đối
-                </button>
-              </div>
-            </div>
-            <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden">
-              <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
-                Sân 3
-              </h3>
-              <p className="mx-[20px] mt-[20px]">
-                Thời Gian: 7:00
-                <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
-              </p>
-              <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
-              <p className="mx-[20px] mt-[20px]">
-                Ca Sân :
-                <div className="flex flex-wrap justify-between my-[20px]">
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 1
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 2
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 3
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 4
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 5
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 6
-                  </button>
-                </div>
-              </p>
-
-              <div className="grid grid-cols-2 border mt-[20px] ">
-                <button className=" justify-center mx-auto flex border-r py-3 w-full items-center">
-                  <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
-                  Đặt Sân
-                </button>
-                <button>
-                  <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
-                  Tìm Đối
-                </button>
-              </div>
-            </div>
-            <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden">
-              <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
-                Sân 4
-              </h3>
-              <p className="mx-[20px] mt-[20px]">
-                Thời Gian: 7:00
-                <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
-              </p>
-              <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
-              <p className="mx-[20px] mt-[20px]">
-                Ca Sân :
-                <div className="flex flex-wrap justify-between my-[20px]">
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 1
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 2
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 3
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 4
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 5
-                  </button>
-                  <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                    Ca 6
-                  </button>
-                </div>
-              </p>
-
-              <div className="grid grid-cols-2 border mt-[20px] ">
-                <button className=" justify-center mx-auto flex border-r py-3 w-full items-center">
-                  <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
-                  Đặt Sân
-                </button>
-                <button>
-                  <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
-                  Tìm Đối
-                </button>
-              </div>
-            </div>
-            
+            {renderPitchCards()}
           </div>
-          
         </div>
         {/* khu vực lọc theo tìm kiếm */}
         <div className="right_booking col-span-2 p-[20px] bg-[#fff] shadow-md rounded-[12px]">
@@ -609,11 +400,7 @@ const PitchDetailPage = () => {
                     LỊCH NGÀY :
                   </p>
                   <Space direction="vertical">
-                    <DatePicker
-                      onChange={handleDateChange}
-                      value={selectedDate}
-                      format={dateFormatList}
-                    />
+                    <DatePicker />
                   </Space>
                 </div>
               </Form.Item>
@@ -628,13 +415,7 @@ const PitchDetailPage = () => {
                     <i className="fa-regular fa-calendar mr-[20px]"></i>CHỌN SÂN
                     :
                   </p>
-                  <Select
-                    labelInValue
-                    // defaultValue={{value}}
-                    style={{ width: "60%" }}
-                    onChange={handleChange}
-                    // options={shiftOptions}
-                  />
+                  <Select labelInValue style={{ width: "60%" }} />
                 </div>
               </Form.Item>
             </Form>
@@ -658,158 +439,111 @@ const PitchDetailPage = () => {
           <h3 className="my-[30px]">Hoặc bạn có thể :</h3>
           {/* form đặt nhiều hoặc đăng ký theo tháng */}
           <div className="flex justify-between">
-            <button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
+            <button
+              onClick={showModal}
+              className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]"
+            >
               Đặt Nhiều Sân
             </button>
             <button className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]">
               Đăng Ký Gói Tháng
             </button>
+
+            <Modal
+              title="ĐẶT NHIỀU SÂN"
+              open={isModalOpen}
+              onOk={handleOk}
+              onCancel={handleCancel}
+            >
+              <Form
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+              >
+                <div className="flex items-center gap-10">
+                  <Form.Item
+                    label="Chọn Ngày"
+                    name="date"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Bạn chưa chọn ngày!",
+                      },
+                    ]}
+                  >
+                    <DatePicker />
+                  </Form.Item>
+                  <Form.Item
+                    label="Chọn Sân"
+                    name="pitch"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Bạn chưa chọn sân!",
+                      },
+                    ]}
+                  >
+                    <Select
+                    style={{width: '120px'}}
+                      options={[
+                        { value: "1", label: "Sân 1" },
+                        { value: "2", label: "Sân 2" },
+                        { value: "3", label: "Sân 3" },
+                        {
+                          value: "disabled",
+                          label: "Disabled",
+                          disabled: true,
+                        },
+                      ]}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Chọn Ca"
+                    name="shift"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Bạn chưa chọn sân!",
+                      },
+                    ]}
+                  >
+                    <Select
+                    style={{width: '120px'}}
+                      options={[
+                        { value: "1", label: "Sân 1" },
+                        { value: "2", label: "Sân 2" },
+                        { value: "3", label: "Sân 3" },
+                        {
+                          value: "disabled",
+                          label: "Disabled",
+                          disabled: true,
+                        },
+                      ]}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Giá Sân"
+                    name="price"
+                  >
+                    <Input />
+                  </Form.Item>
+                    <Button className="rounded-[50%] border-[#f71515bb]"> X </Button>
+                </div>
+                <div>
+                  <Button className="rounded-[50%] bg-[#1fd392] text-[#fff] w-[25px] h-[25px] flex justify-center items-center">
+                    +
+                  </Button>
+                </div>
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                  <Button type="primary" htmlType="submit">
+                    Thanh Toán
+                  </Button>
+                </Form.Item>
+              </Form>
+            </Modal>
           </div>
         </div>
       </div>
-
-      {/* các sân bongs ưu tiên */}
-      <div className="hot-pitch mt-[100px] mx-auto max-w-screen-2xl xl px-[30px]">
-        <h1>CÓ THỂ BẠN KHUM THÍCH</h1>
-        <Swiper spaceBetween={80} slidesPerView={3}>
-          <SwiperSlide>
-            <div className="item-pitch ">
-              <Link to="detail">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="item-pitch">
-              <Link to="detail">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="item-pitch">
-              <Link to="detail">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="item-pitch ">
-              <Link to="">
-                <div className="imgae-item-pitch">
-                  <img src={item2} width="100%" alt="" />
-                </div>
-                <div className="text-item-pitch">
-                  <Rate allowHalf defaultValue={4.5} /> <span>( 1 Review)</span>
-                  <h3>SÂN BÓNG MẠNH CƯỜNG</h3>
-                  <p>Số Người :7 Người</p>
-                  <p className="flex justify-between my-[10px]">
-                    Dịch Vụ :
-                    <span>
-                      <i className="fa-solid fa-check"></i> WIFI
-                    </span>
-                    <span>
-                      <i className="fa-solid fa-check"></i> CANGTEEN
-                    </span>
-                  </p>
-                  <p className="flex justify-between">
-                    Giá :
-                    <span>
-                      <del className="italic text-[13px]">
-                        300.000-1.200.000
-                      </del>
-                    </span>
-                    <span className="text-[23px] text-[#ffb932] text-bold">
-                      150.000 - 850.000
-                    </span>
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </SwiperSlide>
-        </Swiper>
-      </div>
+      {/* các sân bongs ưu tiên */}x
     </div>
   );
 };

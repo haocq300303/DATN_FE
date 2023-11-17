@@ -82,3 +82,9 @@
 .ant-image {
   width: 100%;
 }
+:where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary{
+  background-color: #1fd392 !important;
+}
+.ant-modal{
+  width: max-content !important;
+}
