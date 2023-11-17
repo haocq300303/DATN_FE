@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useNewBookingAffterPayMutation } from "~/Redux/booking/bookingApi";
+import { sendMail } from "~/api/email";
 import { createUrlVnpay } from "~/api/vnpay.api";
 import { hideLoader, showLoader } from "~/components/LoaderAllPage";
 import { IInfoBooking } from "~/interfaces/booking.type";
@@ -20,7 +21,12 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     const [newBooking] = useNewBookingAffterPayMutation();
 
     // Get redux store
-    const currentUser = { _id: "65131393f8698962d691cd12" };
+    const currentUser: any = {
+        _id: "65131393f8698962d691cd12",
+        phone: "0788062634",
+        fullname: "Hữu dẹp chai vão ò",
+        email: "hahuu02dev@gmail.com",
+    };
     const infoBooking = JSON.parse(sessionStorage.getItem("infoBooking") as string) as IInfoBooking;
 
     const handleBanking = () => {
@@ -74,9 +80,12 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
                 };
                 // Show Loading
                 showLoader();
-                newBooking(_infoBooking)
+                newBooking(_infoBooking as any)
                     .unwrap()
                     .then((result) => {
+                        // Send build to user
+                        sendMail({ email_to: currentUser.email, subject: "FSport send bill to!!", content: "Nội dung", html: "Nội dung bill" });
+                        
                         setSearchParams({
                             mode: "check",
                             code: searchParams.get("code") as string,

@@ -38,7 +38,7 @@ const BookingPage: React.FC = () => {
             pitch_address: "Cao đẳng fpt polytecnic",
             children_pitch_id: "6527771fe9a39084565ae5d3",
             shift_id: "653724069cf0d02633a55a31",
-            price: 1000000,
+            price: 800000,
             booking_day: "19/10/2023 | 14:20-16:20",
         })
     );

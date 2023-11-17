@@ -14,6 +14,7 @@ export interface IBooking {
     pitch?: IPitch;
     shift?: IShift;
     status: "success" | "cancel";
+    updatedAt: string;
     //user đặt lịch thành công và user hủy bỏ lịch
 }
 

@@ -1,17 +1,20 @@
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { Modal } from "antd";
+import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Modal } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { format } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
 import { useGetAllBookingByUserIdQuery } from "../../../Redux/booking/bookingApi";
 import { IBooking } from "~/interfaces/booking.type";
+import FormCreateBooking from "./CreateBooking";
 
 interface DataType extends IBooking {
     key: React.Key;
 }
 const BookingAdminPage = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [isOpenModalCreate, setIsOpenModalCreate] = useState<boolean>(false);
+
     const columns: ColumnsType<DataType> = useMemo(
         () => [
             {
@@ -118,6 +121,23 @@ const BookingAdminPage = () => {
                             </p>
                         ),
                     },
+                    {
+                        title: "Giờ đặt",
+                        dataIndex: "shift",
+                        width: 200,
+                        render: (shift) => (
+                            <p
+                                style={{
+                                    maxWidth: "200px",
+                                    whiteSpace: "normal",
+                                    color: "#334155",
+                                }}
+                                className="text-line-3 text-base font-medium"
+                            >
+                                {shift?.time_start} - {shift?.time_end}
+                            </p>
+                        ),
+                    },
                 ],
             },
             {
@@ -189,6 +209,12 @@ const BookingAdminPage = () => {
 
     return (
         <div className="w-full">
+            <div className="flex justify-end mb-4">
+                <Button icon={<PlusOutlined />} className="bg-[#25964b] text-white" onClick={() => setIsOpenModalCreate(true)}>
+                    Chủ sân tạo booking
+                </Button>
+            </div>
+
             <Table
                 loading={isFetching}
                 columns={columns}
@@ -196,7 +222,10 @@ const BookingAdminPage = () => {
                 scroll={{ x: 1000 }}
                 sticky={{ offsetHeader: 0 }}
                 pagination={false}
+                className="min-h-[500px]"
             />
+
+            <FormCreateBooking isOpen={isOpenModalCreate} setOpen={setIsOpenModalCreate} />
         </div>
     );
 };
