@@ -1,9 +1,9 @@
 import Table, { ColumnsType } from "antd/es/table";
-import React, { useEffect, useMemo, useState } from "react";
-import { useGetAllPaymentByUserIdQuery } from "../../../Redux/payment/paymentApi";
-import { IPayment } from "~/interfaces/payment.type";
 import { format } from "date-fns";
-import { EyeOutlined } from "@ant-design/icons";
+import React, { useEffect, useMemo, useState } from "react";
+import { IPayment } from "~/interfaces/payment.type";
+import { useGetAllPaymentByUserIdQuery } from "../../../Redux/payment/paymentApi";
+import BillScreen from "./components/BillScreen";
 
 interface DataType extends IPayment {
     key: React.Key;
@@ -45,7 +45,6 @@ const PaymentAdminPage = () => {
                         key: "index",
                         width: 200,
                         render: (user_bank) => {
-                            console.log("object, user_bank", user_bank);
                             return (
                                 <p
                                     style={{
@@ -223,8 +222,8 @@ const PaymentAdminPage = () => {
                 render: (status) => (
                     <span
                         style={{
-                            color: status === "done" ? "#3917d2" : "#fcfcfc",
-                            backgroundColor: status === "done" ? "#23d707" : "red",
+                            color: status === "success" ? "#3917d2" : "#fcfcfc",
+                            backgroundColor: status === "success" ? "#23d707" : "red",
                             padding: "4px 8px",
                             borderRadius: "4px",
                         }}
@@ -252,11 +251,7 @@ const PaymentAdminPage = () => {
                 title: "Options",
                 width: 100,
                 fixed: "right",
-                render: () => (
-                    <div className="flex justify-center">
-                        <EyeOutlined size={20} className="cursor-pointer" />
-                    </div>
-                ),
+                render: (row) => <BillScreen payment_id={row._id} />,
             },
         ],
         []

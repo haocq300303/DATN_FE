@@ -8,6 +8,7 @@ import {
   TabsBody,
   TabsHeader,
   Typography,
+  Checkbox,
 } from "@material-tailwind/react";
 import {
   Button,
@@ -20,7 +21,7 @@ import {
   Modal,
   Rate,
   Select,
-  Space
+  Space,
 } from "antd";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -226,6 +227,33 @@ const PitchDetailPage = () => {
   //   (state) => state.childrenPitch.childrentpitchs
   // );
   // console.log(services);
+  const [selectedServices, setSelectedServices] = useState<any>([]);
+
+  const handleServiceSelection = (serviceId: any) => {
+    const isSelected = selectedServices.includes(serviceId);
+    if (isSelected) {
+      setSelectedServices(
+        selectedServices.filter((id: any) => id !== serviceId)
+      );
+    } else {
+      setSelectedServices([...selectedServices, serviceId]);
+    }
+  };
+  const ClickService = () => {
+    const selectedInfo = services.filter((service: any) =>
+      selectedServices.includes(service._id)
+    );
+    const selectedServiceNames = selectedInfo.map((service) => service.name);
+    const selectedServicePrices = selectedInfo.map((service) => service.price);
+    const totalPrice = selectedServicePrices.reduce(
+      (acc, price) => acc + price,
+      0
+    );
+
+    console.log("Tên dịch vụ:", selectedServiceNames);
+    console.log("Giá dịch vụ:", selectedServicePrices);
+    console.log("Tổng:", totalPrice);
+  };
 
   // Xử lí đội bóng liên quan
   const districtsId = Pitch.districts_id; // ID của danh mục bạn muốn lọc
@@ -401,41 +429,57 @@ const PitchDetailPage = () => {
       label: "Dịch VỤ",
       value: "angular",
       desc: (
-        <div className="flex flex-wrap box-service-pitch-detail">
-          {Pitch.services
-            ? Pitch.services.map((serviceId: string) => {
-                const service = services.find((item) => item._id === serviceId);
-                return (
-                  <Card
-                    className="mt-6 w-28 md:w-1/2 lg:w-1/4 mb-4 mr-2"
-                    key={service?._id}
-                  >
-                    <CardHeader
-                      color="blue-gray"
-                      className="relative w- h-28 pl-0"
+        <>
+          <div className="flex h-[400px] w-[950px] overflow-x-scroll">
+            {Pitch.services
+              ? Pitch.services.map((serviceId: string) => {
+                  const service = services.find(
+                    (item) => item._id === serviceId
+                  );
+                  return (
+                    <Card
+                      className="mt-6 w-[250px] mr-2 h-60"
+                      key={service?._id}
                     >
-                      <img
-                        className="w-full"
-                        src={service?.image}
-                        alt="card-image"
+                      <Checkbox
+                        crossOrigin={undefined}
+                        onChange={() => handleServiceSelection(service?._id)}
                       />
-                    </CardHeader>
-                    <CardBody>
-                      <Typography
+                      <CardHeader
                         color="blue-gray"
-                        className="mb-2 text-base font-bold w-max"
+                        className="w-[200px] h-28 pl-0 mt-"
                       >
-                        {service?.name}
-                      </Typography>
-                      <Typography>
-                        {service?.price.toLocaleString("vi-VN")}đ
-                      </Typography>
-                    </CardBody>
-                  </Card>
-                );
-              })
-            : "Không có dịch vụ"}
-        </div>
+                        <img
+                          className="w-full"
+                          src={service?.image}
+                          alt="card-image"
+                        />
+                      </CardHeader>
+                      <CardBody>
+                        <Typography
+                          color="blue-gray"
+                          className="mb-2 text-base font-bold w-max"
+                        >
+                          {service?.name}
+                        </Typography>
+                        <Typography>
+                          {service?.price.toLocaleString("vi-VN")}đ
+                        </Typography>
+                      </CardBody>
+                    </Card>
+                  );
+                })
+              : "Không có dịch vụ"}
+          </div>
+          {selectedServices.length > 0 && (
+            <button
+              className=" bg-light-green-800 px-4 py-3 rounded-xl text-white mt-5"
+              onClick={ClickService}
+            >
+              Thêm dịch vụ
+            </button>
+          )}
+        </>
       ),
     },
     {
