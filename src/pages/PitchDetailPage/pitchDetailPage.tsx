@@ -17,22 +17,17 @@ import {
   Form,
   Image,
   Input,
-  InputNumber,
   Modal,
   Rate,
   Select,
-  Slider,
-  Space,
-  Table,
+  Space
 } from "antd";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "./pitchDetailPage.css";
-// import type { ColumnsType } from "antd/es/table";
-import { useParams } from "react-router-dom";
-// import item2 from "../../assets/img/Web/stadium1.jfif";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "~/Redux/hook";
+import { useParams } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+import { useAppDispatch, useAppSelector } from "~/Redux/hook";
+import "./pitchDetailPage.css";
 
 // import { IService } from "~/interfaces/service";
 import dayjs from "dayjs";
@@ -40,114 +35,201 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { getOnePitch } from "~/api/pitch";
 import FindOpponent from "~/components/FindOpponent/FindOpponent";
 import IPitch from "~/interfaces/pitch";
-import IShift from "~/interfaces/shift";
-import { fetchAllChildrenPitch } from "~/Redux/Slices/childrentPitch";
+// import IShift from "~/interfaces/shift";
+// import { fetchAllChildrenPitch } from "~/Redux/Slices/childrentPitch";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+// import { fetchAllShift } from "~/Redux/Slices/shiftSlice";
+import axios from "axios";
+import { format, parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 dayjs.extend(customParseFormat);
-const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
-const today = dayjs();
+// const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY", "DD-MM-YYYY", "DD-MM-YY"];
+// const today = dayjs();
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
 
-  // const services = useAppSelector((state) => state.service.services);
+  const [dataBookShift, setDataBookShift] = useState({});
+  const [selectedDate, setSelectedDate] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalBookShift, setModalBookShift] = useState(false);
+  const [childrenPitchs, setShildrenPitchs] = useState([]);
+  const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
+  // console.log({
+  //   pitch_name: Pitch.name,
+  //   pitch_avatar: Pitch.avatar,
+  //   admin_pitch_id: Pitch.admin_pitch_id,
+  //   admin_pitch_name: "Tên chủ sân",
+  //   admin_pitch_phone: "0788113114",
+  //   pitch_id: Pitch._id,
+  //   pitch_address: Pitch.address,
+  //   children_pitch_id: "",
+  //   shift_id: "",
+  //   price: 0,
+  //   booking_day: "19/10/2023 | 14:20-16:20",
+  // });
+
+  const services = useAppSelector((state) => state.service.services);
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
-  // const showModal = () => {
-  //   setIsModalOpen(true);
-  // };
-  // const handleOk = () => {
-  //   setIsModalOpen(false);
-  // };
-  // const handleCancel = () => {
-  //   setIsModalOpen(false);
-  // };
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `http://localhost:8080/api/childrentPicth/parent/${id}${
+          selectedDate && selectedDate.trim() !== ""
+            ? `?date=${selectedDate}`
+            : ""
+        }`
+      );
+      setShildrenPitchs(data.data);
+      setIsLoading(false);
+    })();
+  }, [id, selectedDate]);
 
   // form modal
-  // const onFinish = (values: any) => {
-  //   console.log("Success:", values);
-  // };
+  const onFinish = (values: any) => {
+    console.log("Success:", values);
+  };
 
-  // const onFinishFailed = (errorInfo: any) => {
-  //   console.log("Failed:", errorInfo);
-  // };
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
   //  form add đặt nhiều ngày
 
   // xử lí detailPitch
-
-  const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
-  }, []);
+  }, [id]);
 
-  // console.log("số lượng sân", Pitch.numberPitch);
-  const renderPitchCards = () => {
-    const pitchCards = [];
-    for (let i = 1; i <= Pitch.numberPitch; i++) {
-      pitchCards.push(
-        <div
-          className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
-          key={i}
-        >
-          <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
-            Sân {i}
-          </h3>
-          <p className="mx-[20px] mt-[20px]">
-            Thời Gian: 7:00
-            <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
-          </p>
-          <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
-          <p className="mx-[20px] mt-[20px]">
-            Ca Sân :
-            <div className="flex flex-wrap justify-between my-[20px]">
-              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                Ca 1
-              </button>
-              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                Ca 2
-              </button>
-              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                Ca 3
-              </button>
-              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                Ca 4
-              </button>
-              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                Ca 5
-              </button>
-              <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
-                Ca 6
-              </button>
-            </div>
-          </p>
-          <div className="grid grid-cols-2 border mt-[20px] ">
-            <button className="justify-center mx-auto flex border-r py-3 w-full items-center">
-              <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
-              Đặt Sân
-            </button>
-            <button>
-              <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
-              Tìm Đối
-            </button>
-          </div>
-        </div>
-      );
-    }
-    return pitchCards;
+  const handleComfirmBookShift = (data: any) => {
+    setDataBookShift(data);
+    setModalBookShift(true);
   };
 
+  const onFinishModalBookShift = async (values: any) => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:8080/api/shift",
+        values
+      );
+
+      sessionStorage.setItem(
+        "infoBooking",
+        JSON.stringify({
+          pitch_name: Pitch.name,
+          pitch_avatar: Pitch.avatar,
+          admin_pitch_id: Pitch.admin_pitch_id,
+          admin_pitch_name: "Tên chủ sân",
+          admin_pitch_phone: "0788113114",
+          pitch_id: Pitch._id,
+          pitch_address: Pitch.address,
+          children_pitch_id: data.data.id_chirlden_pitch,
+          shift_id: data.data._id,
+          price: data.data.price,
+          booking_day: data.data.date,
+        })
+      );
+      navigate("/checkout");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onFinishFailedModalBookShift = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  useEffect(() => {
+    // Khi dataBookShift thay đổi, cập nhật giá trị initialValues trong form
+    form.setFieldsValue({
+      id_chirlden_pitch: dataBookShift?.id_chirlden_pitch,
+      id_pitch: dataBookShift?.id_pitch,
+      number_shift: dataBookShift?.number_shift,
+      start_time: dataBookShift?.start_time,
+      end_time: dataBookShift?.end_time,
+      price: dataBookShift?.price,
+      date: dataBookShift?.date,
+    });
+  }, [dataBookShift, form]);
+  // const renderPitchCards = () => {
+  //   const pitchCards = [];
+  //   for (let i = 1; i <= Pitch.numberPitch; i++) {
+  //     pitchCards.push(
+  //       <div
+  //         className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
+  //         key={i}
+  //       >
+  //         <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
+  //           Sân {i}
+  //         </h3>
+  //         <p className="mx-[20px] mt-[20px]">
+  //           Thời Gian: 7:00
+  //           <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
+  //         </p>
+  //         <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p>
+  //         <p className="mx-[20px] mt-[20px]">
+  //           Ca Sân :
+  //           <div className="flex flex-wrap justify-between my-[20px]">
+  //             <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+  //               Ca 1
+  //             </button>
+  //             <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+  //               Ca 2
+  //             </button>
+  //             <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+  //               Ca 3
+  //             </button>
+  //             <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+  //               Ca 4
+  //             </button>
+  //             <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+  //               Ca 5
+  //             </button>
+  //             <button className="border rounded-lg border-[#1fd392] py-[5px] px-[10px]">
+  //               Ca 6
+  //             </button>
+  //           </div>
+  //         </p>
+  //         <div className="grid grid-cols-2 border mt-[20px] ">
+  //           <button className="justify-center mx-auto flex border-r py-3 w-full items-center">
+  //             <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
+  //             Đặt Sân
+  //           </button>
+  //           <button>
+  //             <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
+  //             Tìm Đối
+  //           </button>
+  //         </div>
+  //       </div>
+  //     );
+  //   }
+  //   return pitchCards;
+  // };
+
   //end detailPitch
-  const services = useAppSelector((state) => state.service.services);
   // const childrenPitchs = useAppSelector(
   //   (state) => state.childrenPitch.childrentpitchs
   // );
-  console.log(services);
+  // console.log(services);
 
   // Xử lí đội bóng liên quan
   const districtsId = Pitch.districts_id; // ID của danh mục bạn muốn lọc
-  console.log("All Pitch", pitchAll);
+  // console.log("All Pitch", pitchAll);
 
   useEffect(() => {
     dispatch(fetchAllPitch(""));
@@ -156,7 +238,6 @@ const PitchDetailPage = () => {
   const filteredPitch = pitchAll.filter(
     (pitch: IPitch) => pitch.districts_id === districtsId
   );
-  console.log("ĐBLQ", filteredPitch);
 
   // end xử lí đội bóng liên quan
 
@@ -165,37 +246,31 @@ const PitchDetailPage = () => {
   }, [dispatch]);
   //
 
-  const shifts = useAppSelector((state) => state.shift.shift);
-  console.log(shifts);
-  const dataTable = shifts.map((item: IShift, index: number) => ({
-    ...item,
-    key: index,
-  }));
+  // const shifts = useAppSelector((state) => state.shift.shift);
 
-  // xử lí detailPitch
-  // const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
-  // useEffect(() => {
-  //   getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
-  // }, [id]);
+  // const dataTable = shifts.map((item: IShift, index: number) => ({
+  //   ...item,
+  //   key: index,
+  // }));
 
   //end detailPitch
-  useEffect(() => {
-    // dispatch(fetchAllShift());
-    dispatch(fetchAllChildrenPitch());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   // dispatch(fetchAllShift());
+  //   dispatch(fetchAllChildrenPitch());
+  // }, [dispatch]);
 
   // const datachildrentPitch = childrenPitchs.data;
   // datachildrentPitch.forEach((element:any) => {
   //   console.log(element);
 
-  //   // if (element.idShifts) {
-  //   //     const idShifts = element.idShifts;
-  //   //     // idShifts.forEach((shift:any) => {
-  //   //     //     console.log(shift);
-  //   //     // });
-  //   //     console.log(idShifts.length);
+  //   if (element.idShifts) {
+  //       const idShifts = element.idShifts;
+  //       idShifts.forEach((shift:any) => {
+  //           console.log(shift);
+  //       });
+  //       console.log(idShifts.length);
 
-  //   // }
+  //   }
   // });
 
   const data = [
@@ -278,7 +353,6 @@ const PitchDetailPage = () => {
                         <p className="flex justify-between my-[10px]">
                           Dịch Vụ :
                           {item.services.map((data: any) => {
-                            console.log(data);
                             const service = services.find(
                               (item) => item._id == data._id
                             );
@@ -374,32 +448,32 @@ const PitchDetailPage = () => {
   ];
 
   // form lọc theo giá sân :
-  const IntegerStep = () => {
-    const [inputValue, setInputValue] = useState(1);
+  // const IntegerStep = () => {
+  //   const [inputValue, setInputValue] = useState(1);
 
-    const onChangePrice = (newValue: number | null) => {
-      if (newValue !== null) {
-        setInputValue(newValue);
-      }
-    };
-    return (
-      <div className="flex items-center justify-between">
-        <Slider
-          className="w-[80%]"
-          min={1}
-          max={200000}
-          onChange={onChangePrice}
-          value={typeof inputValue === "number" ? inputValue : 0}
-        />
+  //   const onChangePrice = (newValue: number | null) => {
+  //     if (newValue !== null) {
+  //       setInputValue(newValue);
+  //     }
+  //   };
+  //   return (
+  //     <div className="flex items-center justify-between">
+  //       <Slider
+  //         className="w-[80%]"
+  //         min={1}
+  //         max={200000}
+  //         onChange={onChangePrice}
+  //         value={typeof inputValue === "number" ? inputValue : 0}
+  //       />
 
-        <InputNumber
-          style={{ margin: "0 16px" }}
-          value={inputValue}
-          onChange={onChangePrice}
-        />
-      </div>
-    );
-  };
+  //       <InputNumber
+  //         style={{ margin: "0 16px" }}
+  //         value={inputValue}
+  //         onChange={onChangePrice}
+  //       />
+  //     </div>
+  //   );
+  // };
   return (
     <div className="bg-[#f3f3f5]">
       {/* =========banner========= */}
@@ -508,7 +582,67 @@ const PitchDetailPage = () => {
         {/* khu vực hiển thị ca sân  */}
         <div className="left_booking col-span-5">
           <div className="grid grid-cols-2 gap-[40px] list_shift">
-            {renderPitchCards()}
+            {!isLoading
+              ? childrenPitchs?.map((item: any, index: number) => (
+                  <div
+                    className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
+                    key={index}
+                  >
+                    <h3 className="bg-[#1fd392] text-center p-[13px] mb-[10px]">
+                      Sân {item.code_chirldren_pitch}
+                    </h3>
+                    {/* <p className="mx-[20px] mt-[20px]">
+                  Thời Gian: 7:00
+                  <i className="fa-solid fa-up-down fa-rotate-90 mx-2"></i> 9:00
+                </p>
+                <p className="mx-[20px] mt-[20px]">Giá Sân: 100.000 VND</p> */}
+                    <p className="mx-[20px] mt-[20px]">
+                      Ca Sân :
+                      <div className="flex flex-wrap justify-between my-[20px]">
+                        {item.shifts?.map((shift: any, index: number) => (
+                          <button
+                            key={index}
+                            onClick={() =>
+                              handleComfirmBookShift({
+                                id_chirlden_pitch: item._id,
+                                id_pitch: item.idParentPitch,
+                                number_shift: shift.number_shift,
+                                start_time: shift.start_time,
+                                end_time: shift.end_time,
+                                price: shift.price,
+                                date: format(
+                                  parseISO(shift.date),
+                                  "yyyy-MM-dd"
+                                ),
+                              })
+                            }
+                            className={`border rounded-lg border-[#1fd392] py-[5px] px-[10px] ${
+                              shift.status ? "distable" : ""
+                            }`}
+                          >
+                            {shift.status ? "asdas" : ""}
+                            Ca {shift.number_shift}
+                            <p>
+                              {shift.start_time} - {shift.end_time}
+                            </p>
+                            <p>{shift.price}</p>
+                          </button>
+                        ))}
+                      </div>
+                    </p>
+                    <div className="grid grid-cols-2 border mt-[20px] ">
+                      <button className="justify-center mx-auto flex border-r py-3 w-full items-center">
+                        <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
+                        Đặt Sân
+                      </button>
+                      <button>
+                        <i className="fa-solid fa-magnifying-glass text-[#1fd392] text-[18px] mx-3"></i>{" "}
+                        Tìm Đối
+                      </button>
+                    </div>
+                  </div>
+                ))
+              : "Loading..."}
           </div>
         </div>
         {/* khu vực lọc theo tìm kiếm */}
@@ -526,14 +660,19 @@ const PitchDetailPage = () => {
                     LỊCH NGÀY :
                   </p>
                   <Space direction="vertical">
-                    <DatePicker />
+                    <DatePicker
+                      onChange={(_, dateString) => setSelectedDate(dateString)}
+                    />
                   </Space>
                 </div>
               </Form.Item>
             </Form>
           </div>
+          <p className="text-20px font-[600] w-max mr-[10px]">
+            Các ca ngày: {selectedDate}
+          </p>
           {/* mã số sân */}
-          <div className="code_childrent_pitch">
+          {/* <div className="code_childrent_pitch">
             <Form>
               <Form.Item>
                 <div className="flex items-center justify-between">
@@ -545,9 +684,9 @@ const PitchDetailPage = () => {
                 </div>
               </Form.Item>
             </Form>
-          </div>
+          </div> */}
           {/* giá sân */}
-          <div className="price_pitch">
+          {/* <div className="price_pitch">
             <Form.Item>
               <div className="flex items-center">
                 <p className="text-20px font-[600] w-max mr-[30px]">
@@ -560,25 +699,14 @@ const PitchDetailPage = () => {
               </div>
             </Form.Item>
             <Form.Item></Form.Item>
-          </div>
+          </div> */}
         </div>
-        <div
-          id="timca"
-          className="container mx-auto booking_detail items-center"
-        >
-          <div className="left_booking">
-            <Table
-              pagination={{ pageSize: 8 }}
-              // columns={columns}
-              dataSource={dataTable}
-            />
-          </div>
-        </div>
-        <Form.Item>
+
+        {/* <Form.Item>
           <Space style={{ width: "100%" }} direction="vertical">
             <IntegerStep />
           </Space>
-        </Form.Item>
+        </Form.Item> */}
       </div>
       {/* button submit form tìm đối */}
       <div className="submit_form text-center mt-5 border-b border-b-[#1fd392] pb-[20px]">
@@ -590,7 +718,7 @@ const PitchDetailPage = () => {
       {/* form đặt nhiều hoặc đăng ký theo tháng */}
       <div className="flex justify-between">
         <button
-          // onClick={showModal}
+          onClick={showModal}
           className="px-[10px] py-[5px] bg-[#1fd392] border rounded-md text-[#fff]"
         >
           Đặt Nhiều Sân
@@ -601,14 +729,11 @@ const PitchDetailPage = () => {
 
         <Modal
           title="ĐẶT NHIỀU SÂN"
-          // open={isModalOpen}
-          // onOk={handleOk}
-          // onCancel={handleCancel}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
         >
-          <Form
-          // onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
-          >
+          <Form onFinish={onFinish} onFinishFailed={onFinishFailed}>
             <div className="flex items-center gap-10">
               <Form.Item
                 label="Chọn Ngày"
@@ -687,11 +812,62 @@ const PitchDetailPage = () => {
             </Form.Item>
           </Form>
         </Modal>
+        <Modal
+          title="Thông tin đặt lịch"
+          open={modalBookShift}
+          onOk={() => setModalBookShift(false)}
+          onCancel={() => setModalBookShift(false)}
+          footer={null}
+        >
+          <Form
+            form={form}
+            initialValues={{
+              id_chirlden_pitch: dataBookShift?.id_chirlden_pitch,
+              id_pitch: dataBookShift?.id_pitch,
+              number_shift: dataBookShift?.number_shift,
+              start_time: dataBookShift?.start_time,
+              end_time: dataBookShift?.end_time,
+              price: dataBookShift?.price,
+              date: dataBookShift?.date,
+            }}
+            onFinish={onFinishModalBookShift}
+            onFinishFailed={onFinishFailedModalBookShift}
+          >
+            <div className="flex items-center gap-10">
+              <Form.Item
+                className="hidden"
+                label="Id Sân con"
+                name="id_chirlden_pitch"
+              >
+                <Input disabled />
+              </Form.Item>
+              <Form.Item className="hidden" label="Id Sân cha" name="id_pitch">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item label="Ca sân" name="number_shift">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item label="Thời gian bắt đầu" name="start_time">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item label="Thời gian kết thúc" name="end_time">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item label="Giá" name="price">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item label="Ngày" name="date">
+                <Input disabled />
+              </Form.Item>
+            </div>
+            <Button type="primary" htmlType="submit">
+              Đặt lịch
+            </Button>
+          </Form>
+        </Modal>
       </div>
     </div>
-    // </div>
     /* các sân bongs ưu tiên */
-    // </div>
   );
 };
 

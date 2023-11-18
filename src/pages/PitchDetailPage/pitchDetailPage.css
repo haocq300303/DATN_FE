@@ -89,3 +89,8 @@
 .box-service-pitch-detail > .lg\:w-1\/4 {
   width: 24%;
 }
+.distable {
+  cursor: default;
+  opacity: 0.4;
+  background-color: red;
+}
