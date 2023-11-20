@@ -1,108 +1,108 @@
 import React, { useEffect } from "react";
-import {
-  Navbar,
-  Typography,
-  Button,
-  Collapse,
-  IconButton,
-} from "@material-tailwind/react";
+import { Navbar, Typography, Button, IconButton } from "@material-tailwind/react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectIsFixed,
-  setFixed,
-  setVisibleTitle,
-} from "~/Redux/Slices/navbarSlice";
+import { selectIsFixed, setFixed, setVisibleTitle } from "~/Redux/Slices/navbarSlice";
 import "./Header.css";
 import { CloseOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const Header = () => {
-  const [openNav, setOpenNav] = React.useState(false);
+    const [openNav, setOpenNav] = React.useState(false);
 
-  React.useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false)
+    React.useEffect(() => {
+        window.addEventListener("resize", () => window.innerWidth >= 960 && setOpenNav(false));
+    }, []);
+
+    const navList = (
+        <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
+            >
+                <a href="/" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+                    Trang Chủ
+                </a>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
+            >
+                <a
+                    href="/pitch"
+                    className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+                >
+                    Sân Bóng
+                </a>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
+            >
+                <a href="#" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
+                    Tìm Đối
+                </a>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
+            >
+                <a
+                    href="/post"
+                    className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+                >
+                    Tin Tức
+                </a>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
+            >
+                <a
+                    href="/contact"
+                    className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+                >
+                    Liên Hệ
+                </a>
+            </Typography>
+            <Typography
+                as="li"
+                variant="small"
+                color="blue-gray"
+                className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all"
+            >
+                <a
+                    href="/about"
+                    className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+                >
+                    Về Chúng Tôi
+                </a>
+            </Typography>
+        </ul>
     );
-  }, []);
+    const isFixed = useSelector(selectIsFixed);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY >= 250) {
+                dispatch(setFixed(true));
+                dispatch(setVisibleTitle(true));
+            } else {
+                dispatch(setFixed(false));
+                dispatch(setVisibleTitle(false));
+            }
+        };
 
-  const navList = (
-    <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
-      >
-        <a href="/" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
-          Trang Chủ
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
-      >
-        <a href="/pitch" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
-          Sân Bóng
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
-      >
-        <a href="#" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
-          Tìm Đối
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
-      >
-        <a href="/post" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
-          Tin Tức
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
-      >
-        <a href="/contact" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
-          Liên Hệ
-        </a>
-      </Typography>
-      <Typography
-        as="li"
-        variant="small"
-        color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all"
-      >
-        <a href="/about" className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all">
-          Về Chúng Tôi
-        </a>
-      </Typography>
-    </ul>
-  );
-  const isFixed = useSelector(selectIsFixed);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY >= 250) {
-        dispatch(setFixed(true));
-        dispatch(setVisibleTitle(true));
-      } else {
-        dispatch(setFixed(false));
-        dispatch(setVisibleTitle(false));
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -130,9 +130,9 @@ const Header = () => {
                <UserOutlined />
               </Button>
               <Button className="hidden lg:inline-block bg-green-800 border-none">
-                <a href="/contact" className="flex items-center text-white no-underline shadow-none">
+                <Link to="#dkdt" className="flex items-center text-white no-underline shadow-none">
                  Đăng Kí Đối Tác
-                </a>
+                </Link>
               </Button>
             </div>
             <IconButton
@@ -148,30 +148,10 @@ const Header = () => {
               )}
             </IconButton>
           </div>
-        </div>
-        <Collapse open={openNav}>
-          <hr className="bg-gray-200"/>
-          {navList}
-          <div className="flex items-center gap-x-1">
-            <Button
-              fullWidth
-              variant="text"
-              size="sm"
-              className="border-2 border-current"
-            >
-             <a href="/login" className="flex items-center gap-2 justify-center no-underline text-black">
-             <UserOutlined /> <span>Đăng Nhập</span>
-                </a>
-            </Button>
-            <Button fullWidth size="sm" className="bg-green-800 border-none">
-            <a href="/contact" className="flex items-center justify-center no-underline text-white">
-                 Đăng Kí Đối Tác
-                </a>
-            </Button>
           </div>
-        </Collapse>
-      </Navbar>
-    </div>
-  );
+            </Navbar>
+
+        </div>
+    );
 };
 export default Header;

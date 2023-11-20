@@ -3,24 +3,19 @@ import type { ColumnsType } from "antd/es/table";
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
-import { updatePostMid } from "../../../Redux/Slices/postSlice";
-import IPost from "../../../interfaces/post";
 import ModalForm from "../../../components/ModalForm/ModalForm";
-// import axios from "axios";
 import { fetchAllChildrenPitch, fetchCreatChildrentPitch, fetchDeleteChildrentPitch, fetchUpdateChildrentPitch } from "../../../Redux/Slices/childrentPitch";
 import IChildrentPitch from "~/interfaces/childrentPitch";
 
-// const { Dragger } = Upload;
 
-
-const PostManagement = () => {
+const ChildrentPitch = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState("");
 
     const dispatch = useAppDispatch();
 
     const childrentPitchs = useAppSelector((state) => state.childrenPitch.childrentpitchs);
-  console.log({ childrentPitchs});
+    console.log(childrentPitchs.data);
   
     useEffect(() => {
         dispatch(fetchAllChildrenPitch());
@@ -30,11 +25,9 @@ const PostManagement = () => {
         await dispatch(fetchDeleteChildrentPitch(idPost));
         message.success(`Xóa bài viết thành công!`);
     };
-
     const cancel = () => {
         message.error("Đã hủy!");
     };
-
     const columns: ColumnsType<IChildrentPitch> = [
         {
             title: "Ca Sân",
@@ -43,7 +36,13 @@ const PostManagement = () => {
             render: (text) => <span>{text}</span>,
         },
         {
-            title: "Action",
+            title: "Giờ Diễn",
+            dataIndex: "_id",
+            key: "code_chirldren_pitch",
+            render: (text) => <span>{text}</span>,
+        },
+        {
+            title: "Thực Hiện",
             key: "action",
             render: (record) => (
                 <Space size="middle">
@@ -67,8 +66,8 @@ const PostManagement = () => {
 
                     <Popconfirm
                         placement="topRight"
-                        title="Xóa bài viết?"
-                        description="Bạn có chắc chắn xóa bài viết này không?"
+                        title="Xóa ca sân?"
+                        description="Bạn có chắc chắn xóa ca sân này không?"
                         onConfirm={() => confirm(record._id)}
                         onCancel={cancel}
                         okText="Đồng ý"
@@ -83,93 +82,36 @@ const PostManagement = () => {
             ),
         },
     ];
-
-    const data = childrentPitchs.map((item: IPost, index: number) => ({
+    const data = Array.isArray(childrentPitchs.data)
+    ? childrentPitchs.data.map((item: IChildrentPitch, index: number) => ({
         ...item,
         key: index,
-    }));
-
+    }))
+    : [];
     const showModal = (mode: string) => {
         setModalMode(mode);
         setIsModalOpen(true);
     };
-
     const layout = {
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
     };
-
     const validateMessages = {
         required: "${label} is required!",
     };
-
     const [form] = Form.useForm();
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onFinish = async (values: any) => {
         if (modalMode === "add") {
-            // const images = values?.images?.fileList?.map(
-            //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            //     ({ response }: any) => response.data.url
-            // );
-
-            // const newValues = { ...values, images };
-
             await dispatch(fetchCreatChildrentPitch(values));
             message.success(`Tạo bài viết thành công!`);
         } else if (modalMode === "edit") {
-            // const newImages = values.images.fileList
-            //     ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            //       values.images.fileList.map(({ response }: any) => response.data.url)
-            //     : values.images;
-
             const newValues = { ...values };
             const { _id, ...childrentpitch } = newValues;
-
             await dispatch(fetchUpdateChildrentPitch({ _id, childrentpitch }));
             message.success(`Sửa bài viết thành công!`);
         }
         setIsModalOpen(false);
     };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // const uploadFiles = async (file: any) => {
-    //     if (file) {
-    //         const CLOUD_NAME = "dhwpz6l7t";
-    //         const PRESET_NAME = "datn-img";
-    //         const FOLDER_NAME = "datn-img";
-    //         const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-
-    //         const formData = new FormData();
-    //         formData.append("upload_preset", PRESET_NAME);
-    //         formData.append("folder", FOLDER_NAME);
-    //         formData.append("file", file);
-
-    //         const response = await axios.post(api, formData);
-
-    //         return response;
-    //     }
-    // };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // const customRequest = async ({ file, onSuccess, onError }: any) => {
-    //     try {
-    //         // Gọi hàm tải lên ảnh của bạn và chờ kết quả
-    //         const response = await uploadFiles(file);
-    //         // Kiểm tra kết quả và xử lý tùy theo trạng thái tải lên
-    //         if (response?.status === 200) {
-    //             message.success(`${file.name} uploaded successfully`);
-    //             onSuccess(response, file);
-    //         } else {
-    //             message.error(`${file.name} upload failed.`);
-    //             onError(response);
-    //         }
-    //     } catch (error) {
-    //         // Xử lý lỗi nếu có
-    //         message.error("An error occurred while uploading the image.");
-    //         onError(error);
-    //     }
-    // };
 
     return (
         <>
@@ -178,7 +120,7 @@ const PostManagement = () => {
                     type="primary"
                     icon={<PlusCircleOutlined />}
                     size={"large"}
-                    className="bg-[#1677ff]"
+                    className="bg-[#2988bc]"
                     onClick={() => {
                         form.resetFields();
                         showModal("add");
@@ -231,4 +173,4 @@ const PostManagement = () => {
     );
 };
 
-export default PostManagement;
+export default ChildrentPitch;

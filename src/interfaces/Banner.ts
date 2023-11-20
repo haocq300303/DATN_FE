@@ -1,7 +1,8 @@
 interface IBanner {
-    _id?: string;
-    url: string;
-    content: string;
+  _id?: string;
+  url: string;
+  title: string;
+  content: string;
 }
 
-export default IBanner
+export default IBanner;
