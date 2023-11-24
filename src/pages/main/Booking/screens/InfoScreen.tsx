@@ -17,7 +17,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const currentUser: any = {
         phone: "0788062634",
-        fullname: "Hữu dẹp chai vão ò",
+        fullname: "Phạm Anh Tuấn",
         email: "hahuu02dev@gmail.com",
     };
     // const currentUser = undefined;
