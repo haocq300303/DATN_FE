@@ -33,8 +33,7 @@ import { TbYoga } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import logo from "../../assets/img/logoFsport.png";
 
-
-const colors:{ [key: string]: string }  = {
+const colors: { [key: string]: string } = {
   blue: "bg-blue-50 text-blue-500",
   orange: "bg-orange-50 text-orange-500",
   green: "bg-green-50 text-green-500",
@@ -282,10 +281,9 @@ function NavList() {
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
       <NavListMenu />
-      <Typography
-        as="a"
-        href="timdoi"
-        variant="small"
+      <Link
+        to="/pitch/find_opponent"
+        // variant="small"
         color="blue-gray"
         className="font-normal"
       >
@@ -293,7 +291,7 @@ function NavList() {
           <CubeTransparentIcon className="h-[18px] w-[18px] text-[#000000]" />
           Tìm Kèo
         </ListItem>
-      </Typography>
+      </Link>
     </List>
   );
 }
@@ -315,7 +313,7 @@ export function Header() {
           </Link>
         </div>
         <div className="w-72">
-          <Input label="Tìm Nhanh Sân ..." crossOrigin="anonymous"/>
+          <Input label="Tìm Nhanh Sân ..." crossOrigin="anonymous" />
         </div>
         <div className="hidden lg:block">
           <NavList />
