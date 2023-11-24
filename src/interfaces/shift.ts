@@ -3,9 +3,8 @@ interface IShift {
   id_chirlden_pitch?: string;
   number_shift?: number;
   price: number;
-  time_start: string;
-  time_end: string;
-  number_remain: number;
+  start_time: string;
+  end_time: string;
   statusPitch?: boolean;
   date: any;
   createdAt?: string;
