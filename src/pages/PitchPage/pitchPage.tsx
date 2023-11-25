@@ -25,6 +25,7 @@ import { fetchAllPitch, search } from "~/Redux/Slices/pitchSlice";
 import IPitch from "~/interfaces/pitch";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 import { PitchPagination, getAllPitch, searchPitch } from "~/api/pitch";
+import { totalStarByPitch } from "~/api/feedback";
 
 const fixedOptions = [
   { value: "bong-da", label: "Bóng đá" },
@@ -51,6 +52,7 @@ const PitchPage = () => {
   const [valueSearch, setValueSearch] = useState('');
   const [totalItems, setTotalItems] = useState(Number);//phantrang
   const [currentPage, setCurrentPage] = useState(1);//phantrang
+  const [totalStar, setTotalStar] = useState<any>(Number);
 
 
   const dispatch = useAppDispatch();
@@ -88,6 +90,33 @@ const PitchPage = () => {
     fetchData();
 
   }, []);
+
+  // xứ lí start
+  useEffect(() => {
+    const fetchTotalStars = async () => {
+      const stars = [];
+
+      for (let i = 0; i < pitchs.length; i++) {
+        try {
+          const response = await totalStarByPitch(pitchs[i]?._id);
+          const { data } = response.data;
+          stars.push(data);
+        } catch (error) {
+          console.log(error);
+          stars.push(0); // Nếu có lỗi, thêm giá trị mặc định (0) vào mảng stars
+        }
+      }
+
+      setTotalStar(stars);
+    };
+
+    fetchTotalStars();
+  }, [pitchs]);
+  console.log({ totalStar });
+
+  // pitchs.forEach((item: any, index: any) => {
+  //   console.log(`TotalStar${item.name}`, totalStar[index]);
+  // });
 
   const handleServiceChange = (serviceValue: string) => {
     const updatedServices = selectedServices.includes(serviceValue)
@@ -370,7 +399,7 @@ const PitchPage = () => {
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
               {filteredPitchs && filteredPitchs.length > 0 ? (
-                filteredPitchs.map((pitch: IPitch) => (
+                filteredPitchs.map((pitch: IPitch, index: any) => (
                   <div className="list-pitch mt-[40px]" key={pitch._id}>
                     <Link to={`/pitch/detail/${pitch._id}`}>
                       <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
@@ -387,8 +416,8 @@ const PitchPage = () => {
                           <h3 className=" text-[23px] font-[600] font-sans">
                             {pitch.name}
                           </h3>
-                          <Rate defaultValue={5} />
-                          <span>( 99+ Review)</span>
+                          <Rate disabled allowHalf value={totalStar[index]?.averageRating?.toFixed(1) ?? ''} />
+                          <span>( {pitch?.feedback_id?.length} Review)</span>
                           <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
                           <p>Số Sân Trống : 3/4</p>
                           <p className="flex justify-between my-[10px]">

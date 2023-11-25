@@ -2,7 +2,7 @@ import { useGetAllBookingByUserIdQuery } from "~/Redux/booking/bookingApi";
 import BookingHistoryItem from "~/pages/main/BookingHistory/BookingHistoryItem";
 
 const BookingHistoryPage = () => {
-    const userId = "65131393f8698962d691cd12";
+    const userId = "655c53ed6c0689551d7528a3";
 
     const { data: bookingHistory } = useGetAllBookingByUserIdQuery({ user_id: userId });
 

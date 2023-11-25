@@ -19,11 +19,22 @@ const InfoBooking = ({ dataBooking, infoPitch }: { dataBooking: DataBookingType;
 
             <Show when={!!dataBooking[0]}>
                 <div className="flex">
+                    <span className="w-8 text-2xl">
+                        <RadarChartOutlined />
+                    </span>
+                    <div className="text-lg">
+                        Sân đăng ký <strong>{dataBooking[0]?.name}</strong>
+                    </div>
+                </div>
+            </Show>
+
+            <Show when={!!dataBooking[1]}>
+                <div className="flex">
                     <span className="w-8 text-xl">
                         <ClockCircleOutlined />
                     </span>
                     <div className="text-lg">
-                        {dataBooking[0]?.name} <strong>{dataBooking[0]?.shiftTime}</strong> ({dataBooking[0]?.shiftDay})
+                        {dataBooking[1]?.name} <strong>{dataBooking[1]?.shiftTime}</strong> ({dataBooking[1]?.shiftDay})
                     </div>
                 </div>
 
@@ -32,18 +43,7 @@ const InfoBooking = ({ dataBooking, infoPitch }: { dataBooking: DataBookingType;
                         <TransactionOutlined />
                     </span>
                     <div className="text-lg">
-                        Giá sân <strong>{dataBooking[0]?.price} VNĐ</strong>
-                    </div>
-                </div>
-            </Show>
-
-            <Show when={!!dataBooking[1]}>
-                <div className="flex">
-                    <span className="w-8 text-2xl">
-                        <RadarChartOutlined />
-                    </span>
-                    <div className="text-lg">
-                        Sân đăng ký <strong>{dataBooking[1]?.name}</strong>
+                        Giá sân <strong>{dataBooking[1]?.price?.toLocaleString()} VNĐ</strong>
                     </div>
                 </div>
             </Show>
