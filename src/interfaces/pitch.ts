@@ -1,3 +1,5 @@
+import IFeedback from "./feedback";
+
 interface IPitch {
   _id?: string;
   address: string;
@@ -8,6 +10,7 @@ interface IPitch {
   services: string[];
   description: string[];
   location_id?: string;
+  feedback_id: IFeedback[];
   districts_id?: string;
   deposit_price: number;
   avatar: string;
