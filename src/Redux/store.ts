@@ -10,6 +10,7 @@ import pitchReducer from "./Slices/pitchSlice";
 import paymentApi from "./payment/paymentApi";
 import bookingApi from "./booking/bookingApi";
 import shiftReducer from "./Slices/shiftSlice";
+import feedbackReducer from "./Slices/feedback";
 const store = configureStore({
   reducer: {
     [paymentApi.reducerPath]: paymentApi.reducer,
@@ -23,7 +24,8 @@ const store = configureStore({
     location: locationReducer,
     pitch: pitchReducer,
     childrenPitch: childrenPitchReducer,
-    shift: shiftReducer, 
+    shift: shiftReducer,
+    feedback: feedbackReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
