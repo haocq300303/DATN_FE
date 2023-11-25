@@ -71,7 +71,7 @@ const LocationList = () => {
                         ghost
                     >
                         <EditOutlined style={{ display: "inline-flex" }} />
-                        Edit
+
                     </Button>
 
                     <Popconfirm
@@ -85,7 +85,7 @@ const LocationList = () => {
                     >
                         <Button type="primary" danger>
                             <DeleteOutlined style={{ display: "inline-flex" }} />
-                            Remove
+
                         </Button>
                     </Popconfirm>
                 </Space>
@@ -151,7 +151,6 @@ const LocationList = () => {
                         showModal("add");
                     }}
                 >
-                    Create Post
                 </Button>
             </div>
             <Table
@@ -159,6 +158,7 @@ const LocationList = () => {
                 columns={columns}
                 dataSource={data}
                 rowSelection={{}}
+                scroll={{ y: 100 }}
                 expandable={{
                     expandedRowRender: (record) => (
                         <p style={{ margin: 0 }}>{record.name}</p>

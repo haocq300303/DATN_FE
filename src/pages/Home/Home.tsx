@@ -145,7 +145,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="bg-gray-50 px-4 py-6 font-[sans-serif] text-[#333]">
+          <div className="bg-white px-4 py-6 font-[sans-serif] text-[#333]">
             <div className="max-w-6xl mx-auto">
               <div className="grid lg:grid-cols-3 md:grid-cols-2 max-md:max-w-lg mx-auto gap-12">
                 <div className="p-4 flex bg-white rounded-md shadow-md">

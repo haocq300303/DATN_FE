@@ -138,7 +138,6 @@ const PitchList = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Edit
           </Button>
 
           <Popconfirm
@@ -152,7 +151,6 @@ const PitchList = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined style={{ display: "inline-flex" }} />
-              Remove
             </Button>
           </Popconfirm>
         </Space>
@@ -283,7 +281,6 @@ const PitchList = () => {
             showModal("add");
           }}
         >
-          Create Pitch
         </Button>
       </div>
       <Table
@@ -291,12 +288,15 @@ const PitchList = () => {
         columns={columns}
         dataSource={data}
         rowSelection={{}}
+        className=""
+        scroll={{ y: 100 }}
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.description}</p>
           ),
         }}
       />
+      
       <ModalForm
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
@@ -310,12 +310,14 @@ const PitchList = () => {
           onFinish={onFinish}
           validateMessages={validateMessages}
           layout="vertical"
+          className="flex gap-4"
         >
           {modalMode === "edit" && (
             <Form.Item name="_id" style={{ display: "none" }}>
               <Input />
             </Form.Item>
           )}
+          <div className="w-1/2">
           <Form.Item
             name="address"
             label="Địa chỉ"
@@ -375,7 +377,9 @@ const PitchList = () => {
           >
             <Input.TextArea rows={4} placeholder="Description" />
           </Form.Item>
+          </div>
 
+          <div className="w-1/2">
           <Form.Item label="Tỉnh" rules={[{ required: true }]}>
             <Select
               onChange={handleCityChange}
@@ -451,6 +455,7 @@ const PitchList = () => {
               <Button icon={<UploadOutlined />}>Upload Avatar</Button>
             </Dragger>
           </Form.Item>
+          </div>
         </Form>
       </ModalForm>
     </>

@@ -30,7 +30,6 @@ import {
 } from "../../../../Redux/Slices/serviceSlice";
 import { IService } from "../../../../interfaces/service";
 import "./ServiceManagement.css";
-import { Option } from "antd/es/mentions";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 
 const { Dragger } = Upload;
@@ -42,7 +41,6 @@ const ServiceManagement = () => {
   const dispatch = useAppDispatch();
 
   const services = useAppSelector((state) => state.service.services);
-  const pitch_id = useAppSelector((state) => state.pitch.pitchs);
 
 
   useEffect(() => {
@@ -71,12 +69,6 @@ const ServiceManagement = () => {
       key: "price",
     },
     {
-      title: "Id_Pitch",
-      dataIndex: "id_Pitch",
-      key: "id_Pitch",
-      // render: (id_Pitch) => <span>{id_Pitch.name}</span>,
-    },
-    {
       title: "Image",
       dataIndex: "image",
       key: "image",
@@ -98,7 +90,6 @@ const ServiceManagement = () => {
                 _id: service?._id,
                 name: service?.name,
                 price: service?.price,
-                // id_Pitch: service?.id_Pitch?._id ?? service?._id,
                 image: service?.image,
               });
               showModal("edit");
@@ -106,7 +97,7 @@ const ServiceManagement = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Edit
+
           </Button>
           <Popconfirm
             placement="topRight"
@@ -119,7 +110,7 @@ const ServiceManagement = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined />
-              Remove
+
             </Button>
           </Popconfirm>
         </Space>
@@ -162,9 +153,9 @@ const ServiceManagement = () => {
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
       const newImages = values.image.fileList;
-      const image =
-        newImages.length > 0 ? newImages[0].response.data.url : values.url;
-
+      const image = newImages ? newImages[0].response.data.url : values.url;
+      console.log(image);
+      
       const newValues = { ...values, image };
 
       const { _id, ...service } = newValues;
@@ -229,7 +220,6 @@ const ServiceManagement = () => {
             showModal("add");
           }}
         >
-          Create Banner
         </Button>
       </div>
       <Table
@@ -237,6 +227,7 @@ const ServiceManagement = () => {
         columns={columns}
         dataSource={data}
         rowSelection={{}}
+        scroll={{ y: 100 }}
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.name}</p>
@@ -281,19 +272,6 @@ const ServiceManagement = () => {
             ]}
           >
             <Input placeholder="Price" />
-          </Form.Item>
-          <Form.Item
-            name="id_Pitch"
-            label="ID_Pitch"
-            rules={[{ required: true, message: "ID_Pitch is required!" }]}
-          >
-            <Select style={{ width: '100%' }}>
-            {pitch_id.map((item: any) => (
-            <Option key={item._id} value={item._id}>
-              {item.name}
-            </Option>
-          ))}
-            </Select>
           </Form.Item>
           <Form.Item name="image" label="Images" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>

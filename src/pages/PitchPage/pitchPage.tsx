@@ -342,7 +342,7 @@ const PitchPage = () => {
           </div>
 
           {/* sân bóng ở đây */}
-          <div className="right-pitch xl:w-[75%]">
+          <div className="right-pitch xl:w-[950px] max-w-5xl">
             <div className="header-pitch">
               <div className="container mx-auto flex justify-between">
                 <div>
@@ -438,9 +438,8 @@ const PitchPage = () => {
           </div>
         </div>
       </div>
-
       {/* các sân bongs ưu tiên */}
-      <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
+      <div className="hot-pitch mx-auto max-w-screen-2xl px-[30px]">
         <h1>Sân Bóng Đánh Giá Cao</h1>
         <Swiper
           spaceBetween={80}

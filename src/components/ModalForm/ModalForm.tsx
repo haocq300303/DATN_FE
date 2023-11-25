@@ -24,7 +24,9 @@ const ModalForm = ({
     <Modal
       title={modalMode === "add" ? "Create Post" : "Edit Post"}
       open={isModalOpen}
+      centered
       onCancel={handleCancel}
+      width={1100}
       footer={[
         <Button key="back" onClick={handleCancel}>
           Cancel
@@ -40,7 +42,10 @@ const ModalForm = ({
         </Button>,
       ]}
     >
+      <div className="max-h-[70vh] overflow-auto modal-scroll">
+
       {children}
+      </div>
     </Modal>
   );
 };

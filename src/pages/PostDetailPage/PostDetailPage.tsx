@@ -9,7 +9,8 @@ import { getOnePost } from "~/api/post";
 import IComment from "~/interfaces/comment";
 import IPost from "~/interfaces/post";
 import { useForm, SubmitHandler } from "react-hook-form";
-
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
 type Inputs = {
   content: string;
 };
@@ -24,6 +25,10 @@ const PostDetailPage = () => {
     reset,
     formState: { errors },
   } = useForm<Inputs>();
+  const calculateTimeAgo = (createdAt: any) => {
+    const postDate: Date = new Date(createdAt);
+    return formatDistanceToNow(postDate, { addSuffix: true, locale: vi });
+  };
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const commentValue = {
       ...data,
@@ -52,37 +57,158 @@ const PostDetailPage = () => {
   }, [dispatch, id]);
 
   return (
-    <div className="container max-w-3xl mx-auto pt-24 mb-20">
-      <div className="flex w-full flex-col text-gray-700">
-        <h4 className="block font-sans text-4xl font-semibold leading-snug text-blue-gray-900 mb-6">
-          {post?.title}
-        </h4>
-        <div className="cursor-pointer mb-6">
-          <img
-            className="inline-block h-12 w-12 rounded-full object-cover object-center mr-4"
-            alt="Image placeholder"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-          />
-          <p className="inline-block font-sans text-base font-semibold font-medium leading-normal text-blue-gray-900">
-            {post?.id_user?.name}
-          </p>
+    <div className="container mx-auto">
+      <section className="px-5 py-10 dark:bg-gray-800 dark:text-gray-100">
+        <div className="container grid grid-cols-9 mx-auto gap-y-6 md:gap-10">
+          <div className="relative flex col-span-12 bg-center bg-no-repeat bg-cover dark:bg-gray-500 xl:col-span-6 lg:col-span-5 md:col-span-9 min-h-96">
+            <div>
+              <span className="absolute px-1 pb-2 text-xs font-bold uppercase border-b-2 left-6 top-6 dark:border-violet-400 dark:text-gray-100">
+                các Tin Tức Tâm Điểm
+              </span>
+              <section className="w-full flex flex-col items-center px-3 mt-14">
+                <article className="flex flex-col shadow my-4  overflow-hidden">
+                  <a href="#" className="hover:opacity-75 h-96 overflow-hidden">
+                    <img className="w-full" src={post?.images[0]} />
+                  </a>
+                  <div className="bg-white flex flex-col justify-start p-6">
+                    <p className="text-sm pb-3">
+                      Đăng Bởi{" "}
+                      <a href="#" className="font-semibold hover:text-gray-800">
+                        Lê Sỹ Hải
+                      </a>{" "}
+                      {post?.createdAt && calculateTimeAgo(post?.createdAt)}
+                    </p>
+                    <a
+                      href="#"
+                      className="text-3xl font-bold hover:text-gray-700 pb-4"
+                    >
+                      {post?.title}
+                    </a>
+                    <p className="pb-3">{post?.description}</p>
+                  </div>
+                </article>
+              </section>
+            </div>
+          </div>
+          <div className="hidden py-2 xl:col-span-3 lg:col-span-4 md:hidden lg:block">
+            <div className="mb-8 space-x-5 border-b-2 border-opacity-10 dark:border-violet-400">
+              <button
+                type="button"
+                className="pb-5 text-xs font-bold uppercase border-b-2 dark:border-violet-400"
+              >
+                Tin Tức Mới Nhất
+              </button>
+            </div>
+            <div className="flex flex-col divide-y dark:divide-gray-700">
+              <div className="flex px-1 py-4">
+                <img
+                  alt=""
+                  className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500"
+                  src="https://source.unsplash.com/random/244x324"
+                />
+                <div className="flex flex-col flex-grow">
+                  <a
+                    rel="noopener noreferrer"
+                    href="#"
+                    className="font-serif hover:underline"
+                  >
+                    Aenean ac tristique lorem, ut mollis dui.
+                  </a>
+                  <p className="mt-auto text-xs dark:text-gray-400">
+                    5 minutes ago
+                    <a
+                      rel="noopener noreferrer"
+                      href="#"
+                      className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline"
+                    >
+                      Politics
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div className="flex px-1 py-4">
+                <img
+                  alt=""
+                  className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500"
+                  src="https://source.unsplash.com/random/245x325"
+                />
+                <div className="flex flex-col flex-grow">
+                  <a
+                    rel="noopener noreferrer"
+                    href="#"
+                    className="font-serif hover:underline"
+                  >
+                    Nulla consectetur efficitur.
+                  </a>
+                  <p className="mt-auto text-xs dark:text-gray-400">
+                    14 minutes ago
+                    <a
+                      rel="noopener noreferrer"
+                      href="#"
+                      className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline"
+                    >
+                      Sports
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div className="flex px-1 py-4">
+                <img
+                  alt=""
+                  className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500"
+                  src="https://source.unsplash.com/random/246x326"
+                />
+                <div className="flex flex-col flex-grow">
+                  <a
+                    rel="noopener noreferrer"
+                    href="#"
+                    className="font-serif hover:underline"
+                  >
+                    Vitae semper augue purus tincidunt libero.
+                  </a>
+                  <p className="mt-auto text-xs dark:text-gray-400">
+                    22 minutes ago
+                    <a
+                      rel="noopener noreferrer"
+                      href="#"
+                      className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline"
+                    >
+                      World
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div className="flex px-1 py-4">
+                <img
+                  alt=""
+                  className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500"
+                  src="https://source.unsplash.com/random/247x327"
+                />
+                <div className="flex flex-col flex-grow">
+                  <a
+                    rel="noopener noreferrer"
+                    href="#"
+                    className="font-serif hover:underline"
+                  >
+                    Suspendisse potenti.
+                  </a>
+                  <p className="mt-auto text-xs dark:text-gray-400">
+                    37 minutes ago
+                    <a
+                      rel="noopener noreferrer"
+                      href="#"
+                      className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline"
+                    >
+                      Business
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="m-0 overflow-hidden bg-transparent text-gray-700">
-          <img src={post?.images[0]} alt="Image" className="w-full" />
-        </div>
-        <div className="py-6">
-          <p className="mt-3 block font-sans text-xl font-normal leading-relaxed text-gray-700 antialiased">
-            {post?.description}
-          </p>
-        </div>
-        <div className="flex items-center justify-end py-6">
-          <p className="block font-sans text-base font-normal leading-relaxed">
-            {post?.createdAt}
-          </p>
-        </div>
-      </div>
-      {/* comment */}
-      <div className="flex flex-col rounded-xl bg-transparent text-gray-700 shadow-none mb-10">
+      </section>
+      <div className="flex flex-col rounded-xl bg-transparent text-gray-700 shadow-none mb-10 w-2/3">
         <h4 className="block font-sans text-2xl font-semibold leading-snug tracking-normal text-blue-gray-900">
           Để lại bình luận
         </h4>
@@ -112,7 +238,6 @@ const PostDetailPage = () => {
           </button>
         </form>
       </div>
-      {/* comment item */}
       {comments?.map((comment: IComment) => (
         <div
           key={comment?._id}

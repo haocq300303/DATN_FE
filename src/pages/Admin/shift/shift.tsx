@@ -170,7 +170,6 @@ const Shift = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Cập Nhật
           </Button>
 
           <Popconfirm
@@ -184,7 +183,6 @@ const Shift = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined style={{ display: "inline-flex" }} />
-              Xoá Ca Sân
             </Button>
           </Popconfirm>
         </Space>
@@ -282,6 +280,7 @@ const Shift = () => {
         columns={columns}
         dataSource={shifts}
         rowSelection={{}}
+        scroll={{ y: 100 }}
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.date}</p>

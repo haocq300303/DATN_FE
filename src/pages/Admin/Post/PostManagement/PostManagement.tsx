@@ -88,7 +88,7 @@ const PostManagement = () => {
                         ghost
                     >
                         <EditOutlined style={{ display: "inline-flex" }} />
-                        Edit
+
                     </Button>
 
                     <Popconfirm
@@ -102,7 +102,7 @@ const PostManagement = () => {
                     >
                         <Button type="primary" danger>
                             <DeleteOutlined style={{ display: "inline-flex" }} />
-                            Remove
+
                         </Button>
                     </Popconfirm>
                 </Space>
@@ -210,7 +210,6 @@ const PostManagement = () => {
                         showModal("add");
                     }}
                 >
-                    Create Post
                 </Button>
             </div>
             <Table
@@ -218,6 +217,7 @@ const PostManagement = () => {
                 columns={columns}
                 dataSource={data}
                 rowSelection={{}}
+                scroll={{ y: 100 }}
                 expandable={{
                     expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
                 }}
