@@ -22,11 +22,11 @@ export type ShiftInfoType = {
     price: number;
 };
 
-type PitchChildrenInfoType = {
+export type PitchChildrenInfoType = {
     name: string;
 };
 
-export type DataBookingType = [ShiftInfoType?, PitchChildrenInfoType?];
+export type DataBookingType = [PitchChildrenInfoType?, ShiftInfoType?];
 
 const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
     const [dataBooking, setDataBooking] = useState<DataBookingType>([]);
@@ -62,10 +62,10 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
 
                         <div className="h-[400px] px-4 py-5">
                             <Show when={!dataBooking[0]}>
-                                <SelectShift dataBooking={dataBooking} setDataBooking={setDataBooking} />
+                                <SelectChildrenPitch dataBooking={dataBooking} setDataBooking={setDataBooking} />
                             </Show>
                             <Show when={!!dataBooking[0]}>
-                                <SelectChildrenPitch dataBooking={dataBooking} setDataBooking={setDataBooking} />
+                                <SelectShift dataBooking={dataBooking} setDataBooking={setDataBooking} />
                             </Show>
                         </div>
 

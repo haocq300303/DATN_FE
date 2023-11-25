@@ -39,8 +39,12 @@ function App() {
                     <Route path={routes.register} element={<Register />} />
                     <Route index path={routes.login} element={<Login />} />
                 </Route>
-                <Route index path={routes.checkout} element={<BookingPage />} />
-                <Route index path={routes.bookingHistory} element={<BookingHistoryPage />} />
+                <Route path={routes.checkout} element={<LayoutPage />}>
+                    <Route path="" element={<BookingPage />} />
+                </Route>
+                <Route path={routes.bookingHistory} element={<LayoutPage />}>
+                    <Route path="" element={<BookingHistoryPage />} />
+                </Route>
                 {/* Pitch Page */}
                 <Route path="/pitch" element={<LayoutPage />}>
                     <Route index path={routes.pitch_client} element={<PitchPage />} />

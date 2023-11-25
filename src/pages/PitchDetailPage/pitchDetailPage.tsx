@@ -99,7 +99,7 @@ const PitchDetailPage = () => {
         JSON.stringify({
           pitch_name: Pitch.name,
           pitch_avatar: Pitch.avatar,
-          admin_pitch_id: Pitch.admin_pitch_id,
+          admin_pitch_id: Pitch.admin_pitch_id?._id,
           admin_pitch_name: Pitch?.admin_pitch_id?.name,
           admin_pitch_phone: Pitch?.admin_pitch_id?.phone_number,
           pitch_id: Pitch._id,
@@ -107,7 +107,7 @@ const PitchDetailPage = () => {
           children_pitch_id: data.data.id_chirlden_pitch,
           shift_id: data.data._id,
           price: data.data.price,
-          booking_day: data.data.date,
+          booking_day: `${data.data.date} | ${values?.start_time} - ${values?.end_time}`,
           services: selectedServices,
         })
       );
