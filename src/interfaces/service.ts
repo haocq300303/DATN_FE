@@ -1,5 +1,5 @@
 export interface IService {
-    _id?: string;
+    _id: string;
     name: string;
     price: number;
     id_Pitch?: string;

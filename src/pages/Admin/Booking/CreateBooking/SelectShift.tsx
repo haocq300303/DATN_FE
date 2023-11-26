@@ -1,10 +1,11 @@
-import { DatePicker } from "antd";
-import { Dispatch } from "react";
-import { DataBookingType, ShiftInfoType } from ".";
+import { format, parseISO } from "date-fns";
+import { Dispatch, useState } from "react";
 import { useGetShiftsByChildrenPitchQuery } from "~/Redux/shift/shift.api";
+import DatePickerBooking from "~/components/DatePickerBooking";
 import { Show } from "~/components/Show";
 import IShift from "~/interfaces/shift";
-import { format, parseISO } from "date-fns";
+import { DataBookingType, ShiftInfoType } from ".";
+import clsx from "clsx";
 
 const SelectShiftItem = ({ number_shift, start_time, end_time, price }: IShift) => {
     return (
@@ -22,8 +23,22 @@ const SelectShiftItem = ({ number_shift, start_time, end_time, price }: IShift) 
 };
 
 const SelectShift = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
-    const handlePickTime = ({ number_shift, start_time, end_time, price, date }: IShift) => {
+    const [datePicker, setDatePicker] = useState<string>(format(new Date(), "yyyy-MM-dd"));
+
+    const { data, isFetching } = useGetShiftsByChildrenPitchQuery(
+        {
+            childrenPitchId: dataBooking[1]?._id as string,
+            params: {
+                id_pitch: "653ca30f5d70cbab41a2e5d0",
+                date: datePicker,
+            },
+        },
+        { skip: !dataBooking[1]?._id }
+    );
+
+    const handlePickTime = ({ _id, number_shift, start_time, end_time, price, date }: IShift) => {
         const _shift: ShiftInfoType = {
+            id: _id,
             name: "Ca " + number_shift,
             shiftDay: format(parseISO(date), "dd/MM/yyyy"),
             shiftTime: start_time + " - " + end_time,
@@ -31,23 +46,19 @@ const SelectShift = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch
         };
         const _dataBooking = [...dataBooking];
 
-        _dataBooking[1] = _shift;
+        _dataBooking[2] = _shift;
         setDataBooking(_dataBooking as DataBookingType);
     };
 
-    const { data, isFetching } = useGetShiftsByChildrenPitchQuery({
-        childrenPitchId: "655efedffefca5c9571573b1",
-        params: {
-            id_pitch: "653ca30f5d70cbab41a2e5d0",
-            date: "2023-11-25",
-        },
-    });
-
     return (
         <div>
-            <div className="flex justify-end">
-                <DatePicker className="bg-[#51e493] text-white" />
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl font-medium leading-3">Chọn giờ đá</h2>
+
+                <DatePickerBooking onChange={(date) => setDatePicker(date)} size="large" />
             </div>
+
+            <hr className="my-3" />
 
             <div className="mt-7 grid grid-cols-3 gap-10">
                 <Show when={isFetching}>
@@ -56,7 +67,11 @@ const SelectShift = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch
 
                 <Show when={!isFetching}>
                     {data?.data.map((shift) => (
-                        <div className="" onClick={() => handlePickTime(shift)} key={shift._id}>
+                        <div
+                            className={clsx(shift.status_shift && "bg-red-100 pointer-events-none rounded-sm")}
+                            onClick={() => handlePickTime(shift)}
+                            key={shift._id}
+                        >
                             <SelectShiftItem {...shift} />
                         </div>
                     ))}

@@ -18,31 +18,42 @@ const SelectChildrenPitchItem = ({ code_chirldren_pitch }: IChildrentPitch) => {
 };
 
 const SelectChildrenPitch = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
-    const handlePickPitch = ({ code_chirldren_pitch }: IChildrentPitch) => {
+    // Get store
+    const pitchId = "653ca30f5d70cbab41a2e5d0";
+
+    const { data, isFetching } = useGetAllChildrenPitchByPitchIdQuery(pitchId);
+
+    const handlePickPitch = ({ code_chirldren_pitch, _id }: IChildrentPitch) => {
         const _pitchChild: PitchChildrenInfoType = {
             name: "Sân" + code_chirldren_pitch,
+            _id,
         };
         const _dataBooking = [...dataBooking];
 
-        _dataBooking[0] = _pitchChild;
+        _dataBooking[1] = _pitchChild;
         setDataBooking(_dataBooking as DataBookingType);
     };
 
-    const { data, isFetching } = useGetAllChildrenPitchByPitchIdQuery("653ca30f5d70cbab41a2e5d0");
-
     return (
-        <div className="grid grid-cols-2 gap-5">
+        <>
+            <h2 className="text-xl font-medium leading-3">Chọn sân đá</h2>
+
+            <hr className="my-3" />
+
             <Show when={isFetching}>
                 <p>Loading....</p>
             </Show>
+
             <Show when={!isFetching}>
-                {data?.data.map((childrentPitch) => (
-                    <div className="" onClick={() => handlePickPitch(childrentPitch)} key={childrentPitch._id}>
-                        <SelectChildrenPitchItem {...childrentPitch} />
-                    </div>
-                ))}
+                <div className="grid grid-cols-2 gap-5">
+                    {data?.data.map((childrentPitch) => (
+                        <div className="" onClick={() => handlePickPitch(childrentPitch)} key={childrentPitch._id}>
+                            <SelectChildrenPitchItem {...childrentPitch} />
+                        </div>
+                    ))}
+                </div>
             </Show>
-        </div>
+        </>
     );
 };
 
