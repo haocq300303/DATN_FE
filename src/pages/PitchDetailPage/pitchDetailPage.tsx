@@ -37,7 +37,7 @@ import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 import axios from "axios";
 import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import FeedBack from "~/components/Feedback/Feedback";
+import FeedBack from "~/components/Feedback/FeedBack";
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
