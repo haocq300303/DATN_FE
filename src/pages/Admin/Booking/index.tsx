@@ -1,10 +1,10 @@
-import { InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, Modal } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 import Table, { ColumnsType } from "antd/es/table";
 import { format } from "date-fns";
 import React, { useEffect, useMemo, useState } from "react";
-import { useGetAllBookingByUserIdQuery } from "../../../Redux/booking/bookingApi";
 import { IBooking } from "~/interfaces/booking.type";
+import { useGetAllBookingByUserIdQuery } from "../../../Redux/booking/bookingApi";
 import FormCreateBooking from "./CreateBooking";
 
 interface DataType extends IBooking {
@@ -12,7 +12,7 @@ interface DataType extends IBooking {
 }
 const BookingAdminPage = () => {
     const [dataSource, setDataSource] = useState<DataType[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    // const [isModalOpen, setIsModalOpen] = useState<boolean>();
     const [isOpenModalCreate, setIsOpenModalCreate] = useState<boolean>(false);
 
     const columns: ColumnsType<DataType> = useMemo(
@@ -50,7 +50,6 @@ const BookingAdminPage = () => {
                         key: "index",
                         width: 200,
                         render: (user_booking) => {
-                            console.log("object, user_booking", user_booking);
                             return (
                                 <p
                                     style={{
@@ -174,26 +173,26 @@ const BookingAdminPage = () => {
                     </div>
                 ),
             },
-            {
-                title: "Options",
-                width: 100,
-                fixed: "right",
-                render: () => (
-                    <div className="flex justify-center">
-                        <span onClick={() => setIsModalOpen(!isModalOpen)}>
-                            <InfoCircleOutlined size={20} className="cursor-pointer text-2xl hover:text-red-600" />
-                        </span>
+            // {
+            //     title: "Options",
+            //     width: 100,
+            //     fixed: "right",
+            //     render: () => (
+            //         <div className="flex justify-center">
+            //             <span onClick={() => setIsModalOpen(!isModalOpen)}>
+            //                 <InfoCircleOutlined size={20} className="cursor-pointer text-2xl hover:text-red-600" />
+            //             </span>
 
-                        <Modal title="Basic Modal" open={isModalOpen} onCancel={() => setIsModalOpen(false)}>
-                            <p>Some contents...</p>
-                            <p>Some contents...</p>
-                            <p>Some contents...</p>
-                        </Modal>
-                    </div>
-                ),
-            },
+            //             <Modal title="Basic Modal" open={isModalOpen} onCancel={() => setIsModalOpen(false)}>
+            //                 <p>Some contents...</p>
+            //                 <p>Some contents...</p>
+            //                 <p>Some contents...</p>
+            //             </Modal>
+            //         </div>
+            //     ),
+            // },
         ],
-        [isModalOpen]
+        []
     );
 
     const { data: booking, isFetching } = useGetAllBookingByUserIdQuery(null);

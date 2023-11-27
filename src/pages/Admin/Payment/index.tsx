@@ -209,7 +209,7 @@ const PaymentAdminPage = () => {
                             }}
                             className="text-line-3 text-base font-medium"
                         >
-                            {payment_method}
+                            {payment_method === "cash" ? "Tiền mặt" : "Chuyển khoản"}
                         </p>
                     );
                 },
