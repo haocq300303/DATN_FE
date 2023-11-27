@@ -5,6 +5,7 @@ import BillScreen from "./screens/BillScreen";
 import BookingScreen from "./screens/BookingScreen";
 import InfoScreen from "./screens/InfoScreen";
 import { toast } from "react-toastify";
+import { IInfoBooking } from "~/interfaces/booking.type";
 
 const BookingPage: React.FC = () => {
     const [current, setCurrent] = useState(0);
@@ -23,25 +24,32 @@ const BookingPage: React.FC = () => {
         },
     ]);
 
+    const a: IInfoBooking = {
+        pitch: {
+            _id: "655efedffefca5c9571573b1",
+            name: "sân",
+            image: "https://picsum.photos/300/300",
+            address: "ss",
+        },
+        admin_pitch: {
+            _id: "655efedffefca5c9571573b1",
+            name: "admin",
+            phone: "098",
+        },
+        children_pitch: {
+            _id: "655efedffefca5c9571573b1",
+            children_pitch_code: "1",
+        },
+        shift: {
+            _id: "1",
+            price: 600000,
+            shift_day: "2023",
+        },
+        services: [{ _id: "655efedffefca5c9571573b1", name: "dvu 1", price: 120000, image: "https://picsum.photos/300/300" }],
+    };
+    sessionStorage.setItem("infoBooking", JSON.stringify(a));
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-
-    sessionStorage.setItem(
-        "infoBooking",
-        JSON.stringify({
-            pitch_name: "Sân bóng Hà Nội",
-            pitch_avatar: "https://picsum.photos/300/300",
-            admin_pitch_id: "64bdf702a270d23097e91162",
-            admin_pitch_name: "Tên chủ sân",
-            admin_pitch_phone: "0788113114",
-            pitch_id: "64b3759f72fc2491a4d73312",
-            pitch_address: "Cao đẳng fpt polytecnic",
-            children_pitch_id: "6527771fe9a39084565ae5d3",
-            shift_id: "653724069cf0d02633a55a31",
-            price: 800000,
-            booking_day: "19/10/2023 | 14:20-16:20",
-        })
-    );
 
     useEffect(() => {
         const infoBooking = sessionStorage.getItem("infoBooking");

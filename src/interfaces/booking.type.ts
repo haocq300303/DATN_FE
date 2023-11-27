@@ -19,15 +19,25 @@ export interface IBooking {
 }
 
 export interface IInfoBooking {
-    pitch_name: string;
-    pitch_avatar: string;
-    admin_pitch_id: string;
-    admin_pitch_name: string;
-    admin_pitch_phone: string;
-    pitch_id: string;
-    pitch_address: string;
-    children_pitch_id: string;
-    shift_id: string;
-    price: number;
-    booking_day: string;
+    pitch: {
+        _id: string;
+        name: string;
+        image: string;
+        address: string;
+    };
+    children_pitch: {
+        _id: string;
+        children_pitch_code: string;
+    };
+    admin_pitch: {
+        _id: string;
+        name: string;
+        phone: string;
+    };
+    shift: {
+        _id: string;
+        price: number;
+        shift_day: string;
+    };
+    services?: { _id: string; name: string; image: string; price: number }[];
 }

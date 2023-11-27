@@ -35,10 +35,11 @@ const BookingHistoryItem = (booking: IBooking) => {
                 </div>
             </td>
             <td className="rounded-l-lg py-4 pl-3 text-sm font-normal text-[#637381]">{booking.pitch?.address}</td>
-            <td className="px-1 py-4 text-sm font-normal text-[#637381]">
-                <span className="text-lime-800">{booking.shift?.time_start}</span>-<span className="text-green-800">{booking.shift?.time_end}</span>
-            </td>
             <td className="px-1 py-4 text-sm font-normal text-[#637381]">{booking.shift?.number_shift}</td>
+            <td className="px-1 py-4 text-sm font-normal text-[#637381]">
+                <span className="text-lime-800">{booking.shift?.start_time}</span>-<span className="text-green-800">{booking.shift?.end_time}</span>
+            </td>
+
             <td className="px-1 py-4 text-sm font-normal text-[#637381]">{booking.shift?.price}</td>
 
             <td className="px-1 py-4 text-sm font-normal text-[#637381]">{format(new Date(booking?.updatedAt), "HH:mm:ss dd-MM-yyyy")}</td>

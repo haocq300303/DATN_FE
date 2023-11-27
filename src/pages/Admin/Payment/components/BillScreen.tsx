@@ -16,10 +16,12 @@ const BillScreen = ({ payment_id }: { payment_id: string }) => {
         infoBooking: {
             pitch_name: data?.data?.pitch?.name as string,
             pitch_address: data?.data?.pitch?.address as string,
-            booking_day: `${data?.data?.shift?.time_start} - ${data?.data?.shift?.time_end}`,
+            booking_day: `${data?.data?.shift?.start_time} - ${data?.data?.shift?.end_time}`,
             price: data?.data?.shift?.price as number,
         } as any,
     };
+
+    console.log(billData);
 
     useEffect(() => {
         if (isFetching) {
@@ -35,7 +37,13 @@ const BillScreen = ({ payment_id }: { payment_id: string }) => {
                 <EyeOutlined size={20} className="cursor-pointer" onClick={() => setIsOpenModal(!isOpenModal)} />
             </Tooltip>
 
-            <Modal open={isOpenModal} width="700px" onCancel={() => setIsOpenModal(false)} className="fixed inset-0 flex items-center pb-0">
+            <Modal
+                key={payment_id}
+                open={isOpenModal}
+                width="700px"
+                onCancel={() => setIsOpenModal(false)}
+                className="fixed inset-0 flex items-center pb-0"
+            >
                 <div className="mt-auto max-h-[80vh] overflow-y-auto -mr-4 pr-4">
                     <BillBanking {...billData} />
                 </div>

@@ -12,6 +12,7 @@ import {
 } from "~/Redux/Slices/shiftSlice";
 import IShift from "~/interfaces/shift";
 import { matchOpponent } from "~/api/shift";
+import { format, parseISO } from "date-fns";
 
 const FindOpponentPage = () => {
   const host = "http://localhost:8080/api/location/";
@@ -24,6 +25,7 @@ const FindOpponentPage = () => {
 
   const dispatch = useAppDispatch();
   const shifts = useAppSelector((state) => state.shift.shift);
+  console.log(shifts);
 
   const { Option } = Select;
 
@@ -122,9 +124,10 @@ const FindOpponentPage = () => {
   const onHandleSubmit = async (idShift: any) => {
     try {
       const data = {
-        idUserFindOpponent: "65131393f8698962d691cd12",
-        phone_number: "0987957355",
-        nameUserFindOpponent: "Phạm Anh Tuấn",
+        idUserFindOpponent: "655f1711c3dfbd0adea3ce3e",
+        email: "chuhao878@gmail.com",
+        phone_number: "0347656836",
+        nameUserFindOpponent: "Chu Quang Hào",
       };
       const value = { find_opponent: false };
 
@@ -278,7 +281,7 @@ const FindOpponentPage = () => {
                   >
                     <div className="relative mx-4 mt-4 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 bg-clip-border shadow-blue-gray-500/40">
                       <img
-                        src="https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1470&amp;q=80"
+                        src={item?.id_pitch?.avatar}
                         alt="ui/ux review check"
                       />
                       <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-tr from-transparent via-transparent to-black/60"></div>
@@ -286,7 +289,7 @@ const FindOpponentPage = () => {
                     <div className="px-6 py-4">
                       <div className="flex items-center justify-between mb-3">
                         <h5 className="block font-bold font-sans text-xl antialiased leading-snug tracking-normal text-blue-gray-900">
-                          Sân Bóng FPoly
+                          {item?.id_pitch?.name}
                         </h5>
                         <p className="flex items-center gap-1.5 font-sans text-base font-normal leading-relaxed text-blue-gray-900 antialiased">
                           <svg
@@ -306,8 +309,8 @@ const FindOpponentPage = () => {
                         </p>
                       </div>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                        <span className="text-pink-500">Vị trí:</span> Số 1,
-                        Trịnh Văn Bô, Hà Nội
+                        <span className="text-pink-500">Vị trí:</span>{" "}
+                        {item?.id_pitch?.address}
                       </p>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
                         <span className="text-pink-500">Giá sân:</span>{" "}
@@ -316,7 +319,7 @@ const FindOpponentPage = () => {
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
                         <span className="text-pink-500"> Ca sân:</span> Ca{" "}
                         {item.number_shift}
-                        {`(${item.time_start} - ${item.time_end})`}
+                        {` (${item.start_time} - ${item.end_time})`}
                       </p>
                       <div className="flex items-center justify-between">
                         <p className="block font-sans text-base antialiased font-light leading-relaxed text-pink-500">
@@ -329,12 +332,13 @@ const FindOpponentPage = () => {
                             src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
                           />
                           <p className="inline-block font-sans text-sm font-medium leading-normal text-blue-gray-900">
-                            Phạm Tuấn
+                            Chu Quang Hào
                           </p>
                         </div>
                       </div>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                        <span className="text-pink-500">Ngày:</span> {item.date}
+                        <span className="text-pink-500">Ngày:</span>{" "}
+                        {format(parseISO(item.date), "yyyy-MM-dd")}
                       </p>
                     </div>
                     <div className="px-6 pb-4 pt-0">

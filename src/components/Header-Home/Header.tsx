@@ -16,6 +16,7 @@ import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { routes } from '~/routes';
 
+
 const Header = () => {
   const [openNav, setOpenNav] = React.useState(false);
 
@@ -122,7 +123,6 @@ const Header = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
