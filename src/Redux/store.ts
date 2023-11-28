@@ -13,16 +13,19 @@ import shiftReducer from "./Slices/shiftSlice";
 import shiftApi from "./shift/shift.api";
 import pitchApi from "./pitch/pitch.api";
 import feedbackReducer from "./Slices/feedbackSlice";
+import serviceApi from "./service/service.api";
+import userReducer from './Slices/userSlice';
 const store = configureStore({
     reducer: {
         [paymentApi.reducerPath]: paymentApi.reducer,
         [bookingApi.reducerPath]: bookingApi.reducer,
         [shiftApi.reducerPath]: shiftApi.reducer,
         [pitchApi.reducerPath]: pitchApi.reducer,
+        [serviceApi.reducerPath]: serviceApi.reducer,
         navbar,
         banner: bannerSlice,
         service: serviceSlice,
-
+        user: userReducer,
         post: postReducer,
         comment: commentReducer,
         location: locationReducer,
@@ -34,7 +37,7 @@ const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: false,
-        }).concat([paymentApi.middleware, bookingApi.middleware, shiftApi.middleware, pitchApi.middleware]),
+        }).concat([paymentApi.middleware, bookingApi.middleware, shiftApi.middleware, pitchApi.middleware, serviceApi.middleware]),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

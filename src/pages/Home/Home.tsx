@@ -1,10 +1,10 @@
-import { getAllPostMid } from "~/Redux/Slices/postSlice";
-import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import IPost from "~/interfaces/post";
-import "./Home.css";
-import { useEffect } from "react";
-import { formatDistanceToNow } from "date-fns";
-import { vi } from "date-fns/locale";
+import { getAllPostMid } from '~/Redux/Slices/postSlice';
+import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import IPost from '~/interfaces/post';
+import './Home.css';
+import { useEffect } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -91,7 +91,7 @@ const Home = () => {
                       href={`/post/${post._id}`}
                       className="transition duration-100 hover:text-indigo-500 active:text-indigo-600"
                     >
-                      {" "}
+                      {' '}
                       {post.title}
                     </a>
                   </h2>
@@ -114,7 +114,7 @@ const Home = () => {
                           {post.id_user?.name}
                         </span>
                         <span className="block text-sm text-gray-400">
-                          {" "}
+                          {' '}
                           {calculateTimeAgo(post.createdAt)}
                         </span>
                       </div>
