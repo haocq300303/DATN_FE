@@ -39,7 +39,7 @@ const BannerManagement = () => {
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
 
-  console.log(banners);
+  // console.log(banners);
 
   useEffect(() => {
     dispatch(getAllBannerMid());
@@ -147,7 +147,7 @@ const BannerManagement = () => {
       );
 
       const url = urls[0];
-      console.log(url);
+      // console.log(url);
       const newValues = { ...values, url };
 
       await dispatch(createBannerMid(newValues));

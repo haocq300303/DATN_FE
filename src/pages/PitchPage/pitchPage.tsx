@@ -57,7 +57,6 @@ const PitchPage = () => {
 
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
-  console.log("LogPitchs", pitchs);
   const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
 
@@ -112,7 +111,7 @@ const PitchPage = () => {
 
     fetchTotalStars();
   }, [pitchs]);
-  console.log({ totalStar });
+  // console.log({ totalStar });
 
   // pitchs.forEach((item: any, index: any) => {
   //   console.log(`TotalStar${item.name}`, totalStar[index]);
@@ -123,7 +122,7 @@ const PitchPage = () => {
       ? selectedServices.filter((service) => service !== serviceValue)
       : [...selectedServices, serviceValue];
     setSelectedServices(updatedServices);
-    console.log("Fillter Service", updatedServices);
+    // console.log("Fillter Service", updatedServices);
   };
 
   const filteredPitchs = pitchs.filter((pitch: any) => {
@@ -223,7 +222,7 @@ const PitchPage = () => {
     dispatch(search(response?.data?.data?.data));
     window.scrollTo({ top: 500, behavior: 'smooth' });
   }
-  console.log("vck", totalItems);
+  // console.log("vck", totalItems);
 
 
   return (

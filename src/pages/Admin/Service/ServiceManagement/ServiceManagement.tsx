@@ -154,7 +154,7 @@ const ServiceManagement = () => {
     } else if (modalMode === "edit") {
       const newImages = values.image.fileList;
       const image = newImages ? newImages[0].response.data.url : values.url;
-      console.log(image);
+      // console.log(image);
       
       const newValues = { ...values, image };
 

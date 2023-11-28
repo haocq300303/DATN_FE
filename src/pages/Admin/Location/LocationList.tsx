@@ -27,7 +27,7 @@ const LocationList = () => {
     const dispatch = useAppDispatch();
 
     const locations = useAppSelector((state) => state.location.locations);
-    console.log("api", locations);
+    // console.log("api", locations);
 
 
     useEffect(() => {

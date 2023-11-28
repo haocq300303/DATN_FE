@@ -73,7 +73,7 @@ const Shift = () => {
   
   // lấy tất cả các ca sân =============
   const shifts = useAppSelector((state) => state.shift.shift);
-  console.log(shifts);
+  // console.log(shifts);
   const numberShifts = shifts.map((item: any) => item.number_shift);
   console.log("Danh sách số ca sân:", numberShifts);
 

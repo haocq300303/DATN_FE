@@ -65,7 +65,7 @@ const PitchList = () => {
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
-  console.log("service", services);
+  // console.log("service", services);
 
 
   const confirm = async (idPost: string) => {
@@ -194,7 +194,7 @@ const PitchList = () => {
       const avatar = values?.avatar?.fileList[0]?.response?.data?.url;
 
       const newValues = { ...values, avatar, images };
-      console.log("valueAbc:", newValues);
+      // console.log("valueAbc:", newValues);
 
       await dispatch(fetchCreatPitch(newValues));
       message.success(`Tạo Sân Bóng thành công!`);
