@@ -28,3 +28,9 @@ export const matchOpponent = (data: any) => {
 export const findOpponent = (idShift: string, data: any) => {
   return instance.put(`shift/find-opponent/${idShift}`, data);
 };
+export const changeFindOpponent = (idShift: string, data: any) => {
+  return instance.put(`shift/find-opponent-change/${idShift}`, data);
+};
+export const updateFindOpponent = (idShift: string, data: any) => {
+  return instance.put(`shift/find-opponent/${idShift}`, data);
+};

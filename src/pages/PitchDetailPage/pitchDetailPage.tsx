@@ -54,8 +54,6 @@ const PitchDetailPage = () => {
   const [selectedServices, setSelectedServices] = useState<any>([]);
   const [findOpponent, setFindOpponent] = useState(false);
 
-  const services = useAppSelector((state) => state.service.services);
-
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
   const toDay = new Date();
 
@@ -248,17 +246,14 @@ const PitchDetailPage = () => {
                         <p>Số Người :7 Người</p>
                         <p className="flex justify-between my-[10px]">
                           Dịch Vụ :
-                          {item.services.map((data: any) => {
-                            const service = services.find(
-                              (item) => item._id == data._id
-                            );
-                            return (
-                              <span key={data._id!}>
-                                <i className="fa-solid fa-check"></i>{" "}
-                                {service ? service.name : "Chưa có dịch vụ"}
-                              </span>
-                            );
-                          })}
+                          {Pitch?.services && Pitch?.services.length > 0
+                            ? Pitch?.services?.map((service: any) => (
+                                <span key={service?._id}>
+                                  <i className="fa-solid fa-check"></i>{" "}
+                                  {service.name}
+                                </span>
+                              ))
+                            : ""}
                         </p>
                         <p className="flex justify-between">
                           Giá :
@@ -323,9 +318,9 @@ const PitchDetailPage = () => {
                         {service?.name}
                       </Typography>
                       <Typography>
-                        {service?.price && (
-                          service?.price.toLocaleString("vi-VN")
-                        )}đ
+                        {service?.price &&
+                          service?.price.toLocaleString("vi-VN")}
+                        đ
                       </Typography>
                     </CardBody>
                   </Card>
@@ -398,12 +393,11 @@ const PitchDetailPage = () => {
                 GIÁ CHỈ TỪ:{" "}
               </span>
               <span className=" text-[#ffb932] ml-2 leading-4">
-                {Pitch?.deposit_price && (
+                {Pitch?.deposit_price &&
                   Pitch?.deposit_price?.toLocaleString("it-IT", {
                     style: "currency",
                     currency: "VND",
-                  })
-                )}
+                  })}
               </span>
             </p>
             <p className="my-[20px] font-semibold">
@@ -496,11 +490,11 @@ const PitchDetailPage = () => {
                             {shift.start_time}h - {shift.end_time}h
                           </p>
                           <p className="font-semibold">
-                            {shift.price && (
+                            {shift.price &&
                               shift.price?.toLocaleString("it-IT", {
-                              style: "currency",
-                              currency: "VND",
-                            }))}
+                                style: "currency",
+                                currency: "VND",
+                              })}
                           </p>
                         </button>
                       ))}

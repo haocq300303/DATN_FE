@@ -13,9 +13,10 @@ const shiftApi = createApi({
                 method: "GET",
                 params,
             }),
-        }),
-    }),
-});
+        })
+    })
+})
+
 
 export const { useGetShiftsByChildrenPitchQuery } = shiftApi;
 export default shiftApi;

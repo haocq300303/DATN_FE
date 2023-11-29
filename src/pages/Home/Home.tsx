@@ -19,18 +19,18 @@ const Home = () => {
   }, [dispatch]);
   return (
     <div className="gradient">
-      <section className="bg-white box-border py-8">
+      <section className="bg-white box-border py-2">
         <div className="container max-w-5xl mx-auto m-8">
-          <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
-            FSport
+          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800 ">
+          FootieMatchFinder
           </h2>
-          <div className="w-full mb-4">
+          <div className="w-full">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
           <section className="bg-white dark:bg-gray-900">
-            <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
+            <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-10 lg:px-2">
               <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-                <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+                <h2 className="pb-2 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
                   Hệ thống đặt lịch hàng đầu
                 </h2>
                 <p className="mb-4">
@@ -61,17 +61,17 @@ const Home = () => {
           </section>
         </div>
       </section>
-      <section className="bg-white py-8">
+      <section className="bg-white">
         <div className="container mx-auto flex flex-wrap pt-4 pb-12">
-          <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
+          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800">
             Tin Tức Mới Nhất
           </h2>
-          <div className="w-full mb-4">
+          <div className="w-full my-8">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 md:gap-6 w-full xl:grid-cols-3 xl:gap-8">
-            {posts?.map((post: IPost) => (
+            {posts?.slice(0, 3).map((post: IPost ) => (
               <div className="flex flex-col overflow-hidden rounded-lg border bg-white">
                 <a
                   href="#"
@@ -130,11 +130,11 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="bg-white pt-20 lg:pt-[60px]">
+      <section className="bg-white lg:pt-[30px]">
         <div className="container mx-auto">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
-              <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-20">
+              <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-6">
                 <h2 className="mb-4 text-3xl font-bold text-black sm:text-4xl md:text-[40px]">
                   Thông tin về trang web chúng tôi
                 </h2>
@@ -344,7 +344,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="bg-white pt-20 lg:pt-[60px]">
+      <section className="bg-white pt-20 lg:pt-[10px]">
         <div className="bg-white py-6 sm:py-8 lg:py-12">
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
@@ -424,7 +424,7 @@ const Home = () => {
       <section className="bg-white py-8" id="dkdt">
         <div className="container mx-auto px-2 pt-4 pb-12 text-gray-800">
           <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
-            Dăng Kí Đối Tác
+            Đăng Kí Đối Tác
           </h2>
           <div className="w-full mb-4">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
