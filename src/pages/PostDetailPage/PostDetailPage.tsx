@@ -1,38 +1,30 @@
+import { Button, Empty, Form, Input, message } from "antd";
+import TextArea from "antd/es/input/TextArea";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import {
-  createCommentMid,
-  getCommentByPostMid,
-} from "~/Redux/Slices/commentSlide";
+import { Link, useParams } from "react-router-dom";
+import { createCommentMid, getAllCommentMid } from "~/Redux/Slices/commentSlide";
+import { getAllPostMid } from "~/Redux/Slices/postSlice";
+
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getOnePost } from "~/api/post";
 import IComment from "~/interfaces/comment";
 import IPost from "~/interfaces/post";
-import { useForm, SubmitHandler } from "react-hook-form";
 
-type Inputs = {
-  content: string;
-};
 
 const PostDetailPage = () => {
   const { id } = useParams();
+  const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [post, setPost] = useState<IPost>();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const commentValue = {
-      ...data,
-      id_user: "65131393f8698962d691cd12",
-      id_post: id,
-    };
-    await dispatch(createCommentMid(commentValue));
-    reset();
-  };
+  const [Char, setChar] = useState('');
+  const [Comment, setComment] = useState<string[]>([]);
+
+  const posts = useAppSelector((state) => state.post.posts);
+  // console.log("data post", posts);
+  const comments = useAppSelector((state) => state.comment.comments);
+  console.log("data comments", comments);
+
+  // console.log("detail Post", post);
 
   useEffect(() => {
     (async () => {
@@ -45,96 +37,224 @@ const PostDetailPage = () => {
     })();
   }, [id]);
 
-  const comments = useAppSelector((state) => state.comment.comments);
 
   useEffect(() => {
-    dispatch(getCommentByPostMid(String(id)));
-  }, [dispatch, id]);
+    dispatch(getAllPostMid());
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(getAllCommentMid());
+  }, [dispatch]);
+
+
+  useEffect(() => {
+    if (post && post.comment_id) {
+      const cmtId = post?.comment_id?.map((item: any) => item._id);
+      if (cmtId) {
+        setComment(cmtId);
+      }
+    }
+  }, [post]); // Chạy lại effect khi post thay đổi
+  // console.log("cmt", Comment);
+
+  //comment
+  const handleCharChange = (e: any) => {
+    const value = e.target.value;
+    setChar(value);
+  };
+  const onFinishComment = async (values: any) => {
+    try {
+      const response = await dispatch(createCommentMid(values));
+      console.log("res", response);
+      if (response?.meta?.requestStatus === "fulfilled") {
+        message.success("Đánh giá Thành Công !");
+      }
+      const cmtId: string = response.payload?._id;
+      setComment((prevFeedbackList) => [...prevFeedbackList, cmtId]);
+      await dispatch(getAllCommentMid());
+      form.resetFields(['content']);
+      setChar('');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   return (
-    <div className="container max-w-3xl mx-auto pt-24 mb-20">
-      <div className="flex w-full flex-col text-gray-700">
-        <h4 className="block font-sans text-4xl font-semibold leading-snug text-blue-gray-900 mb-6">
-          {post?.title}
-        </h4>
-        <div className="cursor-pointer mb-6">
-          <img
-            className="inline-block h-12 w-12 rounded-full object-cover object-center mr-4"
-            alt="Image placeholder"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-          />
-          <p className="inline-block font-sans text-base font-semibold font-medium leading-normal text-blue-gray-900">
-            {post?.id_user?.name}
-          </p>
-        </div>
-        <div className="m-0 overflow-hidden bg-transparent text-gray-700">
-          <img src={post?.images[0]} alt="Image" className="w-full" />
-        </div>
-        <div className="py-6">
-          <p className="mt-3 block font-sans text-xl font-normal leading-relaxed text-gray-700 antialiased">
-            {post?.description}
-          </p>
-        </div>
-        <div className="flex items-center justify-end py-6">
-          <p className="block font-sans text-base font-normal leading-relaxed">
-            {post?.createdAt}
-          </p>
-        </div>
-      </div>
-      {/* comment */}
-      <div className="flex flex-col rounded-xl bg-transparent text-gray-700 shadow-none mb-10">
-        <h4 className="block font-sans text-2xl font-semibold leading-snug tracking-normal text-blue-gray-900">
-          Để lại bình luận
-        </h4>
+    <div className="container mx-auto">
+      <div className="pt-[20px]">
+        <nav aria-label="Breadcrumb" className="flex w-full rounded-lg bg-gray-100/50">
+          <ol
+            className="flex overflow-hidden rounded-lg  text-gray-600"
+          >
+            <li className="flex items-center">
+              <Link
+                to={`/`}
+                className="flex h-10 items-center gap-1.5 bg-gray-100 px-4 transition hover:text-gray-900"
+              >
 
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-8 mb-2 w-full">
-          <div className="mb-2 flex flex-col gap-6">
-            <div className="relative w-full min-w-[200px]">
-              <textarea
-                className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-pink-500 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
-                placeholder=" "
-                {...register("content", { required: true })}
-              ></textarea>
-              <label className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-pink-500 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-pink-500 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-pink-500 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-                Comment
-              </label>
-              {errors.content && (
-                <span className="text-red-900">This field is required</span>
-              )}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
+                </svg>
+
+                <span className="ms-1.5 text-xs font-medium"> Trang Chủ </span>
+              </Link>
+            </li>
+
+            <li className="relative flex items-center">
+              <span
+                className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"
+              >
+              </span>
+
+              <Link
+                to={`/post`}
+                className="flex h-10 items-center  pe-4 ps-8 text-xs font-medium transition hover:text-gray-900"
+              >
+                Tin Tức
+              </Link>
+            </li>
+            <li className="relative flex items-center">
+              <span
+                className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100/50 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"
+              >
+              </span>
+
+              <Link
+                to={`#`}
+                className="flex h-10 items-center  pe-4 ps-8 text-xs font-medium transition hover:text-gray-900"
+              >
+                {post?.title}
+              </Link>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      {/*  */}
+      <div className=" flex justify-center gap-[30px] mx-auto pt-[40px] mb-20">
+        <div className=" flex-col text-gray-700 overflow-auto">
+          <div>
+            <h4 className="block font-sans text-4xl font-semibold leading-snug text-blue-gray-900 mb-6">
+              {post?.title}
+            </h4>
+            <div className="flex justify-center gap-[20px]">
+              <div className="m-0 overflow-hidden bg-transparent text-gray-700">
+                <img src={post?.images[0]} alt="Image" className="w-full" />
+              </div>
+              <div className="w-full ">
+                <h1 className="text-center text-xl font-sans font-[600]">Tin Mới Nhất</h1>
+                <div className="pt-[25px] ">
+                  {posts && posts.length > 0 ? (
+                    posts.slice(0, 8).map((item: IPost) => (
+                      <Link key={item?._id} to={`/post/${item._id}`}>
+                        <div className="flex justify-center items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
+                          <img className="w-[100px] rounded-md" src={item?.images[0]} alt="" />
+                          <h1>{item?.title}</h1>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div><Empty /></div>
+                  )}
+
+                </div>
+              </div>
+            </div>
+            <div className="py-6">
+              <p className="mt-3 block font-sans text-xl font-normal leading-relaxed text-gray-700 antialiased">
+                {post?.description}
+              </p>
+            </div>
+            <div className="flex items-center justify-end py-6">
+              <p className="block font-sans text-base font-normal leading-relaxed">
+                {post?.createdAt}
+              </p>
             </div>
           </div>
+          <div className="border-b-[1px] border-gray-700"></div>
+          <div className="border-b-[1px] border-gray-700 mt-[1px]"></div>
+          <div className=" mx-[100px]">
+            <h1 className="text-2xl text-blue-500 font-sans font-[500] mt-[20px] mb-[15px]">Nhận Xét Về Bài Đăng :</h1>
+            <Form
+              form={form}
+              onFinish={onFinishComment}
+            >
+              <Form.Item
+                name="content"
+                rules={[{ required: true, message: 'Hãy viết bình luận của mình !' }]}
+              >
+                <TextArea
+                  rows={4}
+                  placeholder="Nhập Bình Luận !"
+                  value={Char}
+                  onChange={handleCharChange}
+                />
+              </Form.Item>
+              <Form.Item hidden name="id_post" initialValue={id!}>
+                <Input type="text" defaultValue={id} />
+              </Form.Item>
+              <div className="flex justify-between">
+                <Form.Item>
+                  <Button type="primary" className=" bg-blue-600" htmlType="submit">
+                    Bình Luận
+                  </Button>
+                </Form.Item>
+                <h1> Tối Đa : <span className="font-[600]">{1500 - Char.length} Kí Tự</span> </h1>
+              </div>
+            </Form>
 
-          <button
-            className="mt-4 block w-full select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="submit"
-          >
-            Comment
-          </button>
-        </form>
-      </div>
-      {/* comment item */}
-      {comments?.map((comment: IComment) => (
-        <div
-          key={comment?._id}
-          className="relative flex w-full flex-col rounded-xl bg-transparent text-gray-700 shadow-none mb-4"
-        >
-          <div className="relative flex items-center gap-4 overflow-hidden rounded-xl bg-transparent pt-0 pb-4 text-gray-700 shadow-none">
-            <img
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
-              alt="tania andrew"
-              className="relative inline-block h-[38px] w-[38px] !rounded-full object-cover object-center"
-            />
-            <h5 className="block font-sans text-base font-semibold leading-snug tracking-normal text-blue-gray-900">
-              {comment?.id_user}
-            </h5>
-          </div>
-          <div className="mb-4 p-0">
-            <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-              {comment?.content}
-            </p>
+            <div className="bg-gray-100/50">
+              <div className=" bg-gray-100 py-[10px] border-b-[1px] border-gray-700">
+                <p className="ml-[10px]">Bình Luận Mới Nhất</p>
+              </div>
+              <div>
+                {Comment && Comment.length > 0 ? (
+                  Comment?.slice()?.reverse()?.map((data: any) => {
+
+                    const cmts: any = comments?.find((item: IComment) => item._id == data);
+                    if (!cmts) {
+                      return null;
+                    }
+                    return (
+                      <div key={cmts?._id} className="flex w-full mt-[10px] bg-none">
+                        <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
+                        <div className="w-full rounded-md">
+                          <div className="h-[40px] flex justify-between items-center w-full ">
+                            <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name}</h1>
+                            <h1>{cmts?.createdAt}</h1>
+                          </div>
+                          <div>
+                            <p>{cmts?.content}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div>
+                    <h1 className="text-center">Chưa Có Bình Luận. Bạn Hãy Là Người Bình Luận Đầu tiên !</h1>
+                  </div>
+                )}
+
+                {/*  */}
+
+              </div>
+            </div>
+
           </div>
         </div>
-      ))}
+
+      </div>
     </div>
   );
 };
