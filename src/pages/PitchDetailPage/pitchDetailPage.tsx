@@ -37,7 +37,8 @@ import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 import axios from "axios";
 import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import FeedBack from "~/components/Feedback/Feedback";
+import FeedBack from "~/components/Feedback/FeedBack";
+import { totalStarByPitch } from "~/api/feedback";
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -53,11 +54,13 @@ const PitchDetailPage = () => {
   const [Pitch, setPitch] = useState<IPitch>({} as IPitch);
   const [selectedServices, setSelectedServices] = useState<any>([]);
   const [findOpponent, setFindOpponent] = useState(false);
+  const [TotalStar, setTotalStar] = useState<any>(Number);
 
   const services = useAppSelector((state) => state.service.services);
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
   const toDay = new Date();
+  console.log("pitdetail:", Pitch);
 
   const onChangeFindOpponent = (checked: boolean) => {
     setFindOpponent(checked);
@@ -164,6 +167,22 @@ const PitchDetailPage = () => {
 
   // end xử lí đội bóng liên quan
 
+  // Xử lý totalStar
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await totalStarByPitch(String(id));
+        const { data } = response.data;
+        setTotalStar(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
@@ -240,8 +259,8 @@ const PitchDetailPage = () => {
                         />
                       </div>
                       <div className="text-item-pitch">
-                        <Rate allowHalf defaultValue={4.5} />{" "}
-                        <span>( 99+ Review)</span>
+                        <Rate disabled allowHalf defaultValue={4.5} />{" "}
+                        <span>( {item?.feedback_id?.length} Review)</span>
                         <h3>{item.name}</h3>
                         <p>Số Người :7 Người</p>
                         <p className="flex justify-between my-[10px]">
@@ -435,8 +454,8 @@ const PitchDetailPage = () => {
         <div className="info-pitch">
           <h1 className="text-pitch">{Pitch.name}</h1>
           <p className="flex align-center">
-            <Rate allowHalf defaultValue={5} />
-            <span className="ml-2">( 2 Reviews )</span>
+            <Rate disabled allowHalf value={TotalStar?.averageRating} />
+            <span className="ml-2">( {Pitch?.feedback_id?.length} Reviews )</span>
           </p>
         </div>
       </div>

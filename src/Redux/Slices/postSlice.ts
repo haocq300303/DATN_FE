@@ -17,6 +17,7 @@ export const getAllPostMid = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const { data } = await getAllPost();
+      console.log("dataPostRedux", data);
       return data.data.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -70,7 +71,11 @@ export const deletePostMid = createAsyncThunk(
 const postSlice = createSlice({
   name: "post",
   initialState,
-  reducers: {},
+  reducers: {
+    setData(state, action) {
+      state.posts = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllPostMid.pending, (state) => {
@@ -126,4 +131,5 @@ const postSlice = createSlice({
   },
 });
 
+export const { setData } = postSlice.actions
 export default postSlice.reducer;
