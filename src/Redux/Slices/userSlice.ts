@@ -2,7 +2,6 @@ import { IUser, IVerify, SigninForm, UserState } from '../../interfaces/auth';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import jwtDecode from 'jwt-decode';
 import { login, loginWithGoogle, verify } from '~/api/auth';
-import { checkAdmin, checkAdminPitch } from '~/utils/auth';
 
 const initialState: UserState = {
   loading: false,
@@ -12,8 +11,7 @@ const initialState: UserState = {
   },
   isLogged: false,
   error: '',
-  isAdmin: false,
-  isAdminPitch: false,
+  role_name: '',
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,11 +62,13 @@ const userSlice = createSlice({
       state.currentUser.accessToken = '';
       localStorage.removeItem('accessToken');
       state.isLogged = false;
+      state.role_name = '';
     },
     saveUserValues(state, action) {
       state.currentUser.values = action.payload?.values;
       state.currentUser.accessToken = action.payload?.accessToken;
       state.isLogged = true;
+      state.role_name = action.payload?.role_name;
     },
   },
   extraReducers(builder) {
@@ -81,20 +81,15 @@ const userSlice = createSlice({
         if (action.payload?.error) {
           state.error = action.payload?.message;
           state.loading = false;
-          state.isAdmin = false;
-          state.isAdminPitch = false;
         } else {
-          const { _doc }: any = jwtDecode(action.payload?.accessToken);
-          state.currentUser.values = _doc;
+          const decode: any = jwtDecode(action.payload?.accessToken);
+          state.currentUser.values = decode;
           localStorage.setItem('accessToken', action.payload?.accessToken);
           state.currentUser.accessToken = action.payload?.accessToken;
-          const checkAdminValue: any = checkAdmin();
-          const checkAdminPitchValue: any = checkAdminPitch();
-          state.isLogged = true;
-          state.isAdmin = checkAdminValue;
-          state.isAdminPitch = checkAdminPitchValue;
+          state.role_name = decode.role_name;
           state.error = '';
           state.loading = false;
+          state.isLogged = true;
         }
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -102,8 +97,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.response?.data?.message;
         state.isLogged = false;
-        state.isAdmin = false;
-        state.isAdminPitch = false;
+        state.role_name = '';
       })
 
       // login with google
@@ -115,17 +109,12 @@ const userSlice = createSlice({
         if (action.payload?.error) {
           state.error = action.payload?.message;
           state.loading = false;
-          state.isAdmin = false;
-          state.isAdminPitch = false;
         } else {
-          const { _doc }: any = jwtDecode(action.payload?.accessToken);
-          state.currentUser.values = _doc;
+          const decode: any = jwtDecode(action.payload?.accessToken);
+          state.currentUser.values = decode;
           state.currentUser.accessToken = action.payload?.accessToken;
           state.isLogged = true;
-          const checkAdminValue: any = checkAdmin();
-          const checkAdminPitchValue: any = checkAdminPitch();
-          state.isAdmin = checkAdminValue;
-          state.isAdminPitch = checkAdminPitchValue;
+          state.role_name = decode.role_name;
           state.error = '';
           localStorage.setItem('accessToken', state.currentUser.accessToken);
           state.loading = false;
@@ -135,8 +124,7 @@ const userSlice = createSlice({
       .addCase(loginWithGoogleAsync.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload?.response?.data?.message;
-        state.isAdmin = false;
-        state.isAdminPitch = false;
+        state.role_name = '';
       })
 
       .addCase(verifyAsync.pending, (state) => {
@@ -147,21 +135,21 @@ const userSlice = createSlice({
         if (action.payload?.error) {
           state.error = action.payload?.message;
         } else {
+          const decode: any = jwtDecode(action.payload?.accessToken);
+          state.currentUser.values = decode;
+          state.currentUser.accessToken = action.payload?.accessToken;
           state.isLogged = true;
-          localStorage.setItem('accessToken', state.currentUser.accessToken);
-          const checkAdminValue: any = checkAdmin();
-          const checkAdminPitchValue: any = checkAdminPitch();
-          state.isAdmin = checkAdminValue;
-          state.isAdminPitch = checkAdminPitchValue;
+          state.role_name = decode.role_name;
           state.error = '';
+          localStorage.setItem('accessToken', state.currentUser.accessToken);
+          state.loading = false;
         }
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .addCase(verifyAsync.rejected, (state, action: any) => {
         state.loading = false;
         state.error = action.payload?.response?.data?.message;
-        state.isAdmin = false;
-        state.isAdminPitch = false;
+        state.role_name = '';
       });
   },
 });

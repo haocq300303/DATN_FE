@@ -50,8 +50,7 @@ export interface UserState {
   };
   isLogged: boolean;
   error: string;
-  isAdmin: boolean;
-  isAdminPitch: boolean;
+  role_name: string;
 }
 
 export const otpSchema = Yup.object({

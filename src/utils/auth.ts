@@ -9,21 +9,24 @@ export const JwtDecode = () => {
 };
 
 export const checkAdmin = async () => {
+  let check = false;
   const { _doc }: any = JwtDecode();
   const response = await getRoleById(_doc.role_id);
   if (response?.data?.data?.name === 'admin') {
-    return true;
+    check = true;
   }
-  return false;
+  return check;
 };
 
 export const checkAdminPitch = async () => {
+  let check = false;
   const { _doc }: any = JwtDecode();
   const response = await getRoleById(_doc.role_id);
+
   if (response?.data?.data?.name === 'adminPitch') {
-    return true;
+    check = true;
   }
-  return false;
+  return check;
 };
 
 export const isTokenExpired = (token: any) => {

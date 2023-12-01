@@ -18,11 +18,11 @@ import {
 } from '~/Redux/Slices/userSlice';
 import { SigninFormEmail, signinSchema } from '~/interfaces/auth';
 import { loginSMS } from '~/api/auth';
-import { checkAdmin, checkAdminPitch } from '~/utils/auth';
 
 const Login = () => {
   const user = useSelector((state: RootState) => state.user);
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
+  const role_name = useSelector((state: RootState) => state.user.role_name);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -193,18 +193,16 @@ const Login = () => {
     if (isLogged) {
       message.success('Đăng nhập thành công!');
       setTimeout(async () => {
-        const checkAdminValue = await checkAdmin();
-        const checkAdminPitchValue = await checkAdminPitch();
-        if (checkAdminValue) {
+        if (role_name === 'admin') {
           navigate(routes.admin);
-        } else if (checkAdminPitchValue) {
+        } else if (role_name === 'adminPitch') {
           navigate(routes.admin_pitch);
-        } else {
+        } else if (role_name === 'user') {
           navigate(routes.home);
         }
       }, 1000);
     }
-  }, [isLogged, navigate]);
+  }, [isLogged, navigate, role_name]);
 
   useEffect(() => {
     if (user.error !== '') {
