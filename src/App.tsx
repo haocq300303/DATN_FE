@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes } from './routes';
 import Home from './pages/Home/Home';
@@ -33,35 +32,28 @@ import NotFound from './pages/NotFound';
 import PrivateLayout from './components/Private/PrivateLayout';
 import PrivateAdminPitch from './components/Private/PrivateAdminPitch';
 import AdminPitchLayout from './layouts/AdminPitchLayout';
-import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { saveUserValues } from './Redux/Slices/userSlice';
 import jwtDecode from 'jwt-decode';
-import DashboardPitchPage from "./pages/Admin/DashboardPitch/DashboardPitchpage";
+import DashboardPitchPage from './pages/Admin/DashboardPitch/DashboardPitchpage';
 function App() {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const refetchData = async () => {
-      const accessToken = localStorage.getItem('accessToken');
-      if (accessToken) {
-        const decode: any = jwtDecode(accessToken);
-        dispatch(
-          saveUserValues({
-            accessToken: accessToken,
-            values: decode,
-            role_name: decode.role_name,
-          })
-        );
-      }
-    };
-    refetchData();
-  }, [dispatch]);
+  const accessToken = localStorage.getItem('accessToken');
+  if (accessToken) {
+    const decode: any = jwtDecode(accessToken);
+    dispatch(
+      saveUserValues({
+        accessToken: accessToken,
+        values: decode,
+        role_name: decode.role_name,
+      })
+    );
+  }
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route path={routes.home} element={<Home />} />
+        <Route path={routes.home} element={<MainLayout />}>
+          <Route index element={<Home />} />
           <Route path={routes.about} element={<About />} />
           <Route path={routes.contact} element={<Contact />} />
         </Route>
@@ -107,11 +99,11 @@ function App() {
           path={routes.admin_pitch}
           element={
             <PrivateAdminPitch>
-              <DashboardPitchPage />
+              <AdminPitchLayout />
             </PrivateAdminPitch>
           }
         >
-          <Route index element={<DashboardPage />} />
+          <Route index element={<DashboardPitchPage />} />
           <Route path={routes.service_admin} element={<ServiceManagement />} />
           <Route path={routes.pitch_admin} element={<PitchList />} />
           <Route
@@ -130,7 +122,6 @@ function App() {
       </Routes>
     </Router>
   );
-
 }
 
 export default App;
