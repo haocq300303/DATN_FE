@@ -27,6 +27,7 @@ const routes = {
   post_client: "/post",
   post_detail: "/post/:id",
   find_opponent: "/pitch/find_opponent",
+  adminPitch: "/adminPitch",
 };
 
 export { routes };

@@ -27,6 +27,7 @@ import About from "./pages/About/About";
 import Contact from "./pages/Contact/Contact";
 import Shift from "./pages/Admin/shift/shift";
 import FindOpponentPage from "./pages/FindOpponent/FindOpponentPage";
+import DashboardPitchPage from "./pages/Admin/DashboardPitch/DashboardPitchpage";
 
 function App() {
     return (
@@ -69,6 +70,9 @@ function App() {
                     <Route path={routes.payment} element={<PaymentAdminPage />} />
                     <Route path={routes.booking} element={<BookingAdminPage />} />
                     <Route path={routes.shift} element={<Shift />} />
+                </Route>
+                <Route path={routes.adminPitch} element={<AdminLayout />}>
+                <Route index element={<DashboardPitchPage />} />
                 </Route>
             </Routes>
         </Router>
