@@ -20,5 +20,8 @@ const updatePost = (_id: string, post: IPost) => {
 const deletePost = (idPost: string) => {
   return instance.delete(`posts/${idPost}`);
 };
+const PostPagination = (page?: number,) => {
+  return instance.get(`posts?page=${page}`);
+};
 
-export { getAllPost, getOnePost, createPost, updatePost, deletePost };
+export { getAllPost, getOnePost, createPost, updatePost, deletePost, PostPagination };

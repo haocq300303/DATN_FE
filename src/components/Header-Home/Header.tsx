@@ -1,26 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   Navbar,
   Typography,
   Button,
   IconButton,
-} from "@material-tailwind/react";
-import { useSelector, useDispatch } from "react-redux";
+} from '@material-tailwind/react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   selectIsFixed,
   setFixed,
   setVisibleTitle,
-} from "~/Redux/Slices/navbarSlice";
-import "./Header.css";
-import { CloseOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+} from '~/Redux/Slices/navbarSlice';
+import './Header.css';
+import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import { routes } from '~/routes';
+
 
 const Header = () => {
   const [openNav, setOpenNav] = React.useState(false);
 
   React.useEffect(() => {
     window.addEventListener(
-      "resize",
+      'resize',
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
@@ -33,12 +35,12 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
       >
-        <a
-          href="/"
+        <Link
+          to={routes.home}
           className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Trang Chủ
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -47,7 +49,7 @@ const Header = () => {
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
         <Link
-          to="/pitch"
+          to={routes.pitch_client}
           className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Sân Bóng
@@ -60,7 +62,7 @@ const Header = () => {
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
         <Link
-          to={"/pitch/find_opponent"}
+          to={routes.find_opponent}
           className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Tìm Đối
@@ -72,12 +74,12 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a
-          href="/post"
+        <Link
+          to={routes.post_client}
           className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Tin Tức
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -85,12 +87,12 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
-        <a
-          href="/contact"
+        <Link
+          to={routes.contact}
           className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Liên Hệ
-        </a>
+        </Link>
       </Typography>
       <Typography
         as="li"
@@ -98,12 +100,12 @@ const Header = () => {
         color="blue-gray"
         className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all"
       >
-        <a
-          href="/about"
+        <Link
+          to={routes.about}
           className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Về Chúng Tôi
-        </a>
+        </Link>
       </Typography>
     </ul>
   );
@@ -120,14 +122,13 @@ const Header = () => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-
+    window.addEventListener('scroll', handleScroll);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [dispatch]);
   return (
-    <div id="header" className={`fixed-header ${isFixed ? "active" : ""}`}>
+    <div id="header" className={`fixed-header ${isFixed ? 'active' : ''}`}>
       <Navbar className="sticky box-border top-0 z-10 h-max max-w-full rounded-none px-4 py-2 container ">
         <div className="flex items-center justify-between text-blue-gray-900">
           <div className=" flex items-center">
@@ -149,7 +150,7 @@ const Header = () => {
               </Button>
               <Button className="hidden lg:inline-block bg-green-800 border-none">
                 <Link
-                  to="#dkdt"
+                  to={routes.login}
                   className="flex items-center text-white no-underline shadow-none"
                 >
                   Đăng Kí Đối Tác

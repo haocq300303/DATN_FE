@@ -13,6 +13,7 @@ interface IPitch {
   feedback_id: IFeedback[];
   districts_id?: string;
   deposit_price: number;
+  averageStars?: number;
   avatar: string;
   createdAt?: string;
   updatedAt?: string;

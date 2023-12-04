@@ -1,17 +1,32 @@
-import jwtDecode from "jwt-decode";
-import _ from "lodash";
+import jwtDecode from 'jwt-decode';
+import { getRoleById } from '~/api/role';
+
 export const JwtDecode = () => {
-  if (localStorage.getItem("accessToken")) {
-    return jwtDecode(localStorage.getItem("accessToken"));
+  if (localStorage.getItem('accessToken')) {
+    return jwtDecode(localStorage.getItem('accessToken') || '');
   }
   return null;
 };
 
-export const checkAuth = () => {
-  const userDecode = JwtDecode();
-  const role = _.get(userDecode, "role", null);
-  if (!role) return false;
-  return true;
+export const checkAdmin = async () => {
+  let check = false;
+  const { _doc }: any = JwtDecode();
+  const response = await getRoleById(_doc.role_id);
+  if (response?.data?.data?.name === 'admin') {
+    check = true;
+  }
+  return check;
+};
+
+export const checkAdminPitch = async () => {
+  let check = false;
+  const { _doc }: any = JwtDecode();
+  const response = await getRoleById(_doc.role_id);
+
+  if (response?.data?.data?.name === 'adminPitch') {
+    check = true;
+  }
+  return check;
 };
 
 export const isTokenExpired = (token: any) => {

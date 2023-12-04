@@ -14,8 +14,8 @@ const FeedBack = ({ idPitch }: { idPitch: IPitch }) => {
     const [feedbackList, setFeedbackList] = useState<string[]>([]);
     const [TotalStar, setTotalStar] = useState<any>(Number)
 
-    console.log("feedback_id:", feedbackList);
-    console.log("totalStar:", TotalStar?.averageRating);
+    // console.log("feedback_id:", feedbackList);
+    // console.log("totalStar:", TotalStar?.averageRating);
 
 
     useEffect(() => {

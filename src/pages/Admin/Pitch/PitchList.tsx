@@ -9,17 +9,18 @@ import {
   Upload,
   Select,
   InputNumber,
-  Checkbox, Col, Row, Empty
+  Checkbox, Col, Row, Empty, InputRef
 } from "antd";
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import type { ColumnsType } from "antd/es/table";
+import type { ColumnsType, ColumnType } from "antd/es/table";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
+  SearchOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
 import ModalForm from "../../../components/ModalForm/ModalForm";
 import axios from "axios";
@@ -31,25 +32,59 @@ import {
   fetchCreatPitch,
   fetchDeletePitch,
   fetchUpdatePitch,
+  search,
 } from "../../../Redux/Slices/pitchSlice";
 import IPitch from "../../../interfaces/pitch";
 import { Option } from "antd/es/mentions";
 import { Link } from "react-router-dom";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 import { IService } from "~/interfaces/service";
+import Highlighter from 'react-highlight-words';
+import type { FilterConfirmProps } from 'antd/es/table/interface';
+import IFeedback from "~/interfaces/feedback";
+import { PitchPagination, getAllPitch } from "~/api/pitch";
 
+
+interface DataType {
+  key: string;
+  _id: string;
+  address: string;
+  name: string;
+  admin_pitch_id: any;
+  numberPitch: number;
+  images: string[];
+  services: string[];
+  description: string[];
+  location_id?: string;
+  feedback_id: IFeedback[];
+  districts_id?: string;
+  deposit_price: number;
+  averageStars?: number;
+  avatar: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+type DataIndex = keyof DataType;
 const PitchList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
+  const [totalItems, setTotalItems] = useState(Number);//phantrang
+  const [currentPage, setCurrentPage] = useState(1);//phantrang
 
   const dispatch = useAppDispatch();
 
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
   const services = useAppSelector((state) => state.service.services);
   const host = "http://localhost:8080/api/location/";
-  const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
+
+  console.log("pitchadmin:", pitchs);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,8 +100,33 @@ const PitchList = () => {
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
-  console.log("service", services);
+  // console.log("service", services);
 
+  //xử lí phân trang
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllPitch(); // Gửi yêu cầu GET đến URL_API
+        const allItemsPitch = response?.data?.data?.totalDocs;
+        setTotalItems(allItemsPitch)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handlePageChange = async (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const response = await PitchPagination(pageNumber);
+    const totalItems = response?.data?.data?.totalDocs;
+    if (totalItems) {
+      setTotalItems(totalItems);
+    }
+    dispatch(search(response?.data?.data?.data));
+    // window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
+  // kết thức xử lí phân trang
 
   const confirm = async (idPost: string) => {
     await dispatch(fetchDeletePitch(idPost));
@@ -76,47 +136,143 @@ const PitchList = () => {
   const cancel = () => {
     message.error("Đã hủy!");
   };
+  //
+  const data: DataType[] = pitchs.map((item: IPitch) => (
+    {
+      key: item._id,
+      name: item.name,
+      address: item.address,
+      numberPitch: item.numberPitch,
+    }
+  ))
 
-  const columns: ColumnsType<IPitch> = [
-    {
-      title: "Địa Điểm",
-      dataIndex: "address",
-      key: "address",
-      render: (text) => {
-        return text.slice(0, 50).concat(" . . .");
-      },
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: (param?: FilterConfirmProps) => void,
+    dataIndex: DataIndex,
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+            className=" bg-blue-500"
+          >
+            Tìm Kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xoá
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Lọc
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Thoát
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
     },
-    Table.EXPAND_COLUMN,
-    {
-      title: "Tên Sân",
-      dataIndex: "name",
-      key: "name",
-      render: (text) => (
-        <Link to={`/admin/childrentpitch/${text.id}`}>{text}</Link>
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
       ),
+  });
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: 'Tên Sân',
+      dataIndex: 'name',
+      key: 'name',
+      width: '30%',
+      ...getColumnSearchProps('name'),
     },
     {
-      title: "Số Lượng sân",
-      key: "numberPitch",
-      dataIndex: "numberPitch",
-      render: (text) => <span>{text}</span>,
+      title: 'Số Sân',
+      dataIndex: 'numberPitch',
+      key: 'numberPitch',
+      width: '10%',
+      ...getColumnSearchProps('numberPitch'),
+      sorter: (a, b) => a.numberPitch - b.numberPitch,
     },
     {
-      title: "deposit_price",
-      key: "deposit_price",
-      dataIndex: "deposit_price",
-      render: (text) => <span>{text}</span>,
+      title: 'Vị Trí',
+      dataIndex: 'address',
+      key: 'address',
+      ...getColumnSearchProps('address'),
+
     },
     {
-      title: "Action",
+      title: "Hành Động",
       key: "action",
       render: (record) => (
         <Space size="middle">
           <Button
             type="primary"
             onClick={() => {
-              const pitch = pitchs?.find(
-                (pitch: IPitch) => pitch._id === record._id
+              const pitch: IPitch = pitchs?.find(
+                (pitch: IPitch) => pitch._id === record.key
+
               );
 
               form.setFieldsValue({
@@ -138,7 +294,7 @@ const PitchList = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Edit
+            Sửa Sân
           </Button>
 
           <Popconfirm
@@ -152,18 +308,16 @@ const PitchList = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined style={{ display: "inline-flex" }} />
-              Remove
+              Xoá Sân
             </Button>
           </Popconfirm>
+
         </Space>
       ),
     },
   ];
-  // call pitchs
-  const data = pitchs?.map((item: IPitch, index: number) => ({
-    ...item,
-    key: index,
-  }));
+
+
 
   const showModal = (mode: string) => {
     setModalMode(mode);
@@ -283,18 +437,18 @@ const PitchList = () => {
             showModal("add");
           }}
         >
-          Create Pitch
+          Tạo Sân
         </Button>
       </div>
       <Table
-        pagination={{ pageSize: 8 }}
         columns={columns}
         dataSource={data}
-        rowSelection={{}}
-        expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.description}</p>
-          ),
+        bordered
+        pagination={{
+          pageSize: 7, // Số hàng trên mỗi trang
+          total: totalItems, // Tổng số hàng
+          current: currentPage, // Trang hiện tại
+          onChange: handlePageChange,
         }}
       />
       <ModalForm
@@ -367,7 +521,7 @@ const PitchList = () => {
 
           <Form.Item
             name="description"
-            label="Description"
+            label="Thông Tin Sân"
             rules={[
               { required: true },
               { whitespace: true, message: "${label} is required!" },
@@ -416,12 +570,12 @@ const PitchList = () => {
 
           <Form.Item
             name="deposit_price"
-            label="Deposit_price"
+            label="Giá Thấp Nhất"
             rules={[{ required: true, type: "number", min: 0 }]}
           >
             <InputNumber
               size="large"
-              placeholder="deposit_price"
+              placeholder="Giá Thấp Nhất"
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -448,7 +602,7 @@ const PitchList = () => {
 
           <Form.Item name="avatar" label="Avatar" rules={[{ required: true }]}>
             <Dragger listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+              <Button icon={<UploadOutlined />}>Thêm Ảnh Tổng Quan</Button>
             </Dragger>
           </Form.Item>
         </Form>

@@ -14,6 +14,7 @@ import shiftApi from "./shift/shift.api";
 import pitchApi from "./pitch/pitch.api";
 import feedbackReducer from "./Slices/feedbackSlice";
 import serviceApi from "./service/service.api";
+import userReducer from './Slices/userSlice';
 const store = configureStore({
     reducer: {
         [paymentApi.reducerPath]: paymentApi.reducer,
@@ -24,7 +25,7 @@ const store = configureStore({
         navbar,
         banner: bannerSlice,
         service: serviceSlice,
-
+        user: userReducer,
         post: postReducer,
         comment: commentReducer,
         location: locationReducer,
