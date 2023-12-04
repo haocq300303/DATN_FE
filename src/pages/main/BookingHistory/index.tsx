@@ -12,7 +12,7 @@ const BookingHistoryPage = () => {
 
     return (
         <div className="mt-24 m-10 overflow-hidden">
-            <h1 className="text-2xl font-body uppercase">Lịch sử booking</h1>
+            <h1 className="text-2xl text-center">Lịch sử booking</h1>
             <div className="">
                 <div className="">
                     <div className="">

@@ -14,7 +14,7 @@ export interface IBooking {
     payment?: IPayment;
     pitch?: IPitch;
     shift?: IShift;
-    service_ids?: IService[];
+    services?: IService[];
     status: "success" | "cancel";
     updatedAt: string;
     //user đặt lịch thành công và user hủy bỏ lịch

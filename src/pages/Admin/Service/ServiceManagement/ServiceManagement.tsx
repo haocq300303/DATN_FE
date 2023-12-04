@@ -85,6 +85,7 @@ const ServiceManagement = () => {
               const service = services?.find(
                 (service: IService) => service._id === record._id
               );
+                console.log(service);
                 
               form.setFieldsValue({
                 _id: service?._id,
@@ -160,8 +161,10 @@ const ServiceManagement = () => {
 
       const { _id, ...service } = newValues;
 
-      await dispatch(updateServiceMid({ _id, service }));
-      message.success(`Sửa banner thành công!`);
+        console.log({ _id, service });
+        
+      // await dispatch(updateServiceMid({ _id, service }));
+      // message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);
   };
@@ -258,7 +261,7 @@ const ServiceManagement = () => {
             label="Name"
             rules={[
               { required: true },
-              { whitespace: true, message: "${label} is required!" },
+              { whitespace: true, message: "${label} là bắt buộc!" },
             ]}
           >
             <Input placeholder="Name" />
@@ -267,11 +270,12 @@ const ServiceManagement = () => {
             name="price"
             label="Price"
             rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
+              { required: true, type: "number" },
+              { whitespace: true, message: "${label} là bắt buộc!" },
+              { max: 6, message: "${label} vượt quá hạn mức!"}
             ]}
           >
-            <Input placeholder="Price" />
+            <Input size="large" placeholder="Price" />
           </Form.Item>
           <Form.Item name="image" label="Images" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>

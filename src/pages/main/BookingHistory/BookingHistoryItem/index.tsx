@@ -9,6 +9,8 @@ import { IBooking } from "~/interfaces/booking.type";
 
 const BookingHistoryItem = (booking: IBooking) => {
   const dispatch = useAppDispatch();
+  console.log(booking);
+
   const handleCancelBooking = () => {
     Swal.fire({
       position: "center",
@@ -27,33 +29,38 @@ const BookingHistoryItem = (booking: IBooking) => {
   };
   // search
   const handleToggleFindOpponent = () => {
-    dispatch(toggleFindOpponent({ id: booking.shift?._id, currentStatus: booking.shift?.find_opponent }));
+    dispatch(
+      toggleFindOpponent({
+        id: booking.shift?._id,
+        currentStatus: booking.shift?.find_opponent,
+      })
+    );
     window.location.reload();
   };
   return (
     <>
-      <div className="div">
-        <div className="container m-auto border w-full my-4 rounded-xl">
+      <div className="">
+        <div className="w-[1000px] m-auto border my-4 rounded-xl shadow-md">
           <div className="flex justify-between items-center p-4">
             <div className=" flex items-center gap-11">
               <div>
-                <h2>Ca Sân</h2>
-                <p> {booking.shift?.number_shift}</p>
+                <h2 className="text-lg text-gray-600">Ca Sân</h2>
+                <p className="text-base"> {booking.shift?.number_shift}</p>
               </div>
               <div>
-                <h2>Ngày Đặt</h2>
-                <p>
+                <h2 className="text-lg text-gray-600">Ngày Đặt</h2>
+                <p className="text-base">
                   {" "}
                   {format(new Date(booking?.updatedAt), "HH:mm:ss dd-MM-yyyy")}
                 </p>
               </div>
               <div>
-                <h2>Địa Chỉ</h2>
-                <p> {booking.pitch?.address} </p>
+                <h2 className="text-lg text-gray-600">Địa Chỉ</h2>
+                <p className="text-base"> {booking.pitch?.address} </p>
               </div>
               <div>
-                <h2>Giờ Sân</h2>
-                <p>
+                <h2 className="text-lg text-gray-600">Giờ Sân</h2>
+                <p className="text-base">
                   {" "}
                   <span className="text-lime-800">
                     {booking.shift?.start_time}
@@ -95,39 +102,57 @@ const BookingHistoryItem = (booking: IBooking) => {
                   {booking.shift?.price.toLocaleString("vi-VN")}đ
                 </p>
               </div>
-              <div className="h-32 w-[147vh]">
-                {
-                  booking.service_ids && booking.service_ids.length > 0 ?
-                   <>
-                   {console.log(booking.service_ids)}
-                  <h2>Các Dịch Vụ :</h2>
-                 <p>
-                   {" "}
-                   {booking.service_ids?.map((item: any) => (
-                         <div key={item.id}>
-                           {console.log("Service IDs:", item.name)}
-                           {item.name}
-                         </div>
-                       ))}
-                 </p>
-                 </> : <p>{booking.pitch?.description}</p>
-                }
-                
-               
+              <div className="h-24 w-[147vh]">
+                {booking.services && booking.services.length > 0 ? (
+                  <>
+                    <h2 className="text-lg text-gray-600 py-3">Các Dịch Vụ :</h2>
+                    <p className="">
+                      {" "}
+                      {booking.services?.map((item: any) => (
+                        <div key={item.id} className="flex w-1/5 gap-2">
+                          <div className="w-20 h-12 overflow-hidden rounded-xl">
+                            <img
+                              className="w-[100%]"
+                              src={item.image}
+                              alt=""
+                            />
+                          </div>
+                          <div>
+                            <h2>{item.name}</h2>
+                            <h2>{item.price.toLocaleString("vi-VN")}đ</h2>
+                          </div>
+                        </div>
+                      ))}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-base">{booking.pitch?.description}</p>
+                )}
+              </div>
+              <div className="flex items-center justify-end">
+                {" "}
+                <h2 className="text-lg text-gray-600 py-2 pr-2">Tổng Tiền :</h2>
+                <p className="text-base">
+                  {" "}
+                  {booking.shift?.price.toLocaleString("vi-VN")}đ
+                </p>
               </div>
               <div className="flex justify-end gap-4 pt-2">
-                
-                  <Button
+                <Button
                   key={booking.shift?._id}
-                    onClick={handleToggleFindOpponent}
-                    className={`px-6 py-1 rounded-lg ${ booking.shift?.find_opponent === "Find" ? "bg-red-500" : "bg-green-500" }`}
-                  >
-                    {booking.shift?.find_opponent === "Find" ? (
+                  onClick={handleToggleFindOpponent}
+                  className={`px-6 py-1 rounded-lg ${
+                    booking.shift?.find_opponent === "Find"
+                      ? "bg-red-500"
+                      : "bg-green-500"
+                  }`}
+                >
+                  {booking.shift?.find_opponent === "Find" ? (
                     <span className="text-white ">Tắt Tìm Đối</span>
-                    ) : (
-                      <span className="text-white ">Bật Tìm Đối</span>
-                      )}
-                  </Button>
+                  ) : (
+                    <span className="text-white ">Bật Tìm Đối</span>
+                  )}
+                </Button>
 
                 <Show when={booking.status === "success"}>
                   <Button
