@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { routes } from './routes';
 import Home from './pages/Home/Home';
@@ -36,7 +37,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { saveUserValues } from './Redux/Slices/userSlice';
 import jwtDecode from 'jwt-decode';
-
+import DashboardPitchPage from "./pages/Admin/DashboardPitch/DashboardPitchpage";
 function App() {
   const dispatch = useDispatch();
 
@@ -106,7 +107,7 @@ function App() {
           path={routes.admin_pitch}
           element={
             <PrivateAdminPitch>
-              <AdminPitchLayout />
+              <DashboardPitchPage />
             </PrivateAdminPitch>
           }
         >
@@ -129,6 +130,7 @@ function App() {
       </Routes>
     </Router>
   );
+
 }
 
 export default App;
