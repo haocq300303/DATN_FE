@@ -1,11 +1,16 @@
-import React, { useEffect } from "react";
-import { getAllPostMid } from "~/Redux/Slices/postSlice";
+import React, { useEffect, useState } from "react";
+import { getAllPostMid, setData } from "~/Redux/Slices/postSlice";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import IPost from "~/interfaces/post";
 import { Link } from "react-router-dom";
+import { Empty, Pagination } from "antd";
+import { PostPagination, getAllPost } from "~/api/post";
 
 const PostPage = () => {
   const dispatch = useAppDispatch();
+
+  const [totalItems, setTotalItems] = useState(Number);//phantrang
+  const [currentPage, setCurrentPage] = useState(1);//phantrang
 
   const posts = useAppSelector((state) => state.post.posts);
   console.log(posts);
@@ -13,48 +18,102 @@ const PostPage = () => {
   useEffect(() => {
     dispatch(getAllPostMid());
   }, [dispatch]);
+
+  //phân trang
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllPost(); // Gửi yêu cầu GET đến URL_API
+        const allItemsPitch = response?.data?.data?.totalDocs;
+        setTotalItems(allItemsPitch)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
+  const handlePageChange = async (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const response = await PostPagination(pageNumber);
+    const totalItems = response?.data?.data?.totalDocs;
+    if (totalItems) {
+      setTotalItems(totalItems);
+    }
+    dispatch(setData(response?.data?.data?.data));
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
   return (
-    <div className="container mx-auto pt-24">
-      {posts?.map((post: IPost) => (
-        // item
-        <div className="relative w-3/4 flex flex-col rounded-2xl bg-white text-gray-700 border-2 border-solid border-[#e8e8e8] px-6 py-4 mb-6">
-          <div className="cursor-pointer">
-            <img
-              className="inline-block h-8 w-8 rounded-full object-cover object-center mr-2"
-              alt="Image placeholder"
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
-            />
-            <p className="inline-block font-sans text-sm font-medium leading-normal text-blue-gray-900">
-              {post.id_user?.name}
-            </p>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="mr-4">
-              <Link to={`/post/${post._id}`}>
-                <h5 className="mb-2 block font-sans text-xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
-                  {post.title}
-                </h5>
+    <div className="container mx-auto pt-[20px] pb-[40px]">
+      <div>
+        <nav aria-label="Breadcrumb" className="flex w-full rounded-lg bg-gray-100/50">
+          <ol
+            className="flex overflow-hidden rounded-lg  text-gray-600"
+          >
+            <li className="flex items-center">
+              <Link
+                to={`/`}
+                className="flex h-10 items-center gap-1.5 bg-gray-100 px-4 transition hover:text-gray-900"
+              >
+
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                  />
+                </svg>
+
+                <span className="ms-1.5 text-xs font-medium"> Trang Chủ </span>
               </Link>
-              <p className="block font-sans text-base font-light leading-relaxed text-inherit antialiased">
-                {post.description}
-              </p>
-            </div>
-            <img
-              className="block max-h-[120px] w-[200px] rounded-lg object-cover object-center"
-              alt="Image placeholder"
-              src={post.images[0]}
-            />
-          </div>
-          <div className="">
-            <button
-              className="select-none rounded-lg bg-pink-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              type="button"
-            >
-              Read More
-            </button>
-          </div>
+            </li>
+
+            <li className="relative flex items-center">
+              <span
+                className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"
+              >
+              </span>
+
+              <Link
+                to={`/post`}
+                className="flex h-10 items-center  pe-4 ps-8 text-xs font-medium transition hover:text-gray-900"
+              >
+                Tin Tức
+              </Link>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div>
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-6">
+          {posts && posts.length > 0 ? (
+            posts.map((item: IPost) => (
+              <Link key={item._id} className="rounded-md bg-gray-100 lg:aspect-none group-hover:opacity-75 " to={`/post/${item._id}`}>
+                <img className="rounded-md h-[200px] w-full" src={`${item.images}`} alt="" />
+                <h2 className=" font-sans text-[18px]  pt-[5px] ">{item.title}</h2>
+                <p className=" italic">{item.description.substring(0, 70)}...</p>
+                <Link className=" italic text-red-500" to={`/post/${item._id}`}>Xem Thêm ...</Link>
+              </Link>
+            ))
+          ) : (
+            <div><Empty /></div>
+          )}
         </div>
-      ))}
+        <div className="flex justify-center mt-[30px]">
+          <Pagination
+            current={currentPage}
+            total={totalItems}
+            pageSize={5}
+            onChange={handlePageChange}
+          />
+        </div>
+      </div>
     </div>
   );
 };

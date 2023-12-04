@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  filterFeedbackPitch,
   getAllPitch,
   getCreatPitch,
   getDeletePitch,
@@ -38,6 +39,20 @@ export const fetchAllPitch = createAsyncThunk(
     }
   }
 );
+export const fetchAllPitchStart = createAsyncThunk(
+  "pitch/fetchAllPitchStart",
+  async ({ min, max }: { min: number; max: number }, thunkAPI) => {
+    try {
+      const { data } = await filterFeedbackPitch(min, max);
+      console.log("dataPitchStartRedux", data);
+      return data.data.data;
+
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ message: error.message });
+    }
+  }
+);
+
 
 
 export const fetchCreatPitch = createAsyncThunk(
@@ -124,6 +139,18 @@ const pitchSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(fetchAllPitch.rejected, (state) => {
+        state.isLoading = false;
+      });
+    // all pitch start
+    builder
+      .addCase(fetchAllPitchStart.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllPitchStart.fulfilled, (state, action) => {
+        state.pitchs = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchAllPitchStart.rejected, (state) => {
         state.isLoading = false;
       });
     // Create pitchs

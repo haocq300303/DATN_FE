@@ -28,6 +28,14 @@ const routes = {
   post_detail: '/post/:id',
   find_opponent: '/pitch/find_opponent',
   admin_pitch: '/admin-pitch',
+  notfound: '/notfound',
+  service_admin: '/admin-pitch/service',
+  pitch_admin: '/admin-pitch/pitch',
+  location_admin: '/admin-pitch/location',
+  payment_admin: '/admin-pitch/payment',
+  booking_admin: '/admin-pitch/booking',
+  childrenpitch_admin: '/admin-pitch/childrenpitch',
+  shift_admin: '/admin-pitch/shift',
 };
 
 export { routes };

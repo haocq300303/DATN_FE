@@ -11,8 +11,11 @@ export const searchPitch = (params: any) => {
 export const Pitch = (searchText?: string) => {
   return instance.get(`/pitch?searchText=${searchText}`);
 };
-export const PitchPagination = (page?: number, limit?: number,) => {
-  return instance.get(`/pitch?page=${page}&limit=${limit}`);
+export const PitchPagination = (page?: number) => {
+  return instance.get(`/pitch?page=${page}`);
+};
+export const filterFeedbackPitch = (minStart?: number, maxStart?: number,) => {
+  return instance.get(`/pitch/filter/feedback?minStart=${minStart}&maxStart=${maxStart}`);
 };
 export const getOnePitch = (idPitch: string) => {
   return instance.get(`/pitch/${idPitch}`);
