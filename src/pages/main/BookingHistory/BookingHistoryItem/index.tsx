@@ -40,8 +40,8 @@ const BookingHistoryItem = (booking: IBooking) => {
   return (
     <>
       <div className="">
-        <div className="w-[1000px] m-auto border my-4 rounded-xl shadow-md">
-          <div className="flex justify-between items-center p-4">
+        <div className=" m-auto border my-4 rounded-xl shadow-md">
+          <div className="flex justify-between items-center p-4 w-full">
             <div className=" flex items-center gap-11">
               <div>
                 <h2 className="text-lg text-gray-600">Ca Sân</h2>
@@ -85,9 +85,9 @@ const BookingHistoryItem = (booking: IBooking) => {
             </div>
           </div>
           <hr />
-          <div className="flex p-4 gap-9">
+          <div className="flex p-4 justify-between">
             <div>
-              <div className="h-[200px] w-[200px]">
+              <div className="h-[200px] w-[350px]">
                 <img
                   src={booking.pitch?.avatar}
                   alt="hepta-brown"
@@ -96,9 +96,9 @@ const BookingHistoryItem = (booking: IBooking) => {
               </div>
             </div>
             <div>
-              <div className="flex">
-                <h1 className="w-2/3">{booking.pitch?.name}</h1>
-                <p className="w-1/3 flex justify-end">
+              <div className="flex justify-between lg:w-[100%]">
+                <h1 className="">{booking.pitch?.name}</h1>
+                <p className=" flex justify-end">
                   {booking.shift?.price.toLocaleString("vi-VN")}đ
                 </p>
               </div>

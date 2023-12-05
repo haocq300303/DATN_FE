@@ -1,13 +1,19 @@
-import React, { useEffect } from "react";
-import { getAllPostMid } from "~/Redux/Slices/postSlice";
+import React, { useEffect, useState } from "react";
+import { getAllPostMid, setData } from "~/Redux/Slices/postSlice";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import IPost from "~/interfaces/post";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import { Empty, Pagination } from "antd";
+import { PostPagination, getAllPost } from "~/api/post";
+
 
 const PostPage = () => {
   const dispatch = useAppDispatch();
+
+  const [totalItems, setTotalItems] = useState(Number);//phantrang
+  const [currentPage, setCurrentPage] = useState(1);//phantrang
 
   const posts = useAppSelector((state) => state.post.posts);
 //   console.log(posts);
@@ -18,6 +24,30 @@ const PostPage = () => {
   useEffect(() => {
     dispatch(getAllPostMid());
   }, [dispatch]);
+
+  //phân trang
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllPost(); // Gửi yêu cầu GET đến URL_API
+        const allItemsPitch = response?.data?.data?.totalDocs;
+        setTotalItems(allItemsPitch)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
+  const handlePageChange = async (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const response = await PostPagination(pageNumber);
+    const totalItems = response?.data?.data?.totalDocs;
+    if (totalItems) {
+      setTotalItems(totalItems);
+    }
+    dispatch(setData(response?.data?.data?.data));
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
   return (
     <section className="px-5 py-10 dark:bg-gray-800 dark:text-gray-100">
 	<div className="container grid grid-cols-9 mx-auto gap-y-6 md:gap-10">
@@ -26,7 +56,7 @@ const PostPage = () => {
       <span className="absolute px-1 pb-2 text-xs font-bold uppercase border-b-2 left-6 top-6 dark:border-violet-400 dark:text-gray-100">các Tin Tức Tâm Điểm</span>
       <section className="w-full  flex flex-col items-center px-3 mt-14">
       {posts?.map((post: IPost) => (
-        <article className="flex justify-start flex-col shadow my-4 rounded-md  w-11/12 overflow-hidden" key={post._id}>
+        <article className="flex justify-start flex-col my-4 rounded-md  w-11/12 overflow-hidden" key={post._id}>
             <Link to="#" className="hover:opacity-75 h-96 overflow-hidden">
                 <img className="w-full" src={post.images[0]}/>
             </Link>
@@ -54,42 +84,16 @@ const PostPage = () => {
 				<button type="button" className="pb-5 text-xs font-bold uppercase border-b-2 dark:border-violet-400">Tin Tức Mới Nhất</button>
 			</div>
 			<div className="flex flex-col divide-y dark:divide-gray-700">
+      {posts.slice(0,8)?.map((post: IPost) => (
 				<div className="flex px-1 py-4">
-					<img alt="" className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500" src="https://source.unsplash.com/random/244x324" />
+					<img alt="" className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500" src={post?.images[0]} />
 					<div className="flex flex-col flex-grow">
-						<a rel="noopener noreferrer" href="#" className="font-serif hover:underline">Aenean ac tristique lorem, ut mollis dui.</a>
-						<p className="mt-auto text-xs dark:text-gray-400">5 minutes ago
-							<a rel="noopener noreferrer" href="#" className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline">Politics</a>
+						<a rel="noopener noreferrer" href="#" className="font-serif hover:underline">{post.title}</a>
+						<p className="mt-auto text-xs dark:text-gray-400">{calculateTimeAgo(post.createdAt)}
 						</p>
 					</div>
 				</div>
-				<div className="flex px-1 py-4">
-					<img alt="" className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500" src="https://source.unsplash.com/random/245x325" />
-					<div className="flex flex-col flex-grow">
-						<a rel="noopener noreferrer" href="#" className="font-serif hover:underline">Nulla consectetur efficitur.</a>
-						<p className="mt-auto text-xs dark:text-gray-400">14 minutes ago
-							<a rel="noopener noreferrer" href="#" className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline">Sports</a>
-						</p>
-					</div>
-				</div>
-				<div className="flex px-1 py-4">
-					<img alt="" className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500" src="https://source.unsplash.com/random/246x326" />
-					<div className="flex flex-col flex-grow">
-						<a rel="noopener noreferrer" href="#" className="font-serif hover:underline">Vitae semper augue purus tincidunt libero.</a>
-						<p className="mt-auto text-xs dark:text-gray-400">22 minutes ago
-							<a rel="noopener noreferrer" href="#" className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline">World</a>
-						</p>
-					</div>
-				</div>
-				<div className="flex px-1 py-4">
-					<img alt="" className="flex-shrink-0 object-cover w-20 h-20 mr-4 dark:bg-gray-500" src="https://source.unsplash.com/random/247x327" />
-					<div className="flex flex-col flex-grow">
-						<a rel="noopener noreferrer" href="#" className="font-serif hover:underline">Suspendisse potenti.</a>
-						<p className="mt-auto text-xs dark:text-gray-400">37 minutes ago
-							<a rel="noopener noreferrer" href="#" className="block dark:text-blue-400 lg:ml-2 lg:inline hover:underline">Business</a>
-						</p>
-					</div>
-				</div>
+      ))}
 			</div>
 		</div>
 	</div>

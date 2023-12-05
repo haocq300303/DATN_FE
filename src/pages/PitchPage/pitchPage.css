@@ -51,7 +51,7 @@
 }
 
 /* ITEM PITCH */
-.maps{
+.maps {
   text-align: center;
   overflow: hidden;
   border-radius: 20px;
@@ -61,6 +61,7 @@
 .text-item-pitch {
   margin: 20px 0;
 }
+
 .hot-pitch>h1 {
   position: relative;
   margin: 50px 0;
@@ -76,4 +77,8 @@
   width: 150px;
   height: 3px;
   background-color: #ffb932;
+}
+
+.ant-empty-description {
+  width: 950px !important;
 }

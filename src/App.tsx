@@ -32,8 +32,30 @@ import NotFound from './pages/NotFound';
 import PrivateLayout from './components/Private/PrivateLayout';
 import PrivateAdminPitch from './components/Private/PrivateAdminPitch';
 import AdminPitchLayout from './layouts/AdminPitchLayout';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { saveUserValues } from './Redux/Slices/userSlice';
+import jwtDecode from 'jwt-decode';
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const refetchData = async () => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        const decode: any = jwtDecode(accessToken);
+        dispatch(
+          saveUserValues({
+            accessToken: accessToken,
+            values: decode,
+            role_name: decode.role_name,
+          })
+        );
+      }
+    };
+    refetchData();
+  }, [dispatch]);
   return (
     <Router>
       <Routes>
@@ -89,6 +111,16 @@ function App() {
           }
         >
           <Route index element={<DashboardPage />} />
+          <Route path={routes.service_admin} element={<ServiceManagement />} />
+          <Route path={routes.pitch_admin} element={<PitchList />} />
+          <Route
+            path={routes.childrenpitch_admin}
+            element={<ChildrentPitch />}
+          />
+          <Route path={routes.location_admin} element={<LocationList />} />
+          <Route path={routes.payment_admin} element={<PaymentAdminPage />} />
+          <Route path={routes.booking_admin} element={<BookingAdminPage />} />
+          <Route path={routes.shift_admin} element={<Shift />} />
         </Route>
         <Route path={routes.register} element={<Register />} />
         <Route index path={routes.login} element={<Login />} />
