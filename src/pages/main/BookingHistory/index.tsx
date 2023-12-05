@@ -9,7 +9,6 @@ const BookingHistoryPage = () => {
     // const onChange: DatePickerProps["onChange"] = (date, dateString) => {
     //     console.log(date, dateString);
     // };
-
     return (
         <div className="mt-24 m-10 ">
             <h1 className="text-2xl text-center">Lịch sử booking</h1>

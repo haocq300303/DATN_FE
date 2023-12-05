@@ -188,11 +188,14 @@ const Login = () => {
       ),
     },
   ];
+  useEffect(() => {
+    dispatch(logout());
+  }, [dispatch]);
 
   useEffect(() => {
-    if (isLogged) {
+    if (isLogged === true && role_name !== '') {
       message.success('Đăng nhập thành công!');
-      setTimeout(async () => {
+      setTimeout(() => {
         if (role_name === 'admin') {
           navigate(routes.admin);
         } else if (role_name === 'adminPitch') {
@@ -209,10 +212,6 @@ const Login = () => {
       message.error(user.error);
     }
   }, [user.error]);
-
-  useEffect(() => {
-    dispatch(logout());
-  }, [dispatch]);
 
   return (
     <section className="flex flex-col md:flex-row h-screen items-center">

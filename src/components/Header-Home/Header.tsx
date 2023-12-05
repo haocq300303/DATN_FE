@@ -15,7 +15,7 @@ import './Header.css';
 import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { routes } from '~/routes';
-
+import { logout } from '~/Redux/Slices/userSlice';
 
 const Header = () => {
   const [openNav, setOpenNav] = React.useState(false);
@@ -152,6 +152,9 @@ const Header = () => {
                 <Link
                   to={routes.login}
                   className="flex items-center text-white no-underline shadow-none"
+                  onClick={() => {
+                    dispatch(logout());
+                  }}
                 >
                   Đăng Kí Đối Tác
                 </Link>
