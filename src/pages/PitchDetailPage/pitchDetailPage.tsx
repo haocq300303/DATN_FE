@@ -315,11 +315,7 @@ const PitchDetailPage = () => {
           <div className="flex h-[400px] w-[950px] overflow-x-scroll">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                  <Card className="mt-6 w-[250px] mr-2 h-60" key={service?._id}>
-                    <Checkbox
-                      crossOrigin={undefined}
-                      onChange={() => handleServiceSelection(service?._id)}
-                    />
+                  <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
                     <CardHeader
                       color="blue-gray"
                       className="w-[200px] h-28 pl-0 mt-"
@@ -336,11 +332,6 @@ const PitchDetailPage = () => {
                         className="mb-2 text-base font-bold w-max"
                       >
                         {service?.name}
-                      </Typography>
-                      <Typography>
-                        {service?.price &&
-                          service?.price.toLocaleString("vi-VN")}
-                        đ
                       </Typography>
                     </CardBody>
                   </Card>

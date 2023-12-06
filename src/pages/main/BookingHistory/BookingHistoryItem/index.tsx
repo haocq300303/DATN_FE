@@ -40,7 +40,7 @@ const BookingHistoryItem = (booking: IBooking) => {
   return (
     <>
       <div className="">
-        <div className=" m-auto border my-4 rounded-xl shadow-md">
+        <div className=" m-auto border my-4 rounded-xl shadow-md" key={booking._id}>
           <div className="flex justify-between items-center p-4 w-full">
             <div className=" flex items-center gap-11">
               <div>

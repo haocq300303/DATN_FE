@@ -15,6 +15,7 @@ import type { ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
   EditOutlined,
+  FilterOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -245,7 +246,7 @@ const Shift = () => {
 
   return (
     <>
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-end mb-2 items-center gap-2">
         <Space direction="vertical">
           <DatePicker
             onChange={handleDateChange}
@@ -256,10 +257,10 @@ const Shift = () => {
         <Button
           type="primary"
           size="large"
+          icon={<FilterOutlined />}
           className="bg-[#2988bc]"
           onClick={fetchDataByDate}
         >
-          Lọc dữ liệu theo ngày
         </Button>
         <Button
           type="primary"
@@ -271,7 +272,6 @@ const Shift = () => {
             showModal("add");
           }}
         >
-          Thêm Ca Sân
         </Button>
       </div>
 

@@ -100,7 +100,6 @@ const BannerManagement = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Edit
           </Button>
           <Popconfirm
             placement="topRight"
@@ -113,7 +112,7 @@ const BannerManagement = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined />
-              Remove
+
             </Button>
           </Popconfirm>
         </Space>
@@ -222,7 +221,6 @@ const BannerManagement = () => {
             showModal("add");
           }}
         >
-          Create Banner
         </Button>
       </div>
       <Table

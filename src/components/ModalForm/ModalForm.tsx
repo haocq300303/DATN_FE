@@ -29,7 +29,7 @@ const ModalForm = ({
       width={1100}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Hủy
         </Button>,
         <Button
           key="submit"
@@ -38,7 +38,7 @@ const ModalForm = ({
           onClick={() => form.submit()}
           className="bg-[#1677ff]"
         >
-          {modalMode === "add" ? "Create" : "Edit"}
+          {modalMode === "add" ? "Thêm Mới" : "Sửa"}
         </Button>,
       ]}
     >

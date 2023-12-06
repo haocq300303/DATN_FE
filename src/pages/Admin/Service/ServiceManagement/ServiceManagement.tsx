@@ -10,15 +10,17 @@ import {
   Input,
   Upload,
   Select,
+  InputRef,
 } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import type { ColumnType, ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
+  SearchOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ModalForm from "../../../../components/ModalForm/ModalForm";
 import { useAppDispatch, useAppSelector } from "../../../../Redux/hook";
 import axios from "axios";
@@ -31,9 +33,11 @@ import {
 import { IService } from "../../../../interfaces/service";
 import "./ServiceManagement.css";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+import Highlighter from "react-highlight-words";
+import { FilterConfirmProps } from "antd/es/table/interface";
 
 const { Dragger } = Upload;
-
+type DataIndex = keyof IService;
 const ServiceManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
@@ -41,7 +45,11 @@ const ServiceManagement = () => {
   const dispatch = useAppDispatch();
 
   const services = useAppSelector((state) => state.service.services);
+  const [form] = Form.useForm();
 
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
 
   useEffect(() => {
     dispatch(getAllServiceMid());
@@ -55,18 +63,112 @@ const ServiceManagement = () => {
   const cancel = () => {
     message.error("Đã hủy!");
   };
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: (param?: FilterConfirmProps) => void,
+    dataIndex: DataIndex,
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
 
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<IService> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+            className=" bg-blue-500"
+          >
+            Tìm 
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xoá
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Lọc
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Thoát
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
   const columns: ColumnsType<IService> = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      ...getColumnSearchProps('name'),
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      ...getColumnSearchProps('price'),
+      sorter: (a, b) => a.price - b.price,
     },
     {
       title: "Image",
@@ -85,7 +187,6 @@ const ServiceManagement = () => {
               const service = services?.find(
                 (service: IService) => service._id === record._id
               );
-                console.log(service);
                 
               form.setFieldsValue({
                 _id: service?._id,
@@ -93,6 +194,15 @@ const ServiceManagement = () => {
                 price: service?.price,
                 image: service?.image,
               });
+              console.log(
+                {
+                  _id: service?._id,
+                name: service?.name,
+                price: service?.price,
+                image: service?.image,
+                }
+              );
+              
               showModal("edit");
             }}
             ghost
@@ -111,7 +221,6 @@ const ServiceManagement = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined />
-
             </Button>
           </Popconfirm>
         </Space>
@@ -160,11 +269,9 @@ const ServiceManagement = () => {
       const newValues = { ...values, image };
 
       const { _id, ...service } = newValues;
-
-        console.log({ _id, service });
-        
-      // await dispatch(updateServiceMid({ _id, service }));
-      // message.success(`Sửa banner thành công!`);
+        console.log(newValues);
+      await dispatch(updateServiceMid({ _id, service }));
+      message.success(`Sửa dịch vụ thành công!`);
     }
     setIsModalOpen(false);
   };
@@ -208,7 +315,6 @@ const ServiceManagement = () => {
     }
   };
 
-  const [form] = Form.useForm();
 
   return (
     <>
@@ -258,7 +364,7 @@ const ServiceManagement = () => {
           )}
           <Form.Item
             name="name"
-            label="Name"
+            label="Tên"
             rules={[
               { required: true },
               { whitespace: true, message: "${label} là bắt buộc!" },
@@ -268,18 +374,18 @@ const ServiceManagement = () => {
           </Form.Item>
           <Form.Item
             name="price"
-            label="Price"
+            label="Giá"
             rules={[
-              { required: true, type: "number" },
-              { whitespace: true, message: "${label} là bắt buộc!" },
-              { max: 6, message: "${label} vượt quá hạn mức!"}
+              { required: true, message: 'Vui lòng nhập giá!' },
+              { type: 'number', message: 'Vui lòng nhập số!' },
+              { max: 6, message: 'Giá không được vượt quá 6 chữ số!' }
             ]}
           >
             <Input size="large" placeholder="Price" />
           </Form.Item>
-          <Form.Item name="image" label="Images" rules={[{ required: true }]}>
+          <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Upload Images</Button>
+              <Button icon={<UploadOutlined />}>Thêm ảnh của bạn</Button>
             </Dragger>
           </Form.Item>
         </Form>
