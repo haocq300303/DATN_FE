@@ -39,7 +39,7 @@ const BannerManagement = () => {
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
 
-  console.log(banners);
+  // console.log(banners);
 
   useEffect(() => {
     dispatch(getAllBannerMid());
@@ -100,7 +100,6 @@ const BannerManagement = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Edit
           </Button>
           <Popconfirm
             placement="topRight"
@@ -113,7 +112,7 @@ const BannerManagement = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined />
-              Remove
+
             </Button>
           </Popconfirm>
         </Space>
@@ -147,7 +146,7 @@ const BannerManagement = () => {
       );
 
       const url = urls[0];
-      console.log(url);
+      // console.log(url);
       const newValues = { ...values, url };
 
       await dispatch(createBannerMid(newValues));
@@ -222,7 +221,6 @@ const BannerManagement = () => {
             showModal("add");
           }}
         >
-          Create Banner
         </Button>
       </div>
       <Table

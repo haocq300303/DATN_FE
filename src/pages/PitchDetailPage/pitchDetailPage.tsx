@@ -40,6 +40,7 @@ import { useNavigate } from "react-router-dom";
 import FeedBack from "~/components/Feedback/FeedBack";
 import { totalStarByPitch } from "~/api/feedback";
 
+
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
@@ -56,8 +57,6 @@ const PitchDetailPage = () => {
   const [findOpponent, setFindOpponent] = useState(false);
   const [TotalStar, setTotalStar] = useState<any>(Number);
 
-  const services = useAppSelector((state) => state.service.services);
-
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
   const toDay = new Date();
   console.log("pitdetail:", Pitch);
@@ -70,9 +69,10 @@ const PitchDetailPage = () => {
     (async () => {
       setIsLoading(true);
       const { data } = await axios.get(
-        `http://localhost:8080/api/childrentPicth/parent/${id}${selectedDate && selectedDate.trim() !== ""
-          ? `?date=${selectedDate}`
-          : ""
+        `http://localhost:8080/api/childrentPicth/parent/${id}${
+          selectedDate && selectedDate.trim() !== ""
+            ? `?date=${selectedDate}`
+            : ""
         }`
       );
       setShildrenPitchs(data.data);
@@ -198,9 +198,10 @@ const PitchDetailPage = () => {
               <Image.PreviewGroup
                 items={[
                   `
-                  ${Pitch?.images &&
-                  Pitch.images.length > 0 &&
-                  (Pitch.images[0], Pitch.images[1], Pitch.images[2])
+                  ${
+                    Pitch?.images &&
+                    Pitch.images.length > 0 &&
+                    (Pitch.images[0], Pitch.images[1], Pitch.images[2])
                   }
                   `,
                 ]}
@@ -265,17 +266,14 @@ const PitchDetailPage = () => {
                         <p>Số Người :7 Người</p>
                         <p className="flex justify-between my-[10px]">
                           Dịch Vụ :
-                          {item.services.map((data: any) => {
-                            const service = services.find(
-                              (item) => item._id == data._id
-                            );
-                            return (
-                              <span key={data._id!}>
-                                <i className="fa-solid fa-check"></i>{" "}
-                                {service ? service.name : "Chưa có dịch vụ"}
-                              </span>
-                            );
-                          })}
+                          {Pitch?.services && Pitch?.services.length > 0
+                            ? Pitch?.services?.map((service: any) => (
+                                <span key={service?._id}>
+                                  <i className="fa-solid fa-check"></i>{" "}
+                                  {service.name}
+                                </span>
+                              ))
+                            : ""}
                         </p>
                         <p className="flex justify-between">
                           Giá :
@@ -317,34 +315,27 @@ const PitchDetailPage = () => {
           <div className="flex h-[400px] w-[950px] overflow-x-scroll">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                <Card className="mt-6 w-[250px] mr-2 h-60" key={service?._id}>
-                  <Checkbox
-                    crossOrigin={undefined}
-                    onChange={() => handleServiceSelection(service?._id)}
-                  />
-                  <CardHeader
-                    color="blue-gray"
-                    className="w-[200px] h-28 pl-0 mt-"
-                  >
-                    <img
-                      className="w-full"
-                      src={service?.image}
-                      alt="card-image"
-                    />
-                  </CardHeader>
-                  <CardBody>
-                    <Typography
+                  <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
+                    <CardHeader
                       color="blue-gray"
-                      className="mb-2 text-base font-bold w-max"
+                      className="w-[200px] h-28 pl-0 mt-"
                     >
-                      {service?.name}
-                    </Typography>
-                    <Typography>
-                      {service?.price.toLocaleString("vi-VN")}đ
-                    </Typography>
-                  </CardBody>
-                </Card>
-              ))
+                      <img
+                        className="w-full"
+                        src={service?.image}
+                        alt="card-image"
+                      />
+                    </CardHeader>
+                    <CardBody>
+                      <Typography
+                        color="blue-gray"
+                        className="mb-2 text-base font-bold w-max"
+                      >
+                        {service?.name}
+                      </Typography>
+                    </CardBody>
+                  </Card>
+                ))
               : "Không có dịch vụ"}
           </div>
         </>
@@ -413,10 +404,11 @@ const PitchDetailPage = () => {
                 GIÁ CHỈ TỪ:{" "}
               </span>
               <span className=" text-[#ffb932] ml-2 leading-4">
-                {Pitch?.deposit_price?.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
+                {Pitch?.deposit_price &&
+                  Pitch?.deposit_price?.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
               </span>
             </p>
             <p className="my-[20px] font-semibold">
@@ -498,8 +490,9 @@ const PitchDetailPage = () => {
                               });
                             }
                           }}
-                          className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${shift.status_shift ? "disabled" : ""
-                            }`}
+                          className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
+                            shift.status_shift ? "disabled" : ""
+                          }`}
                         >
                           <p className="font-semibold mb-[2px] ">
                             Ca {shift.number_shift}
@@ -508,10 +501,11 @@ const PitchDetailPage = () => {
                             {shift.start_time}h - {shift.end_time}h
                           </p>
                           <p className="font-semibold">
-                            {shift.price?.toLocaleString("it-IT", {
-                              style: "currency",
-                              currency: "VND",
-                            })}
+                            {shift.price &&
+                              shift.price?.toLocaleString("it-IT", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
                           </p>
                         </button>
                       ))}
@@ -627,37 +621,38 @@ const PitchDetailPage = () => {
           <div className="flex gap-[20px] align-center justify-center mb-[24px]">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                <Card className="mt-4" key={service?._id}>
-                  <Checkbox
-                    crossOrigin={undefined}
-                    onChange={() => handleServiceSelection(service?._id)}
-                  />
-                  <CardHeader
-                    color="blue-gray"
-                    className="w-[160px] h-28 pl-0 mt-0"
-                  >
-                    <img
-                      className="w-full"
-                      src={service?.image}
-                      alt="card-image"
+                  <Card className="mt-4" key={service?._id}>
+                    <Checkbox
+                      crossOrigin={undefined}
+                      onChange={() => handleServiceSelection(service?._id)}
                     />
-                  </CardHeader>
-                  <CardBody className="px-[16px] py-[8px]">
-                    <Typography
+                    <CardHeader
                       color="blue-gray"
-                      className="mb-2 text-base font-bold w-max"
+                      className="w-[160px] h-28 pl-0 mt-0"
                     >
-                      {service?.name}
-                    </Typography>
-                    <Typography>
-                      {service?.price.toLocaleString("it-IT", {
-                        style: "currency",
-                        currency: "VND",
-                      })}
-                    </Typography>
-                  </CardBody>
-                </Card>
-              ))
+                      <img
+                        className="w-full"
+                        src={service?.image}
+                        alt="card-image"
+                      />
+                    </CardHeader>
+                    <CardBody className="px-[16px] py-[8px]">
+                      <Typography
+                        color="blue-gray"
+                        className="mb-2 text-base font-bold w-max"
+                      >
+                        {service?.name}
+                      </Typography>
+                      <Typography>
+                        {service?.price &&
+                          service.price.toLocaleString("it-IT", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                      </Typography>
+                    </CardBody>
+                  </Card>
+                ))
               : ""}
           </div>
           <Button htmlType="submit">Đặt lịch</Button>

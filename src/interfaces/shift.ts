@@ -8,6 +8,7 @@ interface IShift {
     id_pitch: any;
     number_remain: number;
     status_shift: boolean;
+    find_opponent: string;
     date: any;
     createdAt?: string;
     updatedAt?: string;
