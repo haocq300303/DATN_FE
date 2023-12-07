@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
-import { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import { Breadcrumb, Layout, Menu, MenuProps } from 'antd';
 const { Content, Footer, Sider } = Layout;
 import {
   AppstoreOutlined,
@@ -9,14 +8,13 @@ import {
   PieChartOutlined,
   HomeOutlined,
   UserOutlined,
-  FileImageOutlined,
   ProfileOutlined,
-  EnvironmentOutlined,
 } from '@ant-design/icons';
 import FsportLogo from '../assets/img/sport-bg.png';
 import { Outlet } from 'react-router-dom';
 import HeaderAdmin from '../components/Admin/Header/Header';
 import { routes } from '~/routes';
+import ModalViewCreatePitch from '~/pages/Admin/Dashboard/DashboardPage';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -92,8 +90,9 @@ const items: MenuItem[] = [
 const AdminPitchLayout = () => {
   const [current, setCurrent] = useState('1');
   const [collapsed, setCollapsed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
-  const onClick: MenuProps['onClick'] = (e) => {
+  const onClick: MenuProps['onClick'] = (e: any) => {
     setCurrent(e.key);
   };
 
@@ -102,7 +101,7 @@ const AdminPitchLayout = () => {
       <Sider
         collapsible
         collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
+        onCollapse={(value: any) => setCollapsed(value)}
       >
         <div
           style={{
@@ -157,6 +156,12 @@ const AdminPitchLayout = () => {
           Design ©2023 Created by He
         </Footer>
       </Layout>
+      {isModalOpen && (
+        <ModalViewCreatePitch
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+        />
+      )}
     </Layout>
   );
 };
