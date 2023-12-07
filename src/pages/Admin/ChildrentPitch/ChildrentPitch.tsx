@@ -15,7 +15,7 @@ const ChildrentPitch = () => {
     const dispatch = useAppDispatch();
 
     const childrentPitchs = useAppSelector((state) => state.childrenPitch.childrentpitchs);
-    console.log(childrentPitchs.data);
+    // console.log(childrentPitchs.data);
   
     useEffect(() => {
         dispatch(fetchAllChildrenPitch());

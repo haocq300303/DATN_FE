@@ -72,6 +72,22 @@ const items: MenuItem[] = [
       '8'
     ),
   ]),
+  getItem('Children_pitch', 'sub9', <ProfileOutlined />, [
+    getItem(
+      <Link className="text-[#fff]" to={routes.childrenpitch_admin}>
+        Children Pitch List
+      </Link>,
+      '9'
+    ),
+  ]),
+  getItem('Shift', 'sub10', <ProfileOutlined />, [
+    getItem(
+      <Link className="text-[#fff]" to={routes.shift_admin}>
+        Shift List
+      </Link>,
+      '10'
+    ),
+  ]),
 ];
 const AdminPitchLayout = () => {
   const [current, setCurrent] = useState('1');

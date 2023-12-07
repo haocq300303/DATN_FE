@@ -36,7 +36,7 @@ import {
 } from "../../../Redux/Slices/pitchSlice";
 import IPitch from "../../../interfaces/pitch";
 import { Option } from "antd/es/mentions";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 import { IService } from "~/interfaces/service";
 import Highlighter from 'react-highlight-words';
@@ -294,7 +294,6 @@ const PitchList = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Sửa Sân
           </Button>
 
           <Popconfirm
@@ -308,7 +307,6 @@ const PitchList = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined style={{ display: "inline-flex" }} />
-              Xoá Sân
             </Button>
           </Popconfirm>
 
@@ -350,7 +348,7 @@ const PitchList = () => {
       const avatar = values?.avatar?.fileList[0]?.response?.data?.url;
 
       const newValues = { ...values, avatar, images };
-      console.log("valueAbc:", newValues);
+      // console.log("valueAbc:", newValues);
 
       await dispatch(fetchCreatPitch(newValues));
       message.success(`Tạo Sân Bóng thành công!`);
@@ -437,20 +435,21 @@ const PitchList = () => {
             showModal("add");
           }}
         >
-          Tạo Sân
         </Button>
       </div>
       <Table
         columns={columns}
         dataSource={data}
-        bordered
-        pagination={{
-          pageSize: 7, // Số hàng trên mỗi trang
-          total: totalItems, // Tổng số hàng
-          current: currentPage, // Trang hiện tại
-          onChange: handlePageChange,
+        rowSelection={{}}
+        className=""
+        scroll={{ y: 100 }}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p style={{ margin: 0 }}>{record.description}</p>
+          ),
         }}
       />
+      
       <ModalForm
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
@@ -464,12 +463,14 @@ const PitchList = () => {
           onFinish={onFinish}
           validateMessages={validateMessages}
           layout="vertical"
+          className="flex gap-4"
         >
           {modalMode === "edit" && (
             <Form.Item name="_id" style={{ display: "none" }}>
               <Input />
             </Form.Item>
           )}
+          <div className="w-1/2">
           <Form.Item
             name="address"
             label="Địa chỉ"
@@ -529,7 +530,9 @@ const PitchList = () => {
           >
             <Input.TextArea rows={4} placeholder="Description" />
           </Form.Item>
+          </div>
 
+          <div className="w-1/2">
           <Form.Item label="Tỉnh" rules={[{ required: true }]}>
             <Select
               onChange={handleCityChange}
@@ -605,6 +608,7 @@ const PitchList = () => {
               <Button icon={<UploadOutlined />}>Thêm Ảnh Tổng Quan</Button>
             </Dragger>
           </Form.Item>
+          </div>
         </Form>
       </ModalForm>
     </>

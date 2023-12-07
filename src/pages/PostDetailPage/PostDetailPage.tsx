@@ -37,7 +37,7 @@ const PostDetailPage = () => {
     (async () => {
       try {
         const { data } = await getCommentPost(String(id));
-        // console.log("dataCMT", data);
+        console.log("dataCMT", data);
         setIdComment(data.data.comment_id);
       } catch (error) {
         console.log(error);
@@ -63,7 +63,7 @@ const PostDetailPage = () => {
         message.success("Đánh giá Thành Công !");
         setIdComment((prevComments: any) => [
           ...prevComments,
-          { ...response.payload },
+          { ...response?.payload },
         ]);
       }
       form.resetFields(['content']);
@@ -150,7 +150,7 @@ const PostDetailPage = () => {
                 <h1 className="text-center text-xl font-sans font-[600]">Tin Mới Nhất</h1>
                 <div className="pt-[25px] ">
                   {posts && posts.length > 0 ? (
-                    posts.slice(0, 8).map((item: IPost) => (
+                    posts?.slice(0, 8).map((item: IPost) => (
                       <a key={item?._id} href={`/post/${item._id}`}>
                         <div className="flex justify-center items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
                           <img className="w-[100px] rounded-md" src={item?.images[0]} alt="" />

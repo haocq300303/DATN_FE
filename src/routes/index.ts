@@ -1,4 +1,5 @@
 const routes = {
+  adminPitch: "/adminPitch",
   comment: '/admin/comment',
   paymentAdmin: '/admin/payment',
   bookingAdmin: '/admin/booking',
@@ -36,6 +37,7 @@ const routes = {
   booking_admin: '/admin-pitch/booking',
   childrenpitch_admin: '/admin-pitch/childrenpitch',
   shift_admin: '/admin-pitch/shift',
+
 };
 
 export { routes };
