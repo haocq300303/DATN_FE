@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllPostMid, setData } from "~/Redux/Slices/postSlice";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import IPost from "~/interfaces/post";
@@ -91,15 +91,62 @@ const PostPage = () => {
         </nav>
       </div>
       <div>
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-6">
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-6">
           {posts && posts.length > 0 ? (
-            posts.map((item: IPost) => (
-              <Link key={item._id} className="rounded-md bg-gray-100 lg:aspect-none group-hover:opacity-75 " to={`/post/${item._id}`}>
-                <img className="rounded-md h-[200px] w-full" src={`${item.images}`} alt="" />
-                <h2 className=" font-sans text-[18px]  pt-[5px] ">{item.title}</h2>
-                <p className=" italic">{item.description.substring(0, 70)}...</p>
-                <Link className=" italic text-red-500" to={`/post/${item._id}`}>Xem Thêm ...</Link>
-              </Link>
+            posts?.slice(0)?.reverse()?.map((post: IPost) => (
+              <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">
+                <Link
+                  to={`/post/${post._id}`}
+                  className="group relative block h-48 overflow-hidden bg-gray-100 md:h-64"
+                >
+                  <img
+                    src={post.images[0]}
+                    loading="lazy"
+                    alt="Photo by Minh Pham"
+                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
+                  />
+                </Link>
+
+                <div className="flex flex-1 flex-col p-4 sm:p-6">
+                  <h2 className="mb-2 text-lg font-semibold text-gray-800">
+                    <Link
+                      to={`/post/${post._id}`}
+                      className="transition duration-100 hover:text-indigo-500 active:text-indigo-600"
+                    >
+                      {' '}
+                      {post.title}
+                    </Link>
+                  </h2>
+
+                  <p className="mb-8 text-gray-500">{post?.description?.substring(0, 100)}...</p>
+
+                  <div className="mt-auto flex items-end justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
+                        <img
+                          src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
+                          loading="lazy"
+                          alt="Photo by Brock Wegner"
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
+
+                      <div>
+                        <span className="block text-gray-400">
+                          Hệ Thống
+                        </span>
+                        <span className="block text-sm text-gray-400">
+                          {post.updatedAt}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span className="rounded border px-2 py-1 text-sm text-gray-500">
+                      Thông Báo
+                    </span>
+                  </div>
+                </div>
+              </div>
             ))
           ) : (
             <div><Empty /></div>
@@ -109,7 +156,7 @@ const PostPage = () => {
           <Pagination
             current={currentPage}
             total={totalItems}
-            pageSize={5}
+            pageSize={6}
             onChange={handlePageChange}
           />
         </div>

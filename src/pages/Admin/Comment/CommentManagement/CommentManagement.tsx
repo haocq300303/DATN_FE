@@ -1,111 +1,223 @@
-import { Popconfirm, Space, Table, Button, message } from "antd";
-import type { ColumnsType } from "antd/es/table";
-import { DeleteOutlined } from "@ant-design/icons";
-import IComment from "../../../../interfaces/comment";
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../Redux/hook";
-import {
-  deleteCommentMid,
-  getAllCommentMid,
-} from "../../../../Redux/Slices/commentSlide";
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { useEffect, useRef, useState } from 'react';
+import Highlighter from 'react-highlight-words';
+import type { InputRef } from 'antd';
+import { Button, Input, Popconfirm, Space, Table, message } from 'antd';
+import type { ColumnType, ColumnsType } from 'antd/es/table';
+import type { FilterConfirmProps } from 'antd/es/table/interface';
+import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import { deleteCommentMid, getAllCommentMid } from '~/Redux/Slices/commentSlide';
+import IComment from '~/interfaces/comment';
+
+interface DataType {
+  key: string;
+  title: string;
+  name_user: string;
+  email: string;
+  content: string;
+}
+
+type DataIndex = keyof DataType;
+
+
+
 
 const CommentManagement = () => {
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
+
   const dispatch = useAppDispatch();
 
   const comments = useAppSelector((state) => state.comment.comments);
+  console.log("dataAminComment:", comments);
 
   useEffect(() => {
     dispatch(getAllCommentMid());
   }, [dispatch]);
-
-  const confirm = async (idComment: string) => {
-    await dispatch(deleteCommentMid(idComment));
-    message.success(`Xóa sản phẩm thành công!`);
-  };
-
   const cancel = () => {
     message.error("Đã hủy!");
   };
+  //delete
+  const confirm = async (idComment: string) => {
+    await dispatch(deleteCommentMid(idComment));
+    message.success(`Xóa bình luận thành công!`);
+  };
 
-  const columns: ColumnsType<IComment> = [
+  //data
+  const data: DataType[] = comments?.map((item: any) => (
     {
-      title: "Post",
-      dataIndex: "id_post",
-      key: "post",
-      render: (text) => <span>{text}</span>,
+      key: item._id,
+      title: item?.id_post?.title,
+      name_user: item?.id_user?.name,
+      email: item?.id_user?.email,
+      content: item?.content
+    }
+  ))
+
+
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: (param?: FilterConfirmProps) => void,
+    dataIndex: DataIndex,
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+            className=" bg-blue-500"
+          >
+            Tìm Kiếm
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xoá
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Lọc
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Thoát
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: 'Tên Bài Viết',
+      dataIndex: 'title',
+      key: 'title',
+      width: '30%',
+      ...getColumnSearchProps('title'),
     },
     {
-      title: "Pitch",
-      dataIndex: "id_pitch",
-      key: "pitch",
-      render: (text) => <span>{text ? text : "Null"}</span>,
+      title: 'Tên Người Dùng',
+      dataIndex: 'name_user',
+      key: 'name_user',
+      width: '20%',
+      ...getColumnSearchProps('name_user'),
     },
-    Table.EXPAND_COLUMN,
     {
-      title: "Content",
-      key: "content",
-      dataIndex: "content",
+      title: 'Email Người Dùng',
+      dataIndex: 'email',
+      key: 'email',
+      width: '20%',
+      ...getColumnSearchProps('email'),
+    },
+    {
+      title: 'Nội Dung Bình Luận',
+      dataIndex: 'content',
+      key: 'content',
+      ...getColumnSearchProps('content'),
       render: (text) => {
         return text.slice(0, 50).concat(" . . .");
       },
     },
+    Table.EXPAND_COLUMN,
     {
-      title: "User",
-      key: "user",
-      dataIndex: "id_user",
-      render: (user) => <span>{user?.name}</span>,
-    },
-    {
-      title: "CreatedAt",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      defaultSortOrder: "descend",
-      render: (date) => <span>{date}</span>,
-    },
-    {
-      title: "Action",
+      title: "Hành Động",
       key: "action",
       render: (record) => (
         <Space size="middle">
           <Popconfirm
             placement="topRight"
             title="Xóa bình luận?"
-            description="Bạn có chắc chắn xóa binh luận này không?"
-            onConfirm={() => confirm(record._id)}
+            description="Bạn có chắc chắn xóa bình luận này không?"
+            onConfirm={() => confirm(record.key)}
             onCancel={cancel}
             okText="Đồng ý"
             cancelText="Không"
           >
             <Button type="primary" danger>
               <DeleteOutlined style={{ display: "inline-flex" }} />
-              Remove
+              Xoá
             </Button>
           </Popconfirm>
+
         </Space>
       ),
     },
+
   ];
-
-  const data = comments.map((item: IComment, index: number) => ({
-    ...item,
-    key: index,
-  }));
-
   return (
-    <>
+    <div>
       <Table
-        pagination={{ pageSize: 5 }}
         columns={columns}
         dataSource={data}
-        rowSelection={{}}
+        bordered
         expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.content}</p>
-          ),
+          expandedRowRender: (record) => <p className='w-[1260px]'>{record.content}</p>,
         }}
       />
-    </>
-  );
-};
+    </div>
+  )
+}
 
-export default CommentManagement;
+export default CommentManagement

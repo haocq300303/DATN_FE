@@ -12,6 +12,7 @@ import {
   FileImageOutlined,
   ProfileOutlined,
   EnvironmentOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 import FsportLogo from "../assets/img/sport-bg.png";
 import { Outlet } from "react-router-dom";
@@ -62,6 +63,7 @@ const items: MenuItem[] = [
   getItem("Service", "sub8", <ProfileOutlined />, [
     getItem(<Link className="text-[#fff]" to={"/admin/service"}>Service List</Link>, "8"),
   ]),
+  getItem(<Link className="text-[#fff]" to={"/admin/comment"}>Bình Luận</Link>, "sub9", <EditOutlined />),
 ];
 const AdminLayout = () => {
   const [current, setCurrent] = useState("1");

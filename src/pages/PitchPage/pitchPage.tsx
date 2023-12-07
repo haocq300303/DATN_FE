@@ -374,31 +374,31 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(4)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={4} />
                       <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(3)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={3} />
                       <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(2)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={2} />
                       <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(1)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={1} />
                       <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(0)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={0} />
                       <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
                     </button>
