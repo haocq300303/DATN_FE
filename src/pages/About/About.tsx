@@ -14,7 +14,7 @@ const About = () => {
   const carouselRef = useRef(null);
 
   const onChange = (slideIndex: any) => {
-    console.log(slideIndex);
+    // console.log(slideIndex);
     if (carouselRef.current) {
       carouselRef.current.goTo(slideIndex);
     }

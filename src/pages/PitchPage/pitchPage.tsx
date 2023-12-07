@@ -56,7 +56,6 @@ const PitchPage = () => {
 
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
-  console.log('LogPitchs', pitchs);
   const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
 
@@ -110,7 +109,7 @@ const PitchPage = () => {
 
     fetchTotalStars();
   }, [pitchs]);
-  console.log({ totalStar });
+  // console.log({ totalStar });
 
   // pitchs.forEach((item: any, index: any) => {
   //   console.log(`TotalStar${item.name}`, totalStar[index]);
@@ -120,7 +119,6 @@ const PitchPage = () => {
       ? selectedServices.filter((service) => service !== serviceValue)
       : [...selectedServices, serviceValue];
     setSelectedServices(updatedServices);
-    console.log('Fillter Service', updatedServices);
   };
 
   const filteredPitchs = pitchs.filter((pitch: any) => {
@@ -220,8 +218,6 @@ const PitchPage = () => {
     dispatch(search(response?.data?.data?.data));
     window.scrollTo({ top: 500, behavior: 'smooth' });
   };
-  console.log('vck', totalItems);
-
   // xử lí lọc theo feedback
   const handleFeedbackChange = async (value: number) => {
     console.log('Đã chọn giá trị:', value);
@@ -365,7 +361,7 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(4)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={4} />
                       <span className="text-[16px] font-[500] pl-[5px]">
                         {' '}
@@ -374,7 +370,7 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(3)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={3} />
                       <span className="text-[16px] font-[500] pl-[5px]">
                         {' '}
@@ -383,7 +379,7 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(2)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={2} />
                       <span className="text-[16px] font-[500] pl-[5px]">
                         {' '}
@@ -392,7 +388,7 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(1)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={1} />
                       <span className="text-[16px] font-[500] pl-[5px]">
                         {' '}
@@ -401,7 +397,7 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(0)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={0} />
                       <span className="text-[16px] font-[500] pl-[5px]">
                         {' '}
@@ -464,7 +460,7 @@ const PitchPage = () => {
           </div>
 
           {/* sân bóng ở đây */}
-          <div className="right-pitch xl:w-[75%]">
+          <div className="right-pitch xl:w-[950px] max-w-5xl">
             <div className="header-pitch">
               <div className="container mx-auto flex justify-between">
                 <div>
@@ -566,7 +562,6 @@ const PitchPage = () => {
           </div>
         </div>
       </div>
-
       {/* các sân bongs 5 sao */}
       {/* <PitchStar /> */}
     </div>

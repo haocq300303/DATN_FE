@@ -1,5 +1,6 @@
 import { IPayment } from "./payment.type";
 import IPitch from "./pitch";
+import { IService } from "./service";
 import IShift from "./shift";
 import { IUser } from "./user.type";
 
@@ -13,6 +14,7 @@ export interface IBooking {
     payment?: IPayment;
     pitch?: IPitch;
     shift?: IShift;
+    services?: IService[];
     status: "success" | "cancel";
     updatedAt: string;
     //user đặt lịch thành công và user hủy bỏ lịch

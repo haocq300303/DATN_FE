@@ -15,6 +15,7 @@ import type { ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
   EditOutlined,
+  FilterOutlined,
   PlusCircleOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -73,7 +74,7 @@ const Shift = () => {
   
   // lấy tất cả các ca sân =============
   const shifts = useAppSelector((state) => state.shift.shift);
-  console.log(shifts);
+  // console.log(shifts);
   const numberShifts = shifts.map((item: any) => item.number_shift);
   console.log("Danh sách số ca sân:", numberShifts);
 
@@ -170,7 +171,6 @@ const Shift = () => {
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Cập Nhật
           </Button>
 
           <Popconfirm
@@ -184,7 +184,6 @@ const Shift = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined style={{ display: "inline-flex" }} />
-              Xoá Ca Sân
             </Button>
           </Popconfirm>
         </Space>
@@ -247,7 +246,7 @@ const Shift = () => {
 
   return (
     <>
-      <div className="flex justify-end mb-2">
+      <div className="flex justify-end mb-2 items-center gap-2">
         <Space direction="vertical">
           <DatePicker
             onChange={handleDateChange}
@@ -258,10 +257,10 @@ const Shift = () => {
         <Button
           type="primary"
           size="large"
+          icon={<FilterOutlined />}
           className="bg-[#2988bc]"
           onClick={fetchDataByDate}
         >
-          Lọc dữ liệu theo ngày
         </Button>
         <Button
           type="primary"
@@ -273,7 +272,6 @@ const Shift = () => {
             showModal("add");
           }}
         >
-          Thêm Ca Sân
         </Button>
       </div>
 
@@ -282,6 +280,7 @@ const Shift = () => {
         columns={columns}
         dataSource={shifts}
         rowSelection={{}}
+        scroll={{ y: 100 }}
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.date}</p>

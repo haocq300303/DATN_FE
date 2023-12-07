@@ -24,10 +24,12 @@ const ModalForm = ({
     <Modal
       title={modalMode === "add" ? "Create Post" : "Edit Post"}
       open={isModalOpen}
+      centered
       onCancel={handleCancel}
+      width={1100}
       footer={[
         <Button key="back" onClick={handleCancel}>
-          Cancel
+          Hủy
         </Button>,
         <Button
           key="submit"
@@ -36,11 +38,14 @@ const ModalForm = ({
           onClick={() => form.submit()}
           className="bg-[#1677ff]"
         >
-          {modalMode === "add" ? "Create" : "Edit"}
+          {modalMode === "add" ? "Thêm Mới" : "Sửa"}
         </Button>,
       ]}
     >
+      <div className="max-h-[70vh] overflow-auto modal-scroll">
+
       {children}
+      </div>
     </Modal>
   );
 };

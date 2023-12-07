@@ -10,15 +10,17 @@ import {
   Input,
   Upload,
   Select,
+  InputRef,
 } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import type { ColumnType, ColumnsType } from "antd/es/table";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
+  SearchOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ModalForm from "../../../../components/ModalForm/ModalForm";
 import { useAppDispatch, useAppSelector } from "../../../../Redux/hook";
 import axios from "axios";
@@ -30,11 +32,12 @@ import {
 } from "../../../../Redux/Slices/serviceSlice";
 import { IService } from "../../../../interfaces/service";
 import "./ServiceManagement.css";
-import { Option } from "antd/es/mentions";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
+import Highlighter from "react-highlight-words";
+import { FilterConfirmProps } from "antd/es/table/interface";
 
 const { Dragger } = Upload;
-
+type DataIndex = keyof IService;
 const ServiceManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
@@ -42,8 +45,11 @@ const ServiceManagement = () => {
   const dispatch = useAppDispatch();
 
   const services = useAppSelector((state) => state.service.services);
-  const pitch_id = useAppSelector((state) => state.pitch.pitchs);
+  const [form] = Form.useForm();
 
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef<InputRef>(null);
 
   useEffect(() => {
     dispatch(getAllServiceMid());
@@ -57,24 +63,112 @@ const ServiceManagement = () => {
   const cancel = () => {
     message.error("Đã hủy!");
   };
+  const handleSearch = (
+    selectedKeys: string[],
+    confirm: (param?: FilterConfirmProps) => void,
+    dataIndex: DataIndex,
+  ) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
 
+  const handleReset = (clearFilters: () => void) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<IService> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{ width: 90 }}
+            className=" bg-blue-500"
+          >
+            Tìm 
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{ width: 90 }}
+          >
+            Xoá
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({ closeDropdown: false });
+              setSearchText((selectedKeys as string[])[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Lọc
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            Thoát
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex]
+        .toString()
+        .toLowerCase()
+        .includes((value as string).toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
   const columns: ColumnsType<IService> = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      ...getColumnSearchProps('name'),
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-    },
-    {
-      title: "Id_Pitch",
-      dataIndex: "id_Pitch",
-      key: "id_Pitch",
-      // render: (id_Pitch) => <span>{id_Pitch.name}</span>,
+      ...getColumnSearchProps('price'),
+      sorter: (a, b) => a.price - b.price,
     },
     {
       title: "Image",
@@ -98,15 +192,23 @@ const ServiceManagement = () => {
                 _id: service?._id,
                 name: service?.name,
                 price: service?.price,
-                // id_Pitch: service?.id_Pitch?._id ?? service?._id,
                 image: service?.image,
               });
+              console.log(
+                {
+                  _id: service?._id,
+                name: service?.name,
+                price: service?.price,
+                image: service?.image,
+                }
+              );
+              
               showModal("edit");
             }}
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-            Edit
+
           </Button>
           <Popconfirm
             placement="topRight"
@@ -119,7 +221,6 @@ const ServiceManagement = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined />
-              Remove
             </Button>
           </Popconfirm>
         </Space>
@@ -162,15 +263,15 @@ const ServiceManagement = () => {
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
       const newImages = values.image.fileList;
-      const image =
-        newImages.length > 0 ? newImages[0].response.data.url : values.url;
-
+      const image = newImages ? newImages[0].response.data.url : values.url;
+      // console.log(image);
+      
       const newValues = { ...values, image };
 
       const { _id, ...service } = newValues;
-
+        console.log(newValues);
       await dispatch(updateServiceMid({ _id, service }));
-      message.success(`Sửa banner thành công!`);
+      message.success(`Sửa dịch vụ thành công!`);
     }
     setIsModalOpen(false);
   };
@@ -214,7 +315,6 @@ const ServiceManagement = () => {
     }
   };
 
-  const [form] = Form.useForm();
 
   return (
     <>
@@ -229,7 +329,6 @@ const ServiceManagement = () => {
             showModal("add");
           }}
         >
-          Create Banner
         </Button>
       </div>
       <Table
@@ -237,6 +336,7 @@ const ServiceManagement = () => {
         columns={columns}
         dataSource={data}
         rowSelection={{}}
+        scroll={{ y: 100 }}
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.name}</p>
@@ -264,40 +364,28 @@ const ServiceManagement = () => {
           )}
           <Form.Item
             name="name"
-            label="Name"
+            label="Tên"
             rules={[
               { required: true },
-              { whitespace: true, message: "${label} is required!" },
+              { whitespace: true, message: "${label} là bắt buộc!" },
             ]}
           >
             <Input placeholder="Name" />
           </Form.Item>
           <Form.Item
             name="price"
-            label="Price"
+            label="Giá"
             rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
+              { required: true, message: 'Vui lòng nhập giá!' },
+              { type: 'number', message: 'Vui lòng nhập số!' },
+              { max: 6, message: 'Giá không được vượt quá 6 chữ số!' }
             ]}
           >
-            <Input placeholder="Price" />
+            <Input size="large" placeholder="Price" />
           </Form.Item>
-          <Form.Item
-            name="id_Pitch"
-            label="ID_Pitch"
-            rules={[{ required: true, message: "ID_Pitch is required!" }]}
-          >
-            <Select style={{ width: '100%' }}>
-            {pitch_id.map((item: any) => (
-            <Option key={item._id} value={item._id}>
-              {item.name}
-            </Option>
-          ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name="image" label="Images" rules={[{ required: true }]}>
+          <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Upload Images</Button>
+              <Button icon={<UploadOutlined />}>Thêm ảnh của bạn</Button>
             </Dragger>
           </Form.Item>
         </Form>

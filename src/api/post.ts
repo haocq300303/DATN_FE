@@ -8,6 +8,9 @@ const getAllPost = () => {
 const getOnePost = (idPost: string) => {
   return instance.get(`posts/${idPost}`);
 };
+const getCommentPost = (idPost: string) => {
+  return instance.get(`posts/comment/${idPost}`);
+};
 
 const createPost = (post: IPost) => {
   return instance.post(`posts`, post);
@@ -24,4 +27,4 @@ const PostPagination = (page?: number,) => {
   return instance.get(`posts?page=${page}`);
 };
 
-export { getAllPost, getOnePost, createPost, updatePost, deletePost, PostPagination };
+export { getAllPost, getOnePost, createPost, updatePost, deletePost, PostPagination, getCommentPost };

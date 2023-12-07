@@ -1,4 +1,5 @@
 import {
+  changeFindOpponent,
   findOpponent,
   getAllShift,
   getAllShiftFindOpponent,
@@ -61,6 +62,20 @@ export const fetchFindOpponent = createAsyncThunk(
     }
   }
 );
+
+export const toggleFindOpponent = createAsyncThunk(
+  'shift/toggleFindOpponent',
+  async ({ id, currentStatus }: any, thunkAPI) => {
+    try {
+      const newStatus = currentStatus === 'Find' ? 'NotFind' : 'Find';
+      const response = await changeFindOpponent(id, { find_opponent: newStatus });
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue({ message: error.message });
+    }
+  }
+);
+
 // export const fetchFilterDate = createAsyncThunk(
 //     "shift/fetchAllShift",
 //     async (_, thunkAPI) => {
@@ -200,6 +215,13 @@ const ShiftPitchSlice = createSlice({
       })
       .addCase(fetchFindOpponent.rejected, (state) => {
         state.isLoading = false;
+      });
+      builder
+      .addCase(toggleFindOpponent.fulfilled, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(toggleFindOpponent.rejected, (state, action) => {
+        console.error('Error toggling find opponent:', action.error.message);
       });
   },
 });
