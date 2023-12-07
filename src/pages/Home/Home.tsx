@@ -115,7 +115,7 @@ const Home = () => {
                         </span>
                         <span className="block text-sm text-gray-400">
                           {' '}
-                          {calculateTimeAgo(post.createdAt)}
+                          {post.createdAt}
                         </span>
                       </div>
                     </div>
