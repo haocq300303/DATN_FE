@@ -35,7 +35,6 @@ import "./ServiceManagement.css";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 import Highlighter from "react-highlight-words";
 import { FilterConfirmProps } from "antd/es/table/interface";
-
 const { Dragger } = Upload;
 type DataIndex = keyof IService;
 const ServiceManagement = () => {
@@ -51,6 +50,8 @@ const ServiceManagement = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
 
+
+  
   useEffect(() => {
     dispatch(getAllServiceMid());
     dispatch(fetchAllPitch(""));
@@ -362,9 +363,21 @@ const ServiceManagement = () => {
               <Input />
             </Form.Item>
           )}
+            <Form.Item
+            name="admin_pitch_id"
+            label="Tên Chủ Sân"
+            rules={[
+              { required: true },
+              { whitespace: true, message: "${label} là bắt buộc!" },
+            ]}
+          >
+            <Input
+             placeholder="Nhập Id Chủ Sân"
+              />
+          </Form.Item>
           <Form.Item
             name="name"
-            label="Tên"
+            label="Tên Dịch Vụ"
             rules={[
               { required: true },
               { whitespace: true, message: "${label} là bắt buộc!" },
@@ -377,7 +390,6 @@ const ServiceManagement = () => {
             label="Giá"
             rules={[
               { required: true, message: 'Vui lòng nhập giá!' },
-              { type: 'number', message: 'Vui lòng nhập số!' },
               { max: 6, message: 'Giá không được vượt quá 6 chữ số!' }
             ]}
           >

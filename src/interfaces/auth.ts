@@ -37,7 +37,7 @@ export interface IVerify {
 }
 
 export interface IUser {
-  id: string;
+  _id: string;
   name: string;
   email: string;
 }

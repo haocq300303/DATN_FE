@@ -3,16 +3,11 @@ import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import IPost from '~/interfaces/post';
 import './Home.css';
 import { useEffect } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
 
 const Home = () => {
   const dispatch = useAppDispatch();
   const posts = useAppSelector((state) => state.post.posts);
-  const calculateTimeAgo = (createdAt: any) => {
-    const postDate: Date = new Date(createdAt);
-    return formatDistanceToNow(postDate, { addSuffix: true, locale: vi });
-  };
+
 
   useEffect(() => {
     dispatch(getAllPostMid());
