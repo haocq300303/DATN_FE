@@ -3,16 +3,11 @@ import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import IPost from '~/interfaces/post';
 import './Home.css';
 import { useEffect } from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { vi } from 'date-fns/locale';
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const dispatch = useAppDispatch();
   const posts = useAppSelector((state) => state.post.posts);
-  const calculateTimeAgo = (createdAt: any) => {
-    const postDate: Date = new Date(createdAt);
-    return formatDistanceToNow(postDate, { addSuffix: true, locale: vi });
-  };
 
   useEffect(() => {
     dispatch(getAllPostMid());
@@ -22,7 +17,7 @@ const Home = () => {
       <section className="bg-white box-border py-2">
         <div className="container max-w-5xl mx-auto m-8">
           <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800 ">
-          FootieMatchFinder
+            FootieMatchFinder
           </h2>
           <div className="w-full">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
@@ -71,10 +66,11 @@ const Home = () => {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 md:gap-6 w-full xl:grid-cols-3 xl:gap-8">
-            {posts?.slice(0, 3).map((post: IPost ) => (
-              <div className="flex flex-col overflow-hidden rounded-lg border bg-white">
-                <a
-                  href="#"
+            {posts?.slice(0, 3)?.reverse()?.map((post: IPost) => (
+              <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">
+                <Link
+                  to={`/post/${post._id}`}
+
                   className="group relative block h-48 overflow-hidden bg-gray-100 md:h-64"
                 >
                   <img
@@ -83,20 +79,20 @@ const Home = () => {
                     alt="Photo by Minh Pham"
                     className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
                   />
-                </a>
+                </Link>
 
                 <div className="flex flex-1 flex-col p-4 sm:p-6">
                   <h2 className="mb-2 text-lg font-semibold text-gray-800">
-                    <a
-                      href={`/post/${post._id}`}
+                    <Link
+                      to={`/post/${post._id}`}
                       className="transition duration-100 hover:text-indigo-500 active:text-indigo-600"
                     >
                       {' '}
                       {post.title}
-                    </a>
+                    </Link>
                   </h2>
 
-                  <p className="mb-8 text-gray-500">{post.description}</p>
+                  <p className="mb-8 text-gray-500">{post?.description?.substring(0, 100)}...</p>
 
                   <div className="mt-auto flex items-end justify-between">
                     <div className="flex items-center gap-2">
@@ -110,12 +106,11 @@ const Home = () => {
                       </div>
 
                       <div>
-                        <span className="block text-indigo-500">
-                          {post.id_user?.name}
+                        <span className="block text-gray-400">
+                          Hệ Thống
                         </span>
                         <span className="block text-sm text-gray-400">
-                          {' '}
-                          {post.createdAt}
+                          {post.updatedAt}
                         </span>
                       </div>
                     </div>
@@ -127,6 +122,18 @@ const Home = () => {
                 </div>
               </div>
             ))}
+
+          </div>
+          <div className='flex justify-center w-full mt-[30px]'>
+            <Link to={`/post`}
+              className="flex flex-row items-center justify-center w-full px-4 py-4 mb-4 text-sm font-bold bg-green-300 leading-6 capitalize duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:mb-0 sm:w-auto sm:mr-4 md:pl-8 md:pr-6 xl:pl-12 xl:pr-10   hover:shadow-lg hover:-translate-y-1"
+            >
+              Xem Thêm
+              <span className="ml-4">
+                <svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path fill="currentColor" d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"></path>
+                </svg>
+              </span>
+            </Link>
           </div>
         </div>
       </section>

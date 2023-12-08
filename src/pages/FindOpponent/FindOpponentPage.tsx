@@ -1,27 +1,27 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Select, Rate, Form, Row, Col, Slider, InputNumber, Space } from "antd";
-import { Input } from "@material-tailwind/react";
-import banner from "../../assets/img/Web/bannerr.mp4";
-import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
-import { toast } from "react-toastify";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Select, Rate, Form, Row, Col, Slider, InputNumber, Space } from 'antd';
+import { Input } from '@material-tailwind/react';
+import banner from '../../assets/img/Web/banner1.png';
+import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import { fetchAllPitch } from '~/Redux/Slices/pitchSlice';
+import { toast } from 'react-toastify';
 import {
   fetchAllShiftFindOpponent,
   fetchFindOpponent,
-} from "~/Redux/Slices/shiftSlice";
-import IShift from "~/interfaces/shift";
-import { matchOpponent } from "~/api/shift";
-import { format, parseISO } from "date-fns";
+} from '~/Redux/Slices/shiftSlice';
+import IShift from '~/interfaces/shift';
+import { matchOpponent } from '~/api/shift';
+import { format, parseISO } from 'date-fns';
 
 const FindOpponentPage = () => {
-  const host = "http://localhost:8080/api/location/";
+  const host = 'http://localhost:8080/api/location/';
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedWard, setSelectedWard] = useState("");
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
 
   const dispatch = useAppDispatch();
   const shifts = useAppSelector((state) => state.shift.shift);
@@ -44,7 +44,7 @@ const FindOpponentPage = () => {
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
 
-    if (value !== "") {
+    if (value !== '') {
       const response = await axios.get(`${host}districts?parent=${value}`);
       setDistricts(response.data);
     }
@@ -53,7 +53,7 @@ const FindOpponentPage = () => {
   const handleDistrictChange = async (value: string) => {
     setSelectedDistrict(value);
 
-    if (value !== "") {
+    if (value !== '') {
       const response = await axios.get(`${host}wards?parent=${value}`);
       setWards(response.data);
     }
@@ -64,7 +64,7 @@ const FindOpponentPage = () => {
   };
   // nếu ai muốn lấy
   const printResult = () => {
-    if (selectedCity !== "" && selectedDistrict !== "" && selectedWard !== "") {
+    if (selectedCity !== '' && selectedDistrict !== '' && selectedWard !== '') {
       const city: any = cities.find((c: any) => c.id === selectedCity);
       const district: any = districts.find(
         (d: any) => d.id === selectedDistrict
@@ -75,12 +75,12 @@ const FindOpponentPage = () => {
         return result;
       }
     }
-    return "";
+    return '';
   };
 
   const onHandleSubmitSearch = async () => {
-    if (selectedWard === "" || selectedWard === undefined) {
-      if (selectedDistrict === "" || selectedDistrict === undefined) {
+    if (selectedWard === '' || selectedWard === undefined) {
+      if (selectedDistrict === '' || selectedDistrict === undefined) {
         await dispatch(fetchAllPitch(``));
       } else {
         await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
@@ -105,14 +105,14 @@ const FindOpponentPage = () => {
             min={1}
             max={200000}
             onChange={onChangePrice}
-            value={typeof inputValue === "number" ? inputValue : 0}
+            value={typeof inputValue === 'number' ? inputValue : 0}
           />
         </Col>
         <Col span={8}>
           <InputNumber
             min={1}
             max={20}
-            style={{ margin: "0 16px" }}
+            style={{ margin: '0 16px' }}
             value={inputValue}
             onChange={onChangePrice}
           />
@@ -124,10 +124,10 @@ const FindOpponentPage = () => {
   const onHandleSubmit = async (idShift: any) => {
     try {
       const data = {
-        idUserFindOpponent: "655f1711c3dfbd0adea3ce3e",
-        email: "chuhao878@gmail.com",
-        phone_number: "0347656836",
-        nameUserFindOpponent: "Chu Quang Hào",
+        idUserFindOpponent: '655f1711c3dfbd0adea3ce3e',
+        email: 'chuhao878@gmail.com',
+        phone_number: '0347656836',
+        nameUserFindOpponent: 'Chu Quang Hào',
       };
       const value = { find_opponent: false };
 
@@ -135,28 +135,28 @@ const FindOpponentPage = () => {
       await dispatch(fetchFindOpponent({ idShift, value }));
 
       toast(
-        "🦄 Ghép kèo thành công. Thông tin đối thủ đã được gửi về sms của bạn!",
+        '🦄 Ghép kèo thành công. Thông tin đối thủ đã được gửi về sms của bạn!',
         {
-          position: "top-right",
+          position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light",
+          theme: 'light',
         }
       );
     } catch (error) {
-      toast.error("🦄 Lỗi Server!", {
-        position: "top-right",
+      toast.error('🦄 Lỗi Server!', {
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: 'light',
       });
     }
   };
@@ -165,9 +165,7 @@ const FindOpponentPage = () => {
       <div className="bannerPpitchPage relative ">
         {/* banner cấc thứ */}
         <div className="video relative">
-          <video autoPlay loop muted>
-            <source src={banner} />
-          </video>
+          <img src={banner} style={{ height: 300, width: '100%' }} />
           <div className="absolute book-banner w-[70%] right-0 top-[50%] left-0 mx-auto">
             <h1 className="h1-banner container text-[32px] leading-[40px] mt-[-50px] mb-[30px] font-sans text-[#fff] font-bold tracking-wide">
               TÌM KIẾM ĐỐI THEO KHU VỰC
@@ -250,7 +248,7 @@ const FindOpponentPage = () => {
               <Form.Item>
                 <p className="mb-[10px] text-[23px] font-[600]">Lọc theo giá</p>
 
-                <Space style={{ width: "100%" }} direction="vertical">
+                <Space style={{ width: '100%' }} direction="vertical">
                   <IntegerStep />
                 </Space>
               </Form.Item>
@@ -309,15 +307,15 @@ const FindOpponentPage = () => {
                         </p>
                       </div>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                        <span className="text-pink-500">Vị trí:</span>{" "}
+                        <span className="text-pink-500">Vị trí:</span>{' '}
                         {item?.id_pitch?.address}
                       </p>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                        <span className="text-pink-500">Giá sân:</span>{" "}
-                        {`${item.price.toLocaleString("vi-VN")}vnđ`}
+                        <span className="text-pink-500">Giá sân:</span>{' '}
+                        {`${item.price.toLocaleString('vi-VN')}vnđ`}
                       </p>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                        <span className="text-pink-500"> Ca sân:</span> Ca{" "}
+                        <span className="text-pink-500"> Ca sân:</span> Ca{' '}
                         {item.number_shift}
                         {` (${item.start_time} - ${item.end_time})`}
                       </p>
@@ -337,8 +335,8 @@ const FindOpponentPage = () => {
                         </div>
                       </div>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                        <span className="text-pink-500">Ngày:</span>{" "}
-                        {format(parseISO(item.date), "yyyy-MM-dd")}
+                        <span className="text-pink-500">Ngày:</span>{' '}
+                        {format(parseISO(item.date), 'yyyy-MM-dd')}
                       </p>
                     </div>
                     <div className="px-6 pb-4 pt-0">

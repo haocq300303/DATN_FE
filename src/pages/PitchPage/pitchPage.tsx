@@ -1,63 +1,58 @@
-import { useState, useEffect, ChangeEventHandler } from "react";
-import axios from "axios";
+import { useState, useEffect, ChangeEventHandler } from 'react';
+import axios from 'axios';
 import {
   Select,
   Rate,
   Form,
   Checkbox,
-  Row,
-  Col,
-  Slider,
   InputNumber,
-  Space,
   Empty,
   Pagination,
   Button,
-} from "antd";
-import { Input } from "@material-tailwind/react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "./pitchPage.css";
-import "swiper/css";
-import banner from "../../assets/img/Web/bannerr.mp4";
-import item2 from "../../assets/img/Web/stadium1.jfif";
-import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import { fetchAllPitch, search } from "~/Redux/Slices/pitchSlice";
-import IPitch from "~/interfaces/pitch";
-import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
-import { PitchPagination, filterFeedbackPitch, getAllPitch, searchPitch } from "~/api/pitch";
-import { totalStarByPitch } from "~/api/feedback";
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
-import PitchStar from "~/components/pitchStart/PitchStar";
+} from 'antd';
+import { Input } from '@material-tailwind/react';
+import './pitchPage.css';
+import 'swiper/css';
+import banner from '../../assets/img/Web/banner1.png';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import { fetchAllPitch, search } from '~/Redux/Slices/pitchSlice';
+import IPitch from '~/interfaces/pitch';
+import { getAllServiceMid } from '~/Redux/Slices/serviceSlice';
+import {
+  PitchPagination,
+  filterFeedbackPitch,
+  getAllPitch,
+  searchPitch,
+} from '~/api/pitch';
+import { totalStarByPitch } from '~/api/feedback';
+import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
 const fixedOptions = [
-  { value: "bong-da", label: "Bóng đá" },
-  { value: "bong-chuyen", label: "Bóng chuyền" },
-  { value: "gym", label: "Gym" },
-  { value: "yoga", label: "Yoga" },
-  { value: "tennis", label: "Tennis" },
+  { value: 'bong-da', label: 'Bóng đá' },
+  { value: 'bong-chuyen', label: 'Bóng chuyền' },
+  { value: 'gym', label: 'Gym' },
+  { value: 'yoga', label: 'Yoga' },
+  { value: 'tennis', label: 'Tennis' },
 ];
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
 };
 
-
 const PitchPage = () => {
-  const navigate = useNavigate();
   const [form] = Form.useForm();
-  const host = "http://localhost:8080/api/location/";
+  const host = 'http://localhost:8080/api/location/';
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedWard, setSelectedWard] = useState("");
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [valueSearch, setValueSearch] = useState('');
-  const [totalItems, setTotalItems] = useState(Number);//phantrang
-  const [currentPage, setCurrentPage] = useState(1);//phantrang
+  const [totalItems, setTotalItems] = useState(Number); //phantrang
+  const [currentPage, setCurrentPage] = useState(1); //phantrang
   const [totalStar, setTotalStar] = useState<any>(Number);
-
 
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
@@ -73,7 +68,7 @@ const PitchPage = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchAllPitch(""));
+    dispatch(fetchAllPitch(''));
   }, [dispatch]);
 
   useEffect(() => {
@@ -85,13 +80,12 @@ const PitchPage = () => {
       try {
         const response = await getAllPitch(); // Gửi yêu cầu GET đến URL_API
         const allItemsPitch = response?.data?.data?.totalDocs;
-        setTotalItems(allItemsPitch)
+        setTotalItems(allItemsPitch);
       } catch (error) {
         console.error('Error:', error);
       }
     };
     fetchData();
-
   }, []);
 
   // xứ lí start
@@ -125,7 +119,6 @@ const PitchPage = () => {
       ? selectedServices.filter((service) => service !== serviceValue)
       : [...selectedServices, serviceValue];
     setSelectedServices(updatedServices);
-    // console.log("Fillter Service", updatedServices);
   };
 
   const filteredPitchs = pitchs.filter((pitch: any) => {
@@ -138,7 +131,7 @@ const PitchPage = () => {
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
 
-    if (value !== "") {
+    if (value !== '') {
       const response = await axios.get(`${host}districts?parent=${value}`);
       setDistricts(response.data);
     }
@@ -147,7 +140,7 @@ const PitchPage = () => {
   const handleDistrictChange = async (value: string) => {
     setSelectedDistrict(value);
 
-    if (value !== "") {
+    if (value !== '') {
       const response = await axios.get(`${host}wards?parent=${value}`);
       setWards(response.data);
     }
@@ -158,7 +151,7 @@ const PitchPage = () => {
   };
   // nếu ai muốn lấy
   const printResult = () => {
-    if (selectedCity !== "" && selectedDistrict !== "" && selectedWard !== "") {
+    if (selectedCity !== '' && selectedDistrict !== '' && selectedWard !== '') {
       const city: any = cities.find((c: any) => c.id === selectedCity);
       const district: any = districts.find(
         (d: any) => d.id === selectedDistrict
@@ -169,12 +162,12 @@ const PitchPage = () => {
         return result;
       }
     }
-    return "";
+    return '';
   };
 
   const onHandleSubmitSearch = async () => {
-    if (selectedWard === "" || selectedWard === undefined) {
-      if (selectedDistrict === "" || selectedDistrict === undefined) {
+    if (selectedWard === '' || selectedWard === undefined) {
+      if (selectedDistrict === '' || selectedDistrict === undefined) {
         await dispatch(fetchAllPitch(``));
       } else {
         await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
@@ -191,48 +184,46 @@ const PitchPage = () => {
           minPrice: values.min,
           maxPrice: values.max,
         },
-        searchText: valueSearch
-      })
-      console.log("checkFIllPrice", response);
+        searchText: valueSearch,
+      });
+      console.log('checkFIllPrice', response);
 
       await dispatch(search(response?.data?.data?.data));
       if (response) {
-        setTotalItems(response?.data?.data?.data?.length)
+        setTotalItems(response?.data?.data?.data?.length);
       }
     }
   };
 
   // Tìm Kiếm Theo sân
   const handlefil = async (value: string) => {
-    setValueSearch(value)
-    const response = await searchPitch({ searchText: value })
-    console.log("searchHandfill", response?.data);
-    dispatch(search(response?.data?.data?.data))
+    setValueSearch(value);
+    const response = await searchPitch({ searchText: value });
+    console.log('searchHandfill', response?.data);
+    dispatch(search(response?.data?.data?.data));
     if (response) {
-      setTotalItems(response?.data?.data?.data?.length)
+      setTotalItems(response?.data?.data?.data?.length);
     }
-  }
+  };
   // phân trang
   const handlePageChange = async (pageNumber: number) => {
     setCurrentPage(pageNumber);
     const response = await PitchPagination(pageNumber);
-    console.log("phantrang", response?.data);
+    console.log('phantrang', response?.data);
     const totalItems = response?.data?.data?.totalDocs;
-    console.log("téttsst", totalItems);
+    console.log('téttsst', totalItems);
     if (totalItems) {
       setTotalItems(totalItems);
     }
     dispatch(search(response?.data?.data?.data));
     window.scrollTo({ top: 500, behavior: 'smooth' });
-  }
-  // console.log("vck", totalItems);
-
+  };
   // xử lí lọc theo feedback
   const handleFeedbackChange = async (value: number) => {
     console.log('Đã chọn giá trị:', value);
-    const response = await filterFeedbackPitch(value, 5)
-    console.log("Fillter Feedback Pitch", response?.data);
-    dispatch(search(response?.data?.data?.data))
+    const response = await filterFeedbackPitch(value, 5);
+    console.log('Fillter Feedback Pitch', response?.data);
+    dispatch(search(response?.data?.data?.data));
   };
 
   //xử lí reset tìm kiếm
@@ -249,15 +240,12 @@ const PitchPage = () => {
 
   // xử lí sân bóng 5 sao
 
-
   return (
     <div className="bg-[#f3f3f5] pb-[40px]">
       <div className="bannerPpitchPage relative ">
         {/* banner cấc thứ */}
         <div className="video relative">
-          <video autoPlay loop muted>
-            <source src={banner} />
-          </video>
+          <img src={banner} style={{ height: 400, width: '100%' }} />
           <div className="absolute book-banner w-[70%] right-0 top-[50%] left-0 mx-auto">
             <h1 className="h1-banner container text-[32px] leading-[40px] mt-[-50px] mb-[30px] font-sans text-[#fff] font-bold tracking-wide">
               TÌM KIẾM SÂN BÓNG PHÙ HỢP VỚI BẠN
@@ -326,7 +314,7 @@ const PitchPage = () => {
                 href="https://maps.app.goo.gl/bMpLZc9tXFTEAEMLA"
                 target="_blank"
               >
-                <button className="my-[10px] text-[#3a75da]"> Chỉ Đường</button>{" "}
+                <button className="my-[10px] text-[#3a75da]"> Chỉ Đường</button>{' '}
               </a>
             </div>
             <div className="style-header-pitch my-[30px]"></div>
@@ -373,43 +361,55 @@ const PitchPage = () => {
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(4)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={4} />
-                      <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
+                      <span className="text-[16px] font-[500] pl-[5px]">
+                        {' '}
+                        trở Lên
+                      </span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(3)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={3} />
-                      <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
+                      <span className="text-[16px] font-[500] pl-[5px]">
+                        {' '}
+                        trở Lên
+                      </span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(2)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={2} />
-                      <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
+                      <span className="text-[16px] font-[500] pl-[5px]">
+                        {' '}
+                        trở Lên
+                      </span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(1)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={1} />
-                      <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
+                      <span className="text-[16px] font-[500] pl-[5px]">
+                        {' '}
+                        trở Lên
+                      </span>
                     </button>
                   </div>
                   <div onClick={() => handleFeedbackChange(0)}>
-                    <button>
+                    <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={0} />
-                      <span className="text-[16px] font-[500] pl-[5px]"> trở Lên</span>
+                      <span className="text-[16px] font-[500] pl-[5px]">
+                        {' '}
+                        trở Lên
+                      </span>
                     </button>
                   </div>
                 </div>
               </Form.Item>
               <div className="style-header-pitch my-[30px]"></div>
             </Form>
-            <Form
-              form={form}
-              onFinish={onFinishFilterPrice}
-            >
+            <Form form={form} onFinish={onFinishFilterPrice}>
               <p className="mb-[10px] text-[23px] font-[600]">Lọc theo giá</p>
 
               <div className="flex gap-[5px] w-full">
@@ -417,25 +417,44 @@ const PitchPage = () => {
                   name="min"
                   rules={[{ required: true, message: 'min!' }]}
                 >
-                  <InputNumber style={{ width: 100 }} min={0} placeholder=" đTừ" />
+                  <InputNumber
+                    style={{ width: 100 }}
+                    min={0}
+                    placeholder=" đTừ"
+                  />
                 </Form.Item>
-                <div className="pt-[5px]"><DoubleLeftOutlined /> <DoubleRightOutlined /></div>
+                <div className="pt-[5px]">
+                  <DoubleLeftOutlined /> <DoubleRightOutlined />
+                </div>
                 <Form.Item
                   name="max"
                   rules={[{ required: true, message: 'max!' }]}
                 >
-                  <InputNumber style={{ width: 100 }} min={0} placeholder="đ Đến" />
+                  <InputNumber
+                    style={{ width: 100 }}
+                    min={0}
+                    placeholder="đ Đến"
+                  />
                 </Form.Item>
               </div>
 
               <Form.Item>
-                <Button style={{ width: 240 }} type="primary" className=" text-center bg-blue-600" htmlType="submit">
+                <Button
+                  style={{ width: 240 }}
+                  type="primary"
+                  className=" text-center bg-blue-600"
+                  htmlType="submit"
+                >
                   Áp Dụng
                 </Button>
               </Form.Item>
             </Form>
             <div className="style-header-pitch my-[30px]"></div>
-            <Button className="text-center" style={{ width: 240 }} onClick={handleResetFilter}>
+            <Button
+              className="text-center"
+              style={{ width: 240 }}
+              onClick={handleResetFilter}
+            >
               Xoá Tất Cả
             </Button>
           </div>
@@ -455,7 +474,7 @@ const PitchPage = () => {
 
                 <Select
                   mode="tags"
-                  style={{ width: "25%" }}
+                  style={{ width: '25%' }}
                   placeholder="Môn thể thao"
                   onChange={handleChange}
                 >
@@ -486,7 +505,13 @@ const PitchPage = () => {
                           <h3 className=" text-[23px] font-[600] font-sans">
                             {pitch.name}
                           </h3>
-                          <Rate disabled allowHalf value={totalStar[index]?.averageRating?.toFixed(1) ?? ''} />
+                          <Rate
+                            disabled
+                            allowHalf
+                            value={
+                              totalStar[index]?.averageRating?.toFixed(1) ?? ''
+                            }
+                          />
                           <span>( {pitch?.feedback_id?.length} Review)</span>
                           <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
                           <p>Số Sân Trống : 3/4</p>
@@ -499,8 +524,8 @@ const PitchPage = () => {
                               );
                               return (
                                 <span key={data._id!}>
-                                  <i className="fa-solid fa-check"></i>{" "}
-                                  {service ? service.name : "Chưa có dịch vụ"}
+                                  <i className="fa-solid fa-check"></i>{' '}
+                                  {service ? service.name : 'Chưa có dịch vụ'}
                                 </span>
                               );
                             })}
@@ -513,7 +538,8 @@ const PitchPage = () => {
                               </del>
                             </span>
                             <span className="text-[23px] text-[#ffb932] text-bold">
-                              {pitch.deposit_price.toLocaleString('vi-VN')} - 850.000
+                              {pitch.deposit_price.toLocaleString('vi-VN')} -
+                              850.000
                             </span>
                           </p>
                         </div>
