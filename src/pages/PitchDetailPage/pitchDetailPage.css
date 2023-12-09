@@ -101,6 +101,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.overtime {
+  background-color: #c2c2c2 !important;
+  border: #c2c2c2 !important;
+  color: #333 !important;
+  cursor: default;
+}
+.overtime:hover {
+  background-color: #c2c2c2 !important;
+  border: #c2c2c2 !important;
+}
 .disabled {
   background-color: #ef4444 !important;
   border: #ef4444 !important;
