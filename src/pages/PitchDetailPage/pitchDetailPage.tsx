@@ -69,8 +69,6 @@ const PitchDetailPage = () => {
   const [isModalBookPitchMonth, setIsModalBookPitchMonth] =
     useState<boolean>(false);
 
-  const services = useAppSelector((state) => state.service.services);
-
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
 
   const onChangeFindOpponent = (checked: boolean) => {
@@ -263,17 +261,14 @@ const PitchDetailPage = () => {
                         <p>Số Người :7 Người</p>
                         <p className="flex justify-between my-[10px]">
                           Dịch Vụ :
-                          {item.services.map((data: any) => {
-                            const service = services.find(
-                              (item) => item._id == data._id
-                            );
-                            return (
-                              <span key={data._id!}>
-                                <i className="fa-solid fa-check"></i>{" "}
-                                {service ? service.name : "Chưa có dịch vụ"}
-                              </span>
-                            );
-                          })}
+                          {Pitch?.services && Pitch?.services.length > 0
+                            ? Pitch?.services?.map((service: any) => (
+                                <span key={service?._id}>
+                                  <i className="fa-solid fa-check"></i>{" "}
+                                  {service.name}
+                                </span>
+                              ))
+                            : ""}
                         </p>
                         <p className="flex justify-between">
                           Giá :
@@ -315,10 +310,13 @@ const PitchDetailPage = () => {
           <div className="flex gap-[20px] overflow-y-auto pt-[16px]">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                  <Card className="mb-[10px] w-[25%]" key={service?._id}>
+                  <Card
+                    className="mt-6 pt-4 w-[250px] mr-2 h-[200px]"
+                    key={service?._id}
+                  >
                     <CardHeader
                       color="blue-gray"
-                      className="w-[86%] h-28 pl-0 mt-[10px]"
+                      className="w-[200px] h-28 pl-0 mt-"
                     >
                       <img
                         className="w-full"
@@ -332,9 +330,6 @@ const PitchDetailPage = () => {
                         className="mb-2 text-base font-bold w-max"
                       >
                         {service?.name}
-                      </Typography>
-                      <Typography>
-                        {service?.price.toLocaleString("vi-VN")}đ
                       </Typography>
                     </CardBody>
                   </Card>
@@ -407,10 +402,11 @@ const PitchDetailPage = () => {
                 GIÁ CHỈ TỪ:{" "}
               </span>
               <span className=" text-[#ffb932] ml-2 leading-4">
-                {Pitch?.deposit_price?.toLocaleString("it-IT", {
-                  style: "currency",
-                  currency: "VND",
-                })}
+                {Pitch?.deposit_price &&
+                  Pitch?.deposit_price?.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
               </span>
             </p>
             <p className="my-[20px] font-semibold">

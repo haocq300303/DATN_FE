@@ -2,12 +2,10 @@ import { Button, Empty, Form, Input, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { createCommentMid, getAllCommentMid } from "~/Redux/Slices/commentSlide";
+import { createCommentMid } from "~/Redux/Slices/commentSlide";
 import { getAllPostMid } from "~/Redux/Slices/postSlice";
-
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import { getOnePost } from "~/api/post";
-import IComment from "~/interfaces/comment";
+import { getCommentPost, getOnePost } from "~/api/post";
 import IPost from "~/interfaces/post";
 
 
@@ -17,13 +15,11 @@ const PostDetailPage = () => {
   const dispatch = useAppDispatch();
   const [post, setPost] = useState<IPost>();
   const [Char, setChar] = useState('');
-  const [Comment, setComment] = useState<string[]>([]);
+  const [IdComment, setIdComment] = useState<any>();
+
 
   const posts = useAppSelector((state) => state.post.posts);
-  // console.log("data post", posts);
-  const comments = useAppSelector((state) => state.comment.comments);
-  console.log("data comments", comments);
-
+  console.log("data comments", IdComment);
   // console.log("detail Post", post);
 
   useEffect(() => {
@@ -37,24 +33,22 @@ const PostDetailPage = () => {
     })();
   }, [id]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await getCommentPost(String(id));
+        console.log("dataCMT", data);
+        setIdComment(data.data.comment_id);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [id]);
+
 
   useEffect(() => {
     dispatch(getAllPostMid());
   }, [dispatch]);
-  useEffect(() => {
-    dispatch(getAllCommentMid());
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    if (post && post.comment_id) {
-      const cmtId = post?.comment_id?.map((item: any) => item._id);
-      if (cmtId) {
-        setComment(cmtId);
-      }
-    }
-  }, [post]); // Chạy lại effect khi post thay đổi
-  // console.log("cmt", Comment);
 
   //comment
   const handleCharChange = (e: any) => {
@@ -67,10 +61,11 @@ const PostDetailPage = () => {
       console.log("res", response);
       if (response?.meta?.requestStatus === "fulfilled") {
         message.success("Đánh giá Thành Công !");
+        setIdComment((prevComments: any) => [
+          ...prevComments,
+          { ...response?.payload },
+        ]);
       }
-      const cmtId: string = response.payload?._id;
-      setComment((prevFeedbackList) => [...prevFeedbackList, cmtId]);
-      await dispatch(getAllCommentMid());
       form.resetFields(['content']);
       setChar('');
     } catch (error) {
@@ -155,13 +150,13 @@ const PostDetailPage = () => {
                 <h1 className="text-center text-xl font-sans font-[600]">Tin Mới Nhất</h1>
                 <div className="pt-[25px] ">
                   {posts && posts.length > 0 ? (
-                    posts.slice(0, 8).map((item: IPost) => (
-                      <Link key={item?._id} to={`/post/${item._id}`}>
+                    posts?.slice(0, 8).map((item: IPost) => (
+                      <a key={item?._id} href={`/post/${item._id}`}>
                         <div className="flex justify-center items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
                           <img className="w-[100px] rounded-md" src={item?.images[0]} alt="" />
                           <h1>{item?.title}</h1>
                         </div>
-                      </Link>
+                      </a>
                     ))
                   ) : (
                     <div><Empty /></div>
@@ -217,38 +212,36 @@ const PostDetailPage = () => {
               <div className=" bg-gray-100 py-[10px] border-b-[1px] border-gray-700">
                 <p className="ml-[10px]">Bình Luận Mới Nhất</p>
               </div>
-              <div>
-                {Comment && Comment.length > 0 ? (
-                  Comment?.slice()?.reverse()?.map((data: any) => {
-
-                    const cmts: any = comments?.find((item: IComment) => item._id == data);
-                    if (!cmts) {
-                      return null;
-                    }
-                    return (
-                      <div key={cmts?._id} className="flex w-full mt-[10px] bg-none">
-                        <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
-                        <div className="w-full rounded-md">
-                          <div className="h-[40px] flex justify-between items-center w-full ">
-                            <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name}</h1>
-                            <h1>{cmts?.createdAt}</h1>
-                          </div>
-                          <div>
-                            <p>{cmts?.content}</p>
-                          </div>
+              {IdComment && IdComment.length > 0 ? (
+                <div className="overflow-y-scroll h-[540px]">
+                  {IdComment?.slice()?.reverse().map((cmts: any) => (
+                    <div key={cmts?._id} className="flex w-full mt-[10px] bg-none">
+                      <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
+                      <div className="w-full rounded-md">
+                        <div className="h-[40px] flex justify-between items-center w-full">
+                          <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name ? cmts.id_user.name : cmts.user.name}</h1>
+                          <h1 className="pr-[20px]">{cmts?.createdAt}</h1>
+                        </div>
+                        <div>
+                          <TextArea
+                            readOnly
+                            value={cmts?.content}
+                            autoSize={{ minRows: 2, maxRows: 6 }}
+                          />
                         </div>
                       </div>
-                    );
-                  })
-                ) : (
-                  <div>
-                    <h1 className="text-center">Chưa Có Bình Luận. Bạn Hãy Là Người Bình Luận Đầu tiên !</h1>
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <h1 className="text-center">Chưa Có Bình Luận. Bạn Hãy Là Người Bình Luận Đầu tiên !</h1>
+                </div>
+              )}
 
-                {/*  */}
 
-              </div>
+
+              {/*  */}
             </div>
 
           </div>

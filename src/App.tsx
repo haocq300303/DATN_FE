@@ -82,8 +82,7 @@ function App() {
             </PrivateLayout>
           }
         >
-          <Route index element={<DashboardPage />} />
-          <Route path={routes.post} element={<PostManagement />} />
+          <Route index path={routes.post} element={<PostManagement />} />
           <Route path={routes.postAdd} element={<PostAdd />} />
           <Route path={routes.banner} element={<BannerManagement />} />
           <Route path={routes.service} element={<ServiceManagement />} />

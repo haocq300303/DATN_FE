@@ -41,3 +41,10 @@ export const getShiftBookedByChildPitchAndNumberShift = (
     `shift/shift-booked/child-pitch-number-shift/${idChildPitch}?number_shift=${number_shift}`
   );
 };
+
+export const changeFindOpponent = (idShift: string, data: any) => {
+  return instance.put(`shift/find-opponent-change/${idShift}`, data);
+};
+export const updateFindOpponent = (idShift: string, data: any) => {
+  return instance.put(`shift/find-opponent/${idShift}`, data);
+};

@@ -1,5 +1,4 @@
 const routes = {
-
   adminPitch: "/adminPitch",
   comment: '/admin/comment',
   paymentAdmin: '/admin/payment',
