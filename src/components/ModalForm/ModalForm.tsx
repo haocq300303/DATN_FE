@@ -22,7 +22,7 @@ const ModalForm = ({
 
   return (
     <Modal
-      title={modalMode === "add" ? "Create Post" : "Edit Post"}
+      title={modalMode === "add" ? "Create " : "Edit "}
       open={isModalOpen}
       centered
       onCancel={handleCancel}
@@ -44,7 +44,7 @@ const ModalForm = ({
     >
       <div className="max-h-[70vh] overflow-auto modal-scroll">
 
-      {children}
+        {children}
       </div>
     </Modal>
   );

@@ -19,9 +19,6 @@ const PostDetailPage = () => {
 
 
   const posts = useAppSelector((state) => state.post.posts);
-  console.log("data comments", IdComment);
-  // console.log("detail Post", post);
-
   useEffect(() => {
     (async () => {
       try {
@@ -37,7 +34,6 @@ const PostDetailPage = () => {
     (async () => {
       try {
         const { data } = await getCommentPost(String(id));
-        console.log("dataCMT", data);
         setIdComment(data.data.comment_id);
       } catch (error) {
         console.log(error);
@@ -58,9 +54,8 @@ const PostDetailPage = () => {
   const onFinishComment = async (values: any) => {
     try {
       const response = await dispatch(createCommentMid(values));
-      console.log("res", response);
       if (response?.meta?.requestStatus === "fulfilled") {
-        message.success("Đánh giá Thành Công !");
+        message.success("Bình Luận Thành Công !");
         setIdComment((prevComments: any) => [
           ...prevComments,
           { ...response?.payload },
@@ -143,7 +138,7 @@ const PostDetailPage = () => {
               {post?.title}
             </h4>
             <div className="flex justify-center gap-[20px]">
-              <div className="m-0 overflow-hidden bg-transparent text-gray-700">
+              <div className="m-0 overflow-hidden bg-transparent text-gray-700 h-[600px]">
                 <img src={post?.images[0]} alt="Image" className="w-full" />
               </div>
               <div className="w-full ">
@@ -172,7 +167,7 @@ const PostDetailPage = () => {
             </div>
             <div className="flex items-center justify-end py-6">
               <p className="block font-sans text-base font-normal leading-relaxed">
-                {post?.createdAt}
+                {post?.updatedAt}
               </p>
             </div>
           </div>
