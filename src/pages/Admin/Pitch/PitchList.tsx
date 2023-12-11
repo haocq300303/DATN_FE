@@ -7,7 +7,8 @@ import {
   Input,
   InputRef,
   Modal,
-  Image
+  Image,
+  Spin
 } from "antd";
 import type { ColumnsType, ColumnType } from "antd/es/table";
 import {
@@ -62,6 +63,7 @@ const PitchList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [Pitch, setPitch] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
 
 
@@ -109,12 +111,35 @@ const PitchList = () => {
     setIsModalOpen(true);
   };
 
+  // useEffect(() => {
+  //   // Gọi hàm getOnePitch khi component được render và selectedId thay đổi
+  //   if (selectedId) {
+  //     // Bắt đầu loading khi bắt đầu tải dữ liệu
+  //     setLoading(true);
+
+  //     getOnePitch(selectedId)
+  //       .then(({ data: { data } }) => {
+  //         // Kết thúc loading khi dữ liệu đã được tải
+  //         setLoading(false);
+  //         setPitch(data);
+  //       })
+  //       .catch((error) => {
+  //         setLoading(false);
+  //         console.error('Error fetching pitch data:', error);
+  //       });
+  //   }
+  // }, [selectedId]);
   useEffect(() => {
-    // Gọi hàm getOnePitch khi component được render và selectedId thay đổi
-    if (selectedId) {
-      getOnePitch(selectedId).then(({ data: { data } }) => {
-        setPitch(data)
-      });
+    try {
+      setLoading(true);
+      if (selectedId) {
+        getOnePitch(selectedId).then(({ data: { data } }) => {
+          setLoading(false);
+          setPitch(data);
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, [selectedId]);
   console.log("pitchModel:", Pitch);
@@ -140,6 +165,7 @@ const PitchList = () => {
     {
       key: item._id,
       name: item.name,
+      admin_pitch_id: item?.admin_pitch_id?.name || "Chủ Sân Bị Xoá !",
       address: item.address,
       numberPitch: item.numberPitch,
     }
@@ -247,6 +273,13 @@ const PitchList = () => {
       ...getColumnSearchProps('name'),
     },
     {
+      title: 'Tên Chủ Sân',
+      dataIndex: 'admin_pitch_id',
+      key: 'admin_pitch_id',
+      width: '20%',
+      ...getColumnSearchProps('admin_pitch_id'),
+    },
+    {
       title: 'Số Sân',
       dataIndex: 'numberPitch',
       key: 'numberPitch',
@@ -322,87 +355,95 @@ const PitchList = () => {
         ]}
       >
         <div>
-          <div className=" mt-[10px]">
-            <div className=" ">
-              <div className="text-[18px] pt-[10px]">
-                <div className="flex justify-between">
-                  <p className="py-[5px]">Tên Sân : <span className="italic text-gray-700">{Pitch?.name}</span></p>
-                  <p className="py-[5px]">Chủ Sở Hữu : <span className="italic text-gray-700">{Pitch?.admin_pitch_id?.name || "Chủ Sân Bị Xoá"}</span></p>
+          {!loading ? (
+            <div className=" mt-[10px]">
+              <div className=" ">
+                <div className="text-[18px] pt-[10px]">
+                  <div className="flex justify-between">
+                    <p className="py-[5px]">Tên Sân : <span className="italic text-gray-700">{Pitch?.name}</span></p>
+                    <p className="py-[5px]">Chủ Sở Hữu : <span className="italic text-gray-700">{Pitch?.admin_pitch_id?.name || "Chủ Sân Bị Xoá"}</span></p>
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="py-[5px]">Vị trí tìm kiếm : <span className="italic text-gray-700">{Pitch?.address}</span></p>
+                    <p className="py-[5px]">Số lượng sân : <span className="italic text-gray-700">{Pitch?.numberPitch} sân</span></p>
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="py-[5px] w-[500px]">Dịch vụ :
+                      <span>
+                        {Pitch && Pitch?.services?.length > 0 ? (
+                          Pitch?.services?.map((item: any) =>
+                            <Button size={'small'} className="text-blue-500 mr-[5px]"> {item?.name} - {item?.price?.toLocaleString('vi-VN')}</Button>
+                          )
+                        ) : (
+                          <Button size={'small'} className="text-blue-500"> Chưa Có Dịch Vụ</Button>
+                        )}
+                      </span>
+                    </p>
+                    <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="py-[5px]">Ngày tạo sân : <span className="italic text-gray-700">{Pitch?.createdAt}</span></p>
+                    <p className="py-[5px]">Ngày cập nhật sân gần nhất : <span className="italic text-gray-700">{Pitch?.updatedAt}</span></p>
+                  </div>
+                  <p className="py-[5px] w-[960px]">Miêu tả sân : <span className="italic w-[900px] text-gray-700 "> {Pitch?.description}.</span></p>
                 </div>
-                <div className="flex justify-between">
-                  <p className="py-[5px]">Vị trí tìm kiếm : <span className="italic text-gray-700">{Pitch?.address}</span></p>
-                  <p className="py-[5px]">Số lượng sân : <span className="italic text-gray-700">{Pitch?.numberPitch} sân</span></p>
+              </div>
+              <div className="pr-[20px]">
+                <div className="flex justify-center">
+                  {Pitch?.images && Pitch.images.length > 0 && (
+                    <Image
+                      width={950}
+                      height={450}
+                      src={Pitch?.avatar}
+                      preview={{
+                        src: `${Pitch?.avatar}`,
+                      }}
+                    />
+                  )}
                 </div>
-                <div className="flex justify-between">
-                  <p className="py-[5px] w-[500px]">Dịch vụ :
-                    <span>
-                      {Pitch && Pitch?.services?.length > 0 ? (
-                        Pitch?.services?.map((item: any) =>
-                          <Button size={'small'} className="text-blue-500 mr-[5px]"> {item?.name} - {item?.price?.toLocaleString('vi-VN')}</Button>
-                        )
-                      ) : (
-                        <Button size={'small'} className="text-blue-500"> Chưa Có Dịch Vụ</Button>
-                      )}
-                    </span>
-                  </p>
-                  <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
+                <div className="flex justify-between mt-[10px]">
+                  {Pitch?.images && Pitch.images.length > 0 && (
+                    <Image
+                      width={300}
+                      height={150}
+                      src={Pitch?.images[0]}
+                      preview={{
+                        src: `${Pitch?.images[0]}`,
+                      }}
+                    />
+                  )}
+                  {Pitch?.images && Pitch.images.length > 0 && (
+                    <Image
+                      width={300}
+                      height={150}
+                      src={Pitch?.images[1]}
+                      preview={{
+                        src: `${Pitch?.images[1]}`,
+                      }}
+                    />
+                  )}
+
+                  {Pitch?.images && Pitch.images.length > 0 && (
+                    <Image
+                      width={300}
+                      height={150}
+                      src={Pitch?.images[2]}
+                      preview={{
+                        src: `${Pitch?.images[2]}`,
+                      }}
+                    />
+                  )}
+
                 </div>
-                <div className="flex justify-between">
-                  <p className="py-[5px]">Ngày tạo sân : <span className="italic text-gray-700">{Pitch?.createdAt}</span></p>
-                  <p className="py-[5px]">Ngày cập nhật sân gần nhất : <span className="italic text-gray-700">{Pitch?.updatedAt}</span></p>
-                </div>
-                <p className="py-[5px] w-[960px]">Miêu tả sân : <span className="italic w-[900px] text-gray-700 "> {Pitch?.description} Tổng bí thư, Chủ tịch Trung Quốc Tập Cận Bình sẽ thăm Việt Nam ngày 12-13/12, vào dịp hai nước kỷ niệm 15 năm thiết lập quan hệ Đối tác hợp tác Chiến lược Toàn diện. Đây là lần thứ ba ông Tập thăm Việt Nam ở cương vị người đứng đầu đảng và nhà nước Trung Quốc.</span></p>
               </div>
             </div>
-            <div className="pr-[20px]">
-              <div className="flex justify-center">
-                {Pitch?.images && Pitch.images.length > 0 && (
-                  <Image
-                    width={950}
-                    height={450}
-                    src={Pitch?.avatar}
-                    preview={{
-                      src: `${Pitch?.avatar}`,
-                    }}
-                  />
-                )}
-              </div>
-              <div className="flex justify-between mt-[10px]">
-                {Pitch?.images && Pitch.images.length > 0 && (
-                  <Image
-                    width={300}
-                    height={150}
-                    src={Pitch?.images[0]}
-                    preview={{
-                      src: `${Pitch?.images[0]}`,
-                    }}
-                  />
-                )}
-                {Pitch?.images && Pitch.images.length > 0 && (
-                  <Image
-                    width={300}
-                    height={150}
-                    src={Pitch?.images[1]}
-                    preview={{
-                      src: `${Pitch?.images[1]}`,
-                    }}
-                  />
-                )}
-
-                {Pitch?.images && Pitch.images.length > 0 && (
-                  <Image
-                    width={300}
-                    height={150}
-                    src={Pitch?.images[2]}
-                    preview={{
-                      src: `${Pitch?.images[2]}`,
-                    }}
-                  />
-                )}
-
-              </div>
+          ) : (
+            <div>
+              <Spin tip="Loading" size="large">
+                <div className="content" />
+              </Spin>
             </div>
-          </div>
+          )}
         </div>
       </Modal>
 

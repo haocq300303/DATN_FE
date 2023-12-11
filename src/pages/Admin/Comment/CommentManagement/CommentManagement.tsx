@@ -77,7 +77,7 @@ const CommentManagement = () => {
       key: item._id,
       title: item?.id_post?.title,
       name_user: item?.id_user?.name,
-      email: item?.id_user?.email,
+      email: item?.id_user?.email || "Email người dùng chưa có !",
       content: item?.content
     }
   ))
