@@ -3,7 +3,6 @@ import { routes } from './routes';
 import Home from './pages/Home/Home';
 import Register from './pages/Register';
 import Login from './pages/Login';
-import DashboardPage from './pages/Admin/Dashboard/DashboardPage';
 import AdminLayout from './layouts/AdminLayout';
 import PostAdd from './pages/Admin/Post/PostAdd/PostAdd';
 import PostManagement from './pages/Admin/Post/PostManagement/PostManagement';
