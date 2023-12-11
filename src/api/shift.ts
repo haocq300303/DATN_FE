@@ -28,6 +28,20 @@ export const matchOpponent = (data: any) => {
 export const findOpponent = (idShift: string, data: any) => {
   return instance.put(`shift/find-opponent/${idShift}`, data);
 };
+
+export const getShiftDefaultByPitch = (idPitch: string) => {
+  return instance.get(`shift/default/pitch/${idPitch}`);
+};
+
+export const getShiftBookedByChildPitchAndNumberShift = (
+  idChildPitch: string,
+  number_shift: number
+) => {
+  return instance.get(
+    `shift/shift-booked/child-pitch-number-shift/${idChildPitch}?number_shift=${number_shift}`
+  );
+};
+
 export const changeFindOpponent = (idShift: string, data: any) => {
   return instance.put(`shift/find-opponent-change/${idShift}`, data);
 };
