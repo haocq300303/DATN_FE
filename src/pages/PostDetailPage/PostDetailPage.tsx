@@ -54,6 +54,8 @@ const PostDetailPage = () => {
   const onFinishComment = async (values: any) => {
     try {
       const response = await dispatch(createCommentMid(values));
+      console.log("repon", response);
+
       if (response?.meta?.requestStatus === "fulfilled") {
         message.success("Bình Luận Thành Công !");
         setIdComment((prevComments: any) => [
@@ -214,7 +216,7 @@ const PostDetailPage = () => {
                       <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
                       <div className="w-full rounded-md">
                         <div className="h-[40px] flex justify-between items-center w-full">
-                          <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name ? cmts.id_user.name : cmts.user.name}</h1>
+                          <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name ? cmts?.id_user?.name : cmts?.user?.name}</h1>
                           <h1 className="pr-[20px]">{cmts?.createdAt}</h1>
                         </div>
                         <div>
