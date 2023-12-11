@@ -6,7 +6,7 @@ import { routes } from "~/routes";
 function PrivateLayout({ children }: any) {
   const role_name = useSelector((state: RootState) => state.user.role_name);
 
-  if (role_name === "admin") {
+  if (role_name !== "admin") {
     return children;
   }
   return <Navigate to={routes.notfound} />;

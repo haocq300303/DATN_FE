@@ -1,17 +1,17 @@
-import { Modal } from "antd";
-import { Dispatch, useEffect, useState } from "react";
-import Swal from "sweetalert2";
-import { useNewPaymentMutation } from "~/Redux/payment/paymentApi";
-import { hideLoader, showLoader } from "~/components/LoaderAllPage";
-import { Show } from "~/components/Show";
-import InfoBooking from "./InfoBooking";
-import InfoUser from "./InfoUser";
-import SelectChildrenPitch from "./SelectChildrenPitch";
-import SelectService from "./SelectService";
-import SelectShift from "./SelectShift";
-import { toast } from "react-toastify";
-import { useNewBookingAffterPayMutation } from "~/Redux/booking/bookingApi";
-import { getCreatShift } from "~/api/shift";
+import { Modal } from 'antd';
+import { Dispatch, useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import { useNewPaymentMutation } from '~/Redux/payment/paymentApi';
+import { hideLoader, showLoader } from '~/components/LoaderAllPage';
+import { Show } from '~/components/Show';
+import InfoBooking from './InfoBooking';
+import InfoUser from './InfoUser';
+import SelectChildrenPitch from './SelectChildrenPitch';
+import SelectService from './SelectService';
+import SelectShift from './SelectShift';
+import { toast } from 'react-toastify';
+import { useGetAllBookingByUserIdQuery, useNewBookingAffterPayMutation } from '~/Redux/booking/bookingApi';
+import { getCreatShift } from '~/api/shift';
 
 type FormCreateBookingProps = {
   isOpen: boolean;
@@ -50,34 +50,29 @@ export type UserBookingType = {
   email: string;
 };
 
-export type DataBookingType = [
-  UserBookingType?,
-  PitchChildrenInfoType?,
-  ShiftInfoType?,
-  ServiceType[]?
-];
+export type DataBookingType = [UserBookingType?, PitchChildrenInfoType?, ShiftInfoType?, ServiceType[]?];
 
 const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
   const [dataBooking, setDataBooking] = useState<DataBookingType>([]);
   // Get redux store
   const currentUser: any = {
-    _id: "655c53ed6c0689551d7528a3",
-    phone: "0788062634",
-    fullname: "Trương Minh Hiếu",
-    email: "hahuu02dev@gmail.com",
+    _id: '655c53ed6c0689551d7528a3',
+    phone: '0788062634',
+    fullname: 'Trương Minh Hiếu',
+    email: 'hahuu02dev@gmail.com',
   };
   const currentPitch: any = {
-    _id: "653ca30f5d70cbab41a2e5d0",
+    _id: '653ca30f5d70cbab41a2e5d0',
   };
 
   const infoPitch = {
-    name: "Sân Bóng Trần Hữu Dực",
-    address: "Số 6, Trần Hữu Dực, Nam Từ Liêm, Hà Nội",
+    name: 'Sân Bóng Trần Hữu Dực',
+    address: 'Số 6, Trần Hữu Dực, Nam Từ Liêm, Hà Nội',
   };
 
   const [newPayment, { isLoading: isLoadingPayment }] = useNewPaymentMutation();
-  const [newBooking, { isLoading: isLoadingBooking }] =
-    useNewBookingAffterPayMutation();
+  const [newBooking, { isLoading: isLoadingBooking }] = useNewBookingAffterPayMutation();
+  const { refetch } = useGetAllBookingByUserIdQuery(null);
 
   const handleBackPick = () => {
     const _dataBooking = [...dataBooking];
@@ -87,14 +82,14 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
 
   const handleConfirmBooking = () => {
     Swal.fire({
-      position: "center",
-      title: "Warning",
-      text: "Bạn xác nhận thanh toán chứ!!",
-      icon: "warning",
-      confirmButtonText: "Đồng ý",
+      position: 'center',
+      title: 'Warning',
+      text: 'Bạn xác nhận thanh toán chứ!!',
+      icon: 'warning',
+      confirmButtonText: 'Đồng ý',
       showDenyButton: true,
       returnInputValueOnDeny: false,
-      denyButtonText: "Cancel",
+      denyButtonText: 'Cancel',
     }).then(async (result) => {
       try {
         if (result) {
@@ -102,25 +97,21 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
           const childrenPitchBooking = dataBooking[1];
           const shiftBooking: any = dataBooking[2];
           const servicesBooking = dataBooking[3];
-          const totalService =
-            servicesBooking?.reduce(
-              (total, service) => total + service.price,
-              0
-            ) || 0;
+          const totalService = servicesBooking?.reduce((total, service) => total + service.price, 0) || 0;
+          const serviceIds = servicesBooking?.map((service) => service._id);
           const totalPrice = totalService + (shiftBooking as any)?.price;
 
           const _infoPayment = {
-            payment_method: "cash",
+            payment_method: 'cash',
             user_bank: userBooking?._id,
             user_receiver: currentUser?._id,
             price_received: totalPrice,
             total_received: totalPrice,
-            status: "success",
-            message: userBooking?.fullName + " thanh toán đặt sân",
+            status: 'success',
+            message: userBooking?.fullName + ' thanh toán đặt sân',
           };
 
           const resultPayment = await newPayment(_infoPayment as any).unwrap();
-          console.log("re-render");
 
           const newShiftBooking = {
             id_pitch: shiftBooking?.id_pitch,
@@ -138,19 +129,23 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
           const { data } = await getCreatShift(newShiftBooking);
           const _dataBooking: any = {
             pitch_id: currentPitch._id,
-            user_id: currentUser?._id,
+            user_id: userBooking?._id,
             shift_id: data?.data?._id,
             children_pitch_id: childrenPitchBooking?._id,
             payment_id: resultPayment?.data?._id,
+            service_ids: serviceIds,
           };
           newBooking(_dataBooking)
             .unwrap()
             .then(() => {
-              toast.success("Tạo booking thành công");
+              refetch();
+              setOpen(false);
+              setDataBooking([]);
+              toast.success('Tạo mới một lần đặt sân thành công');
             });
         }
       } catch (error: any) {
-        toast.error("Lỗi " + error.message);
+        toast.error('Lỗi ' + error.message);
       }
     });
   };
@@ -165,64 +160,35 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
 
   return (
     <div className="">
-      <Modal
-        centered
-        open={isOpen}
-        onCancel={() => setOpen(false)}
-        width="1024px"
-        footer={false}
-      >
+      <Modal centered open={isOpen} onCancel={() => setOpen(false)} width="1024px" footer={false}>
         <div className="grid grid-cols-[1.1fr_2fr] gap-6 text-[#003553] min-h-[500px]">
           <div className="rounded-xl shadow-md bg-white overflow-hidden">
-            <h3 className="text-xl  bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center font-bold">
-              Thông tin đặt lịch
-            </h3>
+            <h3 className="text-xl  bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center font-bold">Thông tin đặt lịch</h3>
 
             <InfoBooking dataBooking={dataBooking} infoPitch={infoPitch} />
           </div>
 
           <div className="rounded-xl shadow-md bg-white overflow-hidden">
-            <h3 className="text-xl  font-bold bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center">
-              Thông tin sân và giá tiền
-            </h3>
+            <h3 className="text-xl  font-bold bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center">Thông tin sân và giá tiền</h3>
 
             <div className="max-h-[440px] overflow-y-auto px-4 py-5">
               <Show when={!dataBooking[0]}>
-                <InfoUser
-                  dataBooking={dataBooking}
-                  setDataBooking={setDataBooking}
-                />
+                <InfoUser dataBooking={dataBooking} setDataBooking={setDataBooking} />
               </Show>
               <Show when={!!dataBooking[0] && !dataBooking[1]}>
-                <SelectChildrenPitch
-                  dataBooking={dataBooking}
-                  setDataBooking={setDataBooking}
-                />
+                <SelectChildrenPitch dataBooking={dataBooking} setDataBooking={setDataBooking} />
               </Show>
-              <Show
-                when={!!dataBooking[0] && !!dataBooking[1] && !dataBooking[2]}
-              >
-                <SelectShift
-                  dataBooking={dataBooking}
-                  setDataBooking={setDataBooking}
-                />
+              <Show when={!!dataBooking[0] && !!dataBooking[1] && !dataBooking[2]}>
+                <SelectShift dataBooking={dataBooking} setDataBooking={setDataBooking} />
               </Show>
-              <Show
-                when={!!dataBooking[0] && !!dataBooking[1] && !!dataBooking[2]}
-              >
-                <SelectService
-                  dataBooking={dataBooking}
-                  setDataBooking={setDataBooking}
-                />
+              <Show when={!!dataBooking[0] && !!dataBooking[1] && !!dataBooking[2]}>
+                <SelectService dataBooking={dataBooking} setDataBooking={setDataBooking} />
               </Show>
             </div>
 
             <div className="px-4 mt-4 flex space-x-6 mb-6">
               <Show when={dataBooking.length > 0}>
-                <button
-                  onClick={handleBackPick}
-                  className="flex text-base items-center hover:bg-[rgba(0,0,0,0.08)] rounded-md py-1 px-2"
-                >
+                <button onClick={handleBackPick} className="flex text-base items-center hover:bg-[rgba(0,0,0,0.08)] rounded-md py-1 px-2">
                   Quay lại
                   <svg
                     className="ml-2"
