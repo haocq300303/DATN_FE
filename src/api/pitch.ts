@@ -20,6 +20,9 @@ export const filterFeedbackPitch = (minStart?: number, maxStart?: number,) => {
 export const getOnePitch = (idPitch: string) => {
   return instance.get(`/pitch/${idPitch}`);
 };
+export const getOnePitchFeedback = (idPitch: string) => {
+  return instance.get(`/pitch/feedback/${idPitch}`);
+};
 export const getCreatPitch = (pitch: any) => {
   return instance.post(`/pitch`, pitch);
 };

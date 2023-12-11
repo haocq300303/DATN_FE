@@ -21,6 +21,7 @@ import { loginSMS } from '~/api/auth';
 
 const Login = () => {
   const user = useSelector((state: RootState) => state.user);
+  
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
   const role_name = useSelector((state: RootState) => state.user.role_name);
   const navigate = useNavigate();
