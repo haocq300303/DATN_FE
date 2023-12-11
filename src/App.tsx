@@ -17,6 +17,7 @@ import DashboardPitchPage from "./pages/Admin/DashboardPitch/DashboardPitchpage"
 import LocationList from "./pages/Admin/Location/LocationList";
 import PaymentAdminPage from "./pages/Admin/Payment";
 import PitchList from "./pages/Admin/Pitch/PitchList";
+import PitchUserList from "./pages/Admin/Pitch/PitchUserList";
 import PostAdd from "./pages/Admin/Post/PostAdd/PostAdd";
 import PostManagement from "./pages/Admin/Post/PostManagement/PostManagement";
 import ServiceManagement from "./pages/Admin/Service/ServiceManagement/ServiceManagement";
@@ -103,7 +104,7 @@ function App() {
                 >
                     <Route index element={<DashboardPitchPage />} />
                     <Route path={routes.service_admin} element={<ServiceManagement />} />
-                    <Route path={routes.pitch_admin} element={<PitchList />} />
+                    <Route path={routes.pitch_admin} element={<PitchUserList />} />
                     <Route path={routes.childrenpitch_admin} element={<ChildrentPitch />} />
                     <Route path={routes.location_admin} element={<LocationList />} />
                     <Route path={routes.payment_admin} element={<PaymentAdminPage />} />

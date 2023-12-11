@@ -93,7 +93,7 @@ const AdminPitchLayout = () => {
             textAlign: 'center',
           }}
         >
-          <Link to={'/admin'}>
+          <Link to={routes.admin_pitch}>
             <img src={FsportLogo} alt="Logo" style={{ width: '100%' }} />
           </Link>
         </div>
