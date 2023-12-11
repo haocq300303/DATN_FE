@@ -36,6 +36,7 @@ import { useDispatch } from 'react-redux';
 import { saveUserValues } from './Redux/Slices/userSlice';
 import jwtDecode from 'jwt-decode';
 import DashboardPitchPage from './pages/Admin/DashboardPitch/DashboardPitchpage';
+import PitchUserList from './pages/Admin/Pitch/PitchUserList';
 function App() {
   const dispatch = useDispatch();
   const accessToken = localStorage.getItem('accessToken');
@@ -90,7 +91,7 @@ function App() {
           <Route path={routes.comment} element={<CommentManagement />} />
           <Route path={routes.pitch} element={<PitchList />} />
           <Route path={routes.childrenpitch} element={<ChildrentPitch />} />
-          <Route path={routes.location} element={<LocationList />} />
+          <Route path={routes.comment} element={<CommentManagement />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />
           <Route path={routes.shift} element={<Shift />} />
@@ -105,7 +106,7 @@ function App() {
         >
           <Route index element={<DashboardPitchPage />} />
           <Route path={routes.service_admin} element={<ServiceManagement />} />
-          <Route path={routes.pitch_admin} element={<PitchList />} />
+          <Route path={routes.pitch_admin} element={<PitchUserList />} />
           <Route
             path={routes.childrenpitch_admin}
             element={<ChildrentPitch />}

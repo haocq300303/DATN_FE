@@ -24,6 +24,9 @@ const updateComment = (comment: IComment) => {
 const deleteComment = (idComment: string) => {
   return instance.delete(`comments/${idComment}`);
 };
+const commentPagination = (page?: number,) => {
+  return instance.get(`comments?page=${page}`);
+};
 
 export {
   getAllComment,
@@ -32,4 +35,5 @@ export {
   createComment,
   updateComment,
   deleteComment,
+  commentPagination,
 };

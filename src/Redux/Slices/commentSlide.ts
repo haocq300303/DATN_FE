@@ -54,7 +54,11 @@ export const deleteCommentMid = createAsyncThunk(
 const commentSlice = createSlice({
   name: "comment",
   initialState,
-  reducers: {},
+  reducers: {
+    setDataComment(state, action) {
+      state.comments = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllCommentMid.pending, (state) => {
@@ -109,4 +113,5 @@ const commentSlice = createSlice({
   },
 });
 
+export const { setDataComment } = commentSlice.actions
 export default commentSlice.reducer;
