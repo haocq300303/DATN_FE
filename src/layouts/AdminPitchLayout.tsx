@@ -2,14 +2,7 @@ import { Link } from 'react-router-dom';
 import React, { useState } from 'react';
 import { Breadcrumb, Layout, Menu, MenuProps } from 'antd';
 const { Content, Footer, Sider } = Layout;
-import {
-  AppstoreOutlined,
-  SolutionOutlined,
-  PieChartOutlined,
-  HomeOutlined,
-  UserOutlined,
-  ProfileOutlined,
-} from '@ant-design/icons';
+import { AppstoreOutlined, SolutionOutlined, PieChartOutlined, HomeOutlined, UserOutlined, ProfileOutlined } from '@ant-design/icons';
 import FsportLogo from '../assets/img/sport-bg.png';
 import { Outlet } from 'react-router-dom';
 import HeaderAdmin from '../components/Admin/Header/Header';
@@ -18,12 +11,7 @@ import ModalViewCreatePitch from '~/pages/Admin/Dashboard/ModalViewCreatePitch';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-function getItem(
-  label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
+function getItem(label: React.ReactNode, key?: React.Key | null, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
   return {
     key,
     icon,
@@ -90,7 +78,7 @@ const items: MenuItem[] = [
 const AdminPitchLayout = () => {
   const [current, setCurrent] = useState('1');
   const [collapsed, setCollapsed] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onClick: MenuProps['onClick'] = (e: any) => {
     setCurrent(e.key);
@@ -98,11 +86,7 @@ const AdminPitchLayout = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value: any) => setCollapsed(value)}
-      >
+      <Sider collapsible collapsed={collapsed} onCollapse={(value: any) => setCollapsed(value)}>
         <div
           style={{
             margin: 16,
@@ -152,9 +136,7 @@ const AdminPitchLayout = () => {
             <Outlet />
           </main>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Design ©2023 Created by He
-        </Footer>
+        <Footer style={{ textAlign: 'center' }}>Design ©2023 Created by He</Footer>
       </Layout>
       {isModalOpen && <ModalViewCreatePitch />}
     </Layout>
