@@ -7,7 +7,7 @@ import FsportLogo from '../assets/img/sport-bg.png';
 import { Outlet } from 'react-router-dom';
 import HeaderAdmin from '../components/Admin/Header/Header';
 import { routes } from '~/routes';
-import ModalViewCreatePitch from '~/pages/Admin/Dashboard/DashboardPage';
+import ModalViewCreatePitch from '~/pages/Admin/Dashboard/ModalViewCreatePitch';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -138,7 +138,7 @@ const AdminPitchLayout = () => {
         </Content>
         <Footer style={{ textAlign: 'center' }}>Design ©2023 Created by He</Footer>
       </Layout>
-      {isModalOpen && <ModalViewCreatePitch isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && <ModalViewCreatePitch />}
     </Layout>
   );
 };
