@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { message } from "antd";
 import {
   getAllComment,
   getCommentByPost,
@@ -37,9 +38,14 @@ export const getCommentByPostMid = createAsyncThunk(
 
 export const createCommentMid = createAsyncThunk(
   "post/createCommentMid",
-  async (comment: IComment) => {
-    const { data } = await createComment(comment);
-    return data.data;
+  async (comment: IComment, thunkAPI) => {
+    try {
+      const { data } = await createComment(comment);
+      return data.data;
+    } catch (error: any) {
+      message.warning(error?.response?.data?.message);
+      return thunkAPI.rejectWithValue({ message: error.message });
+    }
   }
 );
 export const deleteCommentMid = createAsyncThunk(
@@ -54,7 +60,11 @@ export const deleteCommentMid = createAsyncThunk(
 const commentSlice = createSlice({
   name: "comment",
   initialState,
-  reducers: {},
+  reducers: {
+    setDataComment(state, action) {
+      state.comments = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllCommentMid.pending, (state) => {
@@ -109,4 +119,5 @@ const commentSlice = createSlice({
   },
 });
 
+export const { setDataComment } = commentSlice.actions
 export default commentSlice.reducer;

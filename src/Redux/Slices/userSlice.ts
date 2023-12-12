@@ -110,7 +110,7 @@ const userSlice = createSlice({
           state.error = action.payload?.message;
           state.loading = false;
         } else {
-          const decode: any = jwtDecode(action.payload?.accessToken);
+          const decode: any = jwtDecode(action.payload?.accessToken, {header: true});
           state.currentUser.values = decode;
           state.currentUser.accessToken = action.payload?.accessToken;
           state.isLogged = true;
