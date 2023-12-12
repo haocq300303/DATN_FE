@@ -121,7 +121,7 @@ const PitchDetailPage = () => {
         },
         shift: {
           price: dataBookShift?.price,
-          shift_day: `${selectedDate} | ${dataBookShift?.start_time} - ${dataBookShift?.end_time}`,
+          shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
           date: [selectedDate],
           start_time: dataBookShift?.start_time,
           end_time: dataBookShift?.end_time,
@@ -129,6 +129,7 @@ const PitchDetailPage = () => {
           find_opponent: findOpponent ? "Find" : "NotFind",
         },
         services: selectedServices,
+        type: "singleDay",
       })
     );
     navigate("/checkout");
@@ -278,7 +279,7 @@ const PitchDetailPage = () => {
                             </del>
                           </span>
                           <span className="text-[23px] text-[#ffb932] text-bold">
-                            {item.deposit_price.toLocaleString("vi-VN")} -
+                            {item.average_price.toLocaleString("vi-VN")} -
                             850.000
                           </span>
                         </p>
@@ -402,8 +403,8 @@ const PitchDetailPage = () => {
                 GIÁ CHỈ TỪ:{" "}
               </span>
               <span className=" text-[#ffb932] ml-2 leading-4">
-                {Pitch?.deposit_price &&
-                  Pitch?.deposit_price?.toLocaleString("it-IT", {
+                {Pitch?.average_price &&
+                  Pitch?.average_price?.toLocaleString("it-IT", {
                     style: "currency",
                     currency: "VND",
                   })}
@@ -643,6 +644,7 @@ const PitchDetailPage = () => {
         pitchId={id!}
         idAdminPitch={Pitch?.admin_pitch_id?._id}
         nameAdminPitch={Pitch?.admin_pitch_id?.name}
+        averagePrice={Pitch?.average_price}
       />
       {/* Sửa */}
       <Modal

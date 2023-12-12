@@ -9,7 +9,6 @@ import {
   Form,
   Input,
   Upload,
-  Select,
   InputRef,
 } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
@@ -47,8 +46,8 @@ const ServiceManagement = () => {
   const services = useAppSelector((state) => state.service.services);
   const [form] = Form.useForm();
 
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
   useEffect(() => {
@@ -66,7 +65,7 @@ const ServiceManagement = () => {
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
+    dataIndex: DataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -75,30 +74,44 @@ const ServiceManagement = () => {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<IService> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<IService> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
             className=" bg-blue-500"
           >
-            Tìm 
+            Tìm
           </Button>
           <Button
             onClick={() => clearFilters && handleReset(clearFilters)}
@@ -131,7 +144,7 @@ const ServiceManagement = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -146,10 +159,10 @@ const ServiceManagement = () => {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ''}
+          textToHighlight={text ? text.toString() : ""}
         />
       ) : (
         text
@@ -157,24 +170,45 @@ const ServiceManagement = () => {
   });
   const columns: ColumnsType<IService> = [
     {
+      title: "#",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      ...getColumnSearchProps('name'),
+      ...getColumnSearchProps("name"),
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      ...getColumnSearchProps('price'),
+      ...getColumnSearchProps("price"),
       sorter: (a, b) => a.price - b.price,
+      render: (price) => (
+        <span>
+          {price.toLocaleString("it-IT", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </span>
+      ),
     },
     {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      render: (image: string) => <img width={200} src={image} alt="Banner" />,
+      render: (image: string) => (
+        <img
+          width={140}
+          className="object-cover h-[100px]"
+          src={image}
+          alt="Img"
+        />
+      ),
     },
     {
       title: "Action",
@@ -187,33 +221,24 @@ const ServiceManagement = () => {
               const service = services?.find(
                 (service: IService) => service._id === record._id
               );
-                
+
               form.setFieldsValue({
                 _id: service?._id,
                 name: service?.name,
                 price: service?.price,
                 image: service?.image,
               });
-              console.log(
-                {
-                  _id: service?._id,
-                name: service?.name,
-                price: service?.price,
-                image: service?.image,
-                }
-              );
-              
+
               showModal("edit");
             }}
             ghost
           >
             <EditOutlined style={{ display: "inline-flex" }} />
-
           </Button>
           <Popconfirm
             placement="topRight"
-            title="Xóa bài viết?"
-            description="Bạn có chắc chắn xóa bài viết này không?"
+            title="Xóa dịch vụ?"
+            description="Bạn có chắc chắn xóa dịch vụ này không?"
             onConfirm={() => confirm(record._id)}
             onCancel={cancel}
             okText="Đồng ý"
@@ -232,9 +257,9 @@ const ServiceManagement = () => {
     return {
       ...item,
       key: index,
+      index: index + 1,
     };
   });
-  
 
   const showModal = (mode: string) => {
     setModalMode(mode);
@@ -252,24 +277,20 @@ const ServiceManagement = () => {
 
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
-      const urls = values?.image?.fileList?.map(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ({ response }: any) => response.data.url
-      );
-      const url = urls[0]
-      const newValues = { ...values, image: url };
-        
+      const image = values?.image?.file?.response?.data?.url;
+      const newValues = { ...values, image };
+
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
-      const newImages = values.image.fileList;
-      const image = newImages ? newImages[0].response.data.url : values.url;
-      // console.log(image);
-      
+      const image = values?.image?.file
+        ? values?.image?.file?.response?.data?.url
+        : values?.image;
+
       const newValues = { ...values, image };
 
       const { _id, ...service } = newValues;
-        console.log(newValues);
+
       await dispatch(updateServiceMid({ _id, service }));
       message.success(`Sửa dịch vụ thành công!`);
     }
@@ -315,7 +336,6 @@ const ServiceManagement = () => {
     }
   };
 
-
   return (
     <>
       <div className="flex justify-end mb-2">
@@ -329,19 +349,14 @@ const ServiceManagement = () => {
             showModal("add");
           }}
         >
+          Tạo dịch vụ
         </Button>
       </div>
       <Table
         pagination={{ pageSize: 8 }}
         columns={columns}
         dataSource={data}
-        rowSelection={{}}
         scroll={{ y: 100 }}
-        expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.name}</p>
-          ),
-        }}
       />
       <ModalForm
         isModalOpen={isModalOpen}
@@ -376,16 +391,16 @@ const ServiceManagement = () => {
             name="price"
             label="Giá"
             rules={[
-              { required: true, message: 'Vui lòng nhập giá!' },
-              { type: 'number', message: 'Vui lòng nhập số!' },
-              { max: 6, message: 'Giá không được vượt quá 6 chữ số!' }
+              { required: true, message: "Vui lòng nhập giá!" },
+              // { type: "number", message: "Vui lòng nhập số!" },
+              // { max: 6, message: "Giá không được vượt quá 6 chữ số!" },
             ]}
           >
             <Input size="large" placeholder="Price" />
           </Form.Item>
           <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Thêm ảnh của bạn</Button>
+              <Button icon={<UploadOutlined />}>Tải ảnh lên</Button>
             </Dragger>
           </Form.Item>
         </Form>

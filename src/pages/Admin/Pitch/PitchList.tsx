@@ -8,29 +8,30 @@ import {
   InputRef,
   Modal,
   Image,
-  Spin
+  Spin,
 } from "antd";
-import type { ColumnsType, ColumnType } from "antd/es/table";
 import {
   DeleteOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+
+import type { ColumnType, ColumnsType } from "antd/es/table";
 import { useEffect, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
-import "./index.css";
 import {
   fetchAllPitch,
   fetchDeletePitch,
   search,
 } from "../../../Redux/Slices/pitchSlice";
 import IPitch from "../../../interfaces/pitch";
+import "./index.css";
 
-import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
-import Highlighter from 'react-highlight-words';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import IFeedback from "~/interfaces/feedback";
 import { PitchPagination, getAllPitch, getOnePitch } from "~/api/pitch";
 
+import Highlighter from "react-highlight-words";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 
 interface DataType {
   key: string;
@@ -54,13 +55,12 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 const PitchList = () => {
-
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-  const searchInput = useRef<InputRef>(null);
-  const [totalItems, setTotalItems] = useState(Number);//phantrang
-  const [currentPage, setCurrentPage] = useState(1);//phantrang
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef<InputRef>(null);
+  const [totalItems, setTotalItems] = useState(Number); //phantrang
+  const [currentPage, setCurrentPage] = useState(1); //phantrang
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [Pitch, setPitch] = useState<any>({});
   const [loading, setLoading] = useState(true);
@@ -70,15 +70,13 @@ const PitchList = () => {
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
 
-  console.log("pitchadmin:", pitchs);
-
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
+
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
-  // console.log("service", services);
 
   //xử lí phân trang
   useEffect(() => {
@@ -86,9 +84,9 @@ const PitchList = () => {
       try {
         const response = await getAllPitch(); // Gửi yêu cầu GET đến URL_API
         const allItemsPitch = response?.data?.data?.totalDocs;
-        setTotalItems(allItemsPitch)
+        setTotalItems(allItemsPitch);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
     fetchData();
@@ -103,7 +101,7 @@ const PitchList = () => {
     }
     dispatch(search(response?.data?.data?.data));
     // window.scrollTo({ top: 500, behavior: 'smooth' });
-  }
+  };
   // kết thức xử lí phân trang
 
   const showModal = (idPitch: string) => {
@@ -142,21 +140,21 @@ const PitchList = () => {
   const cancel = () => {
     message.error("Đã hủy!");
   };
-  //
-  const data: DataType[] = pitchs.map((item: IPitch) => (
-    {
-      key: item._id,
-      name: item.name,
-      admin_pitch_id: item?.admin_pitch_id?.name || "Chủ Sân Bị Xoá !",
-      address: item.address,
-      numberPitch: item.numberPitch,
-    }
-  ))
+
+  const data: DataType[] = pitchs.map((item: IPitch, index: number) => ({
+    ...item,
+    key: item._id,
+    index: index + 1,
+    name: item.name,
+    admin_pitch_id: item?.admin_pitch_id?.name || "Chủ Sân Bị Xoá !",
+    address: item.address,
+    numberPitch: item.numberPitch,
+  }));
 
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
+    dataIndex: DataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -165,24 +163,38 @@ const PitchList = () => {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -221,7 +233,7 @@ const PitchList = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -236,10 +248,10 @@ const PitchList = () => {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ''}
+          textToHighlight={text ? text.toString() : ""}
         />
       ) : (
         text
@@ -248,34 +260,39 @@ const PitchList = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Tên Sân',
-      dataIndex: 'name',
-      key: 'name',
-      width: '30%',
-      ...getColumnSearchProps('name'),
+      title: "#",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
     },
     {
-      title: 'Tên Chủ Sân',
-      dataIndex: 'admin_pitch_id',
-      key: 'admin_pitch_id',
-      width: '20%',
-      ...getColumnSearchProps('admin_pitch_id'),
+      title: "Tên Sân",
+      dataIndex: "name",
+      key: "name",
+      width: 300,
+      ...getColumnSearchProps("name"),
     },
     {
-      title: 'Số Sân',
-      dataIndex: 'numberPitch',
-      key: 'numberPitch',
-      width: '10%',
-      ...getColumnSearchProps('numberPitch'),
+      title: "Chủ Sân",
+      dataIndex: "admin_pitch_id",
+      key: "admin_pitch_id",
+      width: 220,
+      render: (user: any) => <p>{user}</p>,
+    },
+    {
+      title: "Số Lượng Sân",
+      dataIndex: "numberPitch",
+      key: "numberPitch",
+      width: 160,
+      ...getColumnSearchProps("numberPitch"),
       sorter: (a, b) => a.numberPitch - b.numberPitch,
     },
     {
-      title: 'Vị Trí',
-      dataIndex: 'address',
-      key: 'address',
-      width: '40%',
-      ...getColumnSearchProps('address'),
-
+      title: "Địa Chỉ",
+      dataIndex: "address",
+      key: "address",
+      width: 380,
+      ...getColumnSearchProps("address"),
     },
     {
       title: "Hành Động",
@@ -302,7 +319,6 @@ const PitchList = () => {
               <DeleteOutlined style={{ display: "inline-flex" }} />
             </Button>
           </Popconfirm>
-
         </Space>
       ),
     },

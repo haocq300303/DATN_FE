@@ -68,8 +68,7 @@ const ModalBookOneShiftFullMonth = ({
             },
             shift: {
               price: dataBooking[1]?.price,
-              // shift_day: `${formattedCurrentDate} | ${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time}`,
-              shift_day: `${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time} Ngày ${formattedCurrentDate} đến ${formattedFutureDate}`,
+              shift_day: `${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time} | Ngày ${formattedCurrentDate} đến ${formattedFutureDate}`,
               start_time: dataBooking[1]?.start_time,
               end_time: dataBooking[1]?.end_time,
               number_shift: dataBooking[1]?.number_shift,
@@ -78,6 +77,7 @@ const ModalBookOneShiftFullMonth = ({
               is_booking_month: true,
             },
             services: [],
+            type: "bookOneShiftFullMonth",
           })
         );
         navigate("/checkout");

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import IShift from "~/interfaces/shift";
 import instance from "./config";
 
 export const getAllShift = () => {
@@ -47,4 +48,32 @@ export const changeFindOpponent = (idShift: string, data: any) => {
 };
 export const updateFindOpponent = (idShift: string, data: any) => {
   return instance.put(`shift/find-opponent/${idShift}`, data);
+};
+
+export const getShiftsByPitch = (idPitch: string, query: string) => {
+  return instance.get(`shift/pitch/${idPitch}${query}`);
+};
+
+export const createShiftDefault = (shift: any) => {
+  return instance.post(`/shift/default`, shift);
+};
+
+export const deleteShiftDefault = (shiftId: string) => {
+  return instance.delete(`/shift/default/${shiftId}`);
+};
+
+export const updateShiftDefault = (shiftId: string, shift: any) => {
+  return instance.put(`/shift/default/${shiftId}`, shift);
+};
+
+export const bookMultipleDay = (shift: IShift) => {
+  return instance.post(`/shift/book-multiple-day`, shift);
+};
+
+export const bookOneShiftFullMonth = (shift: IShift) => {
+  return instance.post(`/shift/book-one-shift-full-month`, shift);
+};
+
+export const bookChildrenPicthFullMonth = (shift: IShift) => {
+  return instance.post(`/shift/book-childrenPicth-full-month`, shift);
 };
