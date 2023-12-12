@@ -15,6 +15,7 @@ interface IModalBookPitchFullMonth {
   avatar?: string;
   idAdminPitch?: string;
   nameAdminPitch?: string;
+  averagePrice?: number;
 }
 
 const ModalBookPitchFullMonth = ({
@@ -27,6 +28,7 @@ const ModalBookPitchFullMonth = ({
   avatar,
   idAdminPitch,
   nameAdminPitch,
+  averagePrice,
 }: IModalBookPitchFullMonth) => {
   const [dataBooking, setDataBooking] = useState<any[]>([]);
   const navigate = useNavigate();
@@ -66,7 +68,7 @@ const ModalBookPitchFullMonth = ({
               children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
             },
             shift: {
-              price: 400000,
+              price: averagePrice,
               shift_day: `Từ ${formattedCurrentDate} - ${formattedFutureDate}`,
               start_time: null,
               end_time: null,
@@ -76,6 +78,7 @@ const ModalBookPitchFullMonth = ({
               is_booking_month: true,
             },
             services: [],
+            type: "bookChildrenPicthFullMonth",
           })
         );
         navigate("/checkout");

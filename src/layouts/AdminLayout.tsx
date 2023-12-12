@@ -15,9 +15,9 @@ import HeaderAdmin from "~/components/Admin/Header/Header";
 import { Link, Outlet } from "react-router-dom";
 
 const AdminLayout = () => {
-  const [open, setOpen] = useState(0);
-  const handleOpen = (value: any) => {
-    setOpen(open === value ? 0 : value);
+  const [open, setOpen] = useState(1);
+  const handleOpen = (value: number) => {
+    setOpen(value);
   };
 
   return (
@@ -66,10 +66,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 2}>
+              <ListItem className="p-0" selected={open === 2}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(2)}
                   className="border-b-0 p-3"
                 >
                   <Link to={"/admin/pitch"} className="flex items-center gap-2">
@@ -99,16 +99,13 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 3}>
+              <ListItem className="p-0" selected={open === 3}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(3)}
                   className="border-b-0 p-3"
                 >
-                  <Link
-                    to={"/admin/shift"}
-                    className="flex items-center gap-2"
-                  >
+                  <Link to={"/admin/shift"} className="flex items-center gap-2">
                     <ListItemPrefix>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -135,10 +132,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 4}>
+              <ListItem className="p-0" selected={open === 4}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(4)}
                   className="border-b-0 p-3"
                 >
                   <Link to={"/admin/post"} className="flex items-center gap-2">
@@ -168,10 +165,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 5}>
+              <ListItem className="p-0" selected={open === 5}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(5)}
                   className="border-b-0 p-3"
                 >
                   <Link
@@ -204,10 +201,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 6}>
+              <ListItem className="p-0" selected={open === 6}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(6)}
                   className="border-b-0 p-3"
                 >
                   <Link
@@ -240,10 +237,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 7}>
+              <ListItem className="p-0" selected={open === 7}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(7)}
                   className="border-b-0 p-3"
                 >
                   <Link
@@ -276,10 +273,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 8}>
+              <ListItem className="p-0" selected={open === 8}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(8)}
                   className="border-b-0 p-3"
                 >
                   <Link
@@ -312,10 +309,10 @@ const AdminLayout = () => {
                 </AccordionHeader>
               </ListItem>
             </Accordion>
-            <Accordion open={open === 1}>
-              <ListItem className="p-0" selected={open === 1}>
+            <Accordion open={open === 9}>
+              <ListItem className="p-0" selected={open === 9}>
                 <AccordionHeader
-                  onClick={() => handleOpen(1)}
+                  onClick={() => handleOpen(9)}
                   className="border-b-0 p-3"
                 >
                   <Link

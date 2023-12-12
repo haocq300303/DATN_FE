@@ -8,6 +8,8 @@ interface IModalForm {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
   modalMode: string;
+  title?: string;
+  classNames?: string;
 }
 const ModalForm = ({
   children,
@@ -15,6 +17,8 @@ const ModalForm = ({
   setIsModalOpen,
   form,
   modalMode,
+  title,
+  classNames,
 }: IModalForm) => {
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -22,11 +26,11 @@ const ModalForm = ({
 
   return (
     <Modal
-      title={modalMode === "add" ? "Create " : "Edit "}
+      title={title}
       open={isModalOpen}
       centered
       onCancel={handleCancel}
-      width={1100}
+      className={classNames}
       footer={[
         <Button key="back" onClick={handleCancel}>
           Hủy
@@ -42,10 +46,7 @@ const ModalForm = ({
         </Button>,
       ]}
     >
-      <div className="max-h-[70vh] overflow-auto modal-scroll">
-
-        {children}
-      </div>
+      <div className="max-h-[70vh] overflow-auto modal-scroll">{children}</div>
     </Modal>
   );
 };
