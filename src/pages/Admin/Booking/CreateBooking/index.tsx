@@ -61,6 +61,7 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
     fullname: 'Trương Minh Hiếu',
     email: 'hahuu02dev@gmail.com',
   };
+
   const currentPitch: any = {
     _id: '653ca30f5d70cbab41a2e5d0',
   };
@@ -163,13 +164,17 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
       <Modal centered open={isOpen} onCancel={() => setOpen(false)} width="1024px" footer={false}>
         <div className="grid grid-cols-[1.1fr_2fr] gap-6 text-[#003553] min-h-[500px]">
           <div className="rounded-xl shadow-md bg-white overflow-hidden">
-            <h3 className="text-xl  bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center font-bold">Thông tin đặt lịch</h3>
+            <h3 className="text-xl  bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center font-bold">
+              Thông tin đặt lịch
+            </h3>
 
             <InfoBooking dataBooking={dataBooking} infoPitch={infoPitch} />
           </div>
 
           <div className="rounded-xl shadow-md bg-white overflow-hidden">
-            <h3 className="text-xl  font-bold bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center">Thông tin sân và giá tiền</h3>
+            <h3 className="text-xl  font-bold bg-[linear-gradient(36deg,#00b5f1,#00e0ff)] p-2 text-white text-center">
+              Thông tin sân và giá tiền
+            </h3>
 
             <div className="max-h-[440px] overflow-y-auto px-4 py-5">
               <Show when={!dataBooking[0]}>
