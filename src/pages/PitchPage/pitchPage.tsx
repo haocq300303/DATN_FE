@@ -1,5 +1,5 @@
-import { useState, useEffect, ChangeEventHandler } from 'react';
-import axios from 'axios';
+import { useState, useEffect, ChangeEventHandler } from "react";
+import axios from "axios";
 import {
   Select,
   Rate,
@@ -9,31 +9,31 @@ import {
   Empty,
   Pagination,
   Button,
-} from 'antd';
-import { Input } from '@material-tailwind/react';
-import './pitchPage.css';
-import 'swiper/css';
-import banner from '../../assets/img/Web/banner1.png';
-import { Link } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '~/Redux/hook';
-import { fetchAllPitch, search } from '~/Redux/Slices/pitchSlice';
-import IPitch from '~/interfaces/pitch';
-import { getAllServiceMid } from '~/Redux/Slices/serviceSlice';
+} from "antd";
+import { Input } from "@material-tailwind/react";
+import "./pitchPage.css";
+import "swiper/css";
+import banner from "../../assets/img/Web/banner1.png";
+import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "~/Redux/hook";
+import { fetchAllPitch, search } from "~/Redux/Slices/pitchSlice";
+import IPitch from "~/interfaces/pitch";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
 import {
   PitchPagination,
   filterFeedbackPitch,
   getAllPitch,
   searchPitch,
-} from '~/api/pitch';
-import { totalStarByPitch } from '~/api/feedback';
-import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+} from "~/api/pitch";
+import { totalStarByPitch } from "~/api/feedback";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 const fixedOptions = [
-  { value: 'bong-da', label: 'Bóng đá' },
-  { value: 'bong-chuyen', label: 'Bóng chuyền' },
-  { value: 'gym', label: 'Gym' },
-  { value: 'yoga', label: 'Yoga' },
-  { value: 'tennis', label: 'Tennis' },
+  { value: "bong-da", label: "Bóng đá" },
+  { value: "bong-chuyen", label: "Bóng chuyền" },
+  { value: "gym", label: "Gym" },
+  { value: "yoga", label: "Yoga" },
+  { value: "tennis", label: "Tennis" },
 ];
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
@@ -41,15 +41,15 @@ const handleChange = (value: ChangeEventHandler) => {
 
 const PitchPage = () => {
   const [form] = Form.useForm();
-  const host = 'http://localhost:8080/api/location/';
+  const host = "http://localhost:8080/api/location/";
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [selectedCity, setSelectedCity] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('');
-  const [selectedWard, setSelectedWard] = useState('');
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedWard, setSelectedWard] = useState("");
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [valueSearch, setValueSearch] = useState('');
+  const [valueSearch, setValueSearch] = useState("");
   const [totalItems, setTotalItems] = useState(Number); //phantrang
   const [currentPage, setCurrentPage] = useState(1); //phantrang
   const [totalStar, setTotalStar] = useState<any>(Number);
@@ -68,7 +68,7 @@ const PitchPage = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchAllPitch(''));
+    dispatch(fetchAllPitch(""));
   }, [dispatch]);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const PitchPage = () => {
         const allItemsPitch = response?.data?.data?.totalDocs;
         setTotalItems(allItemsPitch);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
     fetchData();
@@ -131,7 +131,7 @@ const PitchPage = () => {
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
 
-    if (value !== '') {
+    if (value !== "") {
       const response = await axios.get(`${host}districts?parent=${value}`);
       setDistricts(response.data);
     }
@@ -140,7 +140,7 @@ const PitchPage = () => {
   const handleDistrictChange = async (value: string) => {
     setSelectedDistrict(value);
 
-    if (value !== '') {
+    if (value !== "") {
       const response = await axios.get(`${host}wards?parent=${value}`);
       setWards(response.data);
     }
@@ -151,7 +151,7 @@ const PitchPage = () => {
   };
   // nếu ai muốn lấy
   const printResult = () => {
-    if (selectedCity !== '' && selectedDistrict !== '' && selectedWard !== '') {
+    if (selectedCity !== "" && selectedDistrict !== "" && selectedWard !== "") {
       const city: any = cities.find((c: any) => c.id === selectedCity);
       const district: any = districts.find(
         (d: any) => d.id === selectedDistrict
@@ -162,12 +162,12 @@ const PitchPage = () => {
         return result;
       }
     }
-    return '';
+    return "";
   };
 
   const onHandleSubmitSearch = async () => {
-    if (selectedWard === '' || selectedWard === undefined) {
-      if (selectedDistrict === '' || selectedDistrict === undefined) {
+    if (selectedWard === "" || selectedWard === undefined) {
+      if (selectedDistrict === "" || selectedDistrict === undefined) {
         await dispatch(fetchAllPitch(``));
       } else {
         await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
@@ -186,7 +186,7 @@ const PitchPage = () => {
         },
         searchText: valueSearch,
       });
-      console.log('checkFIllPrice', response);
+      console.log("checkFIllPrice", response);
 
       await dispatch(search(response?.data?.data?.data));
       if (response) {
@@ -199,7 +199,7 @@ const PitchPage = () => {
   const handlefil = async (value: string) => {
     setValueSearch(value);
     const response = await searchPitch({ searchText: value });
-    console.log('searchHandfill', response?.data);
+    console.log("searchHandfill", response?.data);
     dispatch(search(response?.data?.data?.data));
     if (response) {
       setTotalItems(response?.data?.data?.data?.length);
@@ -209,32 +209,32 @@ const PitchPage = () => {
   const handlePageChange = async (pageNumber: number) => {
     setCurrentPage(pageNumber);
     const response = await PitchPagination(pageNumber);
-    console.log('phantrang', response?.data);
+    console.log("phantrang", response?.data);
     const totalItems = response?.data?.data?.totalDocs;
-    console.log('téttsst', totalItems);
+    console.log("téttsst", totalItems);
     if (totalItems) {
       setTotalItems(totalItems);
     }
     dispatch(search(response?.data?.data?.data));
-    window.scrollTo({ top: 500, behavior: 'smooth' });
+    window.scrollTo({ top: 500, behavior: "smooth" });
   };
   // xử lí lọc theo feedback
   const handleFeedbackChange = async (value: number) => {
-    console.log('Đã chọn giá trị:', value);
+    console.log("Đã chọn giá trị:", value);
     const response = await filterFeedbackPitch(value, 5);
-    console.log('Fillter Feedback Pitch', response?.data);
+    console.log("Fillter Feedback Pitch", response?.data);
     dispatch(search(response?.data?.data?.data));
   };
 
   //xử lí reset tìm kiếm
   const handleResetFilter = async () => {
-    dispatch(fetchAllPitch(''));
+    dispatch(fetchAllPitch(""));
     dispatch(getAllServiceMid());
     const response = await getAllPitch();
     const allItemsPitch = response?.data?.data?.totalDocs;
     setTotalItems(allItemsPitch);
-    form.resetFields(['min', 'max']);
-    setValueSearch('');
+    form.resetFields(["min", "max"]);
+    setValueSearch("");
     setSelectedServices([]);
   };
 
@@ -245,7 +245,7 @@ const PitchPage = () => {
       <div className="bannerPpitchPage relative ">
         {/* banner cấc thứ */}
         <div className="video relative">
-          <img src={banner} style={{ height: 400, width: '100%' }} />
+          <img src={banner} style={{ height: 400, width: "100%" }} />
           <div className="absolute book-banner w-[70%] right-0 top-[50%] left-0 mx-auto">
             <h1 className="h1-banner container text-[32px] leading-[40px] mt-[-50px] mb-[30px] font-sans text-[#fff] font-bold tracking-wide">
               TÌM KIẾM SÂN BÓNG PHÙ HỢP VỚI BẠN
@@ -314,7 +314,7 @@ const PitchPage = () => {
                 href="https://maps.app.goo.gl/bMpLZc9tXFTEAEMLA"
                 target="_blank"
               >
-                <button className="my-[10px] text-[#3a75da]"> Chỉ Đường</button>{' '}
+                <button className="my-[10px] text-[#3a75da]"> Chỉ Đường</button>{" "}
               </a>
             </div>
             <div className="style-header-pitch my-[30px]"></div>
@@ -364,7 +364,7 @@ const PitchPage = () => {
                     <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={4} />
                       <span className="text-[16px] font-[500] pl-[5px]">
-                        {' '}
+                        {" "}
                         trở Lên
                       </span>
                     </button>
@@ -373,7 +373,7 @@ const PitchPage = () => {
                     <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={3} />
                       <span className="text-[16px] font-[500] pl-[5px]">
-                        {' '}
+                        {" "}
                         trở Lên
                       </span>
                     </button>
@@ -382,7 +382,7 @@ const PitchPage = () => {
                     <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={2} />
                       <span className="text-[16px] font-[500] pl-[5px]">
-                        {' '}
+                        {" "}
                         trở Lên
                       </span>
                     </button>
@@ -391,7 +391,7 @@ const PitchPage = () => {
                     <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={1} />
                       <span className="text-[16px] font-[500] pl-[5px]">
-                        {' '}
+                        {" "}
                         trở Lên
                       </span>
                     </button>
@@ -400,7 +400,7 @@ const PitchPage = () => {
                     <button className="hover:text-blue-500">
                       <Rate disabled defaultValue={0} />
                       <span className="text-[16px] font-[500] pl-[5px]">
-                        {' '}
+                        {" "}
                         trở Lên
                       </span>
                     </button>
@@ -415,7 +415,7 @@ const PitchPage = () => {
               <div className="flex gap-[5px] w-full">
                 <Form.Item
                   name="min"
-                  rules={[{ required: true, message: 'min!' }]}
+                  rules={[{ required: true, message: "min!" }]}
                 >
                   <InputNumber
                     style={{ width: 100 }}
@@ -428,7 +428,7 @@ const PitchPage = () => {
                 </div>
                 <Form.Item
                   name="max"
-                  rules={[{ required: true, message: 'max!' }]}
+                  rules={[{ required: true, message: "max!" }]}
                 >
                   <InputNumber
                     style={{ width: 100 }}
@@ -474,7 +474,7 @@ const PitchPage = () => {
 
                 <Select
                   mode="tags"
-                  style={{ width: '25%' }}
+                  style={{ width: "25%" }}
                   placeholder="Môn thể thao"
                   onChange={handleChange}
                 >
@@ -509,7 +509,7 @@ const PitchPage = () => {
                             disabled
                             allowHalf
                             value={
-                              totalStar[index]?.averageRating?.toFixed(1) ?? ''
+                              totalStar[index]?.averageRating?.toFixed(1) ?? ""
                             }
                           />
                           <span>( {pitch?.feedback_id?.length} Review)</span>
@@ -524,8 +524,8 @@ const PitchPage = () => {
                               );
                               return (
                                 <span key={data._id!}>
-                                  <i className="fa-solid fa-check"></i>{' '}
-                                  {service ? service.name : 'Chưa có dịch vụ'}
+                                  <i className="fa-solid fa-check"></i>{" "}
+                                  {service ? service.name : "Chưa có dịch vụ"}
                                 </span>
                               );
                             })}
@@ -538,7 +538,7 @@ const PitchPage = () => {
                               </del>
                             </span>
                             <span className="text-[23px] text-[#ffb932] text-bold">
-                              {pitch.deposit_price.toLocaleString('vi-VN')} -
+                              {pitch.average_price.toLocaleString("vi-VN")} -
                               850.000
                             </span>
                           </p>

@@ -1,32 +1,32 @@
 import {
-  Popconfirm,
-  Space,
-  Table,
-  Button,
-  message,
-  Form,
-  Input,
-  Upload,
-  Select,
-  InputNumber,
-  Checkbox, Col, Row, Empty, InputRef
-} from "antd";
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
-import type { ColumnsType, ColumnType } from "antd/es/table";
-import {
   DeleteOutlined,
   EditOutlined,
   PlusCircleOutlined,
   SearchOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { useEffect, useState, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
-import ModalForm from "../../../components/ModalForm/ModalForm";
+import {
+  Button,
+  Checkbox,
+  Col,
+  Empty,
+  Form,
+  Input,
+  InputNumber,
+  InputRef,
+  Popconfirm,
+  Row,
+  Select,
+  Space,
+  Table,
+  Upload,
+  message,
+} from "antd";
+import type { CheckboxValueType } from "antd/es/checkbox/Group";
+import { Option } from "antd/es/mentions";
+import type { ColumnType, ColumnsType } from "antd/es/table";
 import axios from "axios";
-
-const { Dragger } = Upload;
-import "./index.css";
+import { useEffect, useRef, useState } from "react";
 import {
   fetchAllPitch,
   fetchCreatPitch,
@@ -34,16 +34,19 @@ import {
   fetchUpdatePitch,
   search,
 } from "../../../Redux/Slices/pitchSlice";
+import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
+import ModalForm from "../../../components/ModalForm/ModalForm";
 import IPitch from "../../../interfaces/pitch";
-import { Option } from "antd/es/mentions";
-// import { Link } from "react-router-dom";
-import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
-import { IService } from "~/interfaces/service";
-import Highlighter from 'react-highlight-words';
-import type { FilterConfirmProps } from 'antd/es/table/interface';
-import IFeedback from "~/interfaces/feedback";
-import { PitchPagination, getAllPitch } from "~/api/pitch";
+import "./index.css";
 
+const { Dragger } = Upload;
+// import { Link } from "react-router-dom";
+import type { FilterConfirmProps } from "antd/es/table/interface";
+import Highlighter from "react-highlight-words";
+import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+import { PitchPagination, getAllPitch } from "~/api/pitch";
+import IFeedback from "~/interfaces/feedback";
+import { IService } from "~/interfaces/service";
 
 interface DataType {
   key: string;
@@ -72,19 +75,17 @@ const PitchList = () => {
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const [totalItems, setTotalItems] = useState(Number);//phantrang
-  const [currentPage, setCurrentPage] = useState(1);//phantrang
+  const [totalItems, setTotalItems] = useState(Number); //phantrang
+  const [currentPage, setCurrentPage] = useState(1); //phantrang
 
   const dispatch = useAppDispatch();
 
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
   const services = useAppSelector((state) => state.service.services);
   const host = "http://localhost:8080/api/location/";
-
-  console.log("pitchadmin:", pitchs);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,10 +98,10 @@ const PitchList = () => {
   useEffect(() => {
     dispatch(fetchAllPitch(""));
   }, [dispatch]);
+
   useEffect(() => {
     dispatch(getAllServiceMid());
   }, [dispatch]);
-  // console.log("service", services);
 
   //xử lí phân trang
   useEffect(() => {
@@ -108,24 +109,24 @@ const PitchList = () => {
       try {
         const response = await getAllPitch(); // Gửi yêu cầu GET đến URL_API
         const allItemsPitch = response?.data?.data?.totalDocs;
-        setTotalItems(allItemsPitch)
+        setTotalItems(allItemsPitch);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
     fetchData();
   }, []);
 
-  const handlePageChange = async (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    const response = await PitchPagination(pageNumber);
-    const totalItems = response?.data?.data?.totalDocs;
-    if (totalItems) {
-      setTotalItems(totalItems);
-    }
-    dispatch(search(response?.data?.data?.data));
-    // window.scrollTo({ top: 500, behavior: 'smooth' });
-  }
+  // const handlePageChange = async (pageNumber: number) => {
+  //   setCurrentPage(pageNumber);
+  //   const response = await PitchPagination(pageNumber);
+  //   const totalItems = response?.data?.data?.totalDocs;
+  //   if (totalItems) {
+  //     setTotalItems(totalItems);
+  //   }
+  //   dispatch(search(response?.data?.data?.data));
+  //   // window.scrollTo({ top: 500, behavior: 'smooth' });
+  // };
   // kết thức xử lí phân trang
 
   const confirm = async (idPost: string) => {
@@ -136,20 +137,17 @@ const PitchList = () => {
   const cancel = () => {
     message.error("Đã hủy!");
   };
-  //
-  const data: DataType[] = pitchs.map((item: IPitch) => (
-    {
-      key: item._id,
-      name: item.name,
-      address: item.address,
-      numberPitch: item.numberPitch,
-    }
-  ))
+
+  const data: DataType[] = pitchs.map((item: IPitch, index: number) => ({
+    ...item,
+    key: item._id,
+    index: index + 1,
+  }));
 
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
+    dataIndex: DataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -158,24 +156,38 @@ const PitchList = () => {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -214,7 +226,7 @@ const PitchList = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -229,10 +241,10 @@ const PitchList = () => {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ''}
+          textToHighlight={text ? text.toString() : ""}
         />
       ) : (
         text
@@ -241,26 +253,39 @@ const PitchList = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Tên Sân',
-      dataIndex: 'name',
-      key: 'name',
-      width: '30%',
-      ...getColumnSearchProps('name'),
+      title: "#",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
     },
     {
-      title: 'Số Sân',
-      dataIndex: 'numberPitch',
-      key: 'numberPitch',
-      width: '10%',
-      ...getColumnSearchProps('numberPitch'),
+      title: "Tên Sân",
+      dataIndex: "name",
+      key: "name",
+      width: 300,
+      ...getColumnSearchProps("name"),
+    },
+    {
+      title: "Chủ Sân",
+      dataIndex: "admin_pitch_id",
+      key: "admin_pitch_id",
+      width: 220,
+      render: (user: any) => <p>{user?.name}</p>,
+    },
+    {
+      title: "Số Lượng Sân",
+      dataIndex: "numberPitch",
+      key: "numberPitch",
+      width: 160,
+      ...getColumnSearchProps("numberPitch"),
       sorter: (a, b) => a.numberPitch - b.numberPitch,
     },
     {
-      title: 'Vị Trí',
-      dataIndex: 'address',
-      key: 'address',
-      ...getColumnSearchProps('address'),
-
+      title: "Địa Chỉ",
+      dataIndex: "address",
+      key: "address",
+      width: 380,
+      ...getColumnSearchProps("address"),
     },
     {
       title: "Hành Động",
@@ -272,7 +297,6 @@ const PitchList = () => {
             onClick={() => {
               const pitch: IPitch = pitchs?.find(
                 (pitch: IPitch) => pitch._id === record.key
-
               );
 
               form.setFieldsValue({
@@ -309,13 +333,10 @@ const PitchList = () => {
               <DeleteOutlined style={{ display: "inline-flex" }} />
             </Button>
           </Popconfirm>
-
         </Space>
       ),
     },
   ];
-
-
 
   const showModal = (mode: string) => {
     setModalMode(mode);
@@ -334,9 +355,8 @@ const PitchList = () => {
   const [form] = Form.useForm();
 
   const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues);
+    console.log("checked = ", checkedValues);
   };
-
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onFinish = async (values: any) => {
@@ -355,7 +375,7 @@ const PitchList = () => {
     } else if (modalMode === "edit") {
       const images = values.images.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        values.images.fileList.map(({ response }: any) => response.data.url)
+          values.images.fileList.map(({ response }: any) => response.data.url)
         : values.images;
       const avatar = values.avatar.fileList
         ? values?.avatar?.fileList[0]?.response?.data?.url
@@ -422,6 +442,7 @@ const PitchList = () => {
       setWards(response.data);
     }
   };
+
   return (
     <>
       <div className="flex justify-end mb-2">
@@ -435,21 +456,16 @@ const PitchList = () => {
             showModal("add");
           }}
         >
+          Tạo sân bóng
         </Button>
       </div>
       <Table
         columns={columns}
         dataSource={data}
-        rowSelection={{}}
         className=""
         scroll={{ y: 100 }}
-        expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.description}</p>
-          ),
-        }}
       />
-      
+
       <ModalForm
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
@@ -471,143 +487,166 @@ const PitchList = () => {
             </Form.Item>
           )}
           <div className="w-1/2">
-          <Form.Item
-            name="address"
-            label="Địa chỉ"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
-            ]}
-          >
-            <Input.TextArea rows={2} placeholder="address" />
-          </Form.Item>
-          <Form.Item
-            name="name"
-            label="Tên Sân"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
-            ]}
-          >
-            <Input size="large" placeholder="Name" />
-          </Form.Item>
+            <Form.Item
+              name="address"
+              label="Địa chỉ"
+              rules={[
+                { required: true },
+                { whitespace: true, message: "${label} is required!" },
+              ]}
+            >
+              <Input.TextArea rows={2} placeholder="address" />
+            </Form.Item>
+            <Form.Item
+              name="name"
+              label="Tên Sân"
+              rules={[
+                { required: true },
+                { whitespace: true, message: "${label} is required!" },
+              ]}
+            >
+              <Input size="large" placeholder="Name" />
+            </Form.Item>
 
-          <Form.Item
-            name="admin_pitch_id"
-            label="ID Chủ Sân"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
-            ]}
-          >
-            <Input size="large" placeholder="admin_pitch_id" />
-          </Form.Item>
-          <Form.Item
-            name="numberPitch"
-            label="Số Lượng Sân"
-            rules={[{ required: true, type: "number", min: 0 }]}
-          >
-            <InputNumber
-              size="large"
-              placeholder="numberPitch"
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
+            <Form.Item
+              name="admin_pitch_id"
+              label="ID Chủ Sân"
+              rules={[
+                { required: true },
+                { whitespace: true, message: "${label} is required!" },
+              ]}
+            >
+              <Input size="large" placeholder="admin_pitch_id" />
+            </Form.Item>
+            <Form.Item
+              name="numberPitch"
+              label="Số Lượng Sân"
+              rules={[{ required: true, type: "number", min: 0 }]}
+            >
+              <InputNumber
+                size="large"
+                placeholder="numberPitch"
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
 
-          <Form.Item name="images" label="Images" rules={[{ required: true }]}>
-            <Dragger multiple listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Upload Images</Button>
-            </Dragger>
-          </Form.Item>
+            <Form.Item
+              name="images"
+              label="Images"
+              rules={[{ required: true }]}
+            >
+              <Dragger
+                multiple
+                listType="picture"
+                customRequest={customRequest}
+              >
+                <Button icon={<UploadOutlined />}>Upload Images</Button>
+              </Dragger>
+            </Form.Item>
 
-          <Form.Item
-            name="description"
-            label="Thông Tin Sân"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
-            ]}
-          >
-            <Input.TextArea rows={4} placeholder="Description" />
-          </Form.Item>
+            <Form.Item
+              name="description"
+              label="Thông Tin Sân"
+              rules={[
+                { required: true },
+                { whitespace: true, message: "${label} is required!" },
+              ]}
+            >
+              <Input.TextArea rows={4} placeholder="Description" />
+            </Form.Item>
           </div>
 
           <div className="w-1/2">
-          <Form.Item label="Tỉnh" rules={[{ required: true }]}>
-            <Select
-              onChange={handleCityChange}
-              size="large"
-              placeholder="---- Tỉnh ----"
+            <Form.Item label="Tỉnh" rules={[{ required: true }]}>
+              <Select
+                onChange={handleCityChange}
+                size="large"
+                placeholder="---- Tỉnh ----"
+              >
+                {cities.map((item: { id: string; name: string }) => (
+                  <Option key={item.id} value={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              name="districts_id"
+              label="Quận, Huyện"
+              rules={[{ required: true }]}
             >
-              {cities.map((item: { id: string; name: string }) => (
-                <Option key={item.id} value={item.id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Select
+                onChange={handleDistrictChange}
+                size="large"
+                placeholder="---- Quận Huyện ----"
+              >
+                {districts.map((item: { id: string; name: string }) => (
+                  <Option key={item.id} value={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-          <Form.Item name="districts_id" label="Quận, Huyện" rules={[{ required: true }]}>
-            <Select
-              onChange={handleDistrictChange}
-              size="large"
-              placeholder="---- Quận Huyện ----"
+            <Form.Item
+              name="location_id"
+              label="Xã"
+              rules={[{ required: true }]}
             >
-              {districts.map((item: { id: string; name: string }) => (
-                <Option key={item.id} value={item.id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Select size="large" placeholder="---- Xã ----">
+                {wards.map((item: { id: string; name: string }) => (
+                  <Option key={item.id} value={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-          <Form.Item name="location_id" label="Xã" rules={[{ required: true }]}>
-            <Select size="large" placeholder="---- Xã ----">
-              {wards.map((item: { id: string; name: string }) => (
-                <Option key={item.id} value={item.id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+            <Form.Item
+              name="deposit_price"
+              label="Giá Thấp Nhất"
+              rules={[{ required: true, type: "number", min: 0 }]}
+            >
+              <InputNumber
+                size="large"
+                placeholder="Giá Thấp Nhất"
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="deposit_price"
-            label="Giá Thấp Nhất"
-            rules={[{ required: true, type: "number", min: 0 }]}
-          >
-            <InputNumber
-              size="large"
-              placeholder="Giá Thấp Nhất"
-              style={{ width: "100%" }}
-            />
-          </Form.Item>
+            <Form.Item
+              name="services"
+              label="Services"
+              rules={[{ required: true }]}
+            >
+              <Checkbox.Group style={{ width: "100%" }} onChange={onChange}>
+                <Row>
+                  {services && services.length > 0 ? (
+                    services.map((item: IService) => (
+                      <Col span={8}>
+                        <Checkbox value={item._id}>{item.name}</Checkbox>
+                      </Col>
+                    ))
+                  ) : (
+                    <div>
+                      {" "}
+                      <Empty />
+                    </div>
+                  )}
+                </Row>
+              </Checkbox.Group>
+            </Form.Item>
 
-          <Form.Item
-            name="services"
-            label="Services"
-            rules={[{ required: true, }]}
-          >
-            <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
-              <Row>
-                {services && services.length > 0 ? (
-                  services.map((item: IService) => (
-                    <Col span={8}>
-                      <Checkbox value={item._id}>{item.name}</Checkbox>
-                    </Col>
-                  ))
-                ) : (
-                  <div> <Empty /></div>
-                )}
-              </Row>
-            </Checkbox.Group>
-          </Form.Item>
-
-          <Form.Item name="avatar" label="Avatar" rules={[{ required: true }]}>
-            <Dragger listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Thêm Ảnh Tổng Quan</Button>
-            </Dragger>
-          </Form.Item>
+            <Form.Item
+              name="avatar"
+              label="Avatar"
+              rules={[{ required: true }]}
+            >
+              <Dragger listType="picture" customRequest={customRequest}>
+                <Button icon={<UploadOutlined />}>Thêm Ảnh Tổng Quan</Button>
+              </Dragger>
+            </Form.Item>
           </div>
         </Form>
       </ModalForm>

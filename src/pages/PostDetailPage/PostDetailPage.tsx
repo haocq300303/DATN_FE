@@ -8,15 +8,13 @@ import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import { getCommentPost, getOnePost } from "~/api/post";
 import IPost from "~/interfaces/post";
 
-
 const PostDetailPage = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [post, setPost] = useState<IPost>();
-  const [Char, setChar] = useState('');
+  const [Char, setChar] = useState("");
   const [IdComment, setIdComment] = useState<any>();
-
 
   const posts = useAppSelector((state) => state.post.posts);
   console.log("data comments", IdComment);
@@ -45,7 +43,6 @@ const PostDetailPage = () => {
     })();
   }, [id]);
 
-
   useEffect(() => {
     dispatch(getAllPostMid());
   }, [dispatch]);
@@ -66,27 +63,26 @@ const PostDetailPage = () => {
           { ...response?.payload },
         ]);
       }
-      form.resetFields(['content']);
-      setChar('');
+      form.resetFields(["content"]);
+      setChar("");
     } catch (error) {
       console.log(error);
     }
   };
 
-
   return (
     <div className="container mx-auto">
       <div className="pt-[20px]">
-        <nav aria-label="Breadcrumb" className="flex w-full rounded-lg bg-gray-100/50">
-          <ol
-            className="flex overflow-hidden rounded-lg  text-gray-600"
-          >
+        <nav
+          aria-label="Breadcrumb"
+          className="flex w-full rounded-lg bg-gray-100/50"
+        >
+          <ol className="flex overflow-hidden rounded-lg  text-gray-600">
             <li className="flex items-center">
               <Link
                 to={`/`}
                 className="flex h-10 items-center gap-1.5 bg-gray-100 px-4 transition hover:text-gray-900"
               >
-
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4"
@@ -107,10 +103,7 @@ const PostDetailPage = () => {
             </li>
 
             <li className="relative flex items-center">
-              <span
-                className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"
-              >
-              </span>
+              <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
 
               <Link
                 to={`/post`}
@@ -120,10 +113,7 @@ const PostDetailPage = () => {
               </Link>
             </li>
             <li className="relative flex items-center">
-              <span
-                className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100/50 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"
-              >
-              </span>
+              <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100/50 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
 
               <Link
                 to={`#`}
@@ -147,21 +137,28 @@ const PostDetailPage = () => {
                 <img src={post?.images[0]} alt="Image" className="w-full" />
               </div>
               <div className="w-full ">
-                <h1 className="text-center text-xl font-sans font-[600]">Tin Mới Nhất</h1>
+                <h1 className="text-center text-xl font-sans font-[600]">
+                  Tin Mới Nhất
+                </h1>
                 <div className="pt-[25px] ">
                   {posts && posts.length > 0 ? (
                     posts?.slice(0, 8).map((item: IPost) => (
                       <a key={item?._id} href={`/post/${item._id}`}>
                         <div className="flex justify-center items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
-                          <img className="w-[100px] rounded-md" src={item?.images[0]} alt="" />
+                          <img
+                            className="w-[100px] rounded-md"
+                            src={item?.images[0]}
+                            alt=""
+                          />
                           <h1>{item?.title}</h1>
                         </div>
                       </a>
                     ))
                   ) : (
-                    <div><Empty /></div>
+                    <div>
+                      <Empty />
+                    </div>
                   )}
-
                 </div>
               </div>
             </div>
@@ -179,14 +176,15 @@ const PostDetailPage = () => {
           <div className="border-b-[1px] border-gray-700"></div>
           <div className="border-b-[1px] border-gray-700 mt-[1px]"></div>
           <div className=" mx-[100px]">
-            <h1 className="text-2xl text-blue-500 font-sans font-[500] mt-[20px] mb-[15px]">Nhận Xét Về Bài Đăng :</h1>
-            <Form
-              form={form}
-              onFinish={onFinishComment}
-            >
+            <h1 className="text-2xl text-blue-500 font-sans font-[500] mt-[20px] mb-[15px]">
+              Nhận Xét Về Bài Đăng :
+            </h1>
+            <Form form={form} onFinish={onFinishComment}>
               <Form.Item
                 name="content"
-                rules={[{ required: true, message: 'Hãy viết bình luận của mình !' }]}
+                rules={[
+                  { required: true, message: "Hãy viết bình luận của mình !" },
+                ]}
               >
                 <TextArea
                   rows={4}
@@ -200,11 +198,21 @@ const PostDetailPage = () => {
               </Form.Item>
               <div className="flex justify-between">
                 <Form.Item>
-                  <Button type="primary" className=" bg-blue-600" htmlType="submit">
+                  <Button
+                    type="primary"
+                    className=" bg-blue-600"
+                    htmlType="submit"
+                  >
                     Bình Luận
                   </Button>
                 </Form.Item>
-                <h1> Tối Đa : <span className="font-[600]">{1500 - Char.length} Kí Tự</span> </h1>
+                <h1>
+                  {" "}
+                  Tối Đa :{" "}
+                  <span className="font-[600]">
+                    {1500 - Char.length} Kí Tự
+                  </span>{" "}
+                </h1>
               </div>
             </Form>
 
@@ -214,39 +222,50 @@ const PostDetailPage = () => {
               </div>
               {IdComment && IdComment.length > 0 ? (
                 <div className="overflow-y-scroll h-[540px]">
-                  {IdComment?.slice()?.reverse().map((cmts: any) => (
-                    <div key={cmts?._id} className="flex w-full mt-[10px] bg-none">
-                      <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
-                      <div className="w-full rounded-md">
-                        <div className="h-[40px] flex justify-between items-center w-full">
-                          <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name ? cmts.id_user.name : cmts.user.name}</h1>
-                          <h1 className="pr-[20px]">{cmts?.createdAt}</h1>
-                        </div>
-                        <div>
-                          <TextArea
-                            readOnly
-                            value={cmts?.content}
-                            autoSize={{ minRows: 2, maxRows: 6 }}
-                          />
+                  {IdComment?.slice()
+                    ?.reverse()
+                    .map((cmts: any) => (
+                      <div
+                        key={cmts?._id}
+                        className="flex w-full mt-[10px] bg-none"
+                      >
+                        <img
+                          className="w-10 h-10 me-4 rounded-full"
+                          src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg"
+                          alt=""
+                        />
+                        <div className="w-full rounded-md">
+                          <div className="h-[40px] flex justify-between items-center w-full">
+                            <h1 className="text-[19px] font-[550]">
+                              {cmts?.id_user?.name
+                                ? cmts.id_user.name
+                                : cmts.user.name}
+                            </h1>
+                            <h1 className="pr-[20px]">{cmts?.createdAt}</h1>
+                          </div>
+                          <div>
+                            <TextArea
+                              readOnly
+                              value={cmts?.content}
+                              autoSize={{ minRows: 2, maxRows: 6 }}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               ) : (
                 <div>
-                  <h1 className="text-center">Chưa Có Bình Luận. Bạn Hãy Là Người Bình Luận Đầu tiên !</h1>
+                  <h1 className="text-center">
+                    Chưa Có Bình Luận. Bạn Hãy Là Người Bình Luận Đầu tiên !
+                  </h1>
                 </div>
               )}
 
-
-
               {/*  */}
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );

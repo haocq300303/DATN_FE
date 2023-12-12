@@ -61,10 +61,9 @@ const ModalBookMultipleDay = ({
             },
             shift: {
               price: dataBooking[1]?.price,
-              // shift_day: `${dataBooking[2][0]} | ${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time}`,
               shift_day: `${dataBooking[1]?.start_time} - ${
                 dataBooking[1]?.end_time
-              } Các ngày ${dataBooking[2].join(", ")}`,
+              } | Các ngày ${dataBooking[2].join(", ")}`,
               date: dataBooking[2],
               start_time: dataBooking[1]?.start_time,
               end_time: dataBooking[1]?.end_time,
@@ -73,6 +72,7 @@ const ModalBookMultipleDay = ({
               find_opponent: "NotFind",
             },
             services: dataBooking[3] || [],
+            type: "multipleDay",
           })
         );
         navigate("/checkout");
