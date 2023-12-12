@@ -188,6 +188,7 @@ const PostDetailPage = () => {
                 <TextArea
                   rows={4}
                   placeholder="Nhập Bình Luận !"
+                  maxLength={1500}
                   value={Char}
                   onChange={handleCharChange}
                 />

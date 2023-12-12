@@ -111,24 +111,6 @@ const PitchList = () => {
     setIsModalOpen(true);
   };
 
-  // useEffect(() => {
-  //   // Gọi hàm getOnePitch khi component được render và selectedId thay đổi
-  //   if (selectedId) {
-  //     // Bắt đầu loading khi bắt đầu tải dữ liệu
-  //     setLoading(true);
-
-  //     getOnePitch(selectedId)
-  //       .then(({ data: { data } }) => {
-  //         // Kết thúc loading khi dữ liệu đã được tải
-  //         setLoading(false);
-  //         setPitch(data);
-  //       })
-  //       .catch((error) => {
-  //         setLoading(false);
-  //         console.error('Error fetching pitch data:', error);
-  //       });
-  //   }
-  // }, [selectedId]);
   useEffect(() => {
     try {
       setLoading(true);
@@ -379,7 +361,7 @@ const PitchList = () => {
                         )}
                       </span>
                     </p>
-                    <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
+                    <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{Pitch?.average_price?.toLocaleString('vi-VN') || Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
                   </div>
                   <div className="flex justify-between">
                     <p className="py-[5px]">Ngày tạo sân : <span className="italic text-gray-700">{Pitch?.createdAt}</span></p>

@@ -8,6 +8,7 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import { deleteCommentMid, getAllCommentMid, setDataComment } from '~/Redux/Slices/commentSlide';
 import { commentPagination, getAllComment } from '~/api/comment';
+import './comment.css'
 
 interface DataType {
   key: string;
