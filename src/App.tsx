@@ -36,6 +36,7 @@ import VerifyOtp from "./pages/VerifyOtp";
 import BookingPage from "./pages/main/Booking";
 import BookingHistoryPage from "./pages/main/BookingHistory";
 import { routes } from "./routes";
+import UserList from "./pages/Admin/user/UserList";
 
 function App() {
     const dispatch = useDispatch();
@@ -93,6 +94,7 @@ function App() {
                     <Route path={routes.payment} element={<PaymentAdminPage />} />
                     <Route path={routes.booking} element={<BookingAdminPage />} />
                     <Route path={routes.shift} element={<Shift />} />
+                    <Route path={routes.user_admin} element={<UserList />} />
                 </Route>
                 <Route
                     path={routes.admin_pitch}
