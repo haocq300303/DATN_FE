@@ -1,176 +1,277 @@
-import { Popconfirm, Space, Table, Button, message, Form, Input, InputNumber } from "antd";
+import {
+  Popconfirm,
+  Space,
+  Table,
+  Button,
+  message,
+  Form,
+  Input,
+  InputNumber,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
 import ModalForm from "../../../components/ModalForm/ModalForm";
-import { fetchAllChildrenPitch, fetchCreatChildrentPitch, fetchDeleteChildrentPitch, fetchUpdateChildrentPitch } from "../../../Redux/Slices/childrentPitch";
 import IChildrentPitch from "~/interfaces/childrentPitch";
-
+import {
+  getAllChildrentPicthByParent,
+  getCreatChildrentPitch,
+  getDeleteChildrentPitch,
+  getUpdateChildrentPitch,
+} from "~/api/childrentPitch";
+import Dragger from "antd/es/upload/Dragger";
+import axios from "axios";
 
 const ChildrentPitch = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [modalMode, setModalMode] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState("");
+  const [childrenPitchs, setShildrenPitchs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-    const dispatch = useAppDispatch();
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      const { data } = await getAllChildrentPicthByParent(
+        "653ca30f5d70cbab41a2e5d0",
+        ""
+      );
+      setShildrenPitchs(data.data);
+      setIsLoading(false);
+    })();
+  }, []);
 
-    const childrentPitchs = useAppSelector((state) => state.childrenPitch.childrentpitchs);
-    // console.log(childrentPitchs.data);
-  
-    useEffect(() => {
-        dispatch(fetchAllChildrenPitch());
-    }, [dispatch]);
+  const confirm = async (id: string) => {
+    await getDeleteChildrentPitch(id);
 
-    const confirm = async (idPost: string) => {
-        await dispatch(fetchDeleteChildrentPitch(idPost));
-        message.success(`Xóa bài viết thành công!`);
-    };
-    const cancel = () => {
-        message.error("Đã hủy!");
-    };
-    const columns: ColumnsType<IChildrentPitch> = [
-        {
-            title: "Ca Sân",
-            dataIndex: "code_chirldren_pitch",
-            key: "code_chirldren_pitch",
-            render: (text) => <span>{text}</span>,
-        },
-        {
-            title: "Giờ Diễn",
-            dataIndex: "_id",
-            key: "code_chirldren_pitch",
-            render: (text) => <span>{text}</span>,
-        },
-        {
-            title: "Thực Hiện",
-            key: "action",
-            render: (record) => (
-                <Space size="middle">
-                    <Button
-                        type="primary"
-                        onClick={() => {
-                            const childrent = childrentPitchs?.find((chill: IChildrentPitch) => chill._id === record._id);
+    const newData = childrenPitchs?.filter(
+      (chilPitch: any) => chilPitch._id !== id
+    );
+    setShildrenPitchs(newData);
+    message.success(`Xóa sân thành công!`);
+  };
+  const cancel = () => {
+    message.error("Đã hủy!");
+  };
 
-                            form.setFieldsValue({
-                                _id: childrent?._id,
-                                code_chirldren_pitch: childrent?.code_chirldren_pitch,
-                                idParentPitch: childrent?.idParentPitch,
-                            });
-                            showModal("edit");
-                        }}
-                        ghost
-                    >
-                        <EditOutlined style={{ display: "inline-flex" }} />
-                        Edit
-                    </Button>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const uploadFiles = async (file: any) => {
+    if (file) {
+      const CLOUD_NAME = "dhwpz6l7t";
+      const PRESET_NAME = "datn-img";
+      const FOLDER_NAME = "datn-img";
+      const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
-                    <Popconfirm
-                        placement="topRight"
-                        title="Xóa ca sân?"
-                        description="Bạn có chắc chắn xóa ca sân này không?"
-                        onConfirm={() => confirm(record._id)}
-                        onCancel={cancel}
-                        okText="Đồng ý"
-                        cancelText="Không"
-                    >
-                        <Button type="primary" danger>
-                            <DeleteOutlined style={{ display: "inline-flex" }} />
-                            Remove
-                        </Button>
-                    </Popconfirm>
-                </Space>
-            ),
-        },
-    ];
-    const data = Array.isArray(childrentPitchs.data)
-    ? childrentPitchs.data.map((item: IChildrentPitch, index: number) => ({
+      const formData = new FormData();
+      formData.append("upload_preset", PRESET_NAME);
+      formData.append("folder", FOLDER_NAME);
+      formData.append("file", file);
+
+      const response = await axios.post(api, formData);
+
+      return response;
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const customRequest = async ({ file, onSuccess, onError }: any) => {
+    try {
+      // Gọi hàm tải lên ảnh của bạn và chờ kết quả
+      const response = await uploadFiles(file);
+
+      // Kiểm tra kết quả và xử lý tùy theo trạng thái tải lên
+      if (response?.status === 200) {
+        message.success(`${file.name} uploaded successfully`);
+        onSuccess(response, file);
+      } else {
+        message.error(`${file.name} upload failed.`);
+        onError(response);
+      }
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      message.error("An error occurred while uploading the image.");
+      onError(error);
+    }
+  };
+
+  const columns: ColumnsType<IChildrentPitch> = [
+    {
+      title: "#",
+      dataIndex: "index",
+      key: "index",
+      width: 50,
+    },
+    {
+      title: "Tên Sân",
+      dataIndex: "code_chirldren_pitch",
+      key: "code_chirldren_pitch",
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Ảnh",
+      dataIndex: "image",
+      key: "image",
+      render: (image) => (
+        <p className="flex justify-center">
+          <img width={80} src={image} />
+        </p>
+      ),
+    },
+    {
+      title: "Hành động",
+      key: "action",
+      render: (record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            onClick={() => {
+              const childrent: any = childrenPitchs?.find(
+                (chill: IChildrentPitch) => chill._id === record._id
+              );
+
+              form.setFieldsValue({
+                _id: childrent?._id,
+                code_chirldren_pitch: childrent?.code_chirldren_pitch,
+                idParentPitch: childrent?.idParentPitch,
+                image: childrent?.image,
+              });
+              showModal("edit");
+            }}
+            ghost
+          >
+            <EditOutlined style={{ display: "inline-flex" }} />
+            Edit
+          </Button>
+
+          <Popconfirm
+            placement="topRight"
+            title="Xóa sân?"
+            description="Bạn có chắc chắn xóa sân này không?"
+            onConfirm={() => confirm(record._id)}
+            onCancel={cancel}
+            okText="Đồng ý"
+            cancelText="Không"
+          >
+            <Button type="primary" danger>
+              <DeleteOutlined style={{ display: "inline-flex" }} />
+              Remove
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+  const data = Array.isArray(childrenPitchs)
+    ? childrenPitchs.map((item: IChildrentPitch, index: number) => ({
         ...item,
         key: index,
-    }))
+        index: index + 1,
+      }))
     : [];
-    const showModal = (mode: string) => {
-        setModalMode(mode);
-        setIsModalOpen(true);
-    };
-    const layout = {
-        labelCol: { span: 8 },
-        wrapperCol: { span: 16 },
-    };
-    const validateMessages = {
-        required: "${label} is required!",
-    };
-    const [form] = Form.useForm();
-    const onFinish = async (values: any) => {
-        if (modalMode === "add") {
-            await dispatch(fetchCreatChildrentPitch(values));
-            message.success(`Tạo bài viết thành công!`);
-        } else if (modalMode === "edit") {
-            const newValues = { ...values };
-            const { _id, ...childrentpitch } = newValues;
-            await dispatch(fetchUpdateChildrentPitch({ _id, childrentpitch }));
-            message.success(`Sửa bài viết thành công!`);
-        }
-        setIsModalOpen(false);
-    };
+  const showModal = (mode: string) => {
+    setModalMode(mode);
+    setIsModalOpen(true);
+  };
+  const layout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
+  };
+  const validateMessages = {
+    required: "${label} is required!",
+  };
+  const [form] = Form.useForm();
+  const onFinish = async (values: any) => {
+    if (modalMode === "add") {
+      const { data } = await getCreatChildrentPitch({
+        ...values,
+        idParentPitch: "653ca30f5d70cbab41a2e5d0",
+        image: values?.image?.file?.response?.data?.url,
+      });
 
-    return (
-        <>
-            <div className="flex justify-end mb-2">
-                <Button
-                    type="primary"
-                    icon={<PlusCircleOutlined />}
-                    size={"large"}
-                    className="bg-[#2988bc]"
-                    onClick={() => {
-                        form.resetFields();
-                        showModal("add");
-                    }}
-                >
-                    Create Post
-                </Button>
-            </div>
-            <Table
-                pagination={{ pageSize: 8 }}
-                columns={columns}
-                dataSource={data}
-                rowSelection={{}}
-                expandable={{
-                    expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.code_chirldren_pitch}</p>,
-                }}
+      const newData = [...childrenPitchs, data.data];
+
+      setShildrenPitchs(newData);
+      message.success(`Tạo sân thành công!`);
+    } else if (modalMode === "edit") {
+      const newImage = values?.image?.file
+        ? values?.image?.file?.response?.data?.url
+        : values?.image;
+      const newValues = {
+        ...values,
+        idParentPitch: "653ca30f5d70cbab41a2e5d0",
+        image: newImage,
+      };
+      const { _id, ...childrentpitch } = newValues;
+      const { data } = await getUpdateChildrentPitch(_id, childrentpitch);
+      const newData = childrenPitchs?.map((childrentPitch: any) =>
+        childrentPitch._id === _id ? data.data : childrentPitch
+      );
+      setShildrenPitchs(newData);
+      message.success(`Sửa sân thành công!`);
+    }
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <div className="flex justify-end mb-2">
+        <Button
+          type="primary"
+          icon={<PlusCircleOutlined />}
+          size={"large"}
+          className="bg-[#2988bc]"
+          onClick={() => {
+            form.resetFields();
+            showModal("add");
+          }}
+        >
+          Tạo sân con
+        </Button>
+      </div>
+      <Table pagination={{ pageSize: 8 }} columns={columns} dataSource={data} />
+      <ModalForm
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        form={form}
+        modalMode={modalMode}
+      >
+        <Form
+          form={form}
+          {...layout}
+          name="nest-messages"
+          onFinish={onFinish}
+          validateMessages={validateMessages}
+          layout="vertical"
+        >
+          {modalMode === "edit" && (
+            <Form.Item name="_id" style={{ display: "none" }}>
+              <Input />
+            </Form.Item>
+          )}
+          <Form.Item
+            name="code_chirldren_pitch"
+            label="Sân số"
+            rules={[{ required: true, type: "number", min: 1 }]}
+          >
+            <InputNumber
+              size="large"
+              placeholder="Tên sân"
+              style={{ width: "100%" }}
             />
-            <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
-                <Form form={form} {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} layout="vertical">
-                    {modalMode === "edit" && (
-                        <Form.Item name="_id" style={{ display: "none" }}>
-                            <Input />
-                        </Form.Item>
-                    )}
-                    
-
-                    {/* <Form.Item name="images" label="Images" rules={[{ required: true }]}>
-                        <Dragger multiple listType="picture" customRequest={customRequest}>
-                            <Button icon={<UploadOutlined />}>Upload Images</Button>
-                        </Dragger>
-                    </Form.Item> */}
-                    <Form.Item
-                        name="code_chirldren_pitch"
-                        label="Số Lượng Sân"
-                        rules={[{ required: true, type: "number", min: 0 }]}
-                    >
-                        <InputNumber
-                            size="large"
-                            placeholder="code_chirldren_pitch"
-                            style={{ width: "100%" }}
-                        />
-                    </Form.Item>
-
-                    <Form.Item name="idParentPitch" label="idParentPitch" rules={[{ required: true }, { whitespace: true, message: "${label} is required!" }]}>
-                        <Input size="large" placeholder="idParentPitch" />
-                    </Form.Item>
-                </Form>
-            </ModalForm>
-        </>
-    );
+          </Form.Item>
+          <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
+            <Dragger listType="picture" customRequest={customRequest}>
+              <Button icon={<UploadOutlined />}>Upload Image</Button>
+            </Dragger>
+          </Form.Item>
+        </Form>
+      </ModalForm>
+    </>
+  );
 };
 
 export default ChildrentPitch;

@@ -1,15 +1,21 @@
-import { Button, Radio } from 'antd';
-import { memo, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
-import { useNewBookingAffterPayMutation } from '~/Redux/booking/bookingApi';
-import { sendMail } from '~/api/email';
-import { getCreatShift } from '~/api/shift';
-import { createUrlVnpay } from '~/api/vnpay.api';
-import { hideLoader, showLoader } from '~/components/LoaderAllPage';
-import { Show } from '~/components/Show';
-import { IInfoBooking } from '~/interfaces/booking.type';
+import { Button, Radio } from "antd";
+import { memo, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import { useNewBookingAffterPayMutation } from "~/Redux/booking/bookingApi";
+import { sendMail } from "~/api/email";
+import {
+  bookChildrenPicthFullMonth,
+  bookMultipleDay,
+  bookOneShiftFullMonth,
+  getCreatShift,
+} from "~/api/shift";
+import { createUrlVnpay } from "~/api/vnpay.api";
+import { hideLoader, showLoader } from "~/components/LoaderAllPage";
+import { Show } from "~/components/Show";
+import { IInfoBooking } from "~/interfaces/booking.type";
+import IShift from "~/interfaces/shift";
 
 type BookingScreenProps = {
   setCurrent: React.Dispatch<number>;
@@ -88,31 +94,83 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
       const paymentId = searchParams.get('payment_id');
       const serviceIds = infoBooking?.services?.map((service) => service._id);
 
-      const dataBooking = {
-        id_pitch: infoBooking?.pitch?._id,
-        id_chirlden_pitch: infoBooking?.children_pitch?._id,
-        number_shift: infoBooking?.shift?.number_shift,
-        start_time: infoBooking?.shift?.start_time,
-        end_time: infoBooking?.shift?.end_time,
-        price: infoBooking?.shift?.price,
-        status_shift: true,
-        date: infoBooking?.shift?.date,
-        find_opponent: infoBooking?.shift?.find_opponent,
-      };
       if (paymentId) {
         // Show Loading
         showLoader();
 
-        const { data } = await getCreatShift(dataBooking);
-
         const _infoBooking = {
           pitch_id: infoBooking?.pitch?._id,
           user_id: currentUser._id,
-          shift_id: data?.data?._id,
+          shift_id: "",
           children_pitch_id: infoBooking?.children_pitch?._id,
           payment_id: paymentId,
           service_ids: serviceIds,
         };
+
+        if (infoBooking?.type === "singleDay") {
+          const dataBooking: IShift = {
+            id_pitch: infoBooking?.pitch?._id,
+            id_chirlden_pitch: infoBooking?.children_pitch?._id,
+            number_shift: infoBooking?.shift?.number_shift,
+            start_time: infoBooking?.shift?.start_time,
+            end_time: infoBooking?.shift?.end_time,
+            price: infoBooking?.shift?.price,
+            status_shift: true,
+            date: infoBooking?.shift?.date,
+            find_opponent: infoBooking?.shift?.find_opponent,
+          };
+
+          const { data } = await getCreatShift(dataBooking);
+
+          _infoBooking.shift_id = data?.data?._id;
+        } else if (infoBooking?.type === "multipleDay") {
+          const dataBooking: IShift = {
+            id_pitch: infoBooking?.pitch?._id,
+            id_chirlden_pitch: infoBooking?.children_pitch?._id,
+            number_shift: infoBooking?.shift?.number_shift,
+            start_time: infoBooking?.shift?.start_time,
+            end_time: infoBooking?.shift?.end_time,
+            price: infoBooking?.shift?.price,
+            status_shift: true,
+            date: infoBooking?.shift?.date,
+          };
+
+          const { data } = await bookMultipleDay(dataBooking);
+
+          _infoBooking.shift_id = data?.data?._id;
+        } else if (infoBooking?.type === "bookOneShiftFullMonth") {
+          const dataBooking: IShift = {
+            id_pitch: infoBooking?.pitch?._id,
+            id_chirlden_pitch: infoBooking?.children_pitch?._id,
+            number_shift: infoBooking?.shift?.number_shift,
+            start_time: infoBooking?.shift?.start_time,
+            end_time: infoBooking?.shift?.end_time,
+            price: infoBooking?.shift?.price,
+            status_shift: true,
+            is_booking_month: true,
+          };
+
+          const { data } = await bookOneShiftFullMonth(dataBooking);
+
+          _infoBooking.shift_id = data?.data?._id;
+        } else if (infoBooking?.type === "bookChildrenPicthFullMonth") {
+          const dataBooking: IShift = {
+            id_pitch: infoBooking?.pitch?._id,
+            id_chirlden_pitch: infoBooking?.children_pitch?._id,
+            number_shift: null,
+            start_time: null,
+            end_time: null,
+            price: infoBooking?.shift?.price,
+            status_shift: true,
+            is_booking_month: true,
+          };
+
+          const { data } = await bookChildrenPicthFullMonth(dataBooking);
+
+          _infoBooking.shift_id = data?.data?._id;
+        } else {
+          toast.error("Không có kiểu đặt lịch !!!");
+        }
 
         newBooking(_infoBooking as any)
           .unwrap()
