@@ -50,12 +50,7 @@ export type UserBookingType = {
   email: string;
 };
 
-export type DataBookingType = [
-  UserBookingType?,
-  PitchChildrenInfoType?,
-  ShiftInfoType?,
-  ServiceType[]?
-];
+export type DataBookingType = [UserBookingType?, PitchChildrenInfoType?, ShiftInfoType?, ServiceType[]?];
 
 const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
   const [dataBooking, setDataBooking] = useState<DataBookingType>([]);

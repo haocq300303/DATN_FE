@@ -59,12 +59,12 @@ const Login = () => {
       setErrorPhonenumber(true);
       return;
     }
-    console.log(phoneNumber);
-
+    if (phoneNumber.length < 10) {
+      setErrorPhonenumber(true);
+      return;
+    }
     try {
       const response = await loginSMS(phoneNumber);
-      console.log(response.data);
-
       if (response.status === 200) {
         setTimeout(() => {
           navigate(routes.verify);
@@ -99,6 +99,7 @@ const Login = () => {
                 /\d/,
                 /\d/,
               ]}
+              minLength={10}
               placeholder="Enter a phone number"
               guide={false}
               id="my-input-id"
