@@ -1,7 +1,11 @@
 :where(.css-dev-only-do-not-override-1ck3jst).ant-form-item .ant-form-item-label {
-    text-align: left;
+  text-align: left;
 }
 
 :where(.css-dev-only-do-not-override-1ck3jst).ant-col-16 {
-    max-width: 100%;
+  max-width: 100%;
+}
+
+:where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary.ant-btn-background-ghost {
+  color: white !important;
 }

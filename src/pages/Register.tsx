@@ -62,6 +62,10 @@ const Register = () => {
       setErrorPhonenumber(true);
       return;
     }
+    if (phoneNumber.length < 10) {
+      setErrorPhonenumber(true);
+      return;
+    }
     try {
       const response = await registerSMS(phoneNumber);
       if (response.status === 200) {
@@ -86,18 +90,7 @@ const Register = () => {
           <div className="mt-4">
             <label className="block text-gray-700">Phone number</label>
             <MaskedInput
-              mask={[
-                /[0]/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-              ]}
+              mask={[/[0]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
               placeholder="Enter a phone number"
               guide={false}
               id="my-input-id"
@@ -109,11 +102,7 @@ const Register = () => {
                 errorPhonenumber && 'border-red-500'
               } focus:border-blue-500 focus:bg-white focus:outline-none`}
             />
-            {errorPhonenumber && (
-              <span className="block text-red-500 mt-2">
-                Số điện thoại không hợp lệ!!!
-              </span>
-            )}
+            {errorPhonenumber && <span className="block text-red-500 mt-2">Số điện thoại không hợp lệ!!!</span>}
           </div>
           <button
             type="submit"
@@ -142,11 +131,7 @@ const Register = () => {
                 } focus:border-blue-500 focus:bg-white focus:outline-none`}
                 {...register('name')}
               />
-              {errors.name && (
-                <span className="block text-red-500 mt-1">
-                  {errors.name.message}
-                </span>
-              )}
+              {errors.name && <span className="block text-red-500 mt-1">{errors.name.message}</span>}
             </div>
             <div className="mt-4">
               <label className="block text-gray-700">Email Address</label>
@@ -158,11 +143,7 @@ const Register = () => {
                 } focus:border-blue-500 focus:bg-white focus:outline-none`}
                 {...register('email')}
               />
-              {errors.email && (
-                <span className="block text-red-500 mt-1">
-                  {errors.email.message}
-                </span>
-              )}
+              {errors.email && <span className="block text-red-500 mt-1">{errors.email.message}</span>}
             </div>
 
             <div className="mt-4">
@@ -176,11 +157,7 @@ const Register = () => {
                 } focus:border-blue-500 focus:bg-white focus:outline-none`}
                 {...register('password')}
               />
-              {errors.password && (
-                <span className="block text-red-500 mt-1">
-                  {errors.password.message}
-                </span>
-              )}
+              {errors.password && <span className="block text-red-500 mt-1">{errors.password.message}</span>}
             </div>
 
             <div className="mt-4">
@@ -194,11 +171,7 @@ const Register = () => {
                 } focus:border-blue-500 focus:bg-white focus:outline-none`}
                 {...register('confirmPassword')}
               />
-              {errors.confirmPassword && (
-                <span className="block text-red-500 mt-1">
-                  {errors.confirmPassword.message}
-                </span>
-              )}
+              {errors.confirmPassword && <span className="block text-red-500 mt-1">{errors.confirmPassword.message}</span>}
             </div>
 
             <button
@@ -225,10 +198,7 @@ const Register = () => {
         flex items-center justify-center"
       >
         <div className="w-full h-100">
-          <h1
-            className="text-xl md:text-2xl font-bold leading-tight mt-3"
-            style={{ fontFamily: 'sans-serif' }}
-          >
+          <h1 className="text-xl md:text-2xl font-bold leading-tight mt-3" style={{ fontFamily: 'sans-serif' }}>
             Create an account
           </h1>
 
@@ -240,12 +210,7 @@ const Register = () => {
             className="w-full block bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-900 font-semibold rounded-lg px-4 py-2 border border-gray-300 mt-6"
           >
             <div className="flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                className="w-6 h-6"
-                viewBox="0 0 48 48"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" className="w-6 h-6" viewBox="0 0 48 48">
                 <defs>
                   <path
                     id="a"
@@ -256,21 +221,9 @@ const Register = () => {
                   <use xlinkHref="#a" overflow="visible" />
                 </clipPath>
                 <path clipPath="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z" />
-                <path
-                  clipPath="url(#b)"
-                  fill="#EA4335"
-                  d="M0 11l17 13 7-6.1L48 14V0H0z"
-                />
-                <path
-                  clipPath="url(#b)"
-                  fill="#34A853"
-                  d="M0 37l30-23 7.9 1L48 0v48H0z"
-                />
-                <path
-                  clipPath="url(#b)"
-                  fill="#4285F4"
-                  d="M48 48L17 24l-4-3 35-10z"
-                />
+                <path clipPath="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z" />
+                <path clipPath="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z" />
+                <path clipPath="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z" />
               </svg>
               <span className="ml-4">Sign up with Google</span>
             </div>
@@ -278,10 +231,7 @@ const Register = () => {
 
           <p className="mt-8">
             Do you already have an account?{' '}
-            <Link
-              to={routes.login}
-              className="text-blue-500 hover:text-blue-700 font-semibold"
-            >
+            <Link to={routes.login} className="text-blue-500 hover:text-blue-700 font-semibold">
               Log in to your account
             </Link>
           </p>

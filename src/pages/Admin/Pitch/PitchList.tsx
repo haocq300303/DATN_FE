@@ -1,37 +1,19 @@
-import {
-  Popconfirm,
-  Space,
-  Table,
-  Button,
-  message,
-  Input,
-  InputRef,
-  Modal,
-  Image,
-  Spin,
-} from "antd";
-import {
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { Popconfirm, Space, Table, Button, message, Input, InputRef, Modal, Image, Spin } from 'antd';
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 
-import type { ColumnType, ColumnsType } from "antd/es/table";
-import { useEffect, useState, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../../Redux/hook";
-import {
-  fetchAllPitch,
-  fetchDeletePitch,
-  search,
-} from "../../../Redux/Slices/pitchSlice";
-import IPitch from "../../../interfaces/pitch";
-import "./index.css";
+import type { ColumnType, ColumnsType } from 'antd/es/table';
+import { useEffect, useState, useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../Redux/hook';
+import { fetchAllPitch, fetchDeletePitch, search } from '../../../Redux/Slices/pitchSlice';
+import IPitch from '../../../interfaces/pitch';
+import './index.css';
 
 import type { FilterConfirmProps } from 'antd/es/table/interface';
-import IFeedback from "~/interfaces/feedback";
-import { PitchPagination, getAllPitch, getOnePitch } from "~/api/pitch";
+import IFeedback from '~/interfaces/feedback';
+import { PitchPagination, getAllPitch, getOnePitch } from '~/api/pitch';
 
-import Highlighter from "react-highlight-words";
-import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
+import Highlighter from 'react-highlight-words';
+import { getAllServiceMid } from '~/Redux/Slices/serviceSlice';
 
 interface DataType {
   key: string;
@@ -56,8 +38,8 @@ interface DataType {
 type DataIndex = keyof DataType;
 const PitchList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const [totalItems, setTotalItems] = useState(Number); //phantrang
   const [currentPage, setCurrentPage] = useState(1); //phantrang
@@ -65,13 +47,11 @@ const PitchList = () => {
   const [Pitch, setPitch] = useState<any>({});
   const [loading, setLoading] = useState(true);
 
-
-
   const dispatch = useAppDispatch();
   const pitchs = useAppSelector((state) => state.pitch.pitchs);
 
   useEffect(() => {
-    dispatch(fetchAllPitch(""));
+    dispatch(fetchAllPitch(''));
   }, [dispatch]);
 
   useEffect(() => {
@@ -86,7 +66,7 @@ const PitchList = () => {
         const allItemsPitch = response?.data?.data?.totalDocs;
         setTotalItems(allItemsPitch);
       } catch (error) {
-        console.error("Error:", error);
+        console.error('Error:', error);
       }
     };
     fetchData();
@@ -122,7 +102,7 @@ const PitchList = () => {
       console.log(error);
     }
   }, [selectedId]);
-  console.log("pitchModel:", Pitch);
+  console.log('pitchModel:', Pitch);
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -138,7 +118,7 @@ const PitchList = () => {
   };
 
   const cancel = () => {
-    message.error("Đã hủy!");
+    message.error('Đã hủy!');
   };
 
   const data: DataType[] = pitchs.map((item: IPitch, index: number) => ({
@@ -146,16 +126,12 @@ const PitchList = () => {
     key: item._id,
     index: index + 1,
     name: item.name,
-    admin_pitch_id: item?.admin_pitch_id?.name || "Chủ Sân Bị Xoá !",
+    admin_pitch_id: item?.admin_pitch_id?.name || 'N/A',
     address: item.address,
     numberPitch: item.numberPitch,
   }));
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -163,38 +139,24 @@ const PitchList = () => {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText("");
+    setSearchText('');
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): ColumnType<DataType> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -202,11 +164,7 @@ const PitchList = () => {
           >
             Tìm Kiếm
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Xoá
           </Button>
           <Button
@@ -232,9 +190,7 @@ const PitchList = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
@@ -248,10 +204,10 @@ const PitchList = () => {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ""}
+          textToHighlight={text ? text.toString() : ''}
         />
       ) : (
         text
@@ -260,50 +216,47 @@ const PitchList = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "#",
-      dataIndex: "index",
-      key: "index",
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
       width: 50,
     },
     {
-      title: "Tên Sân",
-      dataIndex: "name",
-      key: "name",
+      title: 'Tên Sân',
+      dataIndex: 'name',
+      key: 'name',
       width: 300,
-      ...getColumnSearchProps("name"),
+      ...getColumnSearchProps('name'),
     },
     {
-      title: "Chủ Sân",
-      dataIndex: "admin_pitch_id",
-      key: "admin_pitch_id",
+      title: 'Chủ Sân',
+      dataIndex: 'admin_pitch_id',
+      key: 'admin_pitch_id',
       width: 220,
       render: (user: any) => <p>{user}</p>,
     },
     {
-      title: "Số Lượng Sân",
-      dataIndex: "numberPitch",
-      key: "numberPitch",
+      title: 'Số Lượng Sân',
+      dataIndex: 'numberPitch',
+      key: 'numberPitch',
       width: 160,
-      ...getColumnSearchProps("numberPitch"),
+      ...getColumnSearchProps('numberPitch'),
       sorter: (a, b) => a.numberPitch - b.numberPitch,
     },
     {
-      title: "Địa Chỉ",
-      dataIndex: "address",
-      key: "address",
+      title: 'Địa Chỉ',
+      dataIndex: 'address',
+      key: 'address',
       width: 380,
-      ...getColumnSearchProps("address"),
+      ...getColumnSearchProps('address'),
     },
     {
-      title: "Hành Động",
-      key: "action",
+      title: 'Hành Động',
+      key: 'action',
       width: '10%',
       render: (record) => (
         <Space size="middle">
-          <Button
-            className=" bg-blue-600" type="primary"
-            onClick={() => showModal(record?.key)}
-          >
+          <Button className=" bg-blue-600" type="primary" onClick={() => showModal(record?.key)}>
             Chi Tiết
           </Button>
           <Popconfirm
@@ -316,15 +269,13 @@ const PitchList = () => {
             cancelText="Không"
           >
             <Button type="primary" danger>
-              <DeleteOutlined style={{ display: "inline-flex" }} />
+              <DeleteOutlined style={{ display: 'inline-flex' }} />
             </Button>
           </Popconfirm>
         </Space>
       ),
     },
   ];
-
-
 
   return (
     <>
@@ -358,32 +309,58 @@ const PitchList = () => {
               <div className=" ">
                 <div className="text-[18px] pt-[10px]">
                   <div className="flex justify-between">
-                    <p className="py-[5px]">Tên Sân : <span className="italic text-gray-700">{Pitch?.name}</span></p>
-                    <p className="py-[5px]">Chủ Sở Hữu : <span className="italic text-gray-700">{Pitch?.admin_pitch_id?.name || "Chủ Sân Bị Xoá"}</span></p>
+                    <p className="py-[5px]">
+                      Tên Sân : <span className="italic text-gray-700">{Pitch?.name}</span>
+                    </p>
+                    <p className="py-[5px]">
+                      Chủ Sở Hữu : <span className="italic text-gray-700">{Pitch?.admin_pitch_id?.name || 'Chủ Sân Bị Xoá'}</span>
+                    </p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="py-[5px]">Vị trí tìm kiếm : <span className="italic text-gray-700">{Pitch?.address}</span></p>
-                    <p className="py-[5px]">Số lượng sân : <span className="italic text-gray-700">{Pitch?.numberPitch} sân</span></p>
+                    <p className="py-[5px]">
+                      Vị trí tìm kiếm : <span className="italic text-gray-700">{Pitch?.address}</span>
+                    </p>
+                    <p className="py-[5px]">
+                      Số lượng sân : <span className="italic text-gray-700">{Pitch?.numberPitch} sân</span>
+                    </p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="py-[5px] w-[500px]">Dịch vụ :
+                    <p className="py-[5px] w-[500px]">
+                      Dịch vụ :
                       <span>
                         {Pitch && Pitch?.services?.length > 0 ? (
-                          Pitch?.services?.map((item: any) =>
-                            <Button size={'small'} className="text-blue-500 mr-[5px]"> {item?.name} - {item?.price?.toLocaleString('vi-VN')}</Button>
-                          )
+                          Pitch?.services?.map((item: any) => (
+                            <Button size={'small'} className="text-blue-500 mr-[5px]">
+                              {' '}
+                              {item?.name} - {item?.price?.toLocaleString('vi-VN')}
+                            </Button>
+                          ))
                         ) : (
-                          <Button size={'small'} className="text-blue-500"> Chưa Có Dịch Vụ</Button>
+                          <Button size={'small'} className="text-blue-500">
+                            {' '}
+                            Chưa Có Dịch Vụ
+                          </Button>
                         )}
                       </span>
                     </p>
-                    <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{Pitch?.average_price?.toLocaleString('vi-VN') || Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
+                    <p className="py-[5px]">
+                      Giá tiền giao động :{' '}
+                      <span className="text-red-400">
+                        {Pitch?.average_price?.toLocaleString('vi-VN') || Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫
+                      </span>
+                    </p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="py-[5px]">Ngày tạo sân : <span className="italic text-gray-700">{Pitch?.createdAt}</span></p>
-                    <p className="py-[5px]">Ngày cập nhật sân gần nhất : <span className="italic text-gray-700">{Pitch?.updatedAt}</span></p>
+                    <p className="py-[5px]">
+                      Ngày tạo sân : <span className="italic text-gray-700">{Pitch?.createdAt}</span>
+                    </p>
+                    <p className="py-[5px]">
+                      Ngày cập nhật sân gần nhất : <span className="italic text-gray-700">{Pitch?.updatedAt}</span>
+                    </p>
                   </div>
-                  <p className="py-[5px] w-[960px]">Miêu tả sân : <span className="italic w-[900px] text-gray-700 "> {Pitch?.description}.</span></p>
+                  <p className="py-[5px] w-[960px]">
+                    Miêu tả sân : <span className="italic w-[900px] text-gray-700 "> {Pitch?.description}.</span>
+                  </p>
                 </div>
               </div>
               <div className="pr-[20px]">
@@ -431,7 +408,6 @@ const PitchList = () => {
                       }}
                     />
                   )}
-
                 </div>
               </div>
             </div>
@@ -444,8 +420,6 @@ const PitchList = () => {
           )}
         </div>
       </Modal>
-
-
     </>
   );
 };

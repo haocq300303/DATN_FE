@@ -1,24 +1,11 @@
-import {
-  Popconfirm,
-  Space,
-  Table,
-  Button,
-  message,
-  Input,
-  InputRef,
-} from "antd";
-import {
-  DeleteOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
-import './index.css'
-import { useEffect, useState, useRef } from "react";
+import { Popconfirm, Space, Table, Button, message, Input, InputRef } from 'antd';
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import './index.css';
+import { useEffect, useState, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
-import { UserPagination, getAllUser, removeUser } from "~/api/auth";
-
+import { getAllUser, removeUser } from '~/api/auth';
 
 const UserList = () => {
-
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -29,8 +16,8 @@ const UserList = () => {
     try {
       const response = await getAllUser(); // Gửi yêu cầu GET đến URL_API
       const users = response?.data?.data;
-      setTotalItems(users)
-      setCurrentPage(response?.data?.currentPage)
+      setTotalItems(users);
+      setCurrentPage(response?.data?.currentPage);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -46,32 +33,26 @@ const UserList = () => {
         message.success(`Xóa sân thành công !!!`);
         fetchData();
       } else {
-        message.error('Xóa không thành công!')
+        message.error('Xóa không thành công!');
       }
     } catch (error: any) {
-      message.error(error.message)
+      message.error(error.message);
     }
   };
 
   const cancel = () => {
-    message.error("Đã hủy!");
+    message.error('Đã hủy!');
   };
   //
-  const data: any= totalItems.map((item: any) => (
-    {
-      key: item._id,
-      name: item.name,
-      email: item?.email || "N/A",
-      phone_number: item.phone_number || "N/A",
-      role_id: item.role_id,
-    }
-  ))
+  const data: any = totalItems.map((item: any) => ({
+    key: item._id,
+    name: item.name,
+    email: item?.email || 'N/A',
+    phone_number: item.phone_number || 'N/A',
+    role_id: item.role_id,
+  }));
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: any) => void,
-    dataIndex: any,
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: any) => void, dataIndex: any) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -84,12 +65,7 @@ const UserList = () => {
 
   const handlePageChange = async (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    const response = await UserPagination(pageNumber);
-    const totalItems = response?.data?.data;
-    if (totalItems) {
-      setTotalItems(totalItems);
-    }
-  }
+  };
 
   const getColumnSearchProps = (dataIndex: any) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }: any) => (
@@ -113,11 +89,7 @@ const UserList = () => {
           >
             Tìm Kiếm
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Xoá
           </Button>
           <Button
@@ -143,9 +115,7 @@ const UserList = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
     onFilter: (value: any, record: any) =>
       record[dataIndex]
         .toString()
@@ -199,8 +169,8 @@ const UserList = () => {
       ...getColumnSearchProps('role_id'),
     },
     {
-      title: "Hành Động",
-      key: "action",
+      title: 'Hành Động',
+      key: 'action',
       width: '10%',
       render: (record: any) => (
         <Space size="middle">
@@ -214,7 +184,7 @@ const UserList = () => {
             cancelText="Không"
           >
             <Button type="primary" danger>
-              <DeleteOutlined style={{ display: "inline-flex" }} />
+              <DeleteOutlined style={{ display: 'inline-flex' }} />
             </Button>
           </Popconfirm>
         </Space>
@@ -223,18 +193,18 @@ const UserList = () => {
   ];
 
   return (
-      <Table
-        columns={columns}
-        dataSource={data}
-        className=""
-        bordered
-        pagination={{
-          current: currentPage,
-          total: totalItems,
-          pageSize: 7,
-          onChange: handlePageChange,
-        }}
-      />
+    <Table
+      columns={columns}
+      dataSource={data}
+      className=""
+      bordered
+      pagination={{
+        current: currentPage,
+        total: totalItems,
+        pageSize: 7,
+        onChange: handlePageChange,
+      }}
+    />
   );
 };
 
