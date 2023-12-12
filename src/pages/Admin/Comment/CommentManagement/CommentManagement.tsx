@@ -6,8 +6,8 @@ import { Button, Input, Popconfirm, Space, Table, message } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { useAppDispatch, useAppSelector } from '~/Redux/hook';
-import { deleteCommentMid, getAllCommentMid } from '~/Redux/Slices/commentSlide';
-import IComment from '~/interfaces/comment';
+import { deleteCommentMid, getAllCommentMid, setDataComment } from '~/Redux/Slices/commentSlide';
+import { commentPagination, getAllComment } from '~/api/comment';
 
 interface DataType {
   key: string;
@@ -26,6 +26,8 @@ const CommentManagement = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
+  const [totalItems, setTotalItems] = useState(Number);//phantrang
+  const [currentPage, setCurrentPage] = useState(1);//phantrang
 
   const dispatch = useAppDispatch();
 
@@ -43,6 +45,31 @@ const CommentManagement = () => {
     await dispatch(deleteCommentMid(idComment));
     message.success(`Xóa bình luận thành công!`);
   };
+  // phân trang
+  //xử lí phân trang
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllComment(); // Gửi yêu cầu GET đến URL_API
+        const allItemsPitch = response?.data?.data?.totalDocs;
+        setTotalItems(allItemsPitch)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
+  const handlePageChange = async (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const response = await commentPagination(pageNumber);
+    const totalItems = response?.data?.data?.totalDocs;
+    if (totalItems) {
+      setTotalItems(totalItems);
+    }
+    dispatch(setDataComment(response?.data?.data?.data));
+    // window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
+  // kết thức xử lí phân trang
 
   //data
   const data: DataType[] = comments?.map((item: any) => (
@@ -50,7 +77,7 @@ const CommentManagement = () => {
       key: item._id,
       title: item?.id_post?.title,
       name_user: item?.id_user?.name,
-      email: item?.id_user?.email,
+      email: item?.id_user?.email || "Email người dùng chưa có !",
       content: item?.content
     }
   ))
@@ -213,7 +240,13 @@ const CommentManagement = () => {
         dataSource={data}
         bordered
         expandable={{
-          expandedRowRender: (record) => <p className='w-[1260px]'>{record.content}</p>,
+          expandedRowRender: (record) => <p className='w-[1200px]'>{record.content}</p>,
+        }}
+        pagination={{
+          current: currentPage,
+          total: totalItems,
+          pageSize: 7,
+          onChange: handlePageChange,
         }}
       />
     </div>

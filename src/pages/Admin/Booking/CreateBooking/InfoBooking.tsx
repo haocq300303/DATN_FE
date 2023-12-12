@@ -3,6 +3,8 @@ import { Show } from "~/components/Show";
 import { DataBookingType, PitchInfoType } from ".";
 
 const InfoBooking = ({ dataBooking, infoPitch }: { dataBooking: DataBookingType; infoPitch: PitchInfoType }) => {
+    const totalPrice = (dataBooking[2] as any)?.price + (dataBooking[3]?.reduce((total, service) => total + service.price, 0) || 0);
+
     return (
         <section className="mt-2 px-4 py-2 space-y-5">
             <div className="flex">
@@ -80,13 +82,7 @@ const InfoBooking = ({ dataBooking, infoPitch }: { dataBooking: DataBookingType;
             </div>
 
             <div className="text-lg">
-                Tổng tiền:{" "}
-                <strong>
-                    {(
-                        (dataBooking[2] as any)?.price + (dataBooking[3]?.reduce((total, service) => total + service.price, 0) || 0)
-                    )?.toLocaleString() || 0}{" "}
-                    VNĐ
-                </strong>
+                Tổng tiền: <strong>{totalPrice ? totalPrice.toLocaleString() : 0} VNĐ</strong>
             </div>
             <div className="mb-6"></div>
         </section>

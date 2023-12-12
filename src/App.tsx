@@ -3,7 +3,6 @@ import { routes } from "./routes";
 import Home from "./pages/Home/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import DashboardPage from "./pages/Admin/Dashboard/DashboardPage";
 import AdminLayout from "./layouts/AdminLayout";
 import PostAdd from "./pages/Admin/Post/PostAdd/PostAdd";
 import PostManagement from "./pages/Admin/Post/PostManagement/PostManagement";
@@ -59,12 +58,11 @@ function App() {
           <Route path={routes.about} element={<About />} />
           <Route path={routes.contact} element={<Contact />} />
         </Route>
-        <Route index path={routes.checkout} element={<BookingPage />} />
-        <Route
-          index
-          path={routes.bookingHistory}
-          element={<BookingHistoryPage />}
-        />
+        
+        <Route path="/" element={<LayoutPage />}>
+                    <Route index path={routes.checkout} element={<BookingPage />} />
+                    <Route index path={routes.bookingHistory} element={<BookingHistoryPage />} />
+                </Route>
         {/* Pitch Page */}
         <Route path="/pitch" element={<LayoutPage />}>
           <Route index path={routes.pitch_client} element={<PitchPage />} />
@@ -106,7 +104,7 @@ function App() {
         >
           <Route index element={<DashboardPitchPage />} />
           <Route path={routes.service_admin} element={<ServiceManagement />} />
-          <Route path={routes.pitch_admin} element={<PitchList />} />
+           <Route path={routes.pitch_admin} element={<PitchList />} />
           <Route
             path={routes.childrenpitch_admin}
             element={<ChildrentPitch />}

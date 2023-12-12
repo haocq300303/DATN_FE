@@ -280,7 +280,7 @@ const AdminLayout = () => {
                   className="border-b-0 p-3"
                 >
                   <Link
-                    to={"/admin/location"}
+                    to={"/admin/comment"}
                     className="flex items-center gap-2"
                   >
                     <ListItemPrefix>
@@ -303,7 +303,7 @@ const AdminLayout = () => {
                       color="blue-gray"
                       className="mr-auto font-normal"
                     >
-                      Địa Chỉ
+                      Bình Luận
                     </Typography>
                   </Link>
                 </AccordionHeader>

@@ -17,6 +17,9 @@ export const PitchPagination = (page?: number) => {
 export const filterFeedbackPitch = (minStart?: number, maxStart?: number,) => {
   return instance.get(`/pitch/filter/feedback?minStart=${minStart}&maxStart=${maxStart}`);
 };
+export const getUserPitch = () => {
+  return instance.get(`/pitch/user/pitch`);
+};
 export const getOnePitch = (idPitch: string) => {
   return instance.get(`/pitch/${idPitch}`);
 };

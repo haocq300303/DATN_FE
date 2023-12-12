@@ -1,29 +1,18 @@
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
-import { Breadcrumb, Layout, Menu, MenuProps } from "antd";
+import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Breadcrumb, Layout, Menu, MenuProps } from 'antd';
 const { Content, Footer, Sider } = Layout;
-import {
-  AppstoreOutlined,
-  SolutionOutlined,
-  PieChartOutlined,
-  HomeOutlined,
-  UserOutlined,
-  ProfileOutlined,
-} from "@ant-design/icons";
-import FsportLogo from "../assets/img/sport-bg.png";
-import { Outlet } from "react-router-dom";
-import HeaderAdmin from "../components/Admin/Header/Header";
-import { routes } from "~/routes";
-import ModalViewCreatePitch from "~/pages/Admin/Dashboard/DashboardPage";
+import { AppstoreOutlined, SolutionOutlined, PieChartOutlined, HomeOutlined, UserOutlined, ProfileOutlined } from '@ant-design/icons';
+import FsportLogo from '../assets/img/sport-bg.png';
+import { Outlet } from 'react-router-dom';
+import HeaderAdmin from '../components/Admin/Header/Header';
+import { routes } from '~/routes';
+// import ModalViewCreatePitch from '~/pages/Admin/Dashboard/ModalViewCreatePitch';
+import { getUserPitch } from '~/api/pitch';
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-function getItem(
-  label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
+function getItem(label: React.ReactNode, key?: React.Key | null, icon?: React.ReactNode, children?: MenuItem[]): MenuItem {
   return {
     key,
     icon,
@@ -96,27 +85,36 @@ const items: MenuItem[] = [
 const AdminPitchLayout = () => {
   const [current, setCurrent] = useState("1");
   const [collapsed, setCollapsed] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const onClick: MenuProps["onClick"] = (e: any) => {
     setCurrent(e.key);
   };
 
+  const fetchUserByPitch = async () => {
+    const res = await getUserPitch();
+    if (res.status === 200) {
+      setIsModalOpen(false);
+    } else {
+      setIsModalOpen(true);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserByPitch()
+  }, [])
+
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value: any) => setCollapsed(value)}
-      >
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value: any) => setCollapsed(value)}>
         <div
           style={{
             margin: 16,
             textAlign: "center",
           }}
         >
-          <Link to={"/admin"}>
-            <img src={FsportLogo} alt="Logo" style={{ width: "100%" }} />
+          <Link to={routes.admin_pitch}>
+            <img src={FsportLogo} alt="Logo" style={{ width: '100%' }} />
           </Link>
         </div>
 
@@ -158,16 +156,9 @@ const AdminPitchLayout = () => {
             <Outlet />
           </main>
         </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Design ©2023 Created by He
-        </Footer>
+        <Footer style={{ textAlign: 'center' }}>Design ©2023 Created by He</Footer>
       </Layout>
-      {isModalOpen && (
-        <ModalViewCreatePitch
-          isModalOpen={isModalOpen}
-          setIsModalOpen={setIsModalOpen}
-        />
-      )}
+      {/* {isModalOpen && <ModalViewCreatePitch />} */}
     </Layout>
   );
 };
