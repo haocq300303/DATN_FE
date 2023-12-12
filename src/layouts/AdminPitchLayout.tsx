@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb, Layout, Menu, MenuProps } from 'antd';
 const { Content, Footer, Sider } = Layout;
 import { AppstoreOutlined, SolutionOutlined, PieChartOutlined, HomeOutlined, UserOutlined, ProfileOutlined } from '@ant-design/icons';
@@ -8,6 +8,7 @@ import { Outlet } from 'react-router-dom';
 import HeaderAdmin from '../components/Admin/Header/Header';
 import { routes } from '~/routes';
 import ModalViewCreatePitch from '~/pages/Admin/Dashboard/ModalViewCreatePitch';
+import { getUserPitch } from '~/api/pitch';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -83,6 +84,19 @@ const AdminPitchLayout = () => {
   const onClick: MenuProps['onClick'] = (e: any) => {
     setCurrent(e.key);
   };
+
+  const fetchUserByPitch = async () => {
+    const res = await getUserPitch();
+    if (res.status === 200) {
+      setIsModalOpen(false);
+    } else {
+      setIsModalOpen(true);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserByPitch()
+  }, [])
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
