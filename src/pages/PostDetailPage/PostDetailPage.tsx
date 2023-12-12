@@ -19,9 +19,6 @@ const PostDetailPage = () => {
 
 
   const posts = useAppSelector((state) => state.post.posts);
-  console.log("data comments", IdComment);
-  // console.log("detail Post", post);
-
   useEffect(() => {
     (async () => {
       try {
@@ -37,7 +34,6 @@ const PostDetailPage = () => {
     (async () => {
       try {
         const { data } = await getCommentPost(String(id));
-        console.log("dataCMT", data);
         setIdComment(data.data.comment_id);
       } catch (error) {
         console.log(error);
@@ -58,9 +54,10 @@ const PostDetailPage = () => {
   const onFinishComment = async (values: any) => {
     try {
       const response = await dispatch(createCommentMid(values));
-      console.log("res", response);
+      console.log("repon", response);
+
       if (response?.meta?.requestStatus === "fulfilled") {
-        message.success("Đánh giá Thành Công !");
+        message.success("Bình Luận Thành Công !");
         setIdComment((prevComments: any) => [
           ...prevComments,
           { ...response?.payload },
@@ -143,7 +140,7 @@ const PostDetailPage = () => {
               {post?.title}
             </h4>
             <div className="flex justify-center gap-[20px]">
-              <div className="m-0 overflow-hidden bg-transparent text-gray-700">
+              <div className="m-0 overflow-hidden bg-transparent text-gray-700 h-[600px]">
                 <img src={post?.images[0]} alt="Image" className="w-full" />
               </div>
               <div className="w-full ">
@@ -172,7 +169,7 @@ const PostDetailPage = () => {
             </div>
             <div className="flex items-center justify-end py-6">
               <p className="block font-sans text-base font-normal leading-relaxed">
-                {post?.createdAt}
+                {post?.updatedAt}
               </p>
             </div>
           </div>
@@ -219,7 +216,7 @@ const PostDetailPage = () => {
                       <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
                       <div className="w-full rounded-md">
                         <div className="h-[40px] flex justify-between items-center w-full">
-                          <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name ? cmts.id_user.name : cmts.user.name}</h1>
+                          <h1 className="text-[19px] font-[550]">{cmts?.id_user?.name ? cmts?.id_user?.name : cmts?.user?.name}</h1>
                           <h1 className="pr-[20px]">{cmts?.createdAt}</h1>
                         </div>
                         <div>

@@ -24,6 +24,7 @@ import {
   updatePostMid,
   deletePostMid,
   getAllPostMid,
+  setData,
 } from "../../../../Redux/Slices/postSlice";
 import IPost from "../../../../interfaces/post";
 import ModalForm from "../../../../components/ModalForm/ModalForm";
@@ -32,19 +33,22 @@ import type { ColumnType, FilterConfirmProps } from "antd/es/table/interface";
 const { Dragger } = Upload;
 import "./PostManagement.css";
 import Highlighter from "react-highlight-words";
+import { PostPagination, getAllPost } from "~/api/post";
 
 type DataIndex = keyof IPost;
 const PostManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef<InputRef>(null);
+  const [totalItems, setTotalItems] = useState(Number);//phantrang
+  const [currentPage, setCurrentPage] = useState(1);//phantrang
 
   const dispatch = useAppDispatch();
 
   const posts = useAppSelector((state) => state.post.posts);
 
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
-  const searchInput = useRef<InputRef>(null);
   useEffect(() => {
     dispatch(getAllPostMid());
   }, [dispatch]);
@@ -72,6 +76,29 @@ const PostManagement = () => {
     clearFilters();
     setSearchText("");
   };
+  //phân trang
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllPost(); // Gửi yêu cầu GET đến URL_API
+        const allItemsPitch = response?.data?.data?.totalDocs;
+        setTotalItems(allItemsPitch)
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+    fetchData();
+  }, []);
+  const handlePageChange = async (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    const response = await PostPagination(pageNumber);
+    const totalItems = response?.data?.data?.totalDocs;
+    if (totalItems) {
+      setTotalItems(totalItems);
+    }
+    dispatch(setData(response?.data?.data?.data));
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
 
   const getColumnSearchProps = (
     dataIndex: DataIndex
@@ -166,43 +193,45 @@ const PostManagement = () => {
   });
   const columns: ColumnsType<IPost> = [
     {
-      title: "Title",
+      title: "Tiêu Đề",
       dataIndex: "title",
       key: "title",
       ...getColumnSearchProps("title"),
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Images",
+      title: "Hình Ảnh",
       dataIndex: "images",
       key: "images",
-      render: (image) => <img width={30} src={image[0]} />,
+      render: (image) => <img className="h-[100px]" width={300} src={image[0]} />,
     },
-    Table.EXPAND_COLUMN,
     {
-      title: "Description",
+      title: "Miêu Tả",
       key: "description",
       dataIndex: "description",
       render: (text) => {
         return text.slice(0, 50).concat(" . . .");
       },
     },
+    Table.EXPAND_COLUMN,
     {
-      title: "User",
-      key: "user",
-      dataIndex: "id_user",
-      render: (user) => <span>{user?.name}</span>,
-      ...getColumnSearchProps("id_user"),
-    },
-    {
-      title: "CreatedAt",
+      title: "Ngày Đăng",
       dataIndex: "createdAt",
       key: "createdAt",
       defaultSortOrder: "descend",
+      ...getColumnSearchProps("createdAt"),
       render: (date) => <span>{date}</span>,
     },
     {
-      title: "Action",
+      title: "Ngày Sửa",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      defaultSortOrder: "descend",
+      ...getColumnSearchProps("updatedAt"),
+      render: (date) => <span>{date}</span>,
+    },
+    {
+      title: "Hành Động",
       key: "action",
       render: (record) => (
         <Space size="middle">
@@ -260,7 +289,7 @@ const PostManagement = () => {
   };
 
   const validateMessages = {
-    required: "${label} is required!",
+    required: "${label} chưa nhập!",
   };
 
   const [form] = Form.useForm();
@@ -280,7 +309,7 @@ const PostManagement = () => {
     } else if (modalMode === "edit") {
       const newImages = values.images.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.images.fileList.map(({ response }: any) => response.data.url)
+        values.images.fileList.map(({ response }: any) => response.data.url)
         : values.images;
 
       const newValues = { ...values, images: newImages };
@@ -346,15 +375,19 @@ const PostManagement = () => {
         ></Button>
       </div>
       <Table
-        pagination={{ pageSize: 8 }}
         columns={columns}
         dataSource={data}
-        rowSelection={{}}
-        scroll={{ y: 100 }}
+        bordered
         expandable={{
           expandedRowRender: (record) => (
             <p style={{ margin: 0 }}>{record.description}</p>
           ),
+        }}
+        pagination={{
+          current: currentPage,
+          total: totalItems,
+          pageSize: 6,
+          onChange: handlePageChange,
         }}
       />
       <ModalForm
@@ -378,30 +411,30 @@ const PostManagement = () => {
           )}
           <Form.Item
             name="title"
-            label="Title"
+            label="Tiêu Đề"
             rules={[
               { required: true },
-              { whitespace: true, message: "${label} is required!" },
+              { whitespace: true, message: "${label} chưa nhập!" },
             ]}
           >
-            <Input size="large" placeholder="Title" />
+            <Input size="large" placeholder="Tiêu đề" />
           </Form.Item>
 
-          <Form.Item name="images" label="Images" rules={[{ required: true }]}>
+          <Form.Item name="images" label="Hình ảnh" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>
-              <Button icon={<UploadOutlined />}>Upload Images</Button>
+              <Button icon={<UploadOutlined />}>Thêm Hình Ảnh</Button>
             </Dragger>
           </Form.Item>
 
           <Form.Item
             name="description"
-            label="Description"
+            label="Miêu Tả"
             rules={[
               { required: true },
-              { whitespace: true, message: "${label} is required!" },
+              { whitespace: true, message: "${label} chưa nhập!" },
             ]}
           >
-            <Input.TextArea rows={4} placeholder="Description" />
+            <Input.TextArea rows={4} placeholder="Miêu tả" />
           </Form.Item>
         </Form>
       </ModalForm>

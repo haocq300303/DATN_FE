@@ -5,7 +5,6 @@ import BillScreen from "./screens/BillScreen";
 import BookingScreen from "./screens/BookingScreen";
 import InfoScreen from "./screens/InfoScreen";
 import { toast } from "react-toastify";
-import { IInfoBooking } from "~/interfaces/booking.type";
 
 const BookingPage: React.FC = () => {
     const [current, setCurrent] = useState(0);
@@ -24,30 +23,6 @@ const BookingPage: React.FC = () => {
         },
     ]);
 
-    const a: IInfoBooking = {
-        pitch: {
-            _id: "655efedffefca5c9571573b1",
-            name: "sân",
-            image: "https://picsum.photos/300/300",
-            address: "ss",
-        },
-        admin_pitch: {
-            _id: "655efedffefca5c9571573b1",
-            name: "admin",
-            phone: "098",
-        },
-        children_pitch: {
-            _id: "655efedffefca5c9571573b1",
-            children_pitch_code: "1",
-        },
-        shift: {
-            _id: "1",
-            price: 600000,
-            shift_day: "2023",
-        },
-        services: [{ _id: "655efedffefca5c9571573b1", name: "dvu 1", price: 120000, image: "https://picsum.photos/300/300" }],
-    };
-    sessionStorage.setItem("infoBooking", JSON.stringify(a));
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -70,8 +45,8 @@ const BookingPage: React.FC = () => {
     const items = steps?.map((item) => ({ key: item.title, title: item.title }));
 
     return (
-        <div className="my-4 max-w-[1000px] mx-auto">
-            <div className="note">Thanh toán đi đừng có lằng nhằng!!!</div>
+        <div className="my-4 lg:my-8 px-2 max-w-[1000px] mx-auto">
+            <div className="note">Giúp chúng tôi hoàn thiện thông tin đặt sân của bạn !!!</div>
             <div className="my-4">
                 <Steps current={current} items={items} />
             </div>

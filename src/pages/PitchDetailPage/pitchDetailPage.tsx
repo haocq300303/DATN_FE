@@ -17,7 +17,6 @@ import {
   Empty,
   Form,
   Image,
-  Input,
   Modal,
   Rate,
   Space,
@@ -34,21 +33,28 @@ import { getOnePitch } from "~/api/pitch";
 import FindOpponent from "~/components/FindOpponent/FindOpponent";
 import IPitch from "~/interfaces/pitch";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
-import axios from "axios";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import FeedBack from "~/components/Feedback/FeedBack";
 import { totalStarByPitch } from "~/api/feedback";
-
+import { getAllChildrentPicthByParent } from "~/api/childrentPitch";
+import dayjs from "dayjs";
+import Loading from "~/components/Loading";
+import ModalBookMultipleDay from "./ModalBookMultipleDay";
+import ModalBookOneShiftFullMonth from "./ModalBookOneShiftFullMonth";
+import ModalBookPitchFullMonth from "./ModalBookPitchFullMonth";
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const [form] = Form.useForm();
   const navigate = useNavigate();
+  const currentTime = new Date();
+  const currentDate = format(currentTime, "yyyy-MM-dd");
+  const currentHour = currentTime.getHours();
+  const currentMinutes = currentTime.getMinutes();
 
   const [dataBookShift, setDataBookShift] = useState<any>({});
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(currentDate);
   const [isLoading, setIsLoading] = useState(false);
   const [modalBookShift, setModalBookShift] = useState(false);
   const [childrenPitchs, setShildrenPitchs] = useState([]);
@@ -56,10 +62,14 @@ const PitchDetailPage = () => {
   const [selectedServices, setSelectedServices] = useState<any>([]);
   const [findOpponent, setFindOpponent] = useState(false);
   const [TotalStar, setTotalStar] = useState<any>(Number);
+  const [isModalBookMultipleDay, setIsModalBookMultipleDay] =
+    useState<boolean>(false);
+  const [isModalBookOneShiftMonth, setIsModalBookOneShiftMonth] =
+    useState<boolean>(false);
+  const [isModalBookPitchMonth, setIsModalBookPitchMonth] =
+    useState<boolean>(false);
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
-  const toDay = new Date();
-  console.log("pitdetail:", Pitch);
 
   const onChangeFindOpponent = (checked: boolean) => {
     setFindOpponent(checked);
@@ -68,12 +78,11 @@ const PitchDetailPage = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const { data } = await axios.get(
-        `http://localhost:8080/api/childrentPicth/parent/${id}${
-          selectedDate && selectedDate.trim() !== ""
-            ? `?date=${selectedDate}`
-            : ""
-        }`
+      const { data } = await getAllChildrentPicthByParent(
+        id!,
+        selectedDate && selectedDate.trim() !== ""
+          ? `?date=${selectedDate}`
+          : ""
       );
       setShildrenPitchs(data.data);
       setIsLoading(false);
@@ -91,66 +100,53 @@ const PitchDetailPage = () => {
     setModalBookShift(true);
   };
 
-  const onFinishModalBookShift = async (values: any) => {
-    try {
-      const { data } = await axios.post("http://localhost:8080/api/shift", {
-        ...values,
-        find_opponent: findOpponent ? "Find" : "NotFind",
-      });
-      sessionStorage.setItem(
-        "infoBooking",
-        JSON.stringify({
-          pitch_name: Pitch.name,
-          pitch_avatar: Pitch.avatar,
-          admin_pitch_id: Pitch.admin_pitch_id?._id,
-          admin_pitch_name: Pitch?.admin_pitch_id?.name,
-          admin_pitch_phone: Pitch?.admin_pitch_id?.phone_number,
-          pitch_id: Pitch._id,
-          pitch_address: Pitch.address,
-          children_pitch_id: data.data.id_chirlden_pitch,
-          shift_id: data.data._id,
-          price: data.data.price,
-          booking_day: `${data.data.date} | ${values?.start_time} - ${values?.end_time}`,
-          services: selectedServices,
-        })
+  const onFinishModalBookShift = () => {
+    sessionStorage.setItem(
+      "infoBooking",
+      JSON.stringify({
+        pitch: {
+          _id: dataBookShift.id_pitch,
+          name: Pitch.name,
+          image: Pitch.avatar,
+          address: Pitch.address,
+        },
+        admin_pitch: {
+          _id: Pitch?.admin_pitch_id?._id,
+          name: Pitch?.admin_pitch_id?.name,
+          phone: Pitch?.admin_pitch_id?.phone_number,
+        },
+        children_pitch: {
+          _id: dataBookShift?.id_chirlden_pitch,
+          children_pitch_code: dataBookShift?.code_chirldren_pitch,
+        },
+        shift: {
+          price: dataBookShift?.price,
+          shift_day: `${selectedDate} | ${dataBookShift?.start_time} - ${dataBookShift?.end_time}`,
+          date: [selectedDate],
+          start_time: dataBookShift?.start_time,
+          end_time: dataBookShift?.end_time,
+          number_shift: dataBookShift?.number_shift,
+          find_opponent: findOpponent ? "Find" : "NotFind",
+        },
+        services: selectedServices,
+      })
+    );
+    navigate("/checkout");
+  };
+
+  const handleServiceSelection = (service: any) => {
+    const isMatch = [...selectedServices].some(
+      (item) => item._id === service._id
+    );
+
+    if (isMatch) {
+      const _selectedServices = [...selectedServices].filter(
+        (item) => item._id !== service._id
       );
-      navigate("/checkout");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onFinishFailedModalBookShift = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
-
-  useEffect(() => {
-    // Khi dataBookShift thay đổi, cập nhật giá trị initialValues trong form
-    form.setFieldsValue({
-      id_chirlden_pitch: dataBookShift?.id_chirlden_pitch,
-      id_pitch: dataBookShift?.id_pitch,
-      number_shift: dataBookShift?.number_shift,
-      start_time: dataBookShift?.start_time,
-      end_time: dataBookShift?.end_time,
-      price: dataBookShift?.price,
-      date: dataBookShift?.date,
-    });
-  }, [dataBookShift, form]);
-
-  const handleServiceSelection = (serviceId: any) => {
-    if (selectedServices.length === 0) {
-      setSelectedServices([serviceId]);
+      setSelectedServices(_selectedServices);
     } else {
-      selectedServices.map((item: string) => {
-        if (item === serviceId) {
-          const newServices = selectedServices.filter(
-            (service: any) => service !== serviceId
-          );
-          setSelectedServices(newServices);
-        } else {
-          setSelectedServices([...selectedServices, serviceId]);
-        }
-      });
+      const _selectedServices = [...selectedServices, service];
+      setSelectedServices(_selectedServices);
     }
   };
 
@@ -181,7 +177,6 @@ const PitchDetailPage = () => {
 
     fetchData();
   }, [id]);
-
 
   useEffect(() => {
     dispatch(getAllServiceMid());
@@ -312,10 +307,13 @@ const PitchDetailPage = () => {
       value: "angular",
       desc: (
         <>
-          <div className="flex h-[400px] w-[950px] overflow-x-scroll">
+          <div className="flex gap-[20px] overflow-y-auto pt-[16px]">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                  <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
+                  <Card
+                    className="mt-6 pt-4 w-[250px] mr-2 h-[200px]"
+                    key={service?._id}
+                  >
                     <CardHeader
                       color="blue-gray"
                       className="w-[200px] h-28 pl-0 mt-"
@@ -447,7 +445,9 @@ const PitchDetailPage = () => {
           <h1 className="text-pitch">{Pitch.name}</h1>
           <p className="flex align-center">
             <Rate disabled allowHalf value={TotalStar?.averageRating} />
-            <span className="ml-2">( {Pitch?.feedback_id?.length} Reviews )</span>
+            <span className="ml-2">
+              ( {Pitch?.feedback_id?.length} Reviews )
+            </span>
           </p>
         </div>
       </div>
@@ -457,9 +457,9 @@ const PitchDetailPage = () => {
       >
         {/* khu vực hiển thị ca sân  */}
         <div className="left_booking col-span-5">
-          <div className="grid grid-cols-2 gap-[24px] list_shift">
-            {!isLoading ? (
-              childrenPitchs?.map((item: any, index: number) => (
+          {!isLoading ? (
+            <div className="grid grid-cols-2 gap-[24px] list_shift">
+              {childrenPitchs?.map((item: any, index: number) => (
                 <div
                   className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
                   key={index}
@@ -471,44 +471,62 @@ const PitchDetailPage = () => {
                   <p className="mx-[16px] mt-[16px]">
                     <p className="text-base font-semibold">Ca Sân:</p>
                     <div className="flex flex-wrap justify-between mt-[8px] mb-[20px] gap-y-[16px]">
-                      {item.shifts?.map((shift: any, index: number) => (
-                        <button
-                          key={index}
-                          onClick={() => {
-                            if (!shift.status_shift) {
-                              handleComfirmBookShift({
-                                id_chirlden_pitch: item._id,
-                                id_pitch: item.idParentPitch,
-                                number_shift: shift.number_shift,
-                                start_time: shift.start_time,
-                                end_time: shift.end_time,
-                                price: shift.price,
-                                date: format(
-                                  parseISO(shift.date),
-                                  "yyyy-MM-dd"
-                                ),
-                              });
-                            }
-                          }}
-                          className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
-                            shift.status_shift ? "disabled" : ""
-                          }`}
-                        >
-                          <p className="font-semibold mb-[2px] ">
-                            Ca {shift.number_shift}
-                          </p>
-                          <p className="mb-[2px] font-semibold ">
-                            {shift.start_time}h - {shift.end_time}h
-                          </p>
-                          <p className="font-semibold">
-                            {shift.price &&
-                              shift.price?.toLocaleString("it-IT", {
+                      {item.shifts?.map((shift: any, index: number) => {
+                        const [inputHours, inputMinutes] =
+                          shift.start_time.split(":");
+
+                        let overtime = false;
+
+                        const inputDate = new Date(selectedDate);
+
+                        if (
+                          (inputDate.getFullYear() ===
+                            currentTime.getFullYear() &&
+                            inputDate.getMonth() === currentTime.getMonth() &&
+                            inputDate.getDate() === currentTime.getDate() &&
+                            parseInt(inputHours, 10) < currentHour) ||
+                          (parseInt(inputHours, 10) === currentHour &&
+                            parseInt(inputMinutes, 10) < currentMinutes)
+                        ) {
+                          overtime = true;
+                        }
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              if (!shift.status_shift && !overtime) {
+                                handleComfirmBookShift({
+                                  id_chirlden_pitch: item._id,
+                                  code_chirldren_pitch:
+                                    item.code_chirldren_pitch,
+                                  id_pitch: item.idParentPitch,
+                                  number_shift: shift.number_shift,
+                                  start_time: shift.start_time,
+                                  end_time: shift.end_time,
+                                  price: shift.price,
+                                  date: shift.date,
+                                });
+                              }
+                            }}
+                            className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
+                              overtime ? "overtime" : ""
+                            } ${shift.status_shift ? "disabled" : ""}`}
+                          >
+                            <p className="font-semibold mb-[2px] ">
+                              Ca {shift.number_shift}
+                            </p>
+                            <p className="mb-[2px] font-semibold ">
+                              {shift.start_time}h - {shift.end_time}h
+                            </p>
+                            <p className="font-semibold">
+                              {shift.price?.toLocaleString("it-IT", {
                                 style: "currency",
                                 currency: "VND",
                               })}
-                          </p>
-                        </button>
-                      ))}
+                            </p>
+                          </button>
+                        );
+                      })}
                     </div>
                   </p>
                   {/* <div className="border-t">
@@ -518,145 +536,248 @@ const PitchDetailPage = () => {
                       </button>
                     </div> */}
                 </div>
-              ))
-            ) : (
-              <div className="flex align-center mt-40px">Loading...</div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex align-center mt-[80px] justify-center">
+              <Loading />
+            </div>
+          )}
         </div>
         {/* khu vực lọc theo tìm kiếm */}
-        <div className="right_booking col-span-2 px-[20px] py-[30px] bg-[#fff] shadow-md rounded-[12px] h-[60%] min-h-[400px]">
+        <div className="right_booking col-span-2 px-[20px] py-[30px] bg-[#fff] shadow-md rounded-[12px] min-h-[460px] h-[460px]">
           {/* lichj */}
           <div className="calendar">
             <Form>
               <Form.Item>
-                <div className="flex items-center justify-between">
-                  <p className="text-20px font-[600] w-max mr-[10px]">
+                <div className="flex items-center justify-between mb-[16px]">
+                  <p className="text-[16px] font-[600] mr-[10px]">
                     <i className="fa-regular fa-calendar mr-[10px]"></i>CHỌN
                     NGÀY :
                   </p>
                   <Space direction="vertical">
                     <DatePicker
-                      onChange={(_, dateString) => setSelectedDate(dateString)}
+                      size={"large"}
+                      disabledDate={(current) => current.isBefore(currentDate)}
+                      onChange={(e: any) => {
+                        const datePicker = format(e.$d, "yyyy-MM-dd");
+                        setSelectedDate(datePicker);
+                      }}
+                      value={dayjs(selectedDate, "YYYY-MM-DD")}
                     />
                   </Space>
+                </div>
+                <div className="flex items-center mb-[6px]">
+                  <span className="w-[16px] h-[16px] bg-[#ef4444] rounded mr-[10px]"></span>
+                  <p className="text-[16px] font-[600]">Đã được đặt</p>
+                </div>
+                <div className="flex items-center mb-[6px]">
+                  <span className="w-[16px] h-[16px] bg-[#1fd392] rounded mr-[10px]"></span>
+                  <p className="text-[16px] font-[600]">Còn trống</p>
+                </div>
+                <div className="flex items-center mb-[20px]">
+                  <span className="w-[16px] h-[16px] bg-[#c2c2c2] rounded mr-[10px]"></span>
+                  <p className="text-[16px] font-[600]">Đã hết giờ</p>
+                </div>
+                <p className="text-[18px] font-[700] mb-[14px]">
+                  Bạn cũng có thể:
+                </p>
+                <div className="flex items-center justify-center mb-[16px]">
+                  <button
+                    onClick={() => setIsModalBookMultipleDay(true)}
+                    className="px-[16px] py-[12px] bg-[#40dea4] hover:bg-[#1fd392] hover:text-[#fff] text-base font-bold text-[#333] rounded-xl w-full duration-75"
+                  >
+                    Đặt nhiều ngày
+                  </button>
+                </div>
+                <div className="flex items-center justify-center mb-[16px]">
+                  <button
+                    onClick={() => setIsModalBookOneShiftMonth(true)}
+                    className="px-[16px] py-[12px] bg-[#40dea4] hover:bg-[#1fd392] hover:text-[#fff] text-base font-bold text-[#333] rounded-xl w-full duration-75"
+                  >
+                    Đặt một ca trong một tháng
+                  </button>
+                </div>
+                <div className="flex items-center justify-center mb-[16px]">
+                  <button
+                    onClick={() => setIsModalBookPitchMonth(true)}
+                    className="px-[16px] py-[12px] bg-[#40dea4] hover:bg-[#1fd392] hover:text-[#fff] text-base font-bold text-[#333] rounded-xl w-full duration-75"
+                  >
+                    Đặt một sân trong một tháng
+                  </button>
                 </div>
               </Form.Item>
             </Form>
           </div>
-          <p className="text-20px w-max flex align-center ">
-            <p className="font-[600] mr-[6px] mt-[-1px]">Các ca ngày:</p>
-            {selectedDate
-              ? format(parseISO(selectedDate), "dd-MM-yyyy")
-              : format(toDay, "dd-MM-yyyy")}
-          </p>
         </div>
       </div>
-
+      <ModalBookMultipleDay
+        isOpen={isModalBookMultipleDay}
+        setOpen={setIsModalBookMultipleDay}
+        namePitch={Pitch?.name}
+        address={Pitch?.address}
+        phone={Pitch?.admin_pitch_id?.phone_number}
+        avatar={Pitch?.avatar}
+        pitchId={id!}
+        idAdminPitch={Pitch?.admin_pitch_id?._id}
+        nameAdminPitch={Pitch?.admin_pitch_id?.name}
+      />
+      <ModalBookOneShiftFullMonth
+        isOpen={isModalBookOneShiftMonth}
+        setOpen={setIsModalBookOneShiftMonth}
+        namePitch={Pitch?.name}
+        address={Pitch?.address}
+        phone={Pitch?.admin_pitch_id?.phone_number}
+        avatar={Pitch?.avatar}
+        pitchId={id!}
+        idAdminPitch={Pitch?.admin_pitch_id?._id}
+        nameAdminPitch={Pitch?.admin_pitch_id?.name}
+      />
+      <ModalBookPitchFullMonth
+        isOpen={isModalBookPitchMonth}
+        setOpen={setIsModalBookPitchMonth}
+        namePitch={Pitch?.name}
+        address={Pitch?.address}
+        phone={Pitch?.admin_pitch_id?.phone_number}
+        avatar={Pitch?.avatar}
+        pitchId={id!}
+        idAdminPitch={Pitch?.admin_pitch_id?._id}
+        nameAdminPitch={Pitch?.admin_pitch_id?.name}
+      />
       {/* Sửa */}
       <Modal
-        title="Thông tin đặt lịch"
         open={modalBookShift}
         onOk={() => setModalBookShift(false)}
         onCancel={() => setModalBookShift(false)}
+        width="1024px"
         footer={null}
       >
-        <div className="mb-[24px]">
-          <p className="text-[24px] font-semibold mt-[-4px] mb-[10px]">
-            {Pitch.name}
-          </p>
-          <p className="text-[16px] font-semibold mt-[-4px] mb-[14px]">
-            Địa chỉ: {Pitch.address}
-          </p>
-          <p className="text-[16px] font-semibold mt-[-4px] mb-[10px]">
-            Số điện thoại: {Pitch?.admin_pitch_id?.phone_number}
-          </p>
+        <div className="flex text-[#003553] min-h-[400px] gap-[28px]">
+          <div className="mb-[24px] w-[50%] rounded-xl shadow-md bg-white overflow-hidden">
+            <h3 className="text-xl  bg-[linear-gradient(36deg,#1fd392,#00e0ff)] p-2 text-white text-center font-bold">
+              Thông tin đặt lịch
+            </h3>
+
+            <div className="px-8 py-6">
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[10px]">
+                <span className="inline-block min-w-[100px]">Sân bóng: </span>
+                <span className="font-bold">{Pitch.name}</span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Địa chỉ: </span>
+                <span className="font-bold">{Pitch.address}</span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Điện thoại:</span>
+                <span className="font-bold">
+                  {Pitch?.admin_pitch_id?.phone_number}
+                </span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Ca: </span>
+                <span className="font-bold">{dataBookShift?.number_shift}</span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Thời gian: </span>
+                <span className="font-bold">
+                  ( {dataBookShift?.start_time}h - {dataBookShift?.end_time}h )
+                </span>
+              </p>
+
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Giá: </span>
+                <span className="font-bold">
+                  {dataBookShift?.price?.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Ngày: </span>
+                <span className="font-bold">{selectedDate}</span>
+              </p>
+              {findOpponent ? (
+                <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                  <span className="inline-block min-w-[100px]">Tìm Đối: </span>
+                  <span className="font-bold">Bật</span>
+                </p>
+              ) : (
+                ""
+              )}
+              {selectedServices.length > 0 && (
+                <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                  <span className="inline-block min-w-[100px]">Dịch vụ: </span>
+                  {selectedServices.map((item: any) => (
+                    <span className="font-bold">{item.name}, </span>
+                  ))}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="mb-[24px] w-[50%] rounded-xl shadow-md bg-white overflow-hidden">
+            <h3 className="text-xl  bg-[linear-gradient(36deg,#1fd392,#00e0ff)] p-2 text-white text-center font-bold">
+              Dịch vụ
+            </h3>
+
+            <div className="px-8 py-6 overflow-y-auto h-[390px]">
+              <div className="flex align-center mb-[8px]">
+                <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">
+                  Bạn muốn tìm đối?
+                </span>
+                <Switch
+                  className="bg-[#00000073]"
+                  checked={findOpponent}
+                  onChange={onChangeFindOpponent}
+                />
+              </div>
+              <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">
+                Dịch vụ:
+              </span>
+
+              <div className="flex gap-[20px] align-center justify-center mb-[24px] flex-wrap">
+                {Pitch?.services && Pitch?.services.length > 0
+                  ? Pitch?.services?.map((service: any) => (
+                      <Card className="mt-4 w-[45%]" key={service?._id}>
+                        <Checkbox
+                          crossOrigin={undefined}
+                          onChange={() => handleServiceSelection(service)}
+                        />
+                        <CardHeader
+                          color="blue-gray"
+                          className="w-[148px] h-28 pl-0 mt-0"
+                        >
+                          <img
+                            className="w-full h-full object-cover"
+                            src={service?.image}
+                            alt="card-image"
+                          />
+                        </CardHeader>
+                        <CardBody className="px-[16px] py-[8px]">
+                          <Typography
+                            color="blue-gray"
+                            className="mb-2 text-base font-bold w-max"
+                          >
+                            {service?.name}
+                          </Typography>
+                          <Typography>
+                            {service?.price.toLocaleString("it-IT", {
+                              style: "currency",
+                              currency: "VND",
+                            })}
+                          </Typography>
+                        </CardBody>
+                      </Card>
+                    ))
+                  : "Không có dịch vụ"}
+              </div>
+            </div>
+          </div>
         </div>
-        <Form
-          form={form}
-          initialValues={{
-            id_chirlden_pitch: dataBookShift?.id_chirlden_pitch,
-            id_pitch: dataBookShift?.id_pitch,
-            number_shift: dataBookShift?.number_shift,
-            start_time: dataBookShift?.start_time,
-            end_time: dataBookShift?.end_time,
-            price: dataBookShift?.price,
-            date: dataBookShift?.date,
-          }}
-          onFinish={onFinishModalBookShift}
-          onFinishFailed={onFinishFailedModalBookShift}
-        >
-          <Form.Item
-            className="hidden"
-            label="Id Sân con"
-            name="id_chirlden_pitch"
-          >
-            <Input disabled />
-          </Form.Item>
-          <Form.Item className="hidden" label="Id Sân cha" name="id_pitch">
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Ca sân" name="number_shift">
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Thời gian bắt đầu" name="start_time">
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Thời gian kết thúc" name="end_time">
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Giá" name="price">
-            <Input disabled />
-          </Form.Item>
-          <Form.Item label="Ngày" name="date">
-            <Input disabled />
-          </Form.Item>
-          <div className="flex align-center">
-            <p className="text-[16px] mr-[8px] font-semibold">
-              Bạn có muốn tìm đối:
-            </p>
-            <Switch checked={findOpponent} onChange={onChangeFindOpponent} />
-          </div>
-          <p className="text-[16px] mr-[8px] font-semibold">Dịch vụ:</p>
-          <div className="flex gap-[20px] align-center justify-center mb-[24px]">
-            {Pitch?.services && Pitch?.services.length > 0
-              ? Pitch?.services?.map((service: any) => (
-                  <Card className="mt-4" key={service?._id}>
-                    <Checkbox
-                      crossOrigin={undefined}
-                      onChange={() => handleServiceSelection(service?._id)}
-                    />
-                    <CardHeader
-                      color="blue-gray"
-                      className="w-[160px] h-28 pl-0 mt-0"
-                    >
-                      <img
-                        className="w-full"
-                        src={service?.image}
-                        alt="card-image"
-                      />
-                    </CardHeader>
-                    <CardBody className="px-[16px] py-[8px]">
-                      <Typography
-                        color="blue-gray"
-                        className="mb-2 text-base font-bold w-max"
-                      >
-                        {service?.name}
-                      </Typography>
-                      <Typography>
-                        {service?.price &&
-                          service.price.toLocaleString("it-IT", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                      </Typography>
-                    </CardBody>
-                  </Card>
-                ))
-              : ""}
-          </div>
-          <Button htmlType="submit">Đặt lịch</Button>
-        </Form>
+
+        <div className="flex justify-end">
+          <Button onClick={onFinishModalBookShift}>Đặt lịch</Button>
+        </div>
       </Modal>
     </div>
   );

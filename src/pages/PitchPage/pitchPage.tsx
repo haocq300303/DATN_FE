@@ -170,10 +170,14 @@ const PitchPage = () => {
       if (selectedDistrict === '' || selectedDistrict === undefined) {
         await dispatch(fetchAllPitch(``));
       } else {
-        await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
+        const reponse = await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
+        const totalitem = reponse?.payload?.length
+        setTotalItems(totalitem);
       }
     } else {
-      await dispatch(fetchAllPitch(`?wardId=${selectedWard}`));
+      const reponse = await dispatch(fetchAllPitch(`?wardId=${selectedWard}`));
+      const totalitem = reponse?.payload?.length
+      setTotalItems(totalitem);
     }
   };
   //lọc theo giá
@@ -236,6 +240,9 @@ const PitchPage = () => {
     form.resetFields(['min', 'max']);
     setValueSearch('');
     setSelectedServices([]);
+    setSelectedCity("");
+    setSelectedDistrict("");
+    setSelectedWard("");
   };
 
   // xử lí sân bóng 5 sao
@@ -257,6 +264,7 @@ const PitchPage = () => {
                 onChange={handleCityChange}
                 allowClear
                 showSearch
+                value={selectedCity ? selectedCity : undefined}
               >
                 {cities?.map((city: { id: string; name: string }) => (
                   <Option key={city.id} value={city.id}>
@@ -269,6 +277,7 @@ const PitchPage = () => {
                 className="w-[25%] h-[45px]"
                 placeholder="Quận Huyện"
                 onChange={handleDistrictChange}
+                value={selectedDistrict ? selectedDistrict : undefined}
               >
                 {districts?.map((district: { id: string; name: string }) => (
                   <Option key={district.id} value={district.id}>
@@ -280,6 +289,7 @@ const PitchPage = () => {
                 className="w-[25%] h-[45px]"
                 placeholder="Phường Xã"
                 onChange={handleWardChange}
+                value={selectedWard ? selectedWard : undefined}
               >
                 {wards?.map((ward: { id: string; name: string }) => (
                   <Option key={ward.id} value={ward.id}>
@@ -495,7 +505,7 @@ const PitchPage = () => {
                         <div className="imgae-item-pitch col-span-5">
                           <img
                             src={pitch.avatar}
-                            className="rounded-l-[20px] h-[100%] object-cover"
+                            className="rounded-l-[20px] h-[250px] object-cover"
                             width="100%"
                             alt=""
                           />
@@ -564,7 +574,7 @@ const PitchPage = () => {
       </div>
       {/* các sân bongs 5 sao */}
       {/* <PitchStar /> */}
-    </div>
+    </div >
   );
 };
 
