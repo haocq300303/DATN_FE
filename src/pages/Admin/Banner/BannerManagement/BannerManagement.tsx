@@ -160,7 +160,7 @@ const BannerManagement = () => {
 
       const { _id, ...banner } = newValues;
 
-      await dispatch(updateBannerMid({ _id, banner: newValues }));
+      await dispatch(updateBannerMid({ _id, banner }));
 
       message.success(`Sửa banner thành công!`);
     }

@@ -45,7 +45,7 @@ const ServiceManagement = () => {
 
   const services = useAppSelector((state) => state.service.services);
   const [form] = Form.useForm();
-
+  const user = useAppSelector((state) => state.user.currentUser);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -134,7 +134,7 @@ const ServiceManagement = () => {
     filterIcon: (filtered: boolean) => (
       <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
     ),
-    onFilter: (value, record) =>
+    onFilter: (value, record: any) =>
       record[dataIndex]
         .toString()
         .toLowerCase()
@@ -191,19 +191,11 @@ const ServiceManagement = () => {
                 
               form.setFieldsValue({
                 _id: service?._id,
+                admin_pitch_id: user.values._id,
                 name: service?.name,
                 price: service?.price,
                 image: service?.image,
-              });
-              console.log(
-                {
-                  _id: service?._id,
-                name: service?.name,
-                price: service?.price,
-                image: service?.image,
-                }
-              );
-              
+              });    
               showModal("edit");
             }}
             ghost
@@ -229,12 +221,13 @@ const ServiceManagement = () => {
     },
   ];
 
-  const data = services.map((item: IService, index: number) => {
-    return {
-      ...item,
-      key: index,
-    };
-  });
+  const data = services
+  .filter((item: IService) => item.admin_pitch_id === user.values._id)
+  .map((item: IService, index: number) => ({
+    ...item,
+    key: index,
+  }));
+
   
 
   const showModal = (mode: string) => {
@@ -258,19 +251,16 @@ const ServiceManagement = () => {
         ({ response }: any) => response.data.url
       );
       const url = urls[0]
-      const newValues = { ...values, image: url };
+      const newValues = { ...values,admin_pitch_id: user.values._id, image: url };
+        console.log(newValues);
         
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === "edit") {
       const newImages = values.image.fileList;
-      const image = newImages ? newImages[0].response.data.url : values.url;
-      // console.log(image);
-      
+      const image = newImages ? newImages[0].response.data.url : values.image;
       const newValues = { ...values, image };
-
       const { _id, ...service } = newValues;
-        console.log(newValues);
       await dispatch(updateServiceMid({ _id, service }));
       message.success(`Sửa dịch vụ thành công!`);
     }
@@ -326,7 +316,7 @@ const ServiceManagement = () => {
           size={"large"}
           className="bg-[#1677ff]"
           onClick={() => {
-            form.resetFields();
+            form.resetFields();  
             showModal("add");
           }}
         >
@@ -359,22 +349,15 @@ const ServiceManagement = () => {
           layout="vertical"
         >
           {modalMode === "edit" && (
+          <>
             <Form.Item name="_id" style={{ display: "none" }}>
               <Input />
             </Form.Item>
+             <Form.Item name="admin_pitch_id" style={{ display: "none" }}>
+             <Input />
+           </Form.Item>
+          </>
           )}
-            <Form.Item
-            name="admin_pitch_id"
-            label="Tên Chủ Sân"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} là bắt buộc!" },
-            ]}
-          >
-            <Input
-             placeholder="Nhập Id Chủ Sân"
-              />
-          </Form.Item>
           <Form.Item
             name="name"
             label="Tên Dịch Vụ"
@@ -390,7 +373,6 @@ const ServiceManagement = () => {
             label="Giá"
             rules={[
               { required: true, message: 'Vui lòng nhập giá!' },
-              { max: 6, message: 'Giá không được vượt quá 6 chữ số!' }
             ]}
           >
             <Input size="large" placeholder="Price" />

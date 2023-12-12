@@ -37,7 +37,6 @@ const routes = {
   booking_admin: '/admin-pitch/booking',
   childrenpitch_admin: '/admin-pitch/childrenpitch',
   shift_admin: '/admin-pitch/shift',
-
 };
 
 export { routes };

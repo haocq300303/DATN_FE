@@ -2,6 +2,6 @@ export interface IService {
     _id: string;
     name: string;
     price: number;
-    id_Pitch?: string;
+    admin_pitch_id?: string;
     image: string;
 }

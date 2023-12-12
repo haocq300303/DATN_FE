@@ -152,11 +152,8 @@ const AdminPitchLayout = () => {
             <Outlet />
           </main>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
-          Design ©2023 Created by He
-        </Footer>
       </Layout>
-      {isModalOpen && <ModalViewCreatePitch />}
+      {/* {isModalOpen && <ModalViewCreatePitch />} */}
     </Layout>
   );
 };
