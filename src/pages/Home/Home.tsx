@@ -3,7 +3,9 @@ import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import IPost from '~/interfaces/post';
 import './Home.css';
 import { useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
+
 
 const Home = () => {
   const dispatch = useAppDispatch();

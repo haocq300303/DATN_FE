@@ -47,7 +47,6 @@ const PitchUserList = () => {
       console.log(error);
     }
   }, []);
-
   const showModal = (mode: string) => {
     setModalMode(mode);
     setIsModalOpen(true);
@@ -58,7 +57,6 @@ const PitchUserList = () => {
       setDistricts(response.data);
     }
   };
-
   const handleDistrictChange = async (value: string) => {
     if (value !== '') {
       const response = await axios.get(`${host}wards?parent=${value}`);

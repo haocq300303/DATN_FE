@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Breadcrumb, Layout, Menu, MenuProps } from 'antd';
-const { Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 import { AppstoreOutlined, SolutionOutlined, PieChartOutlined, HomeOutlined, UserOutlined, ProfileOutlined } from '@ant-design/icons';
 import FsportLogo from '../assets/img/sport-bg.png';
 import { Outlet } from 'react-router-dom';
@@ -157,7 +157,6 @@ const AdminPitchLayout = () => {
             <Outlet />
           </main>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Design ©2023 Created by He</Footer>
       </Layout>
       {isModalOpen && <ModalViewCreatePitch />}
     </Layout>
