@@ -1,5 +1,5 @@
 interface IChildrentPitch {
-  _id: string;
+  _id?: string;
   idParentPitch?: string;
   code_chirldren_pitch: number;
   image: string;

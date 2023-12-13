@@ -1,5 +1,5 @@
-import { UploadOutlined } from "@ant-design/icons";
-import { Button, Empty, Form, Image, Input, InputNumber, Select, message, } from "antd"
+import { DeleteOutlined, UploadOutlined } from "@ant-design/icons";
+import { Button, Empty, Form, Image, Input, InputNumber, Select, Spin, message, } from "antd"
 import { Option } from "antd/es/mentions";
 import Dragger from "antd/es/upload/Dragger";
 import axios from "axios";
@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "~/Redux/hook";
 import ModalForm from "~/components/ModalForm/ModalForm";
 import { getUserPitch } from "~/api/pitch";
-import { fetchAllPitch, fetchUpdatePitch } from "~/Redux/Slices/pitchSlice";
-import IPitch from "~/interfaces/pitch";
+import { fetchUpdatePitch } from "~/Redux/Slices/pitchSlice";
 
 
 const PitchUserList = () => {
@@ -18,12 +17,14 @@ const PitchUserList = () => {
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
     const [pitchs, setpitchs] = useState<any>({});
-    console.log("pitchs", pitchs);
+    const [imageList, setImageList] = useState([]);
+    const [imageAvatar, setImageAvatar] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
 
     const dispatch = useAppDispatch();
+    console.log("pitchs", pitchs);
 
-    const pitchsAll = useAppSelector((state) => state.pitch.pitchs);
 
     const host = "http://localhost:8080/api/location/";
     useEffect(() => {
@@ -34,11 +35,21 @@ const PitchUserList = () => {
         fetchData();
     }, []);
     useEffect(() => {
-        getUserPitch().then(({ data }) => setpitchs(data.data))
+        try {
+            setLoading(true);
+            getUserPitch().then(({ data }) => {
+                setpitchs(data.data);
+                const dataImages = data.data?.images;
+                setImageList(dataImages);
+                const imageAvatar = data?.data?.avatar;
+                setImageAvatar(imageAvatar);
+                setLoading(false);
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }, []);
-    useEffect(() => {
-        dispatch(fetchAllPitch(""));
-    }, [dispatch]);
+
 
     const showModal = (mode: string) => {
         setModalMode(mode);
@@ -54,6 +65,8 @@ const PitchUserList = () => {
     const handleDistrictChange = async (value: string) => {
         if (value !== "") {
             const response = await axios.get(`${host}wards?parent=${value}`);
+            console.log("text 1", response);
+            
             setWards(response.data);
         }
     };
@@ -94,6 +107,23 @@ const PitchUserList = () => {
             onError(error);
         }
     };
+    const fileList: any = imageList?.map((data, index) => ({
+        uid: -index,
+        name: data,
+        status: 'done',
+        url: data,
+        thumbUrl: data,
+    }));
+
+    const fileAvatar: any[] = [
+        {
+            name: imageAvatar,
+            status: 'done',
+            url: imageAvatar,
+            thumbUrl: imageAvatar,
+        }
+    ];
+
 
     const validateMessages = {
         required: "${label} chưa nhập!",
@@ -105,12 +135,14 @@ const PitchUserList = () => {
 
     const onFinish = async (values: any) => {
         if (modalMode === "edit") {
-            const images = values.images.fileList
+            console.log("values:", values);
+
+            const images = values?.images?.fileList
                 ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                values.images.fileList.map(({ response }: any) => response.data.url)
+                values?.images?.fileList?.map((response: any) => response?.response?.data?.url || response?.url)
                 : values.images;
             const avatar = values.avatar.fileList
-                ? values?.avatar?.fileList[0]?.response?.data?.url
+                ? values?.avatar?.fileList[0]?.response?.data?.url || values?.avatar?.fileList[0]?.url
                 : values.avatar;
 
             const newValues = { ...values, images, avatar };
@@ -134,22 +166,16 @@ const PitchUserList = () => {
                     <Button
                         type="primary"
                         onClick={() => {
-                            const pitch: IPitch = pitchsAll?.find(
-                                (pitch: IPitch) => pitch._id === pitchs._id
-
-                            );
-
                             form.setFieldsValue({
-                                _id: pitch?._id,
-                                address: pitch?.address,
-                                name: pitch?.name,
-                                images: pitch?.images,
-                                numberPitch: pitch?.numberPitch,
-                                description: pitch?.description,
-                                districts_id: pitch?.districts_id,
-                                location_id: pitch?.location_id,
-                                deposit_price: pitch?.deposit_price,
-                                avatar: pitch?.avatar,
+                                _id: pitchs?._id,
+                                address: pitchs?.address,
+                                name: pitchs?.name,
+                                images: pitchs?.images,
+                                numberPitch: pitchs?.numberPitch,
+                                description: pitchs?.description,
+                                districts_id: pitchs?.districts_id,
+                                location_id: pitchs?.location_id,
+                                avatar: pitchs?.avatar,
                             });
                             showModal("edit");
                         }}
@@ -159,79 +185,87 @@ const PitchUserList = () => {
                     </Button>
                 </div>
             </div>
-            <div className="flex justify-between w-full mt-[20px]">
-                <div className=" w-full">
-                    <h1 className="text-center text-[20px] font-[600]">Thông Tin Sân</h1>
-                    <div className="text-[18px] pl-[100px] pt-[20px]">
-                        <p className="py-[5px]">Chủ Sở Hữu : <span className="italic text-gray-700">{pitchs?.admin_pitch_id?.name}</span></p>
-                        <p className="py-[5px]">Vị trí tìm kiếm : <span className="italic text-gray-700">{pitchs?.address}</span></p>
-                        <p className="py-[5px]">Số lượng sân : <span className="italic text-gray-700">{pitchs?.numberPitch} sân</span></p>
-                        <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{pitchs?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
-                        <p className="py-[5px]">Ngày tạo sân : <span className="italic text-gray-700">{pitchs?.createdAt}</span></p>
-                        <p className="py-[5px]">Ngày cập nhật sân gần nhất : <span className="italic text-gray-700">{pitchs?.updatedAt}</span></p>
-                        <p className="py-[5px] w-[500px]">Dịch vụ :
-                            <span>
-                                {pitchs && pitchs?.services?.length > 0 ? (
-                                    pitchs?.services?.map((item: any) =>
-                                        <Button size={'small'} className="text-blue-500"> {item?.name} - {item?.price?.toLocaleString('vi-VN')}</Button>
-                                    )
-                                ) : (
-                                    <Button size={'small'} className="text-blue-500"> Chưa Có Dịch Vụ</Button>
-                                )}
-                            </span>
-                        </p>
-                        <p className="py-[5px] w-[500px]">Miêu tả sân : <span className="italic w-[200px] text-gray-700"> {pitchs?.description}</span></p>
+            {!loading ? (
+                <div className="flex justify-between w-full mt-[20px]">
+                    <div className=" w-full">
+                        <h1 className="text-center text-[20px] font-[600]">Thông Tin Sân</h1>
+                        <div className="text-[18px] pl-[100px] pt-[20px]">
+                            <p className="py-[5px]">Chủ Sở Hữu : <span className="italic text-gray-700">{pitchs?.admin_pitch_id?.name || pitchs?.admin_pitch_id?.email}</span></p>
+                            <p className="py-[5px]">Vị trí tìm kiếm : <span className="italic text-gray-700">{pitchs?.address}</span></p>
+                            <p className="py-[5px]">Số lượng sân : <span className="italic text-gray-700">{pitchs?.numberPitch} sân</span></p>
+                            <p className="py-[5px]">Giá tiền giao động : <span className="text-red-400">{pitchs?.average_price?.toLocaleString('vi-VN') || pitchs?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫</span></p>
+                            <p className="py-[5px]">Ngày tạo sân : <span className="italic text-gray-700">{pitchs?.createdAt}</span></p>
+                            <p className="py-[5px]">Ngày cập nhật sân gần nhất : <span className="italic text-gray-700">{pitchs?.updatedAt}</span></p>
+                            <p className="py-[5px] w-[500px]">Dịch vụ :
+                                <span>
+                                    {pitchs && pitchs?.services?.length > 0 ? (
+                                        pitchs?.services?.map((item: any) =>
+                                            <Button size={'small'} className="text-blue-500"> {item?.name} - {item?.price?.toLocaleString('vi-VN')}</Button>
+                                        )
+                                    ) : (
+                                        <Button size={'small'} className="text-blue-500"> Chưa Có Dịch Vụ</Button>
+                                    )}
+                                </span>
+                            </p>
+                            <p className="py-[5px] w-[500px]">Miêu tả sân : <span className="italic w-[200px] text-gray-700"> {pitchs?.description}</span></p>
+                        </div>
+                    </div>
+                    <div className="pr-[20px]">
+                        <div className="">
+                            {pitchs?.images && pitchs.images.length > 0 && (
+                                <Image
+                                    width={650}
+                                    height={350}
+                                    src={pitchs?.avatar}
+                                    preview={{
+                                        src: `${pitchs?.avatar}`,
+                                    }}
+                                />
+                            )}
+                        </div>
+                        <div className="flex justify-between ">
+                            {pitchs?.images && pitchs.images.length > 0 && (
+                                <Image
+                                    width={200}
+                                    height={150}
+                                    src={pitchs?.images[0]}
+                                    preview={{
+                                        src: `${pitchs?.images[0]}`,
+                                    }}
+                                />
+                            )}
+                            {pitchs?.images && pitchs.images.length > 0 && (
+                                <Image
+                                    width={200}
+                                    height={150}
+                                    src={pitchs?.images[1]}
+                                    preview={{
+                                        src: `${pitchs?.images[1]}`,
+                                    }}
+                                />
+                            )}
+
+                            {pitchs?.images && pitchs.images.length > 0 && (
+                                <Image
+                                    width={200}
+                                    height={150}
+                                    src={pitchs?.images[2]}
+                                    preview={{
+                                        src: `${pitchs?.images[2]}`,
+                                    }}
+                                />
+                            )}
+
+                        </div>
                     </div>
                 </div>
-                <div className="pr-[20px]">
-                    <div className="">
-                        {pitchs?.images && pitchs.images.length > 0 && (
-                            <Image
-                                width={650}
-                                height={350}
-                                src={pitchs?.avatar}
-                                preview={{
-                                    src: `${pitchs?.avatar}`,
-                                }}
-                            />
-                        )}
-                    </div>
-                    <div className="flex justify-between ">
-                        {pitchs?.images && pitchs.images.length > 0 && (
-                            <Image
-                                width={200}
-                                height={150}
-                                src={pitchs?.images[0]}
-                                preview={{
-                                    src: `${pitchs?.images[0]}`,
-                                }}
-                            />
-                        )}
-                        {pitchs?.images && pitchs.images.length > 0 && (
-                            <Image
-                                width={200}
-                                height={150}
-                                src={pitchs?.images[1]}
-                                preview={{
-                                    src: `${pitchs?.images[1]}`,
-                                }}
-                            />
-                        )}
-
-                        {pitchs?.images && pitchs.images.length > 0 && (
-                            <Image
-                                width={200}
-                                height={150}
-                                src={pitchs?.images[2]}
-                                preview={{
-                                    src: `${pitchs?.images[2]}`,
-                                }}
-                            />
-                        )}
-
-                    </div>
+            ) : (
+                <div>
+                    <Spin tip="Loading" size="large">
+                        <div className="content" />
+                    </Spin>
                 </div>
-            </div>
+            )}
 
             {/*  */}
             <ModalForm
@@ -293,20 +327,9 @@ const PitchUserList = () => {
                         </Form.Item>
 
                         <Form.Item name="images" label="Ảnh Sân Bóng" rules={[{ required: true }]}>
-                            <Dragger multiple listType="picture" customRequest={customRequest}>
-                                <Button icon={<UploadOutlined />}>Upload Images</Button>
+                            <Dragger multiple listType="picture" customRequest={customRequest} defaultFileList={[...fileList]} >
+                                <Button icon={<UploadOutlined />}>Thêm Ảnh Sân</Button>
                             </Dragger>
-                        </Form.Item>
-
-                        <Form.Item
-                            name="description"
-                            label="Thông Tin Sân"
-                            rules={[
-                                { required: true },
-                                { whitespace: true, message: "${label} is required!" },
-                            ]}
-                        >
-                            <Input.TextArea rows={4} placeholder="Description" />
                         </Form.Item>
                     </div>
 
@@ -350,22 +373,22 @@ const PitchUserList = () => {
                         </Form.Item>
 
                         <Form.Item
-                            name="deposit_price"
-                            label="Giá Thấp Nhất"
-                            rules={[{ required: true, type: "number", min: 0 }]}
+                            name="description"
+                            label="Thông Tin Sân"
+                            rules={[
+                                { required: true },
+                                { whitespace: true, message: "${label} is required!" },
+                            ]}
                         >
-                            <InputNumber
-                                size="large"
-                                placeholder="Giá Thấp Nhất"
-                                style={{ width: "100%" }}
-                            />
+                            <Input.TextArea rows={4} placeholder="Description" />
                         </Form.Item>
 
                         <Form.Item name="avatar" label="Ảnh Tổng Quan" rules={[{ required: true }]}>
-                            <Dragger listType="picture" customRequest={customRequest}>
+                            <Dragger listType="picture" customRequest={customRequest} defaultFileList={[...fileAvatar]}>
                                 <Button icon={<UploadOutlined />}>Thêm Ảnh Tổng Quan</Button>
                             </Dragger>
                         </Form.Item>
+
                     </div>
                 </Form>
             </ModalForm>

@@ -8,6 +8,7 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import { deleteCommentMid, getAllCommentMid, setDataComment } from '~/Redux/Slices/commentSlide';
 import { commentPagination, getAllComment } from '~/api/comment';
+import './comment.css'
 
 interface DataType {
   key: string;
@@ -77,7 +78,7 @@ const CommentManagement = () => {
       key: item._id,
       title: item?.id_post?.title,
       name_user: item?.id_user?.name,
-      email: item?.id_user?.email,
+      email: item?.id_user?.email || "Email người dùng chưa có !",
       content: item?.content
     }
   ))

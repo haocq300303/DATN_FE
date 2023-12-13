@@ -16,11 +16,12 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const currentUser: any = {
-        _id: "655c53ed6c0689551d7528a3",
+        _id: "6574ae1aa7c00a98ffebef54",
         phone: "0788062634",
         fullname: "Trương Minh Hiếu",
         email: "hahuu02dev@gmail.com",
     };
+
     // const currentUser = undefined;
     const handleNextStep = (values: any) => {
         if (currentUser) {

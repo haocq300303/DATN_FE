@@ -8,4 +8,15 @@ export default defineConfig({
     resolve: {
         alias: [{ find: "~", replacement: "/src" }],
     },
+    server: {
+        host: 'localhost',
+        port: 3000,
+        headers: [
+            {
+              key: 'Cross-Origin-Opener-Policy',
+              value: 'same-origin',
+            },
+          ],
+    },
+    
 });
