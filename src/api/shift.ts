@@ -44,7 +44,7 @@ export const getShiftBookedByChildPitchAndNumberShift = (
 };
 
 export const changeFindOpponent = (idShift: string, data: any) => {
-  return instance.put(`shift/find-opponent-change/${idShift}`, data);
+  return instance.put(`shift/find-opponent/${idShift}`, data);
 };
 export const updateFindOpponent = (idShift: string, data: any) => {
   return instance.put(`shift/find-opponent/${idShift}`, data);

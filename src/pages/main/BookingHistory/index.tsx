@@ -1,10 +1,11 @@
 import { useGetAllBookingByUserIdQuery } from '~/Redux/booking/bookingApi';
+import { useAppSelector } from '~/Redux/hook';
 import BookingHistoryItem from '~/pages/main/BookingHistory/BookingHistoryItem';
 
 const BookingHistoryPage = () => {
-  const userId = '6574ae1aa7c00a98ffebef54';
+  const user: any = useAppSelector((state) => state.user.currentUser);
 
-  const { data: bookingHistory } = useGetAllBookingByUserIdQuery({ user_id: userId });
+  const { data: bookingHistory } = useGetAllBookingByUserIdQuery({ user_id: user?.values?._id });
 
   // const onChange: DatePickerProps["onChange"] = (date, dateString) => {
   //     console.log(date, dateString);

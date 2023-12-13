@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Select, Rate, Form, Row, Col, Slider, InputNumber, Space } from 'antd';
-import { Input } from '@material-tailwind/react';
+import { Button, Form, Input, Modal, Select } from 'antd';
 import banner from '../../assets/img/Web/banner1.png';
 import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import { fetchAllPitch } from '~/Redux/Slices/pitchSlice';
 import { toast } from 'react-toastify';
 import {
-  fetchAllShiftFindOpponent,
-  fetchFindOpponent,
+  fetchAllShiftFindOpponent
 } from '~/Redux/Slices/shiftSlice';
 import IShift from '~/interfaces/shift';
 import { matchOpponent } from '~/api/shift';
-import { format, parseISO } from 'date-fns';
 
 const FindOpponentPage = () => {
   const host = 'http://localhost:8080/api/location/';
@@ -22,10 +19,14 @@ const FindOpponentPage = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedWard, setSelectedWard] = useState('');
+  const [isModal, setIsModal] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [error, setError] = useState('');
+  const [dataMatchOpponent, setDataMatchOpponent] = useState<any>({});
 
   const dispatch = useAppDispatch();
   const shifts = useAppSelector((state) => state.shift.shift);
-  console.log(shifts);
+  const user: any = useAppSelector((state) => state.user.currentUser);
 
   const { Option } = Select;
 
@@ -62,7 +63,13 @@ const FindOpponentPage = () => {
   const handleWardChange = (value: string) => {
     setSelectedWard(value);
   };
-  // nếu ai muốn lấy
+
+  const handleComfirm = (data: any) => {
+    setDataMatchOpponent(data);
+
+    setIsModal(true);
+  };
+
   const printResult = () => {
     if (selectedCity !== '' && selectedDistrict !== '' && selectedWard !== '') {
       const city: any = cities.find((c: any) => c.id === selectedCity);
@@ -90,76 +97,60 @@ const FindOpponentPage = () => {
     }
   };
 
-  const IntegerStep = () => {
-    const [inputValue, setInputValue] = useState(1);
-
-    const onChangePrice = (newValue: number | null) => {
-      if (newValue !== null) {
-        setInputValue(newValue);
-      }
-    };
-    return (
-      <Row>
-        <Col span={12}>
-          <Slider
-            min={1}
-            max={200000}
-            onChange={onChangePrice}
-            value={typeof inputValue === 'number' ? inputValue : 0}
-          />
-        </Col>
-        <Col span={8}>
-          <InputNumber
-            min={1}
-            max={20}
-            style={{ margin: '0 16px' }}
-            value={inputValue}
-            onChange={onChangePrice}
-          />
-        </Col>
-      </Row>
-    );
-  };
-
-  const onHandleSubmit = async (idShift: any) => {
+  const onHandleSubmit = async () => {
     try {
+      if(!user.values.phone_number){
+        const phoneRegex = /^[0-9]{10,}$/;
+    
+        if (!phoneNumber) {
+          setError('Vui lòng nhập số điện thoại!');
+          return;
+        }
+    
+        if (!phoneRegex.test(phoneNumber)) {
+          setError('Vui lòng nhập số điện thoại hợp lệ');
+          return;
+        }
+    
+        setError('')
+      }
+
       const data = {
-        idUserFindOpponent: '655f1711c3dfbd0adea3ce3e',
-        email: 'chuhao878@gmail.com',
-        phone_number: '0347656836',
-        nameUserFindOpponent: 'Chu Quang Hào',
+        idUserFindOpponent: dataMatchOpponent?.user?._id,
+        email: dataMatchOpponent?.user?.email,
+        phone_number:  dataMatchOpponent?.user?.phone_number,
+        nameUserFindOpponent:  dataMatchOpponent?.user?.name,
       };
-      const value = { find_opponent: false };
 
       await matchOpponent(data);
-      await dispatch(fetchFindOpponent({ idShift, value }));
-
       toast(
-        '🦄 Ghép kèo thành công. Thông tin đối thủ đã được gửi về sms của bạn!',
+        "🦄 Ghép kèo thành công. Thông tin đối đã được gửi về email của bạn!",
         {
-          position: 'top-right',
+          position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: 'light',
+          theme: "light",
         }
       );
-    } catch (error) {
-      toast.error('🦄 Lỗi Server!', {
-        position: 'top-right',
+      setIsModal(false)
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message, {
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: 'light',
-      });
+        theme: "light",
+      })
     }
   };
+
   return (
     <div className="bg-[#f3f3f5]">
       <div className="bannerPpitchPage relative ">
@@ -222,48 +213,17 @@ const FindOpponentPage = () => {
       </div>
 
       <div className="container flex justify-center mx-auto pb-20">
-        <div className="pitch flex gap-[30px] mt-[40px] w-full">
-          <div className="sidebar-pitch xl:w-[25%] md:w-[100%]">
-            <Form>
-              <Form.Item>
-                <p className="mb-[15px] text-[23px] font-[600]">
-                  Tìm kiếm theo tên
-                </p>
-                <Input
-                  label="Tìm Tên Sân ..."
-                  className=" bg-[white]"
-                  crossOrigin="anonymous"
-                />
-              </Form.Item>
-
-              <div className="style-header-pitch my-[30px]"></div>
-              <Form.Item>
-                <p className="mb-[10px] text-[23px] font-[600]">
-                  Lọc theo đánh giá
-                </p>
-                <Rate allowHalf defaultValue={2.5} />
-              </Form.Item>
-              <div className="style-header-pitch my-[30px]"></div>
-
-              <Form.Item>
-                <p className="mb-[10px] text-[23px] font-[600]">Lọc theo giá</p>
-
-                <Space style={{ width: '100%' }} direction="vertical">
-                  <IntegerStep />
-                </Space>
-              </Form.Item>
-              <div className="style-header-pitch my-[30px]"></div>
-            </Form>
-          </div>
+        <div className="pitch mt-[40px] w-full">
+         
 
           {/* sân bóng ở đây */}
-          <div className="right-pitch xl:w-[75%]">
+          <div className="right-pitch">
             <div className="header-pitch">
               <div className="container mx-auto flex justify-between">
                 <div>
-                  <p>
+                  {/* <p>
                     <span>2368</span> Kết quả :
-                  </p>
+                  </p> */}
                   <h1 className="text-[23px] font-sans text-[#343434] relative font-[600]">
                     Kết quả tìm kiếm : <span>{printResult()}</span>
                   </h1>
@@ -271,11 +231,11 @@ const FindOpponentPage = () => {
               </div>
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
-              <div className="flex flex-wrap gap-[30px] mt-[40px]">
+              <div className="flex flex-wrap mt-[40px] mx-[-8px]">
                 {shifts?.map((item: IShift) => (
-                  <div
-                    key={item._id}
-                    className="relative w-[50%] flex max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg"
+                 <div key={item._id} className='w-[33%] px-[8px] mb-[24px]'>
+                   <div
+                    className="relative flex max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg"
                   >
                     <div className="relative mx-4 mt-4 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 bg-clip-border shadow-blue-gray-500/40">
                       <img
@@ -289,22 +249,7 @@ const FindOpponentPage = () => {
                         <h5 className="block font-bold font-sans text-xl antialiased leading-snug tracking-normal text-blue-gray-900">
                           {item?.id_pitch?.name}
                         </h5>
-                        <p className="flex items-center gap-1.5 font-sans text-base font-normal leading-relaxed text-blue-gray-900 antialiased">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            aria-hidden="true"
-                            className="-mt-0.5 h-5 w-5 text-yellow-700"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                          5.0
-                        </p>
+                       
                       </div>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
                         <span className="text-pink-500">Vị trí:</span>{' '}
@@ -317,7 +262,7 @@ const FindOpponentPage = () => {
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
                         <span className="text-pink-500"> Ca sân:</span> Ca{' '}
                         {item.number_shift}
-                        {` (${item.start_time} - ${item.end_time})`}
+                        {` (${item.start_time}h - ${item.end_time}h)`}
                       </p>
                       <div className="flex items-center justify-between">
                         <p className="block font-sans text-base antialiased font-light leading-relaxed text-pink-500">
@@ -327,34 +272,117 @@ const FindOpponentPage = () => {
                           <img
                             className="inline-block h-8 w-8 rounded-full object-cover object-center mr-2"
                             alt="Image placeholder"
-                            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+                            src="https://res.cloudinary.com/dn3jydehx/image/upload/v1702435936/no-user-image_gkpyv1.jpg"
                           />
                           <p className="inline-block font-sans text-sm font-medium leading-normal text-blue-gray-900">
-                            Chu Quang Hào
+                          {item?.user ? item?.user?.name : "Thằng nào xóa booking rồi"}
                           </p>
                         </div>
                       </div>
                       <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
                         <span className="text-pink-500">Ngày:</span>{' '}
-                        {format(parseISO(item.date), 'yyyy-MM-dd')}
+                       {item.date[0]}
                       </p>
                     </div>
                     <div className="px-6 pb-4 pt-0">
                       <button
-                        onClick={() => onHandleSubmit(item._id)}
-                        className="block w-full select-none rounded-lg bg-pink-500 py-3.5 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        onClick={() => 
+                          handleComfirm(item)
+                        }
+                        className="block w-full select-none rounded-lg bg-pink-500 py-3 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         type="button"
                       >
                         Ghép kèo
                       </button>
                     </div>
                   </div>
+                 </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={isModal}
+        onOk={() => setIsModal(false)}
+        onCancel={() => setIsModal(false)}
+        width="500px"
+        footer={null}
+      >
+        <div className="flex text-[#003553] min-h-[400px] gap-[28px]">
+          <div className="mb-[8px] w-full rounded-xl shadow-md bg-white overflow-hidden">
+            <h3 className="text-xl  bg-[linear-gradient(36deg,#1fd392,#00e0ff)] p-2 text-white text-center font-bold">
+              Thông tin sân bóng
+            </h3>
+
+            <div className="px-8 py-6">
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[10px]">
+                <span className="inline-block min-w-[160px]">Sân bóng: </span>
+                <span className="font-bold">{dataMatchOpponent?.id_pitch?.name}</span>
+              </p>
+              {/* <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[100px]">Địa chỉ: </span>
+                <span className="font-bold">{dataMatchOpponent?.id_pitch?.address}</span>
+              </p> */}
+                <p className="text-[14px] font-normal mt-[-4px] mb-[16px]">
+                {dataMatchOpponent?.id_pitch?.address}
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[160px]">Ca: </span>
+                <span className="font-bold">{dataMatchOpponent?.number_shift}</span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[160px]">Thời gian: </span>
+                <span className="font-bold">
+                  ( {dataMatchOpponent?.start_time}h - {dataMatchOpponent?.end_time}h )
+                </span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[160px]">Ngày: </span>
+                <span className="font-bold">{dataMatchOpponent?.date && dataMatchOpponent?.date[0]}</span>
+              </p>
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[160px]">Giá: </span>
+                <span className="font-bold">
+                  {dataMatchOpponent?.price?.toLocaleString("it-IT", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </span>
+              </p>
+             
+              <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
+                <span className="inline-block min-w-[160px]">Tài khoản đặt sân: </span>
+                <span className="font-bold"> {dataMatchOpponent?.user?.name}</span>
+              </p>
+               <div className={`mb-[8px] ${!user.values.phone_number ? "" : "hidden"}`}>
+              <span className="inline-block min-w-[160px] text-[16px] font-semibold mb-[8px]">
+                  Vui lòng nhập số điện thoại của bạn
+                </span>
+                 {!user.values.phone_number && <Form.Item
+                      validateStatus={error ? 'error' : ''}
+                      help={error}
+                  >
+                      <Input
+                      size='large'
+                        className="w-[75%]"
+                        placeholder="Nhập số điện thoại"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                  </Form.Item>}
+                 
+                </div>
+            </div>
+          </div>
+          
+        </div>
+
+        <div className="flex justify-end">
+          <Button onClick={onHandleSubmit}>Xác nhận</Button>
+        </div>
+      </Modal>
     </div>
   );
 };
