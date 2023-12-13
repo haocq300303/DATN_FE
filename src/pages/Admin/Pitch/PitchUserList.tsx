@@ -131,7 +131,7 @@ const PitchUserList = () => {
 
       const images = values?.images?.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values?.images?.fileList?.map((response: any) => response?.response?.data?.url || response?.url)
+        values?.images?.fileList?.map((response: any) => response?.response?.data?.url || response?.url)
         : values.images;
       const avatar = values.avatar.fileList
         ? values?.avatar?.fileList[0]?.response?.data?.url || values?.avatar?.fileList[0]?.url
@@ -289,7 +289,7 @@ const PitchUserList = () => {
       )}
 
       {/*  */}
-      <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
+      <ModalForm classNames="!w-[1100px]" isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
         {modalMode === 'edit' && (
           <Form.Item name="_id" initialValue={pitchs?._id} style={{ display: 'none' }}>
             <Input />
@@ -327,7 +327,7 @@ const PitchUserList = () => {
             </Form.Item>
           </div>
 
-          <div className="w-1/2">
+          <div className="w-1/2 pr-[20px]">
             <Form.Item label="Tỉnh" rules={[{ required: true }]}>
               <Select onChange={handleCityChange} size="large" placeholder="---- Tỉnh ----">
                 {cities.map((item: { id: string; name: string }) => (

@@ -117,9 +117,7 @@ const PostPage = () => {
                       {post.title}
                     </Link>
                   </h2>
-
-                  <p className="mb-8 text-gray-500">{post?.description?.substring(0, 100)}...</p>
-
+                  <div className="mb-8 text-gray-500" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
                   <div className="mt-auto flex items-end justify-between">
                     <div className="flex items-center gap-2">
                       <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">

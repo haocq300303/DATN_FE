@@ -504,7 +504,7 @@ const PitchPage = () => {
                       <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
                         <div className="imgae-item-pitch col-span-5">
                           <img
-                            src={pitch.avatar}
+                            src={pitch?.avatar}
                             className="rounded-l-[20px] h-[250px] object-cover"
                             width="100%"
                             alt=""
@@ -513,7 +513,7 @@ const PitchPage = () => {
 
                         <div className="text-item-pitch col-span-7 ml-[20px]">
                           <h3 className=" text-[23px] font-[600] font-sans">
-                            {pitch.name}
+                            {pitch?.name}
                           </h3>
                           <Rate
                             disabled
@@ -524,10 +524,10 @@ const PitchPage = () => {
                           />
                           <span>( {pitch?.feedback_id?.length} Review)</span>
                           <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                          <p>Số Sân Trống : 3/4</p>
+                          <p>Vị Trí Sân : {pitch?.address}</p>
                           <p className="flex justify-between my-[10px]">
                             Dịch Vụ :
-                            {pitch.services.map((data: any) => {
+                            {pitch?.services?.map((data: any) => {
                               // console.log("data Sê vít", data);
                               const service = services.find(
                                 (item) => item._id == data._id
@@ -548,7 +548,7 @@ const PitchPage = () => {
                               </del>
                             </span>
                             <span className="text-[23px] text-[#ffb932] text-bold">
-                              {pitch.average_price.toLocaleString("vi-VN")} -
+                              {pitch?.average_price?.toLocaleString("vi-VN")} -
                               850.000
                             </span>
                           </p>
@@ -565,7 +565,7 @@ const PitchPage = () => {
               <Pagination
                 current={currentPage}
                 total={totalItems}
-                pageSize={5}
+                pageSize={7}
                 onChange={handlePageChange}
               />
             </div>
