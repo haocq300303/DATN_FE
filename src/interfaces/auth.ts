@@ -1,17 +1,13 @@
 import * as Yup from 'yup';
 
 export const signinSchema = Yup.object({
-  email: Yup.string()
-    .email('Email không hợp lệ')
-    .required('Vui lòng không được để trống'),
+  email: Yup.string().email('Email không hợp lệ').required('Vui lòng không được để trống'),
   password: Yup.string().min(6).required('Vui lòng không được để trống'),
 });
 
 export const signupSchema = Yup.object({
-  name: Yup.string().required('Trường dữ liệu bắt buộc'),
-  email: Yup.string()
-    .email('Email không hợp lệ')
-    .required('Trường dữ liệu bắt buộc'),
+  name: Yup.string().trim().required('Trường dữ liệu bắt buộc'),
+  email: Yup.string().email('Email không hợp lệ').required('Trường dữ liệu bắt buộc'),
   password: Yup.string().min(6).required('Trường dữ liệu bắt buộc'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')

@@ -45,14 +45,11 @@ const ServiceManagement = () => {
   const services = useAppSelector((state) => state.service.services);
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
-  const userAll = useAppSelector((state) => state.user);
-  
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
 
   const searchInput = useRef<InputRef>(null);
-
-  console.log("Người dùng",userAll);
+  const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
   
 
   
@@ -260,7 +257,7 @@ const ServiceManagement = () => {
     },
   ];
   const data = services
-  .filter((item: IService) => item.admin_pitch_id === user.values._id)
+  .filter((item: IService) => item.pitch_id === pitchLocal._id)
   .map((item: IService, index: number) => ({
     ...item,
     key: index,
@@ -287,8 +284,7 @@ const ServiceManagement = () => {
         ({ response }: any) => response.data.url
       );
       const url = urls[0]
-      const newValues = { ...values,admin_pitch_id: user.values._id, image: url, pitch_id: "653ca3ee5d70cbab41a2e5d5" };
-        console.log(newValues);
+      const newValues = { ...values,admin_pitch_id: user.values._id, image: url, pitch_id: pitchLocal._id };
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo dịch vụ thành công!`);
     } else if (modalMode === "edit") {
@@ -354,7 +350,6 @@ const ServiceManagement = () => {
             showModal("add");
           }}
         >
-          Tạo dịch vụ
         </Button>
       </div>
       <Table

@@ -1,9 +1,10 @@
-import { Button, Form, Input, Typography, Upload, message } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../../../Redux/hook";
-import { createPostMid } from "../../../../Redux/Slices/postSlice";
+import { Button, Form, Input, Typography, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../../Redux/hook';
+import { createPostMid } from '../../../../Redux/Slices/postSlice';
+import ReactQuill from 'react-quill';
 
 const { Dragger } = Upload;
 
@@ -16,7 +17,7 @@ const PostAdd = () => {
   };
 
   const validateMessages = {
-    required: "${label} is required!",
+    required: '${label} is required!',
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,21 +31,21 @@ const PostAdd = () => {
 
     await dispatch(createPostMid(newValues));
     message.success(`Tạo bài viết thành công!`);
-    navigate("/admin/post");
+    navigate('/admin/post');
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadFiles = async (file: any) => {
     if (file) {
-      const CLOUD_NAME = "dhwpz6l7t";
-      const PRESET_NAME = "datn-img";
-      const FOLDER_NAME = "datn-img";
+      const CLOUD_NAME = 'dhwpz6l7t';
+      const PRESET_NAME = 'datn-img';
+      const FOLDER_NAME = 'datn-img';
       const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
       const formData = new FormData();
-      formData.append("upload_preset", PRESET_NAME);
-      formData.append("folder", FOLDER_NAME);
-      formData.append("file", file);
+      formData.append('upload_preset', PRESET_NAME);
+      formData.append('folder', FOLDER_NAME);
+      formData.append('file', file);
 
       const response = await axios.post(api, formData);
 
@@ -68,28 +69,15 @@ const PostAdd = () => {
       }
     } catch (error) {
       // Xử lý lỗi nếu có
-      message.error("An error occurred while uploading the image.");
+      message.error('An error occurred while uploading the image.');
       onError(error);
     }
   };
 
   return (
-    <Form
-      {...layout}
-      name="nest-messages"
-      onFinish={onFinish}
-      style={{ maxWidth: 800 }}
-      validateMessages={validateMessages}
-    >
+    <Form {...layout} name="nest-messages" onFinish={onFinish} style={{ maxWidth: 800 }} validateMessages={validateMessages}>
       <Typography.Title level={2}>Tạo Bài viết</Typography.Title>
-      <Form.Item
-        name="title"
-        label="Title"
-        rules={[
-          { required: true },
-          { whitespace: true, message: "${label} is required!" },
-        ]}
-      >
+      <Form.Item name="title" label="Title" rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}>
         <Input size="large" placeholder="Title" />
       </Form.Item>
 
@@ -102,10 +90,7 @@ const PostAdd = () => {
       <Form.Item
         name="description"
         label="Description"
-        rules={[
-          { required: true },
-          { whitespace: true, message: "${label} is required!" },
-        ]}
+        rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}
       >
         <Input.TextArea rows={4} placeholder="Description" />
       </Form.Item>

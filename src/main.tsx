@@ -9,6 +9,7 @@ import store from "./Redux/store.ts";
 import "./index.scss";
 import "./styles/global-style.scss";
 import LoaderAllPage from "./components/LoaderAllPage/index.tsx";
+import 'react-quill/dist/quill.snow.css';
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     // <React.StrictMode>

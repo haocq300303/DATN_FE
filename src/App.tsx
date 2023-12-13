@@ -94,8 +94,8 @@ function App() {
           <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />
-                  <Route path={routes.shift} element={<Shift />} />
-                  <Route path={routes.user_admin} element={<UserList />} />
+            <Route path={routes.shift} element={<Shift />} />
+            <Route path={routes.user_admin} element={<UserList />} /> 
         </Route>
         <Route
           path={routes.admin_pitch}
