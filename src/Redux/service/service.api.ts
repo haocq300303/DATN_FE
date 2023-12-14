@@ -10,8 +10,11 @@ const serviceApi = createApi({
         getServices: builder.query<{ data: IService[] }, any>({
             query: (params) => ({ url: "/api/services", params }),
         }),
+        getServicesByPitchId: builder.query<{ data: IService[] }, string>({
+            query: (id) => ({ url: "/api/pitch/service/", id }),
+        }),
     }),
 });
 
-export const { useGetServicesQuery } = serviceApi;
+export const { useGetServicesQuery, useGetServicesByPitchIdQuery } = serviceApi;
 export default serviceApi;
