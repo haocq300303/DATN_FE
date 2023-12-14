@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import postReducer from "./Slices/postSlice";
 import commentReducer from "./Slices/commentSlide";
 import bannerSlice from "./Slices/bannerSlice";
-import serviceSlice from "./Slices/serviceSlice";
+import serviceReducer from "./Slices/serviceSlice";
 import navbar from "./Slices/navbarSlice";
 import locationReducer from "./Slices/locationSlice";
 import childrenPitchReducer from "./Slices/childrentPitch";
@@ -24,7 +24,7 @@ const store = configureStore({
         [serviceApi.reducerPath]: serviceApi.reducer,
         navbar,
         banner: bannerSlice,
-        service: serviceSlice,
+        service: serviceReducer,
         user: userReducer,
         post: postReducer,
         comment: commentReducer,

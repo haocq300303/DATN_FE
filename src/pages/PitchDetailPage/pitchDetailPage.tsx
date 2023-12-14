@@ -43,6 +43,7 @@ import Loading from "~/components/Loading";
 import ModalBookMultipleDay from "./ModalBookMultipleDay";
 import ModalBookOneShiftFullMonth from "./ModalBookOneShiftFullMonth";
 import ModalBookPitchFullMonth from "./ModalBookPitchFullMonth";
+import { login } from "~/api/auth";
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -93,6 +94,7 @@ const PitchDetailPage = () => {
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, [id]);
+  
 
   const handleComfirmBookShift = (data: any) => {
     setDataBookShift(data);

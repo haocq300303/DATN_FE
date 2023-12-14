@@ -1,75 +1,56 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Popconfirm,
-  Space,
-  Table,
-  Button,
-  message,
-  Form,
-  Input,
-  Upload,
-  InputRef,
-} from "antd";
-import type { ColumnType, ColumnsType } from "antd/es/table";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import { useEffect, useRef, useState } from "react";
-import ModalForm from "../../../../components/ModalForm/ModalForm";
-import { useAppDispatch, useAppSelector } from "../../../../Redux/hook";
-import axios from "axios";
-import {
-  createServiceMid,
-  deleteServiceMid,
-  getAllServiceMid,
-  updateServiceMid,
-} from "../../../../Redux/Slices/serviceSlice";
-import { IService } from "../../../../interfaces/service";
-import "./ServiceManagement.css";
-import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
-import Highlighter from "react-highlight-words";
-import { FilterConfirmProps } from "antd/es/table/interface";
+import { Popconfirm, Space, Table, Button, message, Form, Input, Upload, InputRef } from 'antd';
+import type { ColumnType, ColumnsType } from 'antd/es/table';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
+import { useEffect, useRef, useState } from 'react';
+import ModalForm from '../../../../components/ModalForm/ModalForm';
+import { useAppDispatch, useAppSelector } from '../../../../Redux/hook';
+import axios from 'axios';
+import { createServiceMid, deleteServiceMid, fetchServicePitch, updateServiceMid } from '../../../../Redux/Slices/serviceSlice';
+import { IService } from '../../../../interfaces/service';
+import './ServiceManagement.css';
+import Highlighter from 'react-highlight-words';
+import { FilterConfirmProps } from 'antd/es/table/interface';
 const { Dragger } = Upload;
 type DataIndex = keyof IService;
 const ServiceManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("");
+  const [modalMode, setModalMode] = useState('');
 
   const dispatch = useAppDispatch();
 
-  const services = useAppSelector((state) => state.service.services);
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-
   const searchInput = useRef<InputRef>(null);
   const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
-  
+  const id = pitchLocal._id;
 
-  
+  const servicePitch = useAppSelector((state) => state.service.services)
+
   useEffect(() => {
-    dispatch(getAllServiceMid());
-    dispatch(fetchAllPitch(""));
-  }, [dispatch]);
+    dispatch(fetchServicePitch(id))
+  }, [dispatch, id]);
 
-  const confirm = (id: string) => {
+  const services = servicePitch.map((item) => {
+   return {
+    ...item,
+    key: item._id,
+   }
+  })
+  console.log(services);
+
+
+  const confirm =  (id: string) => {
     void dispatch(deleteServiceMid(id));
   };
 
   const cancel = () => {
-    message.error("Đã hủy!");
+    message.error('Đã hủy!');
   };
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -77,38 +58,24 @@ const ServiceManagement = () => {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText("");
+    setSearchText('');
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): ColumnType<IService> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<IService> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+          style={{ marginBottom: 8, display: 'block' }}
         />
         <Space>
           <Button
             type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
+            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -116,11 +83,7 @@ const ServiceManagement = () => {
           >
             Tìm
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Xoá
           </Button>
           <Button
@@ -146,9 +109,7 @@ const ServiceManagement = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
     onFilter: (value, record: any) =>
       record[dataIndex]
         .toString()
@@ -162,10 +123,10 @@ const ServiceManagement = () => {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
+          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ""}
+          textToHighlight={text ? text.toString() : ''}
         />
       ) : (
         text
@@ -173,71 +134,63 @@ const ServiceManagement = () => {
   });
   const columns: ColumnsType<IService> = [
     {
-      title: "#",
-      dataIndex: "index",
-      key: "index",
+      title: '#',
+      dataIndex: 'index',
+      key: 'index',
       width: 50,
     },
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      ...getColumnSearchProps("name"),
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      ...getColumnSearchProps('name'),
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      ...getColumnSearchProps("price"),
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+      ...getColumnSearchProps('price'),
       sorter: (a, b) => a.price - b.price,
       render: (price) => (
         <span>
-          {price.toLocaleString("it-IT", {
-            style: "currency",
-            currency: "VND",
+          {price.toLocaleString('it-IT', {
+            style: 'currency',
+            currency: 'VND',
           })}
         </span>
       ),
     },
     {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
-      render: (image: string) => (
-        <img
-          width={140}
-          className="object-cover h-[100px]"
-          src={image}
-          alt="Img"
-        />
-      ),
+      title: 'Image',
+      dataIndex: 'image',
+      key: 'image',
+      render: (image: string) => <img width={140} className="object-cover h-[100px]" src={image} alt="Img" />,
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (record: any) => (
         <Space size="middle">
           <Button
             type="primary"
             onClick={() => {
-              const service = services?.find(
-                (service: IService) => service._id === record._id
-              );
+              const service = services?.find((service: IService) => service._id === record._id);
 
               form.setFieldsValue({
                 _id: service?._id,
                 admin_pitch_id: user.values._id,
+                pitch_id: pitchLocal._id,
                 name: service?.name,
                 price: service?.price,
                 image: service?.image,
-              });    
+              });
 
-              showModal("edit");
+              showModal('edit');
             }}
             ghost
           >
-            <EditOutlined style={{ display: "inline-flex" }} />
+            <EditOutlined style={{ display: 'inline-flex' }} />
           </Button>
           <Popconfirm
             placement="topRight"
@@ -256,12 +209,6 @@ const ServiceManagement = () => {
       ),
     },
   ];
-  const data = services
-  .filter((item: IService) => item.pitch_id === pitchLocal._id)
-  .map((item: IService, index: number) => ({
-    ...item,
-    key: index,
-  }));
 
   const showModal = (mode: string) => {
     setModalMode(mode);
@@ -274,20 +221,20 @@ const ServiceManagement = () => {
   };
 
   const validateMessages = {
-    required: "${label} is required!",
+    required: '${label} is required!',
   };
 
   const onFinish = async (values: any) => {
-    if (modalMode === "add") {
+    if (modalMode === 'add') {
       const urls = values?.image?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
       );
-      const url = urls[0]
-      const newValues = { ...values,admin_pitch_id: user.values._id, image: url, pitch_id: pitchLocal._id };
+      const url = urls[0];
+      const newValues = { ...values, admin_pitch_id: user.values._id, image: url, pitch_id: pitchLocal._id };
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo dịch vụ thành công!`);
-    } else if (modalMode === "edit") {
+    } else if (modalMode === 'edit') {
       const newImages = values.image.fileList;
       const image = newImages ? newImages[0].response.data.url : values.image;
       const newValues = { ...values, image };
@@ -301,15 +248,15 @@ const ServiceManagement = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadFiles = async (file: any) => {
     if (file) {
-      const CLOUD_NAME = "dlu4tkcct";
-      const PRESET_NAME = "datn-img";
-      const FOLDER_NAME = "datn-img";
+      const CLOUD_NAME = 'dlu4tkcct';
+      const PRESET_NAME = 'datn-img';
+      const FOLDER_NAME = 'datn-img';
       const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
       const formData = new FormData();
-      formData.append("upload_preset", PRESET_NAME);
-      formData.append("folder", FOLDER_NAME);
-      formData.append("file", file);
+      formData.append('upload_preset', PRESET_NAME);
+      formData.append('folder', FOLDER_NAME);
+      formData.append('file', file);
 
       const response = await axios.post(api, formData);
 
@@ -332,7 +279,7 @@ const ServiceManagement = () => {
       }
     } catch (error) {
       // Xử lý lỗi nếu có
-      message.error("An error occurred while uploading the image.");
+      message.error('An error occurred while uploading the image.');
       onError(error);
     }
   };
@@ -343,63 +290,36 @@ const ServiceManagement = () => {
         <Button
           type="primary"
           icon={<PlusCircleOutlined />}
-          size={"large"}
+          size={'large'}
           className="bg-[#1677ff]"
           onClick={() => {
-            form.resetFields();  
-            showModal("add");
+            form.resetFields();
+            showModal('add');
           }}
-        >
-        </Button>
+        ></Button>
       </div>
-      <Table
-        pagination={{ pageSize: 8 }}
-        columns={columns}
-        dataSource={data}
-        scroll={{ y: 100 }}
-      />
-      <ModalForm
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        form={form}
-        modalMode={modalMode}
-      >
-        <Form
-          form={form}
-          {...layout}
-          name="nest-messages"
-          onFinish={onFinish}
-          validateMessages={validateMessages}
-          layout="vertical"
-        >
-          {modalMode === "edit" && (
-          <>
-            <Form.Item name="_id" style={{ display: "none" }}>
-              <Input />
-            </Form.Item>
-             <Form.Item name="admin_pitch_id" style={{ display: "none" }}>
-             <Input />
-           </Form.Item>
-          </>
+
+      <Table pagination={{ pageSize: 8 }} dataSource={services}  columns={columns} scroll={{ y: 100 }} />
+
+      <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
+        <Form form={form} {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} layout="vertical">
+          {modalMode === 'edit' && (
+            <>
+              <Form.Item name="_id" style={{ display: 'none' }}>
+                <Input />
+              </Form.Item>
+              <Form.Item name="admin_pitch_id" style={{ display: 'none' }}>
+                <Input />
+              </Form.Item>
+              <Form.Item name="pitch_id" style={{ display: 'none' }}>
+                <Input />
+              </Form.Item>
+            </>
           )}
-          <Form.Item
-            name="name"
-            label="Tên Dịch Vụ"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} là bắt buộc!" },
-            ]}
-          >
+          <Form.Item name="name" label="Tên Dịch Vụ" rules={[{ required: true }, { whitespace: true, message: '${label} là bắt buộc!' }]}>
             <Input placeholder="Name" />
           </Form.Item>
-          <Form.Item
-            name="price"
-            label="Giá"
-            rules={[
-              { required: true, message: 'Vui lòng nhập giá!' },
-
-            ]}
-          >
+          <Form.Item name="price" label="Giá" rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}>
             <Input size="large" placeholder="Price" />
           </Form.Item>
           <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
