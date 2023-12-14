@@ -1,9 +1,10 @@
 import { ArrowRightOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row } from 'antd';
+import { Button, Col, Input, Modal, Row } from 'antd';
 import Form from 'antd/es/form';
 import { useForm } from 'antd/es/form/Form';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { IUser } from '~/interfaces/user.type';
 import { useAppSelector } from '../../../../Redux/hook';
 
 type InfoScreenProps = {
@@ -12,18 +13,12 @@ type InfoScreenProps = {
 
 const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const user = useAppSelector((state) => state.user.currentUser.values);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [newUser, setNewUser] = useState<IUser | null>(null);
+  const currentUser = useAppSelector((state) => state.user.currentUser.values);
 
   const [form] = useForm();
   const [, setSearchParams] = useSearchParams();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const currentUser: any = {
-    _id: user?._id,
-    phone: '0788062634',
-    fullname: user?.name,
-    email: user?.email,
-  };
 
   // const currentUser = undefined;
   const handleNextStep = (values: any) => {
@@ -32,9 +27,21 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
       setCurrent(1);
     }
     if (!currentUser) {
-      alert('Check sms');
-      console.log(values);
+      setNewUser(values);
+      setIsOpenModal(true);
     }
+  };
+
+  // create new account
+  const handleCreateAccount = (values: any) => {
+    const _newUser = { ...newUser, ...values };
+    // call api get token save redux store
+
+    console.log(_newUser);
+
+    // affter if token && current user
+    setSearchParams({ mode: 'order' });
+    setCurrent(1);
   };
 
   useEffect(() => {
@@ -49,7 +56,12 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
       <div className="">
         <Form
           form={form}
-          initialValues={currentUser}
+          initialValues={{
+            _id: currentUser?._id,
+            phone: currentUser?.phone,
+            fullname: currentUser?.name,
+            email: currentUser?.email,
+          }}
           key={JSON.stringify(currentUser)}
           labelCol={{ span: 12 }}
           wrapperCol={{ span: 12 }}
@@ -88,7 +100,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                name="mail_another"
+                name="email"
                 label="Địa chỉ email (nếu có)"
                 rules={[{ type: 'email' }]}
               >
@@ -97,7 +109,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
             </Col>
 
             <Col span={12}>
-              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="mail" label="Địa chỉ của bạn (nếu có)">
+              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="address" label="Địa chỉ của bạn (nếu có)">
                 <Input size="large" placeholder="Địa chỉ.." />
               </Form.Item>
             </Col>
@@ -110,6 +122,26 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
           </Row>
         </Form>
       </div>
+
+      {/* Tạo mật khẩu khi chưa đăng nhập */}
+      <Modal open={isOpenModal} footer={false}>
+        <Form labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} name="create-account" onFinish={handleCreateAccount}>
+          <Row gutter={60}>
+            <Col span={24}>
+              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 48 }} name="password" label="Nhập mật khẩu">
+                <Input.Password size="large" placeholder="Mật khẩu.." />
+              </Form.Item>
+            </Col>
+
+            <Col span={24} className="flex flex-col items-end space-x-5">
+              <Button type="primary" htmlType="submit" icon={<ArrowRightOutlined />} className="ml-6 bg-[#34e43d] text-white">
+                Tạo mật khẩu mới
+              </Button>
+              <p className="mt-3 text-xs italic ">Chúng tôi cần mật khẩu để bảo mật thông tin cho bạn!</p>
+            </Col>
+          </Row>
+        </Form>
+      </Modal>
     </div>
   );
 };
