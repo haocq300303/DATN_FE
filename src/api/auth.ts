@@ -29,6 +29,18 @@ const refetchOtp = (phone_number: string) => {
   return instance.post('refetch-otp', { phone_number });
 };
 
+const getAllUser = () => {
+  return instance.get('users');
+};
+
+const removeUser = (idUser: string) => {
+  return instance.delete(`users/${idUser}`);
+};
+
+const UserPagination = (page?: number,) => {
+  return instance.get(`users?page=${page}`);
+};
+
 export {
   signup,
   login,
@@ -37,4 +49,7 @@ export {
   loginWithGoogle,
   loginSMS,
   registerSMS,
+  getAllUser,
+  removeUser,
+  UserPagination
 };

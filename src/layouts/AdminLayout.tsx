@@ -13,6 +13,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import HeaderAdmin from "~/components/Admin/Header/Header";
 import { Link, Outlet } from "react-router-dom";
+import { routes } from "~/routes";
 
 const AdminLayout = () => {
   const [open, setOpen] = useState(1);
@@ -316,7 +317,7 @@ const AdminLayout = () => {
                   className="border-b-0 p-3"
                 >
                   <Link
-                    to={"/admin/service"}
+                    to={'/admin/user'}
                     className="flex items-center gap-2"
                   >
                     <ListItemPrefix>
@@ -344,7 +345,7 @@ const AdminLayout = () => {
                       color="blue-gray"
                       className="mr-auto font-normal"
                     >
-                      Dịch Vụ
+                      Khách hàng
                     </Typography>
                   </Link>
                 </AccordionHeader>

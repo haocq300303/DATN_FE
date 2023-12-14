@@ -34,7 +34,6 @@ import "./ServiceManagement.css";
 import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
 import Highlighter from "react-highlight-words";
 import { FilterConfirmProps } from "antd/es/table/interface";
-
 const { Dragger } = Upload;
 type DataIndex = keyof IService;
 const ServiceManagement = () => {
@@ -45,11 +44,15 @@ const ServiceManagement = () => {
 
   const services = useAppSelector((state) => state.service.services);
   const [form] = Form.useForm();
+  const user = useAppSelector((state) => state.user.currentUser);
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
 
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
+  const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
+  
 
+  
   useEffect(() => {
     dispatch(getAllServiceMid());
     dispatch(fetchAllPitch(""));
@@ -146,7 +149,7 @@ const ServiceManagement = () => {
     filterIcon: (filtered: boolean) => (
       <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
-    onFilter: (value, record) =>
+    onFilter: (value, record: any) =>
       record[dataIndex]
         .toString()
         .toLowerCase()
@@ -224,10 +227,11 @@ const ServiceManagement = () => {
 
               form.setFieldsValue({
                 _id: service?._id,
+                admin_pitch_id: user.values._id,
                 name: service?.name,
                 price: service?.price,
                 image: service?.image,
-              });
+              });    
 
               showModal("edit");
             }}
@@ -252,14 +256,12 @@ const ServiceManagement = () => {
       ),
     },
   ];
-
-  const data = services.map((item: IService, index: number) => {
-    return {
-      ...item,
-      key: index,
-      index: index + 1,
-    };
-  });
+  const data = services
+  .filter((item: IService) => item.pitch_id === pitchLocal._id)
+  .map((item: IService, index: number) => ({
+    ...item,
+    key: index,
+  }));
 
   const showModal = (mode: string) => {
     setModalMode(mode);
@@ -277,20 +279,19 @@ const ServiceManagement = () => {
 
   const onFinish = async (values: any) => {
     if (modalMode === "add") {
-      const image = values?.image?.file?.response?.data?.url;
-      const newValues = { ...values, image };
-
+      const urls = values?.image?.fileList?.map(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ({ response }: any) => response.data.url
+      );
+      const url = urls[0]
+      const newValues = { ...values,admin_pitch_id: user.values._id, image: url, pitch_id: pitchLocal._id };
       await dispatch(createServiceMid(newValues));
-      message.success(`Tạo banner thành công!`);
+      message.success(`Tạo dịch vụ thành công!`);
     } else if (modalMode === "edit") {
-      const image = values?.image?.file
-        ? values?.image?.file?.response?.data?.url
-        : values?.image;
-
+      const newImages = values.image.fileList;
+      const image = newImages ? newImages[0].response.data.url : values.image;
       const newValues = { ...values, image };
-
       const { _id, ...service } = newValues;
-
       await dispatch(updateServiceMid({ _id, service }));
       message.success(`Sửa dịch vụ thành công!`);
     }
@@ -345,11 +346,10 @@ const ServiceManagement = () => {
           size={"large"}
           className="bg-[#1677ff]"
           onClick={() => {
-            form.resetFields();
+            form.resetFields();  
             showModal("add");
           }}
         >
-          Tạo dịch vụ
         </Button>
       </div>
       <Table
@@ -373,13 +373,18 @@ const ServiceManagement = () => {
           layout="vertical"
         >
           {modalMode === "edit" && (
+          <>
             <Form.Item name="_id" style={{ display: "none" }}>
               <Input />
             </Form.Item>
+             <Form.Item name="admin_pitch_id" style={{ display: "none" }}>
+             <Input />
+           </Form.Item>
+          </>
           )}
           <Form.Item
             name="name"
-            label="Tên"
+            label="Tên Dịch Vụ"
             rules={[
               { required: true },
               { whitespace: true, message: "${label} là bắt buộc!" },
@@ -391,9 +396,8 @@ const ServiceManagement = () => {
             name="price"
             label="Giá"
             rules={[
-              { required: true, message: "Vui lòng nhập giá!" },
-              // { type: "number", message: "Vui lòng nhập số!" },
-              // { max: 6, message: "Giá không được vượt quá 6 chữ số!" },
+              { required: true, message: 'Vui lòng nhập giá!' },
+
             ]}
           >
             <Input size="large" placeholder="Price" />

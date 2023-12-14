@@ -37,6 +37,7 @@ import { useDispatch } from "react-redux";
 import { saveUserValues } from "./Redux/Slices/userSlice";
 import jwtDecode from "jwt-decode";
 import ShiftManagement from "./pages/Admin/shift/ShiftManagement";
+import UserList from "./pages/Admin/user/UserList";
 
 function App() {
   const dispatch = useDispatch();
@@ -93,7 +94,8 @@ function App() {
           <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />
-          <Route path={routes.shift} element={<Shift />} />
+            <Route path={routes.shift} element={<Shift />} />
+            <Route path={routes.user_admin} element={<UserList />} /> 
         </Route>
         <Route
           path={routes.admin_pitch}

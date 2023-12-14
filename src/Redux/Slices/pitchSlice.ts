@@ -39,6 +39,7 @@ export const fetchAllPitch = createAsyncThunk(
     }
   }
 );
+
 export const fetchAllPitchStart = createAsyncThunk(
   "pitch/fetchAllPitchStart",
   async ({ min, max }: { min: number; max: number }, thunkAPI) => {

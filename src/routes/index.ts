@@ -38,6 +38,7 @@ const routes = {
   childrenpitch_admin: "/admin-pitch/childrenpitch",
   shift_admin: "/admin-pitch/shift",
   shift_admin_management: "/admin-pitch/shift-management",
+  user_admin: '/admin/user'
 };
 
 export { routes };

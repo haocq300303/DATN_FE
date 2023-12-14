@@ -12,7 +12,7 @@ import {
   setVisibleTitle,
 } from '~/Redux/Slices/navbarSlice';
 import './Header.css';
-import { CloseOutlined, MenuOutlined} from '@ant-design/icons';
+import { CloseOutlined, MenuOutlined, UserOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { routes } from '~/routes';
 import { logout } from '~/Redux/Slices/userSlice';
@@ -30,24 +30,13 @@ import {
   Cog6ToothIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
-const profileMenuItems = [
-  {
-    label: "Tài khoản của tôi",
-    icon: UserCircleIcon,
-  },
-  {
-    label: "Chỉnh sửa tài khoản",
-    icon: Cog6ToothIcon,
-  },
-  {
-    label: "Đăng Xuất",
-    icon: PowerIcon,
-  },
-];
+import { RootState } from '~/Redux/store';
+
 const Header = () => {
   const [openNav, setOpenNav] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
- 
+  const user = useSelector((state: RootState) => state.user.currentUser);
+  const isLogged = useSelector((state: RootState) => state.user.isLogged);
   const closeMenu = () => setIsMenuOpen(false);
   React.useEffect(() => {
     window.addEventListener(
@@ -55,7 +44,20 @@ const Header = () => {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
-
+  const profileMenuItems = [
+    {
+      label: user.values.name,
+      icon: UserCircleIcon,
+    },
+    {
+      label: "Chỉnh sửa tài khoản",
+      icon: Cog6ToothIcon,
+    },
+    {
+      label: "Đăng Xuất",
+      icon: PowerIcon,
+    },
+  ];
   const navList = (
     <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
@@ -172,7 +174,7 @@ const Header = () => {
             <div className="flex items-center gap-x-1 ">
             <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end" >
       <MenuHandler>
-        <Button
+        { isLogged ?    <Button
           variant="text"
           color="blue-gray"
           className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
@@ -190,7 +192,7 @@ const Header = () => {
               isMenuOpen ? "rotate-180" : ""
             }`}
           />
-        </Button>
+        </Button> : <UserOutlined /> }
       </MenuHandler>
       <MenuList className="p-1">
         {profileMenuItems.map(({ label, icon }, key) => {
