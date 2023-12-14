@@ -37,19 +37,12 @@ const removeUser = (idUser: string) => {
   return instance.delete(`users/${idUser}`);
 };
 
-const UserPagination = (page?: number,) => {
+const updateUser = (idUser: string, params: any) => {
+  return instance.put(`users/${idUser}`, params);
+};
+
+const UserPagination = (page?: number) => {
   return instance.get(`users?page=${page}`);
 };
 
-export {
-  signup,
-  login,
-  verify,
-  refetchOtp,
-  loginWithGoogle,
-  loginSMS,
-  registerSMS,
-  getAllUser,
-  removeUser,
-  UserPagination
-};
+export { signup, login, verify, refetchOtp, loginWithGoogle, loginSMS, registerSMS, getAllUser, removeUser, UserPagination, updateUser };

@@ -1,9 +1,24 @@
-import { Popconfirm, Space, Table, Button, message, Input, InputRef } from 'antd';
+import { Popconfirm, Space, Table, Button, message, Input, InputRef, Modal, Select } from 'antd';
 import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import './index.css';
 import { useEffect, useState, useRef } from 'react';
 import Highlighter from 'react-highlight-words';
-import { getAllUser, removeUser } from '~/api/auth';
+import { getAllUser, removeUser, updateUser } from '~/api/auth';
+
+const INFOR_ROLE = [
+  {
+    value: '64b3884d222e457d74917006',
+    label: 'Admin',
+  },
+  {
+    value: '64b398ced24d6a414a3db7a5',
+    label: 'Chủ sân',
+  },
+  {
+    value: '655b87021ac3962a68ccf1b5',
+    label: 'User',
+  },
+];
 
 const UserList = () => {
   const [searchText, setSearchText] = useState('');
@@ -11,6 +26,10 @@ const UserList = () => {
   const searchInput = useRef<InputRef>(null);
   const [totalItems, setTotalItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [valueRole, setValueRole] = useState('');
+  const [idUpdate, setIdUpdate] = useState('');
+  const [defaultRole, setDefaultRole] = useState('');
 
   const fetchData = async () => {
     try {
@@ -23,9 +42,21 @@ const UserList = () => {
     }
   };
 
+  const formatRole = (dataArray: any = [], inputValue: any) => {
+    for (let i = 0; i < dataArray.length; i++) {
+      if (dataArray[i].value === inputValue) {
+        return dataArray[i].label;
+      } else if (dataArray[i].label === inputValue) {
+        return dataArray[i].value;
+      }
+    }
+    return null;
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
+
   const confirm = async (id: string) => {
     try {
       const res = await removeUser(id);
@@ -49,7 +80,7 @@ const UserList = () => {
     name: item.name,
     email: item?.email || 'N/A',
     phone_number: item.phone_number || 'N/A',
-    role_id: item.role_id,
+    role_id: formatRole(INFOR_ROLE, item.role_id),
   }));
 
   const handleSearch = (selectedKeys: string[], confirm: (param?: any) => void, dataIndex: any) => {
@@ -174,6 +205,17 @@ const UserList = () => {
       width: '10%',
       render: (record: any) => (
         <Space size="middle">
+          <Button
+            type="primary"
+            danger
+            onClick={() => {
+              setIdUpdate(record.key);
+              setIsModalOpen(true);
+              setDefaultRole(record.role_id);
+            }}
+          >
+            Sửa quyền
+          </Button>
           <Popconfirm
             placement="topRight"
             title="Xóa bài viết?"
@@ -192,19 +234,54 @@ const UserList = () => {
     },
   ];
 
+  const handleOk = async () => {
+    try {
+      const response = await updateUser(idUpdate, { role_id: valueRole });
+      if (response.status === 200) {
+        message.success('Cập nhật thành công!');
+        fetchData();
+      } else {
+        message.error(response.data?.message);
+      }
+      setIsModalOpen(false);
+    } catch (error: any) {
+      message.error(error.message);
+      setIsModalOpen(false);
+    }
+  };
+
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      className=""
-      bordered
-      pagination={{
-        current: currentPage,
-        total: totalItems,
-        pageSize: 7,
-        onChange: handlePageChange,
-      }}
-    />
+    <>
+      <Table
+        columns={columns}
+        dataSource={data}
+        className=""
+        bordered
+        pagination={{
+          current: currentPage,
+          total: totalItems,
+          pageSize: 7,
+          onChange: handlePageChange,
+        }}
+      />
+      <Modal title="Cập nhật quyền" open={isModalOpen} onOk={handleOk} onCancel={() => setIsModalOpen(false)}>
+        <Select
+          showSearch
+          defaultValue={{
+            value: formatRole(INFOR_ROLE, defaultRole),
+            label: formatRole(INFOR_ROLE, formatRole(INFOR_ROLE, defaultRole)),
+          }}
+          style={{ width: 200 }}
+          optionFilterProp="children"
+          filterOption={(input: any, option: any) => (option?.label ?? '').includes(input)}
+          filterSort={(optionA: any, optionB: any) =>
+            (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+          }
+          onChange={(value: any) => setValueRole(value)}
+          options={INFOR_ROLE}
+        />
+      </Modal>
+    </>
   );
 };
 
