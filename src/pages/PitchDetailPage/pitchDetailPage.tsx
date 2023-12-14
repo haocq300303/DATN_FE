@@ -99,6 +99,7 @@ const PitchDetailPage = () => {
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, [id]);
+  
 
   const handleComfirmBookShift = (data: any) => {
     setDataBookShift(data);

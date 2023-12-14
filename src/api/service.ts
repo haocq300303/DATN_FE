@@ -5,8 +5,8 @@ const getAllService = () => {
   return instance.get(`services`);
 };
 
-const getOneService = (idService: string) => {
-  return instance.get(`services/${idService}`);
+const getServicePitch = (idService: string) => {
+  return instance.get(`pitch/service/${idService}`);
 };
 
 const createService = (service: IService) => {
@@ -23,7 +23,7 @@ const deleteService = (idService: string) => {
 
 export {
   getAllService,
-  getOneService,
+  getServicePitch,
   createService,
   updateService,
   deleteService,

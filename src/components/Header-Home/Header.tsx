@@ -15,7 +15,6 @@ import './Header.css';
 import { CloseOutlined, MenuOutlined, UserOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { routes } from '~/routes';
-import { logout } from '~/Redux/Slices/userSlice';
 import React from "react";
 import {
   Menu,
@@ -25,9 +24,6 @@ import {
   Avatar,
 } from "@material-tailwind/react";
 import {
-  UserCircleIcon,
-  ChevronDownIcon,
-  Cog6ToothIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
 import { RootState } from '~/Redux/store';
@@ -46,16 +42,9 @@ const Header = () => {
   }, []);
   const profileMenuItems = [
     {
-      label: user.values.name,
-      icon: UserCircleIcon,
-    },
-    {
-      label: "Chỉnh sửa tài khoản",
-      icon: Cog6ToothIcon,
-    },
-    {
       label: "Đăng Xuất",
       icon: PowerIcon,
+      href: "/login",
     },
   ];
   const navList = (
@@ -172,30 +161,26 @@ const Header = () => {
           <div className="flex items-center gap-3">
             <div className="mr-4 hidden lg:block">{navList}</div>
             <div className="flex items-center gap-x-1 ">
-            <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end" >
-      <MenuHandler>
-        { isLogged ?    <Button
+            { isLogged ?   <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end" >   
+   <div className='flex items-center gap-2 border-2 border-gray-300 p-1 px-2 rounded-full'>
+   {user.values.name}
+   <MenuHandler>
+          <Button
           variant="text"
           color="blue-gray"
-          className="flex items-center gap-1 rounded-full py-0.5 pr-2 pl-0.5 lg:ml-auto"
+          className="flex items-center gap-1 rounded-full py-0.5 pr-0 pl-0.5 lg:ml-auto"
         >
           <Avatar
             variant="circular"
             size="sm"
             alt="tania andrew"
             className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+            src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
           />
-          <ChevronDownIcon
-            strokeWidth={2.5}
-            className={`h-3 w-3 transition-transform ${
-              isMenuOpen ? "rotate-180" : ""
-            }`}
-          />
-        </Button> : <UserOutlined /> }
+        </Button> 
       </MenuHandler>
-      <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon }, key) => {
+      <MenuList className="p-1 mt-2">
+        {profileMenuItems.map(({ label, icon, href }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
             <MenuItem
@@ -211,7 +196,8 @@ const Header = () => {
                 className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
                 strokeWidth: 2,
               })}
-              <Typography
+             <Link to={href}>
+             <Typography
                 as="span"
                 variant="small"
                 className="font-normal"
@@ -220,22 +206,18 @@ const Header = () => {
               >
                 {label}
               </Typography>
+             </Link>
             </MenuItem>
           );
         })}
       </MenuList>
-    </Menu>
-              <Button className="hidden lg:inline-block bg-green-800 border-none">
-                <Link
-                  to={routes.login}
-                  className="flex items-center text-white no-underline shadow-none"
-                  onClick={() => {
-                    dispatch(logout());
-                  }}
-                >
-                  Đăng Kí Đối Tác
-                </Link>
-              </Button>
+   
+   </div>
+    </Menu> : <Link to={"/login"} className='flex items-center gap-2  border-2 border-gray-400 p-1 rounded-2xl ease-linear hover:shadow-lg hover:ease-linear'>
+     <UserOutlined  className=' bg-gray-300 p-2 rounded-xl'/> 
+     Đăng Nhập
+    </Link> }
+    
             </div>
             <IconButton
               variant="text"
