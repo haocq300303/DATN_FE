@@ -163,7 +163,7 @@ const Header = () => {
             <div className="flex items-center gap-x-1 ">
             { isLogged ?   <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end" >   
    <div className='flex items-center gap-2 border-2 border-gray-300 p-1 px-2 rounded-full'>
-   {user.values.name}
+   {user.values?.name}
    <MenuHandler>
           <Button
           variant="text"
