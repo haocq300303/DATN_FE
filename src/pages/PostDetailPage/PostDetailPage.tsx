@@ -1,4 +1,4 @@
-import { Button, Empty, Form, Input, message } from 'antd';
+import { Button, Carousel, Empty, Form, Image, Input, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ const PostDetailPage = () => {
   const [post, setPost] = useState<IPost>();
   const [Char, setChar] = useState('');
   const [IdComment, setIdComment] = useState<any>();
+  console.log(post);
 
   const posts = useAppSelector((state) => state.post.posts);
   useEffect(() => {
@@ -64,6 +65,14 @@ const PostDetailPage = () => {
     }
   };
 
+
+  const contentStyle: React.CSSProperties = {
+    height: '520px',
+    color: '#fff',
+    lineHeight: '160px',
+    textAlign: 'center',
+    background: '#364d79',
+  };
   return (
     <div className="container mx-auto">
       <div className="pt-[20px]">
@@ -107,18 +116,28 @@ const PostDetailPage = () => {
           <div>
             <h4 className="block font-sans text-4xl font-semibold leading-snug text-blue-gray-900 mb-6">{post?.title}</h4>
             <div className="flex justify-center gap-[20px]">
-              <div className="m-0 overflow-hidden bg-transparent text-gray-700 h-[600px]">
-                <img src={post?.images[0]} alt="Image" className="w-full" />
+              <div className="m-0 overflow-hidden bg-transparent text-gray-700 w-[2500px] h-[520px]">
+                <Carousel autoplay>
+                  {post?.images?.map((data) => (
+                    <div>
+                      <Image
+                        style={contentStyle}
+                        width={900}
+                        src={data}
+                      />
+                    </div>
+                  ))}
+                </Carousel>
               </div>
               <div className="w-full ">
                 <h1 className="text-center text-xl font-sans font-[600]">Tin Mới Nhất</h1>
-                <div className="pt-[25px] ">
+                <div className=" ">
                   {posts && posts.length > 0 ? (
-                    posts?.slice(0, 8).map((item: IPost) => (
+                    posts?.slice(0, 6).map((item: IPost) => (
                       <a key={item?._id} href={`/post/${item._id}`}>
-                        <div className="flex justify-center items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
-                          <img className="w-[100px] rounded-md" src={item?.images[0]} alt="" />
-                          <h1>{item?.title}</h1>
+                        <div className="flex items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
+                          <img className="w-[100px] h-[70px] rounded-md" src={item?.images[0]} alt="" />
+                          <h1 className='w-[330px]'>{item?.title}</h1>
                         </div>
                       </a>
                     ))

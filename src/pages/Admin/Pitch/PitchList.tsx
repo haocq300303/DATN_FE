@@ -267,8 +267,9 @@ const PitchList = () => {
             onCancel={cancel}
             okText="Đồng ý"
             cancelText="Không"
+            className='bg-red-500'
           >
-            <Button type="primary" danger>
+            <Button className='bg-red-500' type="primary" danger>
               <DeleteOutlined style={{ display: 'inline-flex' }} />
             </Button>
           </Popconfirm>

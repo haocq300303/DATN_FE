@@ -165,7 +165,9 @@ const PostManagement = () => {
       key: 'description',
       dataIndex: 'description',
       render: (text) => {
-        return text.slice(0, 50).concat(' . . .');
+        return (
+          <div dangerouslySetInnerHTML={{ __html: text.slice(0, 50).concat(' . . .') }} />
+        );
       },
     },
     Table.EXPAND_COLUMN,
@@ -258,11 +260,14 @@ const PostManagement = () => {
       const newValues = { ...values, images };
 
       await dispatch(createPostMid(newValues));
+      await dispatch(getAllPostMid());
       message.success(`Tạo bài viết thành công!`);
     } else if (modalMode === 'edit') {
+      console.log("values", values);
+
       const newImages = values.images.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          values.images.fileList.map(({ response }: any) => response.data.url)
+        values.images.fileList.map(({ response }: any) => response.data.url)
         : values.images;
 
       const newValues = { ...values, images: newImages };
@@ -332,7 +337,7 @@ const PostManagement = () => {
         dataSource={data}
         bordered
         expandable={{
-          expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+          expandedRowRender: (record) => <p style={{ margin: 0 }} dangerouslySetInnerHTML={{ __html: record.description }} />,
         }}
         pagination={{
           current: currentPage,
