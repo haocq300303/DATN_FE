@@ -36,12 +36,13 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
+  phone?: string;
 }
 
 export interface UserState {
   loading: boolean;
   currentUser: {
-    values: IUser;
+    values: IUser | null;
     accessToken: string;
   };
   isLogged: boolean;

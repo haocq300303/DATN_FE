@@ -6,7 +6,7 @@ import { login, loginWithGoogle, verify } from '~/api/auth';
 const initialState: UserState = {
   loading: false,
   currentUser: {
-    values: {} as IUser,
+    values: null,
     accessToken: '',
   },
   isLogged: false,
@@ -15,43 +15,34 @@ const initialState: UserState = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const verifyAsync: any = createAsyncThunk(
-  'user/verify',
-  async ({ email, otpCode }: IVerify, { rejectWithValue }) => {
-    try {
-      const res = await verify(email, otpCode);
-      return res.data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+export const verifyAsync: any = createAsyncThunk('user/verify', async ({ email, otpCode }: IVerify, { rejectWithValue }) => {
+  try {
+    const res = await verify(email, otpCode);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error);
   }
-);
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const loginAsync: any = createAsyncThunk(
-  'user/login',
-  async (values: SigninForm, { rejectWithValue }) => {
-    try {
-      const res = await login(values);
-      return res.data.data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+export const loginAsync: any = createAsyncThunk('user/login', async (values: SigninForm, { rejectWithValue }) => {
+  try {
+    const res = await login(values);
+    return res.data.data;
+  } catch (error) {
+    return rejectWithValue(error);
   }
-);
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const loginWithGoogleAsync: any = createAsyncThunk(
-  'user/loginWithGoogle',
-  async (idToken: string, { rejectWithValue }) => {
-    try {
-      const res = await loginWithGoogle(idToken);
-      return res.data.data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
+export const loginWithGoogleAsync: any = createAsyncThunk('user/loginWithGoogle', async (idToken: string, { rejectWithValue }) => {
+  try {
+    const res = await loginWithGoogle(idToken);
+    return res.data.data;
+  } catch (error) {
+    return rejectWithValue(error);
   }
-);
+});
 
 const userSlice = createSlice({
   name: 'user',
@@ -110,7 +101,7 @@ const userSlice = createSlice({
           state.error = action.payload?.message;
           state.loading = false;
         } else {
-          const decode: any = jwtDecode(action.payload?.accessToken, {header: true});
+          const decode: any = jwtDecode(action.payload?.accessToken, { header: true });
           state.currentUser.values = decode;
           state.currentUser.accessToken = action.payload?.accessToken;
           state.isLogged = true;
