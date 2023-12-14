@@ -22,28 +22,17 @@ const ServiceManagement = () => {
 
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
+  const servicePitch = useAppSelector((state) => state.service.services);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
   const id = pitchLocal._id;
 
-  const servicePitch = useAppSelector((state) => state.service.services)
-
   useEffect(() => {
-    dispatch(fetchServicePitch(id))
+    dispatch(fetchServicePitch(id));
   }, [dispatch, id]);
-
-  const services = servicePitch.map((item) => {
-   return {
-    ...item,
-    key: item._id,
-   }
-  })
-  console.log(services);
-
-
-  const confirm =  (id: string) => {
+  const confirm = (id: string) => {
     void dispatch(deleteServiceMid(id));
   };
 
@@ -132,6 +121,7 @@ const ServiceManagement = () => {
         text
       ),
   });
+
   const columns: ColumnsType<IService> = [
     {
       title: '#',
@@ -209,7 +199,12 @@ const ServiceManagement = () => {
       ),
     },
   ];
-
+  const services = servicePitch.map((item) => {
+    return {
+      ...item,
+      key: item._id,
+    };
+  });
   const showModal = (mode: string) => {
     setModalMode(mode);
     setIsModalOpen(true);
@@ -299,7 +294,7 @@ const ServiceManagement = () => {
         ></Button>
       </div>
 
-      <Table pagination={{ pageSize: 8 }} dataSource={services}  columns={columns} scroll={{ y: 100 }} />
+      <Table pagination={{ pageSize: 8 }} dataSource={services} columns={columns} scroll={{ y: 100 }} />
 
       <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
         <Form form={form} {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} layout="vertical">
@@ -319,7 +314,7 @@ const ServiceManagement = () => {
           <Form.Item name="name" label="Tên Dịch Vụ" rules={[{ required: true }, { whitespace: true, message: '${label} là bắt buộc!' }]}>
             <Input placeholder="Name" />
           </Form.Item>
-          <Form.Item name="price" label="Giá" rules={[{ required: true, message: 'Vui lòng nhập giá!' }]}>
+          <Form.Item name="price" label="Giá" rules={[{ required: true, type: "number", min: 1, max: 6 }]}>
             <Input size="large" placeholder="Price" />
           </Form.Item>
           <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
@@ -332,5 +327,4 @@ const ServiceManagement = () => {
     </>
   );
 };
-
 export default ServiceManagement;

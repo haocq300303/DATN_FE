@@ -17,6 +17,7 @@ import {
   Empty,
   Form,
   Image,
+  Input,
   Modal,
   Rate,
   Space,
@@ -43,7 +44,7 @@ import Loading from "~/components/Loading";
 import ModalBookMultipleDay from "./ModalBookMultipleDay";
 import ModalBookOneShiftFullMonth from "./ModalBookOneShiftFullMonth";
 import ModalBookPitchFullMonth from "./ModalBookPitchFullMonth";
-import { login } from "~/api/auth";
+import { updateUser } from "~/api/user";
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -69,8 +70,12 @@ const PitchDetailPage = () => {
     useState<boolean>(false);
   const [isModalBookPitchMonth, setIsModalBookPitchMonth] =
     useState<boolean>(false);
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [error, setError] = useState('');
+
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
+  const user: any = useAppSelector((state) => state.user.currentUser);
 
   const onChangeFindOpponent = (checked: boolean) => {
     setFindOpponent(checked);
@@ -102,7 +107,25 @@ const PitchDetailPage = () => {
     setModalBookShift(true);
   };
 
-  const onFinishModalBookShift = () => {
+  const onFinishModalBookShift = async () => {
+    if(!user.values.phone_number && findOpponent){
+      const phoneRegex = /^[0-9]{10,}$/;
+  
+      if (!phoneNumber) {
+        setError('Vui lòng nhập số điện thoại!');
+        return;
+      }
+  
+      if (!phoneRegex.test(phoneNumber)) {
+        setError('Vui lòng nhập số điện thoại hợp lệ');
+        return;
+      }
+  
+      setError('');
+      await updateUser(user.values._id, {phone_number: phoneNumber})
+    }
+
+
     sessionStorage.setItem(
       "infoBooking",
       JSON.stringify({
@@ -484,12 +507,12 @@ const PitchDetailPage = () => {
 
                         if (
                           (inputDate.getFullYear() ===
-                            currentTime.getFullYear() &&
-                            inputDate.getMonth() === currentTime.getMonth() &&
-                            inputDate.getDate() === currentTime.getDate() &&
-                            parseInt(inputHours, 10) < currentHour) ||
-                          (parseInt(inputHours, 10) === currentHour &&
-                            parseInt(inputMinutes, 10) < currentMinutes)
+                          currentTime.getFullYear() &&
+                          inputDate.getMonth() === currentTime.getMonth() &&
+                          inputDate.getDate() === currentTime.getDate() &&
+                          parseInt(inputHours, 10) < currentHour) ||
+                        (parseInt(inputHours, 10) === currentHour &&
+                          parseInt(inputMinutes, 10) < currentMinutes)
                         ) {
                           overtime = true;
                         }
@@ -735,6 +758,23 @@ const PitchDetailPage = () => {
                   onChange={onChangeFindOpponent}
                 />
               </div>
+              <div className={`mb-[8px] ${!user.values.phone_number && findOpponent ? "" : "hidden"}`}>
+              <span className="inline-block min-w-[100px] text-[16px] font-semibold mb-[8px]">
+                  Vui lòng nhập số điện thoại của bạn
+                </span>
+                 {!user.values.phone_number && findOpponent && <Form.Item
+                      validateStatus={error ? 'error' : ''}
+                      help={error}
+                  >
+                      <Input
+                        className="w-[50%]"
+                        placeholder="Nhập số điện thoại"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                  </Form.Item>}
+                 
+                </div>
               <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">
                 Dịch vụ:
               </span>

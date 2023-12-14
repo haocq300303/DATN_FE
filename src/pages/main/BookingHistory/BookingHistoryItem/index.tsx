@@ -1,5 +1,6 @@
 import { Badge, Button } from 'antd';
 import { format } from 'date-fns';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 import { toggleFindOpponent } from '~/Redux/Slices/shiftSlice';
 import { useAppDispatch } from '~/Redux/hook';
@@ -8,8 +9,8 @@ import { IBooking } from '~/interfaces/booking.type';
 // import { IBooking } from "~/interfaces/booking.type";
 
 const BookingHistoryItem = (booking: IBooking) => {
+  const [isFindOpponent, setIsFindOpponent] = useState(booking.shift?.find_opponent)
   const dispatch = useAppDispatch();
-  console.log(booking);
 
   const handleCancelBooking = () => {
     Swal.fire({
@@ -27,15 +28,29 @@ const BookingHistoryItem = (booking: IBooking) => {
       }
     });
   };
-  // search
+
+  
   const handleToggleFindOpponent = () => {
-    dispatch(
-      toggleFindOpponent({
-        id: booking.shift?._id,
-        currentStatus: booking.shift?.find_opponent,
-      })
-    );
-    window.location.reload();
+    Swal.fire({
+      position: 'center',
+      confirmButtonText: 'Đồng ý',
+      showDenyButton: true,
+      returnInputValueOnDeny: false,
+      denyButtonText: 'Hủy',
+      title: `${isFindOpponent === 'Find' ? "Tắt trạng thái tìm đối?" : "Bật trạng thái tìm đối?"}`,
+      icon: "question"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(
+          toggleFindOpponent({
+            id: booking.shift?._id,
+            currentStatus: booking.shift?.find_opponent,
+          })
+        );
+        const newStatus = isFindOpponent === 'Find' ? 'NotFind' : 'Find';
+        setIsFindOpponent(newStatus)
+      }
+    });
   };
   return (
     <>
@@ -57,9 +72,8 @@ const BookingHistoryItem = (booking: IBooking) => {
             <div>
               <h2 className="text-lg text-gray-600">Giờ Sân</h2>
               <p className="text-base">
-                {' '}
-                <span className="text-lime-800">{booking.shift?.start_time}</span>-
-                <span className="text-green-800">{booking.shift?.end_time}</span>
+                <span className="text-lime-800">{booking.shift?.start_time}h</span> - 
+                <span className="text-green-800"> {booking.shift?.end_time}h</span>
               </p>
             </div>
           </div>
@@ -81,22 +95,22 @@ const BookingHistoryItem = (booking: IBooking) => {
             <div className="ml-8">
               <div className="flex justify-between ">
                 <h1 className="">{booking.pitch?.name}</h1>
-                <p className=" flex justify-end">{booking.shift?.price.toLocaleString('vi-VN')}đ</p>
+                {/* <p className=" flex justify-end">{booking.shift?.price?.toLocaleString('vi-VN')}đ</p> */}
               </div>
               <div className="max-h-[180px] overflow-auto">
-                {booking.services && booking.services.length > 0 ? (
+                {booking.services && booking.services.length > 0 ? (  
                   <>
                     <h2 className="text-lg text-gray-600 py-3">Các Dịch Vụ :</h2>
                     <p className="">
                       {' '}
                       {booking.services?.map((item: any) => (
-                        <div key={item.id} className="flex w-1/5 gap-2">
+                        <div key={item.id} className="flex gap-2">
                           <div className="w-20 h-12 overflow-hidden rounded-xl">
                             <img className="w-[100%]" src={item.image} alt="" />
                           </div>
                           <div>
                             <h2>{item.name}</h2>
-                            <h2>{item.price.toLocaleString('vi-VN')}đ</h2>
+                            <h2>{item.price?.toLocaleString('vi-VN')}đ</h2>
                           </div>
                         </div>
                       ))}
@@ -109,7 +123,7 @@ const BookingHistoryItem = (booking: IBooking) => {
               <div className="flex items-center justify-end">
                 {' '}
                 <h2 className="text-lg text-gray-600 py-2 pr-2">Tổng Tiền :</h2>
-                <p className="text-base"> {booking.shift?.price.toLocaleString('vi-VN')}đ</p>
+                <p className="text-base"> {booking.shift?.price?.toLocaleString('vi-VN')}đ</p>
               </div>
             </div>
           </div>
@@ -119,9 +133,9 @@ const BookingHistoryItem = (booking: IBooking) => {
               <Button
                 key={booking.shift?._id}
                 onClick={handleToggleFindOpponent}
-                className={`px-6 py-1 rounded-lg ${booking.shift?.find_opponent === 'Find' ? 'bg-red-500' : 'bg-green-500'}`}
+                className={`px-6 py-1 rounded-lg ${isFindOpponent === 'Find' ? 'bg-red-500' : 'bg-green-500'}`}
               >
-                {booking.shift?.find_opponent === 'Find' ? (
+                {isFindOpponent === 'Find' ? (
                   <span className="text-white ">Tắt Tìm Đối</span>
                 ) : (
                   <span className="text-white ">Bật Tìm Đối</span>

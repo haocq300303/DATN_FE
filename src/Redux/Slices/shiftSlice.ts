@@ -216,13 +216,16 @@ const ShiftPitchSlice = createSlice({
       .addCase(fetchFindOpponent.rejected, (state) => {
         state.isLoading = false;
       });
-      builder
-      .addCase(toggleFindOpponent.fulfilled, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(toggleFindOpponent.rejected, (state, action) => {
-        console.error('Error toggling find opponent:', action.error.message);
-      });
+      // builder
+      // .addCase(toggleFindOpponent.pending, (state) => {
+      //   state.isLoading = true;
+      // })
+      // .addCase(toggleFindOpponent.fulfilled, (state, action) => {
+      //   // state.isLoading = true;
+      // })
+      // .addCase(toggleFindOpponent.rejected, (state) => {
+      //   state.isLoading = false;
+      // });
   },
 });
 
