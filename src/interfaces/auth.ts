@@ -8,6 +8,10 @@ export const signinSchema = Yup.object({
 export const signupSchema = Yup.object({
   name: Yup.string().trim().required('Trường dữ liệu bắt buộc'),
   email: Yup.string().email('Email không hợp lệ').required('Trường dữ liệu bắt buộc'),
+  phone_number: Yup.string()
+    .required('Trường dữ liệu bắt buộc')
+    .min(10, 'Số điện thoại phải là 10 chữ số')
+    .matches(/^(0\d{0,9})$/, 'Vui lòng nhập số điện thoại hợp lệ'),
   password: Yup.string().min(6).required('Trường dữ liệu bắt buộc'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
@@ -36,7 +40,7 @@ export interface IUser {
   _id: string;
   name: string;
   email: string;
-  phone?: string;
+  phone_number?: string;
 }
 
 export interface UserState {

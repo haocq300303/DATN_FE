@@ -6,6 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { IUser } from '~/interfaces/user.type';
 import { useAppSelector } from '../../../../Redux/hook';
+import { signup } from '~/api/auth';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import jwtDecode from 'jwt-decode';
+import { saveUserValues } from '~/Redux/Slices/userSlice';
 
 type InfoScreenProps = {
   setCurrent: React.Dispatch<number>;
@@ -17,7 +22,9 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
   const [newUser, setNewUser] = useState<IUser | null>(null);
   const currentUser = useAppSelector((state) => state.user.currentUser.values);
 
+  console.log(currentUser);
   const [form] = useForm();
+  const dispatch = useDispatch();
   const [, setSearchParams] = useSearchParams();
 
   // const currentUser = undefined;
@@ -33,15 +40,37 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
   };
 
   // create new account
-  const handleCreateAccount = (values: any) => {
-    const _newUser = { ...newUser, ...values };
-    // call api get token save redux store
+  const handleCreateAccount = async (values: any) => {
+    try {
+      const _newUser = { ...newUser, ...values };
+      // call api get token save redux store
 
-    console.log(_newUser);
+      const { data } = await signup({
+        name: _newUser.fullname,
+        email: _newUser.email,
+        password: _newUser.password,
+        phone_number: _newUser.phone_number,
+      } as any);
 
-    // affter if token && current user
-    setSearchParams({ mode: 'order' });
-    setCurrent(1);
+      if (!data) {
+        toast.error('Đăng ký thất bại');
+      }
+      localStorage.setItem('accessToken', data.data.token);
+      const decode: any = jwtDecode(data.data.token);
+      dispatch(
+        saveUserValues({
+          accessToken: data.data.token,
+          values: decode,
+          role_name: decode.role_name,
+        })
+      );
+
+      // affter if token && current user
+      setSearchParams({ mode: 'order' });
+      setCurrent(1);
+    } catch (error: any) {
+      toast.error('Đăng ký thất bại', error.message);
+    }
   };
 
   useEffect(() => {
@@ -58,7 +87,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
           form={form}
           initialValues={{
             _id: currentUser?._id,
-            phone: currentUser?.phone,
+            phone_number: currentUser?.phone_number,
             fullname: currentUser?.name,
             email: currentUser?.email,
           }}
@@ -73,7 +102,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                name="phone"
+                name="phone_number"
                 label="Số điện thoại"
                 rules={[{ required: true }, { whitespace: true }]}
               >
@@ -124,7 +153,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
       </div>
 
       {/* Tạo mật khẩu khi chưa đăng nhập */}
-      <Modal open={isOpenModal} footer={false}>
+      <Modal open={isOpenModal} footer={false} onCancel={() => setIsOpenModal(false)}>
         <Form labelCol={{ span: 12 }} wrapperCol={{ span: 12 }} name="create-account" onFinish={handleCreateAccount}>
           <Row gutter={60}>
             <Col span={24}>

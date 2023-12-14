@@ -108,7 +108,7 @@ const PitchDetailPage = () => {
   };
 
   const onFinishModalBookShift = async () => {
-    if(!user.values.phone_number && findOpponent){
+    if(!user?.values?.phone_number && findOpponent){
       const phoneRegex = /^[0-9]{10,}$/;
   
       if (!phoneNumber) {
@@ -758,11 +758,11 @@ const PitchDetailPage = () => {
                   onChange={onChangeFindOpponent}
                 />
               </div>
-              <div className={`mb-[8px] ${!user.values.phone_number && findOpponent ? "" : "hidden"}`}>
+              <div className={`mb-[8px] ${!user?.values?.phone_number && findOpponent ? "" : "hidden"}`}>
               <span className="inline-block min-w-[100px] text-[16px] font-semibold mb-[8px]">
                   Vui lòng nhập số điện thoại của bạn
                 </span>
-                 {!user.values.phone_number && findOpponent && <Form.Item
+                 {!user?.values?.phone_number && findOpponent && <Form.Item
                       validateStatus={error ? 'error' : ''}
                       help={error}
                   >
