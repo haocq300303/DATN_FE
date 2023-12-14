@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Popconfirm, Space, Table, Button, message, Form, Input, Upload, InputRef } from 'antd';
+import { Popconfirm, Space, Table, Button, message, Form, Input, Upload, InputRef, InputNumber } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from 'react';
@@ -49,7 +49,6 @@ const ServiceManagement = () => {
     clearFilters();
     setSearchText('');
   };
-
   const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<IService> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -199,10 +198,11 @@ const ServiceManagement = () => {
       ),
     },
   ];
-  const services = servicePitch.map((item) => {
+  const services = servicePitch.map((item, index) => {
     return {
       ...item,
       key: item._id,
+      index: index + 1,
     };
   });
   const showModal = (mode: string) => {
@@ -214,11 +214,9 @@ const ServiceManagement = () => {
     labelCol: { span: 8 },
     wrapperCol: { span: 16 },
   };
-
   const validateMessages = {
     required: '${label} is required!',
   };
-
   const onFinish = async (values: any) => {
     if (modalMode === 'add') {
       const urls = values?.image?.fileList?.map(
@@ -293,9 +291,7 @@ const ServiceManagement = () => {
           }}
         ></Button>
       </div>
-
       <Table pagination={{ pageSize: 8 }} dataSource={services} columns={columns} scroll={{ y: 100 }} />
-
       <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
         <Form form={form} {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} layout="vertical">
           {modalMode === 'edit' && (
@@ -314,8 +310,19 @@ const ServiceManagement = () => {
           <Form.Item name="name" label="Tên Dịch Vụ" rules={[{ required: true }, { whitespace: true, message: '${label} là bắt buộc!' }]}>
             <Input placeholder="Name" />
           </Form.Item>
-          <Form.Item name="price" label="Giá" rules={[{ required: true, type: "number", min: 1, max: 6 }]}>
-            <Input size="large" placeholder="Price" />
+          <Form.Item
+            name="price"
+            label="Giá "
+            className="w-full"
+            rules={[
+              {
+                required: true,
+                type: 'number',
+                min: 1,
+              },
+            ]}
+          >
+            <InputNumber className="w-full" size="large" placeholder="Giá Ca" />
           </Form.Item>
           <Form.Item name="image" label="Ảnh" rules={[{ required: true }]}>
             <Dragger multiple listType="picture" customRequest={customRequest}>

@@ -32,7 +32,6 @@ const ChildrentPitch = () => {
   const [modalMode, setModalMode] = useState("");
   const [childrenPitchs, setShildrenPitchs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -44,10 +43,8 @@ const ChildrentPitch = () => {
       setIsLoading(false);
     })();
   }, []);
-
   const confirm = async (id: string) => {
     await getDeleteChildrentPitch(id);
-
     const newData = childrenPitchs?.filter(
       (chilPitch: any) => chilPitch._id !== id
     );
@@ -191,9 +188,7 @@ const ChildrentPitch = () => {
         idParentPitch: "653ca30f5d70cbab41a2e5d0",
         image: values?.image?.file?.response?.data?.url,
       });
-
       const newData = [...childrenPitchs, data.data];
-
       setShildrenPitchs(newData);
       message.success(`Tạo sân thành công!`);
     } else if (modalMode === "edit") {

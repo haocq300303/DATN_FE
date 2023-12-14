@@ -11,13 +11,9 @@ import { getUserPitch } from '~/api/pitch';
 const AdminPitchLayout = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [open, setOpen] = useState(1);
-  // const onClick: MenuProps['onClick'] = (e: any) => {
-  //   setCurrent(e.key);
-  // };
   const handleOpen = (value: number) => {
     setOpen(value);
   };
-
   const fetchUserByPitch = async () => {
     const res = await getUserPitch();
     if (res.status === 200) {
@@ -27,11 +23,9 @@ const AdminPitchLayout = () => {
       setIsModalOpen(true);
     }
   };
-
   useEffect(() => {
     fetchUserByPitch();
   }, []);
-
   return (
     <>
       <HeaderAdmin />
