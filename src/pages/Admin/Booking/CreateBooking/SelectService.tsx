@@ -36,7 +36,7 @@ const SelectService = ({
   setDataBooking: Dispatch<DataBookingType>;
   dataBooking: DataBookingType;
 }) => {
-  const { data, isFetching } = useGetServicesQuery({ pitch_id: "" });
+  const { data, isFetching } = useGetServicesByPitchIdQuery({ pitch_id: "" });
 
   const [selectedServices, setSelectedServices] = useState<IService[]>([]);
 
