@@ -1,22 +1,17 @@
-import { Button, Radio } from "antd";
-import { memo, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { useNewBookingAffterPayMutation } from "~/Redux/booking/bookingApi";
-import { useAppSelector } from "~/Redux/hook";
-import { sendMail } from "~/api/email";
-import {
-  bookChildrenPicthFullMonth,
-  bookMultipleDay,
-  bookOneShiftFullMonth,
-  getCreatShift,
-} from "~/api/shift";
-import { createUrlVnpay } from "~/api/vnpay.api";
-import { hideLoader, showLoader } from "~/components/LoaderAllPage";
-import { Show } from "~/components/Show";
-import { IInfoBooking } from "~/interfaces/booking.type";
-import IShift from "~/interfaces/shift";
+import { Button, Radio } from 'antd';
+import { memo, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
+import { useNewBookingAffterPayMutation } from '~/Redux/booking/bookingApi';
+import { useAppSelector } from '~/Redux/hook';
+import { sendMail } from '~/api/email';
+import { bookChildrenPicthFullMonth, bookMultipleDay, bookOneShiftFullMonth, getCreatShift } from '~/api/shift';
+import { createUrlVnpay } from '~/api/vnpay.api';
+import { hideLoader, showLoader } from '~/components/LoaderAllPage';
+import { Show } from '~/components/Show';
+import { IInfoBooking } from '~/interfaces/booking.type';
+import IShift from '~/interfaces/shift';
 
 type BookingScreenProps = {
   setCurrent: React.Dispatch<number>;
@@ -35,14 +30,6 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   //
   const [newBooking] = useNewBookingAffterPayMutation();
   const user: any = useAppSelector((state) => state.user.currentUser);
-
-  // Get redux store
-  // const currentUser: any = {
-  //   _id: '6574ae1aa7c00a98ffebef54',
-  //   phone: '0788062634',
-  //   fullname: 'Trương Minh Hiếu',
-  //   email: 'hahuu02dev@gmail.com',
-  // };
 
   const handleChangeModeBanking = (e: any) => {
     if (e.target.value === 1) {
@@ -103,13 +90,13 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
         const _infoBooking = {
           pitch_id: infoBooking?.pitch?._id,
           user_id: user.values._id,
-          shift_id: "",
+          shift_id: '',
           children_pitch_id: infoBooking?.children_pitch?._id,
           payment_id: paymentId,
           service_ids: serviceIds,
         };
 
-        if (infoBooking?.type === "singleDay") {
+        if (infoBooking?.type === 'singleDay') {
           const dataBooking: IShift = {
             id_pitch: infoBooking?.pitch?._id,
             id_chirlden_pitch: infoBooking?.children_pitch?._id,
@@ -125,7 +112,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           const { data } = await getCreatShift(dataBooking);
 
           _infoBooking.shift_id = data?.data?._id;
-        } else if (infoBooking?.type === "multipleDay") {
+        } else if (infoBooking?.type === 'multipleDay') {
           const dataBooking: IShift = {
             id_pitch: infoBooking?.pitch?._id,
             id_chirlden_pitch: infoBooking?.children_pitch?._id,
@@ -140,7 +127,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           const { data } = await bookMultipleDay(dataBooking);
 
           _infoBooking.shift_id = data?.data?._id;
-        } else if (infoBooking?.type === "bookOneShiftFullMonth") {
+        } else if (infoBooking?.type === 'bookOneShiftFullMonth') {
           const dataBooking: IShift = {
             id_pitch: infoBooking?.pitch?._id,
             id_chirlden_pitch: infoBooking?.children_pitch?._id,
@@ -155,7 +142,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           const { data } = await bookOneShiftFullMonth(dataBooking);
 
           _infoBooking.shift_id = data?.data?._id;
-        } else if (infoBooking?.type === "bookChildrenPicthFullMonth") {
+        } else if (infoBooking?.type === 'bookChildrenPicthFullMonth') {
           const dataBooking: IShift = {
             id_pitch: infoBooking?.pitch?._id,
             id_chirlden_pitch: infoBooking?.children_pitch?._id,
@@ -171,7 +158,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
 
           _infoBooking.shift_id = data?.data?._id;
         } else {
-          toast.error("Không có kiểu đặt lịch !!!");
+          toast.error('Không có kiểu đặt lịch !!!');
         }
 
         newBooking(_infoBooking as any)
@@ -179,7 +166,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           .then((result) => {
             // Send build to user
             sendMail({
-              email_to:  user.values.email,
+              email_to: user.values.email,
               subject: 'FSport send bill to!!',
               content: 'Nội dung',
               html: 'Nội dung bill',
@@ -247,7 +234,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
               <div className="text-[#422eb1] font-semibold mr-3 flex justify-between w-[100px]">
                 Chi phí <span>:</span>{' '}
               </div>
-              <span className="flex-1 text-[#242424]">{infoBooking?.shift?.price?.toLocaleString()} VNĐ</span>
+              <span className="flex-1 text-[#242424]">{infoBooking?.shift?.shiftPrice?.toLocaleString()} VNĐ</span>
             </div>
             <div className="flex flex-wrap">
               <div className="text-[#422eb1] font-semibold mr-3 flex justify-between w-[100px]">

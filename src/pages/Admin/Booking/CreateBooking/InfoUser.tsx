@@ -1,10 +1,12 @@
-import { Dispatch, useState } from 'react';
-import { DataBookingType, UserBookingType } from '.';
-import Search from 'antd/es/input/Search';
-import { Button, Col, Form, Input, Row } from 'antd';
 import { ArrowRightOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { Show } from '~/components/Show';
+import { Button, Col, Form, Input, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
+import Search from 'antd/es/input/Search';
+import { Dispatch, useState } from 'react';
+import { toast } from 'react-toastify';
+import { signup } from '~/api/auth';
+import { Show } from '~/components/Show';
+import { DataBookingType, UserBookingType } from '.';
 
 const users = [
   { _id: '6574ae1aa7c00a98ffebef54', fullName: 'Nguyễn Hà Hữu', emai: '1', phone: '113' },
@@ -15,10 +17,32 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
   const [form] = useForm();
   const [isCreateAccount, setIsCreateAccount] = useState<boolean>(false);
 
-  const handleSubmitInfo = () => {};
+  const handleSubmitInfo = async (values: any) => {
+    try {
+      const _newUser = { ...values };
+      // call api get token save redux store
+
+      const { data } = await signup({
+        name: _newUser.name,
+        email: _newUser.email,
+        password: _newUser.password,
+        phone_number: _newUser.phone_number,
+      } as any);
+      toast.success('Tạo tài khoản thành công');
+      if (!data) {
+        toast.error('Đăng ký thất bại');
+        return;
+      }
+      const _dataBooking = [...dataBooking];
+
+      _dataBooking[0] = { ...data.data, fullName: data.data.name } as any;
+      setDataBooking(_dataBooking as DataBookingType);
+    } catch (error: any) {
+      toast.error('Đăng ký thất bại', error.message);
+    }
+  };
   const handlePickUser = (user: UserBookingType) => {
     const _dataBooking = [...dataBooking];
-
     _dataBooking[0] = user;
     setDataBooking(_dataBooking as DataBookingType);
   };
@@ -71,7 +95,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                name="fullname"
+                name="name"
                 label="Họ và tên"
                 rules={[{ required: true }, { whitespace: true }]}
               >
@@ -79,15 +103,21 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="phone_another" label="Số điện thoại khác (nếu có)">
-                <Input size="large" placeholder="Số điện thoại.." />
+              <Form.Item
+                rules={[{ required: true }, { whitespace: true }]}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
+                name="password"
+                label="Mật khẩu"
+              >
+                <Input.Password size="large" placeholder="Số điện thoại.." />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                name="mail_another"
+                name="email"
                 label="Địa chỉ email (nếu có)"
                 rules={[{ type: 'email' }]}
               >
@@ -96,7 +126,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
             </Col>
 
             <Col span={12}>
-              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="mail" label="Địa chỉ của bạn (nếu có)">
+              <Form.Item labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} name="address" label="Địa chỉ của bạn (nếu có)">
                 <Input size="large" placeholder="Địa chỉ.." />
               </Form.Item>
             </Col>
