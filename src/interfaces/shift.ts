@@ -12,5 +12,6 @@ interface IShift {
   is_booking_month?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  user?: any
 }
 export default IShift;

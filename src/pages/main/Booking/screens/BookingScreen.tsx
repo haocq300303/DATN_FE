@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useNewBookingAffterPayMutation } from "~/Redux/booking/bookingApi";
+import { useAppSelector } from "~/Redux/hook";
 import { sendMail } from "~/api/email";
 import {
   bookChildrenPicthFullMonth,
@@ -33,14 +34,15 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   const [totalPrice, setTotalPrice] = useState<number>(totalShift + _totalPriceService);
   //
   const [newBooking] = useNewBookingAffterPayMutation();
+  const user: any = useAppSelector((state) => state.user.currentUser);
 
   // Get redux store
-  const currentUser: any = {
-    _id: '6574ae1aa7c00a98ffebef54',
-    phone: '0788062634',
-    fullname: 'Trương Minh Hiếu',
-    email: 'hahuu02dev@gmail.com',
-  };
+  // const currentUser: any = {
+  //   _id: '6574ae1aa7c00a98ffebef54',
+  //   phone: '0788062634',
+  //   fullname: 'Trương Minh Hiếu',
+  //   email: 'hahuu02dev@gmail.com',
+  // };
 
   const handleChangeModeBanking = (e: any) => {
     if (e.target.value === 1) {
@@ -64,7 +66,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     }).then((result) => {
       if (result.isConfirmed) {
         const _infoBooking = {
-          user_bank: currentUser._id,
+          user_bank: user.values._id,
           user_receiver: infoBooking?.admin_pitch?._id,
           vnp_OrderInfo: 'Thanh toan',
           price_received: totalPrice,
@@ -100,7 +102,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
 
         const _infoBooking = {
           pitch_id: infoBooking?.pitch?._id,
-          user_id: currentUser._id,
+          user_id: user.values._id,
           shift_id: "",
           children_pitch_id: infoBooking?.children_pitch?._id,
           payment_id: paymentId,
@@ -177,7 +179,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           .then((result) => {
             // Send build to user
             sendMail({
-              email_to: currentUser.email,
+              email_to:  user.values.email,
               subject: 'FSport send bill to!!',
               content: 'Nội dung',
               html: 'Nội dung bill',
