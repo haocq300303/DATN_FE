@@ -5,6 +5,7 @@ import IPost from "~/interfaces/post";
 import { Link } from "react-router-dom";
 import { Empty, Pagination } from "antd";
 import { PostPagination, getAllPost } from "~/api/post";
+
 const PostPage = () => {
   const dispatch = useAppDispatch();
 

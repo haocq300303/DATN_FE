@@ -1,172 +1,284 @@
-import { BillBankingProps } from "~/interfaces/payment.type";
-
-const BillBanking = ({
-  userBank,
-  userReceiver,
-  payment_id,
-  infoBooking,
-  payment,
-}: BillBankingProps) => {
+import { BillBankingProps } from '~/interfaces/payment.type';
+import banner from '~/assets/img/Web/banner1.png';
+const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment }: BillBankingProps) => {
   return (
-    <div className="flex flex-col p-4 sm:p-10 bg-white shadow-[0_0_2px_2px_rgb(0,0,0,0.05)] rounded-xl text-black">
-      <div className="flex justify-between">
-        <div>
-          <img
-            className="w-28 lg:w-40"
-            src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1696192598/ImageOther/z4718088485311_234f31f313ef91652f1da8c544568ddb-removebg-preview_yhtdtr.png"
-            alt=""
-          />
-        </div>
+    // <div className="flex flex-col p-4 sm:p-10 bg-white shadow-[0_0_2px_2px_rgb(0,0,0,0.05)] rounded-xl text-black">
+    //   <div className="flex justify-between">
+    //     <div>
+    //       <img
+    //         className="w-28 lg:w-40"
+    //         src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1696192598/ImageOther/z4718088485311_234f31f313ef91652f1da8c544568ddb-removebg-preview_yhtdtr.png"
+    //         alt=""
+    //       />
+    //     </div>
 
-        <div className="text-right">
-          <h2 className="text-2xl md:text-3xl font-semibold text-black ">
-            Hóa Đơn Thanh Toán#
-          </h2>
-          <span className="mt-1 block text-gray-500">{payment_id}</span>
+    //     <div className="text-right">
+    //       <h2 className="text-2xl md:text-3xl font-semibold text-black ">
+    //         Hóa Đơn Thanh Toán#
+    //       </h2>
+    //       <span className="mt-1 block text-gray-500">{payment_id}</span>
 
-          <address className="mt-4 not-italic text-black">
-            <p>{userBank?.fullname}</p>
-            <p>{userBank?.phone}</p>
-            <p>nguyenvanb@gmail.com</p>
-          </address>
-        </div>
-      </div>
+    //       <address className="mt-4 not-italic text-black">
+    //         <p>{userBank?.fullname}</p>
+    //         <p>{userBank?.phone}</p>
+    //         <p>nguyenvanb@gmail.com</p>
+    //       </address>
+    //     </div>
+    //   </div>
 
-      <div className="mt-8 grid sm:grid-cols-2 gap-3">
-        <div>
-          <h3 className="text-lg font-semibold text-black">Chuyển đến:</h3>
-          <h3 className="text-lg font-semibold text-black">
-            {userReceiver?.fullname}
-          </h3>
-          <address className="mt-2 not-italic text-gray-500">
-            <p>{userReceiver?.phone}</p>
-            <p>nguyenvana@gmail.com</p>
-          </address>
-        </div>
-        {/* 
-                <div className="sm:text-right space-y-2">
-                    <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
-                        <dl className="grid sm:grid-cols-5 gap-x-3">
-                            <dt className="col-span-3 font-semibold text-black">Thời gian tạo:</dt>
-                            <dd className="col-span-2 text-gray-500">03/10/2023</dd>
-                        </dl>
-                        <dl className="grid sm:grid-cols-5 gap-x-3">
-                            <dt className="col-span-3 font-semibold text-black">Hết hạn:</dt>
-                            <dd className="col-span-2 text-gray-500">03/11/2023</dd>
-                        </dl>
+    //   <div className="mt-8 grid sm:grid-cols-2 gap-3">
+    //     <div>
+    //       <h3 className="text-lg font-semibold text-black">Chuyển đến:</h3>
+    //       <h3 className="text-lg font-semibold text-black">
+    //         {userReceiver?.fullname}
+    //       </h3>
+    //       <address className="mt-2 not-italic text-gray-500">
+    //         <p>{userReceiver?.phone}</p>
+    //         <p>nguyenvana@gmail.com</p>
+    //       </address>
+    //     </div>
+    //     {/*
+    //             <div className="sm:text-right space-y-2">
+    //                 <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
+    //                     <dl className="grid sm:grid-cols-5 gap-x-3">
+    //                         <dt className="col-span-3 font-semibold text-black">Thời gian tạo:</dt>
+    //                         <dd className="col-span-2 text-gray-500">03/10/2023</dd>
+    //                     </dl>
+    //                     <dl className="grid sm:grid-cols-5 gap-x-3">
+    //                         <dt className="col-span-3 font-semibold text-black">Hết hạn:</dt>
+    //                         <dd className="col-span-2 text-gray-500">03/11/2023</dd>
+    //                     </dl>
+    //                 </div>
+    //             </div> */}
+    //   </div>
+
+    //   <div className="mt-6">
+    //     <div className="border border-gray-200 p-4 rounded-lg space-y-4 dark:border-gray-700">
+    //       <div className="hidden sm:grid sm:grid-cols-5">
+    //         <div className="sm:col-span-2 text-xs font-medium text-gray-500 uppercase">
+    //           Tên Sân
+    //         </div>
+    //         <div className="text-left text-xs font-medium text-gray-500 uppercase">
+    //           Ca Sân
+    //         </div>
+    //         <div className="text-left text-xs font-medium text-gray-500 uppercase">
+    //           Địa Chỉ
+    //         </div>
+    //         <div className="text-right text-xs font-medium text-gray-500 uppercase">
+    //           Giá Tiền
+    //         </div>
+    //       </div>
+
+    //       <div className="hidden sm:block border-b border-gray-200 dark:border-gray-700"></div>
+
+    //       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+    //         <div className="col-span-full sm:col-span-2">
+    //           <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
+    //             Tên
+    //           </h5>
+    //           <p className="font-medium text-black">
+    //             {infoBooking?.pitch_name}
+    //           </p>
+    //         </div>
+    //         <div>
+    //           <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
+    //             Qty
+    //           </h5>
+    //           <p className="text-black">{infoBooking?.booking_day}</p>
+    //         </div>
+    //         <div>
+    //           <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
+    //             Rate
+    //           </h5>
+    //           <p className="text-black">{infoBooking?.pitch_address}</p>
+    //         </div>
+    //         <div>
+    //           <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
+    //             Amount
+    //           </h5>
+    //           <p className="sm:text-right text-black">
+    //             {infoBooking?.price?.toLocaleString()} VNĐ
+    //           </p>
+    //         </div>
+    //       </div>
+
+    //       <div className="sm:hidden border-b border-gray-200 dark:border-gray-700"></div>
+    //     </div>
+    //   </div>
+
+    //   <div className="mt-8 flex sm:justify-end">
+    //     <div className="w-full max-w-2xl sm:text-right space-y-2">
+    //       <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
+    //         <dl className="grid sm:grid-cols-5 gap-x-3">
+    //           <dt className="col-span-3 font-semibold text-black">
+    //             Tổng tiền:
+    //           </dt>
+    //           <dd className="col-span-2 text-gray-500">
+    //             {payment?.total_received?.toLocaleString()} VNĐ
+    //           </dd>
+    //         </dl>
+
+    //         <dl className="grid sm:grid-cols-5 gap-x-3">
+    //           <dt className="col-span-3 font-semibold text-black">
+    //             Số tiền đã trả:
+    //           </dt>
+    //           <dd className="col-span-2 text-gray-500">
+    //             {payment?.price_received?.toLocaleString()} VNĐ
+    //           </dd>
+    //         </dl>
+
+    //         <dl className="grid sm:grid-cols-5 gap-x-3">
+    //           <dt className="col-span-3 font-semibold text-black">
+    //             Số tiền còn nợ:
+    //           </dt>
+    //           <dd className="col-span-2 text-gray-500">
+    //             {(
+    //               (payment as any)?.total_received -
+    //               (payment as any)?.price_received
+    //             ).toLocaleString()}{" "}
+    //             VNĐ
+    //           </dd>
+    //         </dl>
+    //       </div>
+    //     </div>
+    //   </div>
+
+    //
+    <>
+      <div className=" w-full h-full">
+        <div className="mt-7 opacity-100 hs-overlay-open:duration-500 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
+          <div className="relative flex flex-col bg-white rounded-xl pointer-events-auto dark:bg-gray-800">
+            <div className="relative overflow-hidden h-[8rem] bg-gray-900 text-center rounded-b-3xl">
+              <img src={banner} alt="" />
+            </div>
+
+            <div className="relative z-10 -mt-8">
+              <span className="mx-auto flex justify-center items-center w-[62px] h-[62px] rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
+                <svg
+                  className="flex-shrink-0 w-6 h-6"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27zm.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0l-.509-.51z" />
+                  <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z" />
+                </svg>
+              </span>
+            </div>
+
+            <div className="p-4 sm:p-7 overflow-y-auto">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Hóa Đơn Thanh Toán</h3>
+                <p className="text-sm text-gray-500">#{payment_id}</p>
+              </div>
+
+              <div className="mt-5 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 gap-5">
+                <div>
+                  <span className="block text-xs uppercase text-gray-500">Người Chuyển:</span>
+                  <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">{userBank?.fullname}</span>
+                  <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">{userBank?.phone}</span>
+                </div>
+
+                <div>
+                  <span className="block text-xs uppercase text-gray-500">Người Nhận:</span>
+                  <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">{userReceiver?.fullname}</span>
+                  <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">{userReceiver?.phone}</span>
+                </div>
+
+                <div>
+                  <span className="block text-xs uppercase text-gray-500">Phương Thức:</span>
+                  <div className="flex items-center gap-x-2">
+                    <svg className="w-5 h-5" width="400" height="248" viewBox="0 0 400 248" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g clip-path="url(#clip0)">
+                        <path d="M254 220.8H146V26.4H254V220.8Z" fill="#FF5F00" />
+                        <path
+                          d="M152.8 123.6C152.8 84.2 171.2 49 200 26.4C178.2 9.2 151.4 0 123.6 0C55.4 0 0 55.4 0 123.6C0 191.8 55.4 247.2 123.6 247.2C151.4 247.2 178.2 238 200 220.8C171.2 198.2 152.8 163 152.8 123.6Z"
+                          fill="#EB001B"
+                        />
+                        <path
+                          d="M400 123.6C400 191.8 344.6 247.2 276.4 247.2C248.6 247.2 221.8 238 200 220.8C228.8 198.2 247.2 163 247.2 123.6C247.2 84.2 228.8 49 200 26.4C221.8 9.2 248.6 0 276.4 0C344.6 0 400 55.4 400 123.6Z"
+                          fill="#F79E1B"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0">
+                          <rect width="400" height="247.2" fill="white" />
+                        </clipPath>
+                      </defs>
+                    </svg>
+                    <span className="block text-sm font-medium text-gray-800 dark:text-gray-200"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 sm:mt-10">
+                <h4 className="text-xs font-semibold uppercase text-gray-800 dark:text-gray-200">Chi Tiết</h4>
+
+                <ul className="mt-3 flex flex-col">
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>{infoBooking?.pitch_name}</span>
+                      <span> {infoBooking?.price?.toLocaleString()} VNĐ</span>
                     </div>
-                </div> */}
-      </div>
+                  </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Giờ Đá</span>
+                      <span>{infoBooking?.booking_day}</span>
+                    </div>
+                  </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Địa Chỉ</span>
+                      <span>{infoBooking?.pitch_address}</span>
+                    </div>
+                  </li>
+                </ul>
+                <div className="mt-8 flex sm:justify-end">
+          <div className="w-full max-w-2xl sm:text-end space-y-2">
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
+              <dl className="grid sm:grid-cols-5 gap-x-3">
+                <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Tổng tiền:</dt>
+                <dd className="col-span-2 text-gray-500"> {payment?.total_received?.toLocaleString()} VNĐ</dd>
+              </dl>
 
-      <div className="mt-6">
-        <div className="border border-gray-200 p-4 rounded-lg space-y-4 dark:border-gray-700">
-          <div className="hidden sm:grid sm:grid-cols-5">
-            <div className="sm:col-span-2 text-xs font-medium text-gray-500 uppercase">
-              Tên Sân
-            </div>
-            <div className="text-left text-xs font-medium text-gray-500 uppercase">
-              Ca Sân
-            </div>
-            <div className="text-left text-xs font-medium text-gray-500 uppercase">
-              Địa Chỉ
-            </div>
-            <div className="text-right text-xs font-medium text-gray-500 uppercase">
-              Giá Tiền
+              <dl className="grid sm:grid-cols-5 gap-x-3">
+                <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Còn Nợ:</dt>
+                <dd className="col-span-2 text-gray-500">{((payment as any)?.total_received - (payment as any)?.price_received).toLocaleString()} VNĐ</dd>
+              </dl>
+
+              <dl className="grid sm:grid-cols-5 gap-x-3">
+                <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Đã Thanh Toán:</dt>
+                <dd className="col-span-2 text-gray-500">{payment?.price_received?.toLocaleString()} VNĐ</dd>
+              </dl>
+
             </div>
           </div>
-
-          <div className="hidden sm:block border-b border-gray-200 dark:border-gray-700"></div>
-
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-            <div className="col-span-full sm:col-span-2">
-              <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
-                Tên
-              </h5>
-              <p className="font-medium text-black">
-                {infoBooking?.pitch_name}
-              </p>
-            </div>
-            <div>
-              <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
-                Qty
-              </h5>
-              <p className="text-black">{infoBooking?.booking_day}</p>
-            </div>
-            <div>
-              <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
-                Rate
-              </h5>
-              <p className="text-black">{infoBooking?.pitch_address}</p>
-            </div>
-            <div>
-              <h5 className="sm:hidden text-xs font-medium text-gray-500 uppercase">
-                Amount
-              </h5>
-              <p className="sm:text-right text-black">
-                {infoBooking?.price?.toLocaleString()} VNĐ
-              </p>
-            </div>
-          </div>
-
-          <div className="sm:hidden border-b border-gray-200 dark:border-gray-700"></div>
         </div>
-      </div>
+              </div>
 
-      <div className="mt-8 flex sm:justify-end">
-        <div className="w-full max-w-2xl sm:text-right space-y-2">
-          <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
-            <dl className="grid sm:grid-cols-5 gap-x-3">
-              <dt className="col-span-3 font-semibold text-black">
-                Tổng tiền:
-              </dt>
-              <dd className="col-span-2 text-gray-500">
-                {payment?.total_received?.toLocaleString()} VNĐ
-              </dd>
-            </dl>
-
-            <dl className="grid sm:grid-cols-5 gap-x-3">
-              <dt className="col-span-3 font-semibold text-black">
-                Số tiền đã trả:
-              </dt>
-              <dd className="col-span-2 text-gray-500">
-                {payment?.price_received?.toLocaleString()} VNĐ
-              </dd>
-            </dl>
-
-            <dl className="grid sm:grid-cols-5 gap-x-3">
-              <dt className="col-span-3 font-semibold text-black">
-                Số tiền còn nợ:
-              </dt>
-              <dd className="col-span-2 text-gray-500">
-                {(
-                  (payment as any)?.total_received -
-                  (payment as any)?.price_received
-                ).toLocaleString()}{" "}
-                VNĐ
-              </dd>
-            </dl>
+              <div className="mt-5 sm:mt-10">
+                <p className="text-sm text-gray-500">
+                  Nếu có gì thắc mắc vui lòng liên hệ chúng tôi qua{' '}
+                  <a className="inline-flex items-center gap-x-1.5 text-blue-600 decoration-2 hover:underline font-medium" href="#">
+                    example@site.com
+                  </a>{' '}
+                  hoặc gọi tới{' '}
+                  <a
+                    className="inline-flex items-center gap-x-1.5 text-blue-600 decoration-2 hover:underline font-medium"
+                    href="tel:+1898345492"
+                  >
+                    +84 358-34-5492
+                  </a>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <div className="mt-8 sm:mt-12">
-        <h4 className="text-lg font-semibold text-black">
-          Cảm ơn bản đã sử dụng dịch vụ!
-        </h4>
-        <p className="text-gray-500">
-          Nếu bạn có bất kỳ câu hỏi nào liên quan đến hóa đơn này, hãy sử dụng
-          thông tin liên hệ sau:
-        </p>
-        <div className="mt-2">
-          <p className="block text-sm font-medium text-black">
-            example@site.com
-          </p>
-          <p className="block text-sm font-medium text-black">
-            +84 123 098 065
-          </p>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 
