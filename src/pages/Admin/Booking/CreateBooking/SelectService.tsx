@@ -1,10 +1,9 @@
-import { Dispatch, useState } from 'react';
-import { DataBookingType, ServiceType } from '.';
-import { useGetServicesByPitchIdQuery } from '~/Redux/service/service.api';
-import { Show } from '~/components/Show';
 import { Checkbox } from 'antd';
+import { Dispatch, useState } from 'react';
+import { useGetServicesQuery } from '~/Redux/service/service.api';
+import { Show } from '~/components/Show';
 import { IService } from '~/interfaces/service';
-import { useAppSelector } from '~/Redux/hook';
+import { DataBookingType, ServiceType } from '.';
 
 const ServiceItem = ({ name, image, price }: IService) => {
   const [checked, setChecked] = useState<boolean>(false);
@@ -29,8 +28,9 @@ const ServiceItem = ({ name, image, price }: IService) => {
 };
 
 const SelectService = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
-  const user = useAppSelector((state) => state.user.currentUser);
-  const { data, isFetching } = useGetServicesByPitchIdQuery(user?.values?._id || '');
+  const currentPitch = JSON.parse(localStorage.getItem('pitch') || '');
+
+  const { data, isFetching } = useGetServicesQuery({ pitch_id: currentPitch._id }, { skip: !currentPitch._id });
 
   const [selectedServices, setSelectedServices] = useState<IService[]>([]);
 
@@ -68,6 +68,7 @@ const SelectService = ({ setDataBooking, dataBooking }: { setDataBooking: Dispat
       </Show>
       <Show when={!isFetching}>
         <div className="space-y-2">
+          {(!data?.data || data?.data?.length === 0) && <p>Sân bạn chưa có dịch vụ nào!</p>}
           {data?.data.map((service: any) => (
             <div className="" onClick={() => handleSelectService(service)} key={service._id}>
               <ServiceItem {...service} />

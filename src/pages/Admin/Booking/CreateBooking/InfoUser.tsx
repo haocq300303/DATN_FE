@@ -20,7 +20,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
         setUsers(response.data.data);
       }
     } catch (error: any) {
-      console.log(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -49,7 +49,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
       _dataBooking[0] = { ...data.data, fullName: data.data.name } as any;
       setDataBooking(_dataBooking as DataBookingType);
     } catch (error: any) {
-      toast.error('Đăng ký thất bại', error.message);
+      toast.error('Đăng ký thất bại -' + ' ' + error?.response?.data?.message);
     }
   };
   const handlePickUser = (user: UserBookingType) => {
@@ -79,9 +79,9 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
 
       <Show when={!isCreateAccount}>
         <div className="space-y-2">
-          {users?.map((user: any) => (
+          {users?.map((user: any, index) => (
             <div key={user._id} onClick={() => handlePickUser(user)}>
-              <InfoUserItem {...user} />
+              <InfoUserItem {...user} index={index} />
             </div>
           ))}
         </div>
@@ -95,7 +95,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                name="phone"
+                name="phone_number"
                 label="Số điện thoại"
                 rules={[{ required: true }, { whitespace: true }]}
               >
@@ -157,11 +157,11 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
 
 export default InfoUser;
 
-const InfoUserItem = ({ name, phone_number }: UserBookingType) => {
+const InfoUserItem = ({ name, phone_number, index }: UserBookingType) => {
   return (
     <div className="flex border border-gray-500  rounded-md cursor-pointer hover:bg-red-100 px-4 py-2">
       <div className="w-20">
-        <img src="https://picsum.photos/300/300" className="rounded-sm aspect-square" />
+        <img src={`https://picsum.photos/id/${index}/300/300`} className="rounded-sm aspect-square" />
       </div>
 
       <div className="flex-1 ml-4">

@@ -178,6 +178,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
             });
 
             setCurrent(2);
+            sessionStorage.removeItem('infoBooking');
             toast.success(result.message);
           })
           .catch((error) => {

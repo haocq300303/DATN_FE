@@ -22,7 +22,6 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
   const [newUser, setNewUser] = useState<IUser | null>(null);
   const currentUser = useAppSelector((state) => state.user.currentUser.values);
 
-  console.log(currentUser);
   const [form] = useForm();
   const dispatch = useDispatch();
   const [, setSearchParams] = useSearchParams();
@@ -55,6 +54,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
       if (!data) {
         toast.error('Đăng ký thất bại');
       }
+      toast.success('Bạn đã tạo tk trên hệ thống thành công');
       localStorage.setItem('accessToken', data.data.token);
       const decode: any = jwtDecode(data.data.token);
       dispatch(
@@ -69,7 +69,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
       setSearchParams({ mode: 'order' });
       setCurrent(1);
     } catch (error: any) {
-      toast.error('Đăng ký thất bại', error.message);
+      toast.error('Đăng ký thất bại -' + ' ' + error?.response?.data?.message);
     }
   };
 

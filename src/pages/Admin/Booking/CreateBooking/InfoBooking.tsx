@@ -25,8 +25,8 @@ const InfoBooking = ({ dataBooking, infoPitch }: { dataBooking: DataBookingType;
                         <span className="w-8 text-2xl">
                             <UserOutlined />
                         </span>
-                        <div className="text-lg">
-                            Người đặt sân <strong>{dataBooking[0]?.fullName}</strong>
+                        <div className="ml-1 text-base">
+                            Người đặt sân: <strong>{dataBooking[0]?.name}</strong> - <strong>{dataBooking[0]?.phone_number}</strong>
                         </div>
                     </div>
                 </Show>
@@ -36,7 +36,7 @@ const InfoBooking = ({ dataBooking, infoPitch }: { dataBooking: DataBookingType;
                         <span className="w-8 text-2xl">
                             <RadarChartOutlined />
                         </span>
-                        <div className="text-lg">
+                        <div className="ml-1 text-base">
                             Sân đăng ký <strong>{dataBooking[1]?.name}</strong>
                         </div>
                     </div>
