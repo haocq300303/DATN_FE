@@ -115,7 +115,7 @@ const FeedBack = ({ idPitch }: { idPitch: IPitch }) => {
                                     <div className="flex items-center mb-4">
                                         <img className="w-10 h-10 me-4 rounded-full" src="https://bloganchoi.com/wp-content/uploads/2022/02/avatar-trang-y-nghia.jpeg" alt="" />
                                         <div className="font-medium dark:text-white">
-                                            <p>{feed?.id_user?.name ? feed?.id_user?.name : feed.user.name} </p>
+                                            <p>{feed?.id_user?.name ? feed?.id_user?.name : feed?.user?.name} </p>
                                             <p className='text-[13px] dark:text-white/50'>Thời Gian: <span className='text-black/50'>{feed?.updatedAt}</span></p>
                                         </div>
                                     </div>

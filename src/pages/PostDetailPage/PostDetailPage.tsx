@@ -51,8 +51,11 @@ const PostDetailPage = () => {
   };
   const onFinishComment = async (values: any) => {
     try {
+      if (values.content.trim() === '') {
+        message.warning("Nội dung không được để trống.")
+        return;
+      }
       const response = await dispatch(createCommentMid(values));
-      console.log('repon', response);
 
       if (response?.meta?.requestStatus === 'fulfilled') {
         message.success('Bình Luận Thành Công !');
