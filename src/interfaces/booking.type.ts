@@ -1,8 +1,8 @@
-import { IPayment } from "./payment.type";
-import IPitch from "./pitch";
-import { IService } from "./service";
-import IShift from "./shift";
-import { IUser } from "./user.type";
+import { IPayment } from './payment.type';
+import IPitch from './pitch';
+import { IService } from './service';
+import IShift from './shift';
+import { IUser } from './user.type';
 
 export interface IBooking {
   _id?: string;
@@ -15,7 +15,7 @@ export interface IBooking {
   pitch?: IPitch;
   shift?: IShift;
   services?: IService[];
-  status: "success" | "cancel";
+  status: 'success' | 'cancel';
   updatedAt: string;
   //user đặt lịch thành công và user hủy bỏ lịch
 }
@@ -39,11 +39,13 @@ export interface IInfoBooking {
   shift: {
     _id: string;
     price: number;
+    totalPrice: number;
     shift_day: string;
     number_shift: number;
     start_time: string;
     end_time: string;
     date: string[];
+    numberDate: number;
     find_opponent: string;
   };
   services?: { _id: string; name: string; image: string; price: number }[];

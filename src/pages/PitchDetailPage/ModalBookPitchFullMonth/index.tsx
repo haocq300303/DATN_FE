@@ -1,9 +1,10 @@
 import { Modal } from 'antd';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useEffect, useState } from 'react';
 import SelectChildrenPitch from './SelectChildrenPitch';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { addDays, format } from 'date-fns';
+import { getShiftDefaultByPitch } from '~/api/shift';
 
 interface IModalBookPitchFullMonth {
   isOpen: boolean;
@@ -31,7 +32,11 @@ const ModalBookPitchFullMonth = ({
   averagePrice,
 }: IModalBookPitchFullMonth) => {
   const [dataBooking, setDataBooking] = useState<any[]>([]);
+  const [shifts, setShifts] = useState<any[]>([]);
   const navigate = useNavigate();
+
+  const totalPrice = shifts?.reduce((total: any, shift: any) => total + shift.price, 0) * 30;
+
   // Ngày hiện tại
   const currentDate = new Date();
 
@@ -68,13 +73,14 @@ const ModalBookPitchFullMonth = ({
               children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
             },
             shift: {
-              price: +averagePrice! * 30,
-              shiftPrice: averagePrice,
+              price: +averagePrice!,
+              totalPrice,
               shift_day: `Từ ${formattedCurrentDate} - ${formattedFutureDate}`,
               start_time: null,
               end_time: null,
               number_shift: null,
               date: [],
+              numberDate: 30,
               status_shift: true,
               is_booking_month: true,
             },
@@ -86,6 +92,13 @@ const ModalBookPitchFullMonth = ({
       }
     });
   };
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await getShiftDefaultByPitch(pitchId);
+      setShifts(data.data);
+    })();
+  }, [pitchId]);
 
   return (
     <div>
@@ -119,7 +132,7 @@ const ModalBookPitchFullMonth = ({
               <p className={`text-[18px] font-semibold mt-[-4px] mb-[16px] ${dataBooking[0] ? '' : 'hidden'}`}>
                 <span className="inline-block min-w-[90px] font-bold">Tổng tiền:</span>
                 <span className="font-bold">
-                  {(+averagePrice! * 30).toLocaleString('it-IT', {
+                  {totalPrice?.toLocaleString('it-IT', {
                     style: 'currency',
                     currency: 'VND',
                   })}
