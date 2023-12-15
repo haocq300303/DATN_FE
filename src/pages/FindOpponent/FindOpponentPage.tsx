@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { fetchAllShiftFindOpponent } from '~/Redux/Slices/shiftSlice';
 import IShift from '~/interfaces/shift';
 import { matchOpponent } from '~/api/shift';
+import { sendMail } from '~/api/email';
 
 const FindOpponentPage = () => {
   const host = 'http://localhost:8080/api/location/';
@@ -117,8 +118,15 @@ const FindOpponentPage = () => {
         phone_number: dataMatchOpponent?.user?.phone_number,
         nameUserFindOpponent: dataMatchOpponent?.user?.name,
       };
+      const dataSendEmail = {
+        email_to: dataMatchOpponent?.user?.email,
+        subject: ` Thông Báo Ghép kèo Thành Công !`,
+        content: ` Sân Bóng ${dataMatchOpponent?.id_pitch?.name} - Thời Gian : ${dataMatchOpponent?.start_time} - ${dataMatchOpponent?.end_time}`,
+        html: ` Xin chúc mừng bạn đã ghép kèo thành công !`
+      }
 
       await matchOpponent(data);
+      await sendMail(dataSendEmail);
       toast('🦄 Ghép kèo thành công. Thông tin đối đã được gửi về email của bạn!', {
         position: 'top-right',
         autoClose: 5000,
