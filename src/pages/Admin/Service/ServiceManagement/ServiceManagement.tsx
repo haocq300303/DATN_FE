@@ -28,10 +28,11 @@ const ServiceManagement = () => {
   const searchInput = useRef<InputRef>(null);
   const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
   const id = pitchLocal._id;
+  const idUser = user.values?._id;
 
   useEffect(() => {
-    dispatch(fetchServicePitch(id));
-  }, [dispatch, id]);
+    dispatch(fetchServicePitch(idUser));
+  }, [dispatch, idUser]);
   const confirm = (id: string) => {
     void dispatch(deleteServiceMid(id));
   };

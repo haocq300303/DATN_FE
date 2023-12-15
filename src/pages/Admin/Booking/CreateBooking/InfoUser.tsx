@@ -2,20 +2,31 @@ import { ArrowRightOutlined, CloseOutlined, PlusOutlined } from '@ant-design/ico
 import { Button, Col, Form, Input, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import Search from 'antd/es/input/Search';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { signup } from '~/api/auth';
+import { getAllUser, signup } from '~/api/auth';
 import { Show } from '~/components/Show';
 import { DataBookingType, UserBookingType } from '.';
-
-const users = [
-  { _id: '6574ae1aa7c00a98ffebef54', fullName: 'Nguyễn Hà Hữu', emai: '1', phone: '113' },
-  { _id: '656f227d107a271bfb90063c', fullName: 'Trương Minh Hiếu', email: '1', phone: '114' },
-];
 
 const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
   const [form] = useForm();
   const [isCreateAccount, setIsCreateAccount] = useState<boolean>(false);
+  const [users, setUsers] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await getAllUser();
+      if (response.status === 200) {
+        setUsers(response.data.data);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleSubmitInfo = async (values: any) => {
     try {
@@ -146,7 +157,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
 
 export default InfoUser;
 
-const InfoUserItem = ({ fullName, phone }: UserBookingType) => {
+const InfoUserItem = ({ name, phone_number }: UserBookingType) => {
   return (
     <div className="flex border border-gray-500  rounded-md cursor-pointer hover:bg-red-100 px-4 py-2">
       <div className="w-20">
@@ -154,8 +165,8 @@ const InfoUserItem = ({ fullName, phone }: UserBookingType) => {
       </div>
 
       <div className="flex-1 ml-4">
-        <h3 className="text-base">{fullName}</h3>
-        <p className="my-1 text-sm">{phone}</p>
+        <h3 className="text-base">{name}</h3>
+        <p className="my-1 text-sm">{phone_number}</p>
       </div>
     </div>
   );
