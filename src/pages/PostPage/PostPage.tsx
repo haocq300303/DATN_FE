@@ -5,7 +5,6 @@ import IPost from "~/interfaces/post";
 import { Link } from "react-router-dom";
 import { Empty, Pagination } from "antd";
 import { PostPagination, getAllPost } from "~/api/post";
-
 const PostPage = () => {
   const dispatch = useAppDispatch();
 
@@ -43,8 +42,8 @@ const PostPage = () => {
     window.scrollTo({ top: 500, behavior: 'smooth' });
   }
   return (
-    <div className="container mx-auto pt-[20px] pb-[40px]">
-      <div>
+    <div className="">
+      <div className="container mx-auto pt-[20px] pb-[40px]">
         <nav aria-label="Breadcrumb" className="flex w-full rounded-lg bg-gray-100/50">
           <ol
             className="flex overflow-hidden rounded-lg  text-gray-600"
@@ -91,7 +90,7 @@ const PostPage = () => {
         </nav>
       </div>
       <div>
-        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-6">
+        <div className="container mx-auto mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-6">
           {posts && posts.length > 0 ? (
             posts?.slice(0)?.reverse()?.map((post: IPost) => (
               <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">

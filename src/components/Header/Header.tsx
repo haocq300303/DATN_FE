@@ -22,10 +22,7 @@ import {
   XMarkIcon,
   FolderIcon,
   Square3Stack3DIcon,
-  Cog6ToothIcon,
-  LifebuoyIcon,
   PowerIcon,
-  FaceFrownIcon,
 } from "@heroicons/react/24/outline";
 import { FaBasketballBall, FaVolleyballBall } from "react-icons/fa";
 import { IoIosFootball, IoMdTennisball } from "react-icons/io";
@@ -45,21 +42,9 @@ const colors: { [key: string]: string } = {
 };
 const profileMenuItems = [
   {
-    label: "Thông Tin Cá Nhân",
-    icon: FaceFrownIcon,
-  },
-  {
-    label: "Sửa Thông Tin ",
-    icon: Cog6ToothIcon,
-  },
-
-  {
-    label: "Trợ Giúp",
-    icon: LifebuoyIcon,
-  },
-  {
     label: "Đăng Xuất",
     icon: PowerIcon,
+    href: "/login",
   },
 ];
 

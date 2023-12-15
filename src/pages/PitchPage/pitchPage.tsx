@@ -109,8 +109,6 @@ const PitchPage = () => {
 
     fetchTotalStars();
   }, [pitchs]);
-  // console.log({ totalStar });
-
   // pitchs.forEach((item: any, index: any) => {
   //   console.log(`TotalStar${item.name}`, totalStar[index]);
   // });
@@ -122,7 +120,6 @@ const PitchPage = () => {
   };
 
   const filteredPitchs = pitchs.filter((pitch: any) => {
-    // console.log("Pitch Services:", pitch.services);
     return selectedServices.every((service) =>
       pitch.services.some((item: any) => item._id === service)
     );

@@ -57,13 +57,14 @@ function App() {
       <Routes>
         <Route path={routes.home} element={<MainLayout />}>
           <Route index element={<Home />} />
-          <Route path={routes.about} element={<About />} />
-          <Route path={routes.contact} element={<Contact />} />
+      
         </Route>
         
         <Route path="/" element={<LayoutPage />}>
                     <Route index path={routes.checkout} element={<BookingPage />} />
                     <Route index path={routes.bookingHistory} element={<BookingHistoryPage />} />
+                    <Route path={routes.about} element={<About />} />
+                    <Route path={routes.contact} element={<Contact />} />
                 </Route>
         {/* Pitch Page */}
         <Route path="/pitch" element={<LayoutPage />}>

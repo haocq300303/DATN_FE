@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import emailjs from 'emailjs-com'
-
+import banner from "../../assets/img/Web/banner1.png";
 const Contact = () => {
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -33,6 +33,13 @@ const Contact = () => {
     return (
         <>
             <section className="">
+    <div className="bannerPpitchPage relative ">
+        {/* banner cấc thứ */}
+        <div className="video relative">
+          <img src={banner} style={{ height: 400, width: "100%" }} />
+        </div>
+        {/* chọn địa điêrm ở đây */}
+      </div>
                 {/* <div className="banner-about relative flex flex-col justify-center items-center">
                     <span className="block text-2xl font-semibold text-primary text-center text-white absolute z-10">
                         CONTACT
