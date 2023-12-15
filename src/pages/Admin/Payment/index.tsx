@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { IPayment } from '~/interfaces/payment.type';
 import { useGetAllPaymentByUserIdQuery } from '../../../Redux/payment/paymentApi';
 import BillScreen from './components/BillScreen';
+import { useAppSelector } from '~/Redux/hook';
 
 interface DataType extends IPayment {
   key: React.Key;
@@ -25,14 +26,14 @@ const PaymentAdminPage = () => {
           {
             title: 'Họ và tên',
             dataIndex: 'user_bank',
-            width: 100,
+            width: 130,
             render: (user_bank) => (
               <p
                 style={{
-                  maxWidth: '200px',
+                  maxWidth: '130px',
                   whiteSpace: 'normal',
                   color: '#334155',
-                  fontSize: 13,
+                  fontSize: 12,
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -44,17 +45,17 @@ const PaymentAdminPage = () => {
             title: 'SĐT',
             dataIndex: 'user_bank',
             key: 'index',
-            width: 105,
+            width: 100,
             render: (user_bank) => {
               return (
                 <p
                   style={{
-                    maxWidth: '200px',
+                    maxWidth: '100px',
                     whiteSpace: 'normal',
                     color: '#334155',
-                    fontSize: 13,
+                    fontSize: 12,
                   }}
-                  className="text-line-3 text-base font-medium"
+                  className="text-center text-line-3 text-base font-medium"
                 >
                   {user_bank?.phone_number}
                 </p>
@@ -64,11 +65,11 @@ const PaymentAdminPage = () => {
           {
             title: 'Email',
             dataIndex: 'user_bank',
-            width: 200,
+            width: 130,
             render: (user_bank) => (
               <p
                 style={{
-                  maxWidth: '200px',
+                  maxWidth: '130px',
                   whiteSpace: 'normal',
                   color: '#334155',
                   fontSize: 12,
@@ -87,15 +88,15 @@ const PaymentAdminPage = () => {
         children: [
           {
             title: 'Họ và tên',
-            width: 100,
+            width: 130,
             dataIndex: 'user_receiver',
             render: (user_receiver) => (
               <p
                 style={{
-                  maxWidth: '200px',
+                  maxWidth: '130px',
                   whiteSpace: 'normal',
                   color: '#334155',
-                  fontSize: 13,
+                  fontSize: 12,
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -106,14 +107,14 @@ const PaymentAdminPage = () => {
           {
             title: 'SĐT',
             dataIndex: 'user_receiver',
-            width: 105,
+            width: 100,
             render: (user_receiver) => (
               <p
                 style={{
-                  maxWidth: '200px',
+                  maxWidth: '100px',
                   whiteSpace: 'normal',
                   color: '#334155',
-                  fontSize: 13,
+                  fontSize: 12,
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -124,11 +125,11 @@ const PaymentAdminPage = () => {
           {
             title: 'Email',
             dataIndex: 'user_receiver',
-            width: 200,
+            width: 130,
             render: (user_receiver) => (
               <p
                 style={{
-                  maxWidth: '200px',
+                  maxWidth: '130px',
                   whiteSpace: 'normal',
                   color: '#334155',
                   fontSize: 12,
@@ -147,7 +148,7 @@ const PaymentAdminPage = () => {
           {
             title: 'Đã chuyển',
             dataIndex: 'price_received',
-            width: 130,
+            width: 120,
             key: 'price_received',
             render: (price_received) => (
               <p
@@ -157,7 +158,7 @@ const PaymentAdminPage = () => {
                   backgroundColor: '#10b98119',
                   padding: '2px 4px',
                   borderRadius: '4px',
-                  fontSize: 13,
+                  fontSize: 12,
                 }}
               >
                 {price_received?.toLocaleString()} VNĐ
@@ -167,7 +168,7 @@ const PaymentAdminPage = () => {
           {
             title: 'Phải chuyển',
             dataIndex: 'total_received',
-            width: 130,
+            width: 120,
             key: 'total_received',
             render: (total_received) => (
               <p
@@ -177,7 +178,7 @@ const PaymentAdminPage = () => {
                   backgroundColor: '#10b98119',
                   padding: '2px 4px',
                   borderRadius: '4px',
-                  fontSize: 13,
+                  fontSize: 12,
                 }}
               >
                 {total_received?.toLocaleString()} VNĐ
@@ -195,7 +196,7 @@ const PaymentAdminPage = () => {
                   backgroundColor: '#10b98119',
                   padding: '2px 4px',
                   borderRadius: '4px',
-                  fontSize: 13,
+                  fontSize: 12,
                 }}
               >
                 {(item?.total_received - item?.price_received)?.toLocaleString()} VNĐ
@@ -273,7 +274,9 @@ const PaymentAdminPage = () => {
     []
   );
 
-  const { data: payment, isFetching } = useGetAllPaymentByUserIdQuery();
+  const user = useAppSelector((state) => state.user.currentUser.values);
+  // const { data: payment, isFetching } = useGetAllPaymentByUserIdQuery();
+  const { data: payment, isFetching } = useGetAllPaymentByUserIdQuery({ user_receiver: user?._id }, { skip: !user?._id });
 
   useEffect(() => {
     const _dataSource = payment?.data?.map((item, index) => ({
