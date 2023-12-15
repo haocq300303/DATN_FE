@@ -94,7 +94,8 @@ const Home = () => {
                     </Link>
                   </h2>
 
-                  <div className="mb-8 text-gray-500" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
+                  <div className="mb-8" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
+
 
                   <div className="mt-auto flex items-end justify-between">
                     <div className="flex items-center gap-2">

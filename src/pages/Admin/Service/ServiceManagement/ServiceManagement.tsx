@@ -222,7 +222,7 @@ const ServiceManagement = () => {
         ({ response }: any) => response.data.url
       );
       const url = urls[0];
-      const newValues = { ...values, admin_pitch_id: user.values?._id, image: url, pitch_id: pitchLocal._id };
+      const newValues = { ...values, admin_pitch_id: user?.values?._id, image: url, pitch_id: pitchLocal._id };
       await dispatch(createServiceMid(newValues));
       message.success(`Tạo dịch vụ thành công!`);
     } else if (modalMode === 'edit') {
