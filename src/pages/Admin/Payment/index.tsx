@@ -41,7 +41,7 @@ const PaymentAdminPage = () => {
             ),
           },
           {
-            title: 'Số điện thoại',
+            title: 'SĐT',
             dataIndex: 'user_bank',
             key: 'index',
             width: 105,
@@ -104,7 +104,7 @@ const PaymentAdminPage = () => {
             ),
           },
           {
-            title: 'Số điện thoại',
+            title: 'SĐT',
             dataIndex: 'user_receiver',
             width: 105,
             render: (user_receiver) => (
@@ -205,58 +205,63 @@ const PaymentAdminPage = () => {
         ],
       },
       {
-        title: 'Phương thức',
-        dataIndex: 'payment_method',
-        width: 100,
-        render: (payment_method) => {
-          return (
-            <p
-              style={{
-                maxWidth: '200px',
-                whiteSpace: 'normal',
-                color: '#334155',
-                fontSize: 13,
-              }}
-              className="text-line-3 text-base font-medium"
-            >
-              {payment_method === 'cash' ? 'Tiền mặt' : 'Chuyển khoản'}
-            </p>
-          );
-        },
-      },
-      {
-        title: 'Trạng thái',
-        dataIndex: 'status',
-        width: 90,
-        key: 'status',
-        render: (status) => (
-          <span
-            style={{
-              color: status === 'success' ? '#3917d2' : '#fcfcfc',
-              backgroundColor: status === 'success' ? '#23d707' : 'red',
-              padding: '2px 4px',
-              borderRadius: '4px',
-              fontSize: 13,
-            }}
-          >
-            {status}
-          </span>
-        ),
-      },
-      {
-        title: 'Thời gian',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        width: 100,
-        render: (createdAt) => (
-          <div className="flex flex-col items-center">
-            <span style={{ color: '#64748b', fontWeight: '600', fontSize: '13px' }}>{format(new Date(createdAt), 'dd-MM-yyyy')}</span>
+        title: 'Hệ thống thanh toán',
+        children: [
+          {
+            title: 'P/thức',
+            dataIndex: 'payment_method',
+            width: 120,
+            render: (payment_method) => {
+              return (
+                <p
+                  style={{
+                    maxWidth: '200px',
+                    whiteSpace: 'normal',
+                    color: '#334155',
+                    fontSize: 13,
+                  }}
+                  className="text-line-3 text-base font-medium"
+                >
+                  {payment_method === 'cash' ? 'Tiền mặt' : 'Chuyển khoản'}
+                </p>
+              );
+            },
+          },
+          {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            width: 120,
+            key: 'status',
+            render: (status) => (
+              <span
+                style={{
+                  color: status === 'success' ? '#3917d2' : '#fcfcfc',
+                  backgroundColor: status === 'success' ? '#23d707' : 'red',
+                  padding: '2px 4px',
+                  borderRadius: '4px',
+                  fontSize: 13,
+                }}
+              >
+                {status}
+              </span>
+            ),
+          },
+          {
+            title: 'Thời gian',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            width: 100,
+            render: (createdAt) => (
+              <div className="flex flex-col items-center">
+                <span style={{ color: '#64748b', fontWeight: '600', fontSize: '13px' }}>{format(new Date(createdAt), 'dd-MM-yyyy')}</span>
 
-            <span className="text-sm mt-0.5" style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>
-              {format(new Date(createdAt), 'HH:mm:ss')}
-            </span>
-          </div>
-        ),
+                <span className="text-sm mt-0.5" style={{ color: '#64748b', fontWeight: '500', fontSize: '13px' }}>
+                  {format(new Date(createdAt), 'HH:mm:ss')}
+                </span>
+              </div>
+            ),
+          },
+        ],
       },
       {
         title: 'Options',
