@@ -19,23 +19,22 @@ type BookingScreenProps = {
 
 const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   const [infoBooking] = useState<IInfoBooking>(JSON.parse(sessionStorage.getItem('infoBooking') as string) as IInfoBooking);
-  const dateLength = infoBooking?.shift?.date?.length || 0;
 
-  const _totalPriceService = (infoBooking?.services?.reduce((total, service) => total + service.price, 0) || 0) * dateLength;
-  const totalShift = infoBooking?.shift.price * dateLength || 0;
+  const _totalPriceService =
+    (infoBooking?.services?.reduce((total, service) => total + service.price, 0) || 0) * infoBooking?.shift?.numberDate;
 
   const [modeBanking, setModeBanking] = useState<number>(1);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [totalPrice, setTotalPrice] = useState<number>(totalShift + _totalPriceService);
+  const [totalPrice, setTotalPrice] = useState<number>(infoBooking?.shift.totalPrice);
   //
   const [newBooking] = useNewBookingAffterPayMutation();
   const user: any = useAppSelector((state) => state.user.currentUser);
 
   const handleChangeModeBanking = (e: any) => {
     if (e.target.value === 1) {
-      setTotalPrice(totalShift + _totalPriceService);
+      setTotalPrice(infoBooking?.shift.totalPrice);
     } else {
-      setTotalPrice((totalShift + _totalPriceService) * 0.2);
+      setTotalPrice(infoBooking?.shift.totalPrice * 0.4);
     }
     setModeBanking(e.target.value);
   };
@@ -53,11 +52,11 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     }).then((result) => {
       if (result.isConfirmed) {
         const _infoBooking = {
-          user_bank: user.values._id,
+          user_bank: user?.values?._id,
           user_receiver: infoBooking?.admin_pitch?._id,
           vnp_OrderInfo: 'Thanh toan',
           price_received: totalPrice,
-          total_received: totalShift + _totalPriceService,
+          total_received: infoBooking?.shift.totalPrice,
         };
         showLoader();
         createUrlVnpay(_infoBooking)
@@ -89,7 +88,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
 
         const _infoBooking = {
           pitch_id: infoBooking?.pitch?._id,
-          user_id: user.values._id,
+          user_id: user?.values?._id,
           shift_id: '',
           children_pitch_id: infoBooking?.children_pitch?._id,
           payment_id: paymentId,
@@ -234,7 +233,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
               <div className="text-[#422eb1] font-semibold mr-3 flex justify-between w-[100px]">
                 Chi phí <span>:</span>{' '}
               </div>
-              <span className="flex-1 text-[#242424]">{infoBooking?.shift?.shiftPrice?.toLocaleString()} VNĐ</span>
+              <span className="flex-1 text-[#242424]">{infoBooking?.shift?.totalPrice?.toLocaleString()} VNĐ</span>
             </div>
             <div className="flex flex-wrap">
               <div className="text-[#422eb1] font-semibold mr-3 flex justify-between w-[100px]">
@@ -255,7 +254,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
       <section>
         <h2 className="bg-[#EBF3FF] pl-2 py-1 my-4 text-xl font-semibold">
           Thông tin dịch vụ sử dụng: <span className="text-red-500">{_totalPriceService.toLocaleString()}</span> VNĐ &nbsp;
-          <span className="text-red-500 text-sm">({dateLength} ngày)</span>
+          <span className="text-red-500 text-sm">({infoBooking?.shift?.numberDate} ngày)</span>
         </h2>
 
         <div className="space-y-2 max-h-[210px] overflow-y-auto">
@@ -279,17 +278,17 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
         <h2 className="bg-[#EBF3FF] pl-2 py-1 my-4 text-xl font-semibold">
           Tóm tắt giá sân
           <span className="text-xs md:text-sm font-normal">
-            &nbsp;<span className="text-red-500 text-sm">({dateLength} ngày)</span>
+            &nbsp;<span className="text-red-500 text-sm">({infoBooking?.shift?.numberDate} ngày)</span>
           </span>
         </h2>
 
         <div className="flex justify-between items-center">
           <Radio.Group className="flex flex-col space-y-6" defaultValue={1} value={modeBanking} onChange={handleChangeModeBanking}>
             <Radio value={1} className="text-base">
-              Trả toàn bộ ({(totalShift + _totalPriceService)?.toLocaleString()} VNĐ)
+              Trả toàn bộ ({infoBooking?.shift.totalPrice?.toLocaleString()} VNĐ)
             </Radio>
             <Radio value={2} className="text-base">
-              Đặt cọc (20%) - ({((totalShift + _totalPriceService) * 0.2)?.toLocaleString()} VNĐ)
+              Đặt cọc (40%) - ({(infoBooking?.shift.totalPrice * 0.4)?.toLocaleString()} VNĐ)
             </Radio>
           </Radio.Group>
 
@@ -312,7 +311,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
       <section>
         <h2 className="bg-[#EBF3FF] pl-2 py-1 my-4 text-xl font-semibold">
           Tổng số tiền cần thanh toán: <span className="text-red-500">{totalPrice.toLocaleString()}</span> VNĐ&nbsp;
-          <span className="text-red-500 text-sm">({dateLength} ngày)</span>
+          <span className="text-red-500 text-sm">({infoBooking?.shift?.numberDate} ngày)</span>
         </h2>
         <div className="mt-4 text-sm max-w-[800px]">
           <span className="text-red-500">Lưu ý *:</span> Chúng tôi chỉ nhận thanh toán bằng hình thức internet banking qua trang web của

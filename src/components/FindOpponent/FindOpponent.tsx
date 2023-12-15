@@ -10,7 +10,11 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
   const [isModal, setIsModal] = useState(false);
   const [dataMatchOpponent, setDataMatchOpponent] = useState<any>({});
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [errorPhone, setErrorPhone] = useState('');
+  const [errorEmail, setErrorEmail] = useState('');
+  const [errorName, setErrorName] = useState('');
 
   const user: any = useAppSelector((state) => state.user.currentUser);
 
@@ -29,20 +33,54 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
 
   const onHandleSubmit = async () => {
     try {
+      if (!user?.values?.phone_number && !user?.values?.email && !user?.values?.name) {
+        if (!email && !phoneNumber && !errorName) {
+          setErrorEmail('Vui lòng nhập email!');
+          setErrorPhone('Vui lòng nhập số điện thoại!');
+          setErrorName('Vui lòng nhập Tên!');
+          return;
+        }
+      }
+
       if (!user?.values?.phone_number) {
         const phoneRegex = /^[0-9]{10,}$/;
 
         if (!phoneNumber) {
-          setError('Vui lòng nhập số điện thoại!');
+          setErrorPhone('Vui lòng nhập số điện thoại!');
           return;
         }
 
-        if (!phoneRegex.test(phoneNumber)) {
-          setError('Vui lòng nhập số điện thoại hợp lệ');
+        if (phoneNumber && !phoneRegex.test(phoneNumber)) {
+          setErrorPhone('Vui lòng nhập số điện thoại hợp lệ');
           return;
         }
 
-        setError('');
+        setErrorPhone('');
+      }
+
+      if (!user?.values?.email) {
+        const emailRegex = /\S+@\S+\.\S+/;
+
+        if (!email) {
+          setErrorEmail('Vui lòng nhập email!');
+          return;
+        }
+
+        if (email && !emailRegex.test(email)) {
+          setErrorEmail('Vui lòng nhập địa chỉ email hợp lệ');
+          return;
+        }
+
+        setErrorEmail('');
+      }
+
+      if (!user?.values?.name) {
+        if (!name) {
+          setErrorName('Vui lòng nhập Họ Tên!');
+          return;
+        }
+
+        setErrorEmail('');
       }
 
       const data = {
@@ -50,6 +88,9 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
         email: dataMatchOpponent?.user?.email,
         phone_number: dataMatchOpponent?.user?.phone_number,
         nameUserFindOpponent: dataMatchOpponent?.user?.name,
+        currentUserEmail: email,
+        currentUserPhone: phoneNumber,
+        currentUserName: name,
       };
 
       await matchOpponent(data);
@@ -176,16 +217,44 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
                 <span className="inline-block min-w-[160px]">Tài khoản đặt sân: </span>
                 <span className="font-bold"> {dataMatchOpponent?.user?.name}</span>
               </p>
-              <div className={`mb-[8px] ${!user?.values?.phone_number ? '' : 'hidden'}`}>
+              <div className={`${!user?.values?.phone_number ? '' : 'hidden'}`}>
                 <span className="inline-block min-w-[160px] text-[16px] font-semibold mb-[8px]">Vui lòng nhập số điện thoại của bạn</span>
                 {!user?.values?.phone_number && (
-                  <Form.Item validateStatus={error ? 'error' : ''} help={error}>
+                  <Form.Item validateStatus={errorPhone ? 'error' : ''} help={errorPhone}>
                     <Input
                       size="large"
                       className="w-[75%]"
                       placeholder="Nhập số điện thoại"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </Form.Item>
+                )}
+              </div>
+              <div className={`${!user?.values?.email ? '' : 'hidden'}`}>
+                <span className="inline-block min-w-[160px] text-[16px] font-semibold mb-[8px]">Vui lòng nhập email của bạn</span>
+                {!user?.values?.email && (
+                  <Form.Item validateStatus={errorEmail ? 'error' : ''} help={errorEmail}>
+                    <Input
+                      size="large"
+                      className="w-[75%]"
+                      placeholder="Nhập email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </Form.Item>
+                )}
+              </div>
+              <div className={`${!user?.values?.name ? '' : 'hidden'}`}>
+                <span className="inline-block min-w-[160px] text-[16px] font-semibold mb-[8px]">Vui lòng nhập tên của bạn</span>
+                {!user?.values?.name && (
+                  <Form.Item validateStatus={errorName ? 'error' : ''} help={errorName}>
+                    <Input
+                      size="large"
+                      className="w-[75%]"
+                      placeholder="Nhập Họ Tên"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </Form.Item>
                 )}

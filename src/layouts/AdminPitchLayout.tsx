@@ -220,6 +220,29 @@ const AdminPitchLayout = () => {
                 </ListItem>
               </Link>
             </Accordion>
+            <Accordion open={open === 8}>
+              <Link to={routes.shift_admin} className="flex items-center gap-2">
+                <ListItem className="p-0" selected={open === 8}>
+                  <AccordionHeader onClick={() => handleOpen(8)} className="border-b-0 p-3">
+                    <ListItemPrefix>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </ListItemPrefix>
+                    <Typography color="blue-gray" className="mr-auto font-normal">
+                      Danh Sách Ca
+                    </Typography>
+                  </AccordionHeader>
+                </ListItem>
+              </Link>
+            </Accordion>
             <hr className="my-2 border-blue-gray-50" />
             <Link to={routes.home}>
               <ListItem>

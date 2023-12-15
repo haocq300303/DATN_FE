@@ -1,57 +1,33 @@
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Tab,
-  TabPanel,
-  Tabs,
-  TabsBody,
-  TabsHeader,
-  Typography,
-  Checkbox,
-} from "@material-tailwind/react";
-import {
-  Button,
-  Carousel,
-  DatePicker,
-  Empty,
-  Form,
-  Image,
-  Input,
-  Modal,
-  Rate,
-  Space,
-  Switch,
-} from "antd";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { getAllServiceMid } from "~/Redux/Slices/serviceSlice";
-import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import "./pitchDetailPage.css";
+import { Card, CardBody, CardHeader, Tab, TabPanel, Tabs, TabsBody, TabsHeader, Typography, Checkbox } from '@material-tailwind/react';
+import { Button, Carousel, DatePicker, Empty, Form, Image, Input, Modal, Rate, Space, Switch } from 'antd';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import './pitchDetailPage.css';
 
-import { getOnePitch } from "~/api/pitch";
-import FindOpponent from "~/components/FindOpponent/FindOpponent";
-import IPitch from "~/interfaces/pitch";
-import { fetchAllPitch } from "~/Redux/Slices/pitchSlice";
-import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
-import FeedBack from "~/components/Feedback/FeedBack";
-import { totalStarByPitch } from "~/api/feedback";
-import { getAllChildrentPicthByParent } from "~/api/childrentPitch";
-import dayjs from "dayjs";
-import Loading from "~/components/Loading";
-import ModalBookMultipleDay from "./ModalBookMultipleDay";
-import ModalBookOneShiftFullMonth from "./ModalBookOneShiftFullMonth";
-import ModalBookPitchFullMonth from "./ModalBookPitchFullMonth";
-import { updateUser } from "~/api/user";
+import { getOnePitch } from '~/api/pitch';
+import FindOpponent from '~/components/FindOpponent/FindOpponent';
+import IPitch from '~/interfaces/pitch';
+import { fetchAllPitch } from '~/Redux/Slices/pitchSlice';
+import { format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
+import FeedBack from '~/components/Feedback/FeedBack';
+import { totalStarByPitch } from '~/api/feedback';
+import { getAllChildrentPicthByParent } from '~/api/childrentPitch';
+import dayjs from 'dayjs';
+import Loading from '~/components/Loading';
+import ModalBookMultipleDay from './ModalBookMultipleDay';
+import ModalBookOneShiftFullMonth from './ModalBookOneShiftFullMonth';
+import ModalBookPitchFullMonth from './ModalBookPitchFullMonth';
+import { updateUser } from '~/api/user';
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const currentTime = new Date();
-  const currentDate = format(currentTime, "yyyy-MM-dd");
+  const currentDate = format(currentTime, 'yyyy-MM-dd');
   const currentHour = currentTime.getHours();
   const currentMinutes = currentTime.getMinutes();
 
@@ -64,18 +40,16 @@ const PitchDetailPage = () => {
   const [selectedServices, setSelectedServices] = useState<any>([]);
   const [findOpponent, setFindOpponent] = useState(false);
   const [TotalStar, setTotalStar] = useState<any>(Number);
-  const [isModalBookMultipleDay, setIsModalBookMultipleDay] =
-    useState<boolean>(false);
-  const [isModalBookOneShiftMonth, setIsModalBookOneShiftMonth] =
-    useState<boolean>(false);
-  const [isModalBookPitchMonth, setIsModalBookPitchMonth] =
-    useState<boolean>(false);
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [error, setError] = useState('');
-
+  const [isModalBookMultipleDay, setIsModalBookMultipleDay] = useState<boolean>(false);
+  const [isModalBookOneShiftMonth, setIsModalBookOneShiftMonth] = useState<boolean>(false);
+  const [isModalBookPitchMonth, setIsModalBookPitchMonth] = useState<boolean>(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [error, setError] = useState('');
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
   const user: any = useAppSelector((state) => state.user.currentUser);
+
+  const totalPrice = dataBookShift?.price + (selectedServices?.reduce((total: any, service: any) => total + service.price, 0) || 0);
 
   const onChangeFindOpponent = (checked: boolean) => {
     setFindOpponent(checked);
@@ -84,12 +58,7 @@ const PitchDetailPage = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const { data } = await getAllChildrentPicthByParent(
-        id!,
-        selectedDate && selectedDate.trim() !== ""
-          ? `?date=${selectedDate}`
-          : ""
-      );
+      const { data } = await getAllChildrentPicthByParent(id!, selectedDate && selectedDate.trim() !== '' ? `?date=${selectedDate}` : '');
       setShildrenPitchs(data.data);
       setIsLoading(false);
     })();
@@ -99,7 +68,6 @@ const PitchDetailPage = () => {
   useEffect(() => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, [id]);
-  
 
   const handleComfirmBookShift = (data: any) => {
     setDataBookShift(data);
@@ -108,26 +76,25 @@ const PitchDetailPage = () => {
   };
 
   const onFinishModalBookShift = async () => {
-    if(!user?.values?.phone_number && findOpponent){
+    if (!user?.values?.phone_number && findOpponent) {
       const phoneRegex = /^[0-9]{10,}$/;
-  
+
       if (!phoneNumber) {
         setError('Vui lòng nhập số điện thoại!');
         return;
       }
-  
+
       if (!phoneRegex.test(phoneNumber)) {
         setError('Vui lòng nhập số điện thoại hợp lệ');
         return;
       }
-  
+
       setError('');
-      await updateUser(user.values._id, {phone_number: phoneNumber})
+      await updateUser(user.values._id, { phone_number: phoneNumber });
     }
 
-
     sessionStorage.setItem(
-      "infoBooking",
+      'infoBooking',
       JSON.stringify({
         pitch: {
           _id: dataBookShift.id_pitch,
@@ -146,29 +113,27 @@ const PitchDetailPage = () => {
         },
         shift: {
           price: dataBookShift?.price,
+          totalPrice,
           shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
           date: [selectedDate],
+          numberDate: 1,
           start_time: dataBookShift?.start_time,
           end_time: dataBookShift?.end_time,
           number_shift: dataBookShift?.number_shift,
-          find_opponent: findOpponent ? "Find" : "NotFind",
+          find_opponent: findOpponent ? 'Find' : 'NotFind',
         },
         services: selectedServices,
-        type: "singleDay",
+        type: 'singleDay',
       })
     );
-    navigate("/checkout");
+    navigate('/checkout');
   };
 
   const handleServiceSelection = (service: any) => {
-    const isMatch = [...selectedServices].some(
-      (item) => item._id === service._id
-    );
+    const isMatch = [...selectedServices].some((item) => item._id === service._id);
 
     if (isMatch) {
-      const _selectedServices = [...selectedServices].filter(
-        (item) => item._id !== service._id
-      );
+      const _selectedServices = [...selectedServices].filter((item) => item._id !== service._id);
       setSelectedServices(_selectedServices);
     } else {
       const _selectedServices = [...selectedServices, service];
@@ -180,12 +145,10 @@ const PitchDetailPage = () => {
   const districtsId = Pitch.districts_id; // ID của danh mục bạn muốn lọc
 
   useEffect(() => {
-    dispatch(fetchAllPitch(""));
+    dispatch(fetchAllPitch(''));
   }, [dispatch]);
 
-  const filteredPitch = pitchAll.filter(
-    (pitch: IPitch) => pitch.districts_id === districtsId
-  );
+  const filteredPitch = pitchAll.filter((pitch: IPitch) => pitch.districts_id === districtsId);
 
   // end xử lí đội bóng liên quan
 
@@ -204,14 +167,10 @@ const PitchDetailPage = () => {
     fetchData();
   }, [id]);
 
-  useEffect(() => {
-    dispatch(getAllServiceMid());
-  }, [dispatch]);
-
   const data = [
     {
-      label: "THÔNG TIN",
-      value: "html",
+      label: 'THÔNG TIN',
+      value: 'html',
       desc: (
         <>
           <div className="flex img-pitch gap-[20px]">
@@ -219,34 +178,17 @@ const PitchDetailPage = () => {
               <Image.PreviewGroup
                 items={[
                   `
-                  ${
-                    Pitch?.images &&
-                    Pitch.images.length > 0 &&
-                    (Pitch.images[0], Pitch.images[1], Pitch.images[2])
-                  }
+                  ${Pitch?.images && Pitch.images.length > 0 && (Pitch.images[0], Pitch.images[1], Pitch.images[2])}
                   `,
                 ]}
               >
-                {Pitch?.images && Pitch.images.length > 0 && (
-                  <Image
-                    className="w-[100%] h-[100%] object-cover"
-                    src={Pitch.images[0]}
-                  />
-                )}
+                {Pitch?.images && Pitch.images.length > 0 && <Image className="w-[100%] h-[100%] object-cover" src={Pitch.images[0]} />}
               </Image.PreviewGroup>
             </div>
             {Pitch?.images && Pitch.images.length > 0 && (
               <div className="right-img w-[30%] xl:grid md:hidden">
-                <img
-                  src={Pitch?.images[1]}
-                  alt="No Image 1"
-                  className="w-[100%] h-[100%]"
-                />
-                <img
-                  src={Pitch?.images[2]}
-                  alt="No Image 2"
-                  className="w-[100%] h-[100%]"
-                />
+                <img src={Pitch?.images[1]} alt="No Image 1" className="w-[100%] h-[100%]" />
+                <img src={Pitch?.images[2]} alt="No Image 2" className="w-[100%] h-[100%]" />
               </div>
             )}
           </div>
@@ -254,14 +196,14 @@ const PitchDetailPage = () => {
       ),
     },
     {
-      label: "SÂN GẦN ĐÂY",
-      value: "react",
+      label: 'SÂN GẦN ĐÂY',
+      value: 'react',
       desc: (
         <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
           <Swiper
             spaceBetween={80}
             slidesPerView={2}
-            onSlideChange={() => console.log("slide change")}
+            onSlideChange={() => console.log('slide change')}
             onSwiper={(swiper) => console.log(swiper)}
           >
             {filteredPitch && filteredPitch.length > 0 ? (
@@ -273,16 +215,10 @@ const PitchDetailPage = () => {
                     </Link> */}
                     <a href={`/pitch/detail/${item._id}`}>
                       <div className="imgae-item-pitch">
-                        <img
-                          src={item.avatar}
-                          width="100%"
-                          className="h-[250px]"
-                          alt=""
-                        />
+                        <img src={item.avatar} width="100%" className="h-[250px]" alt="" />
                       </div>
                       <div className="text-item-pitch">
-                        <Rate disabled allowHalf defaultValue={4.5} />{" "}
-                        <span>( {item?.feedback_id?.length} Review)</span>
+                        <Rate disabled allowHalf defaultValue={4.5} /> <span>( {item?.feedback_id?.length} Review)</span>
                         <h3>{item.name}</h3>
                         <p>Số Người :7 Người</p>
                         <p className="flex justify-between my-[10px]">
@@ -290,22 +226,18 @@ const PitchDetailPage = () => {
                           {Pitch?.services && Pitch?.services.length > 0
                             ? Pitch?.services?.map((service: any) => (
                                 <span key={service?._id}>
-                                  <i className="fa-solid fa-check"></i>{" "}
-                                  {service.name}
+                                  <i className="fa-solid fa-check"></i> {service.name}
                                 </span>
                               ))
-                            : ""}
+                            : ''}
                         </p>
                         <p className="flex justify-between">
                           Giá :
                           <span>
-                            <del className="italic text-[13px]">
-                              500.000-1.200.000
-                            </del>
+                            <del className="italic text-[13px]">500.000-1.200.000</del>
                           </span>
                           <span className="text-[23px] text-[#ffb932] text-bold">
-                            {item.average_price.toLocaleString("vi-VN")} -
-                            850.000
+                            {item.average_price.toLocaleString('vi-VN')} - 850.000
                           </span>
                         </p>
                       </div>
@@ -324,51 +256,38 @@ const PitchDetailPage = () => {
     },
 
     {
-      label: "TÌM ĐỐI",
+      label: 'TÌM ĐỐI',
       desc: <FindOpponent idPitch={id!} />,
     },
 
     {
-      label: "DỊCH VỤ",
-      value: "angular",
+      label: 'DỊCH VỤ',
+      value: 'angular',
       desc: (
         <>
           <div className="flex gap-[20px] overflow-y-auto pt-[16px]">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                  <Card
-                    className="mt-6 pt-4 w-[250px] mr-2 h-[200px]"
-                    key={service?._id}
-                  >
-                    <CardHeader
-                      color="blue-gray"
-                      className="w-[200px] h-28 pl-0 mt-"
-                    >
-                      <img
-                        className="w-full"
-                        src={service?.image}
-                        alt="card-image"
-                      />
+                  <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
+                    <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 mt-">
+                      <img className="w-full" src={service?.image} alt="card-image" />
                     </CardHeader>
                     <CardBody>
-                      <Typography
-                        color="blue-gray"
-                        className="mb-2 text-base font-bold w-max"
-                      >
+                      <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
                         {service?.name}
                       </Typography>
                     </CardBody>
                   </Card>
                 ))
-              : "Không có dịch vụ"}
+              : 'Không có dịch vụ'}
           </div>
         </>
       ),
     },
     {
-      label: "ĐÁNH GIÁ",
-      value: "svelte",
-      desc: <FeedBack idPitch={Pitch} />,
+      label: 'ĐÁNH GIÁ',
+      value: 'svelte',
+      desc: <FeedBack />,
     },
   ];
 
@@ -424,31 +343,23 @@ const PitchDetailPage = () => {
             </p>
             <p className="flex items-center ">
               <i className="fa-solid fa-tag"></i>
-              <span className="text-[14px] ml-2 leading-4 font-semibold">
-                GIÁ CHỈ TỪ:{" "}
-              </span>
+              <span className="text-[14px] ml-2 leading-4 font-semibold">GIÁ CHỈ TỪ: </span>
               <span className=" text-[#ffb932] ml-2 leading-4">
                 {Pitch?.average_price &&
-                  Pitch?.average_price?.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
+                  Pitch?.average_price?.toLocaleString('it-IT', {
+                    style: 'currency',
+                    currency: 'VND',
                   })}
               </span>
             </p>
             <p className="my-[20px] font-semibold">
-              Số điện thoại:{" "}
-              <span className="text-[#ffb932]">
-                {Pitch?.admin_pitch_id?.phone_number}
-              </span>
+              Số điện thoại: <span className="text-[#ffb932]">{Pitch?.admin_pitch_id?.phone_number}</span>
             </p>
             <p className="my-[20px] font-semibold">
               Địa chỉ: <span className="text-[#ffb932]">{Pitch?.address}</span>
             </p>
 
-            <a
-              href={`tel:${Pitch?.admin_pitch_id?.phone_number}`}
-              className="btn-call"
-            >
+            <a href={`tel:${Pitch?.admin_pitch_id?.phone_number}`} className="btn-call">
               <button>GỌI TỚI CHỦ SÂN</button>
             </a>
           </div>
@@ -471,51 +382,39 @@ const PitchDetailPage = () => {
           <h1 className="text-pitch">{Pitch.name}</h1>
           <p className="flex align-center">
             <Rate disabled allowHalf value={TotalStar?.averageRating} />
-            <span className="ml-2">
-              ( {Pitch?.feedback_id?.length} Reviews )
-            </span>
+            <span className="ml-2">( {Pitch?.feedback_id?.length} Reviews )</span>
           </p>
         </div>
       </div>
-      <div
-        id="timca"
-        className="container mx-auto booking_detail grid grid-cols-7 gap-10 pb-[80px]"
-      >
+      <div id="timca" className="container mx-auto booking_detail grid grid-cols-7 gap-10 pb-[80px]">
         {/* khu vực hiển thị ca sân  */}
         <div className="left_booking col-span-5">
           {!isLoading ? (
             <div className="grid grid-cols-2 gap-[24px] list_shift">
               {childrenPitchs?.map((item: any, index: number) => (
-                <div
-                  className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden"
-                  key={index}
-                >
-                  <h3 className="bg-[#1fd392] text-center p-[10px] text-lg font-medium">
-                    Sân {item.code_chirldren_pitch}
-                  </h3>
+                <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden" key={index}>
+                  <h3 className="bg-[#1fd392] text-center p-[10px] text-lg font-medium">Sân {item.code_chirldren_pitch}</h3>
 
                   <p className="mx-[16px] mt-[16px]">
                     <p className="text-base font-semibold">Ca Sân:</p>
                     <div className="flex flex-wrap justify-between mt-[8px] mb-[20px] gap-y-[16px]">
                       {item.shifts?.map((shift: any, index: number) => {
-                        const [inputHours, inputMinutes] =
-                          shift.start_time.split(":");
+                        const [inputHours, inputMinutes] = shift.start_time.split(':');
 
                         let overtime = false;
 
                         const inputDate = new Date(selectedDate);
 
                         if (
-                          (inputDate.getFullYear() ===
-                          currentTime.getFullYear() &&
-                          inputDate.getMonth() === currentTime.getMonth() &&
-                          inputDate.getDate() === currentTime.getDate() &&
-                          parseInt(inputHours, 10) < currentHour) ||
-                        (parseInt(inputHours, 10) === currentHour &&
-                          parseInt(inputMinutes, 10) < currentMinutes)
+                          currentTime.getFullYear() === inputDate.getFullYear() &&
+                          currentTime.getMonth() + 1 === inputDate.getMonth() + 1 &&
+                          currentTime.getDate() === inputDate.getDate() &&
+                          currentHour >= parseInt(inputHours, 10) &&
+                          currentMinutes >= parseInt(inputMinutes, 10)
                         ) {
                           overtime = true;
                         }
+
                         return (
                           <button
                             key={index}
@@ -523,8 +422,7 @@ const PitchDetailPage = () => {
                               if (!shift.status_shift && !overtime) {
                                 handleComfirmBookShift({
                                   id_chirlden_pitch: item._id,
-                                  code_chirldren_pitch:
-                                    item.code_chirldren_pitch,
+                                  code_chirldren_pitch: item.code_chirldren_pitch,
                                   id_pitch: item.idParentPitch,
                                   number_shift: shift.number_shift,
                                   start_time: shift.start_time,
@@ -535,19 +433,17 @@ const PitchDetailPage = () => {
                               }
                             }}
                             className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
-                              overtime ? "overtime" : ""
-                            } ${shift.status_shift ? "disabled" : ""}`}
+                              overtime ? 'overtime' : ''
+                            } ${shift.status_shift ? 'disabled' : ''}`}
                           >
-                            <p className="font-semibold mb-[2px] ">
-                              Ca {shift.number_shift}
-                            </p>
+                            <p className="font-semibold mb-[2px] ">Ca {shift.number_shift}</p>
                             <p className="mb-[2px] font-semibold ">
                               {shift.start_time}h - {shift.end_time}h
                             </p>
                             <p className="font-semibold">
-                              {shift.price?.toLocaleString("it-IT", {
-                                style: "currency",
-                                currency: "VND",
+                              {shift.price?.toLocaleString('it-IT', {
+                                style: 'currency',
+                                currency: 'VND',
                               })}
                             </p>
                           </button>
@@ -578,18 +474,17 @@ const PitchDetailPage = () => {
               <Form.Item>
                 <div className="flex items-center justify-between mb-[16px]">
                   <p className="text-[16px] font-[600] mr-[10px]">
-                    <i className="fa-regular fa-calendar mr-[10px]"></i>CHỌN
-                    NGÀY :
+                    <i className="fa-regular fa-calendar mr-[10px]"></i>CHỌN NGÀY :
                   </p>
                   <Space direction="vertical">
                     <DatePicker
-                      size={"large"}
+                      size={'large'}
                       disabledDate={(current) => current.isBefore(currentDate)}
                       onChange={(e: any) => {
-                        const datePicker = format(e.$d, "yyyy-MM-dd");
+                        const datePicker = format(e.$d, 'yyyy-MM-dd');
                         setSelectedDate(datePicker);
                       }}
-                      value={dayjs(selectedDate, "YYYY-MM-DD")}
+                      value={dayjs(selectedDate, 'YYYY-MM-DD')}
                     />
                   </Space>
                 </div>
@@ -605,9 +500,7 @@ const PitchDetailPage = () => {
                   <span className="w-[16px] h-[16px] bg-[#c2c2c2] rounded mr-[10px]"></span>
                   <p className="text-[16px] font-[600]">Đã hết giờ</p>
                 </div>
-                <p className="text-[18px] font-[700] mb-[14px]">
-                  Bạn cũng có thể:
-                </p>
+                <p className="text-[18px] font-[700] mb-[14px]">Bạn cũng có thể:</p>
                 <div className="flex items-center justify-center mb-[16px]">
                   <button
                     onClick={() => setIsModalBookMultipleDay(true)}
@@ -696,9 +589,7 @@ const PitchDetailPage = () => {
               </p>
               <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
                 <span className="inline-block min-w-[100px]">Điện thoại:</span>
-                <span className="font-bold">
-                  {Pitch?.admin_pitch_id?.phone_number}
-                </span>
+                <span className="font-bold">{Pitch?.admin_pitch_id?.phone_number}</span>
               </p>
               <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
                 <span className="inline-block min-w-[100px]">Ca: </span>
@@ -714,9 +605,9 @@ const PitchDetailPage = () => {
               <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
                 <span className="inline-block min-w-[100px]">Giá: </span>
                 <span className="font-bold">
-                  {dataBookShift?.price?.toLocaleString("it-IT", {
-                    style: "currency",
-                    currency: "VND",
+                  {dataBookShift?.price?.toLocaleString('it-IT', {
+                    style: 'currency',
+                    currency: 'VND',
                   })}
                 </span>
               </p>
@@ -730,7 +621,7 @@ const PitchDetailPage = () => {
                   <span className="font-bold">Bật</span>
                 </p>
               ) : (
-                ""
+                ''
               )}
               {selectedServices.length > 0 && (
                 <p className="text-[18px] font-semibold mt-[-4px] mb-[16px]">
@@ -740,80 +631,62 @@ const PitchDetailPage = () => {
                   ))}
                 </p>
               )}
+              <p className={`text-[18px] font-semibold mt-[-4px] mb-[16px]`}>
+                <span className="inline-block min-w-[90px] font-bold">Tổng tiền:</span>
+                <span className="font-bold">
+                  {totalPrice?.toLocaleString('it-IT', {
+                    style: 'currency',
+                    currency: 'VND',
+                  })}
+                </span>
+              </p>
             </div>
           </div>
           <div className="mb-[24px] w-[50%] rounded-xl shadow-md bg-white overflow-hidden">
-            <h3 className="text-xl  bg-[linear-gradient(36deg,#1fd392,#00e0ff)] p-2 text-white text-center font-bold">
-              Dịch vụ
-            </h3>
+            <h3 className="text-xl  bg-[linear-gradient(36deg,#1fd392,#00e0ff)] p-2 text-white text-center font-bold">Dịch vụ</h3>
 
             <div className="px-8 py-6 overflow-y-auto h-[390px]">
               <div className="flex align-center mb-[8px]">
-                <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">
-                  Bạn muốn tìm đối?
-                </span>
-                <Switch
-                  className="bg-[#00000073]"
-                  checked={findOpponent}
-                  onChange={onChangeFindOpponent}
-                />
+                <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">Bạn muốn tìm đối?</span>
+                <Switch className="bg-[#00000073]" checked={findOpponent} onChange={onChangeFindOpponent} />
               </div>
-              <div className={`mb-[8px] ${!user?.values?.phone_number && findOpponent ? "" : "hidden"}`}>
-              <span className="inline-block min-w-[100px] text-[16px] font-semibold mb-[8px]">
-                  Vui lòng nhập số điện thoại của bạn
-                </span>
-                 {!user?.values?.phone_number && findOpponent && <Form.Item
-                      validateStatus={error ? 'error' : ''}
-                      help={error}
-                  >
-                      <Input
-                        className="w-[50%]"
-                        placeholder="Nhập số điện thoại"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                      />
-                  </Form.Item>}
-                 
-                </div>
-              <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">
-                Dịch vụ:
-              </span>
+              <div className={`mb-[8px] ${!user?.values?.phone_number && findOpponent ? '' : 'hidden'}`}>
+                <span className="inline-block min-w-[100px] text-[16px] font-semibold mb-[8px]">Vui lòng nhập số điện thoại của bạn</span>
+                {!user?.values?.phone_number && findOpponent && (
+                  <Form.Item validateStatus={error ? 'error' : ''} help={error}>
+                    <Input
+                      className="w-[50%]"
+                      placeholder="Nhập số điện thoại"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </Form.Item>
+                )}
+              </div>
+              <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">Dịch vụ:</span>
 
               <div className="flex gap-[20px] align-center justify-center mb-[24px] flex-wrap">
                 {Pitch?.services && Pitch?.services.length > 0
                   ? Pitch?.services?.map((service: any) => (
                       <Card className="mt-4 w-[45%]" key={service?._id}>
-                        <Checkbox
-                          crossOrigin={undefined}
-                          onChange={() => handleServiceSelection(service)}
-                        />
-                        <CardHeader
-                          color="blue-gray"
-                          className="w-[148px] h-28 pl-0 mt-0"
-                        >
-                          <img
-                            className="w-full h-full object-cover"
-                            src={service?.image}
-                            alt="card-image"
-                          />
+                        <Checkbox crossOrigin={undefined} onChange={() => handleServiceSelection(service)} />
+                        <CardHeader color="blue-gray" className="w-[148px] h-28 pl-0 mt-0">
+                          <img className="w-full h-full object-cover" src={service?.image} alt="card-image" />
                         </CardHeader>
                         <CardBody className="px-[16px] py-[8px]">
-                          <Typography
-                            color="blue-gray"
-                            className="mb-2 text-base font-bold w-max"
-                          >
+                          <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
                             {service?.name}
                           </Typography>
                           <Typography>
-                            {service?.price.toLocaleString("it-IT", {
-                              style: "currency",
-                              currency: "VND",
+                            {service?.price.toLocaleString('it-IT', {
+                              style: 'currency',
+                              currency: 'VND',
                             })}
                           </Typography>
                         </CardBody>
                       </Card>
                     ))
-                  : "Không có dịch vụ"}
+                  : 'Không có dịch vụ'}
               </div>
             </div>
           </div>
