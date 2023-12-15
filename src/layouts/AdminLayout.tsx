@@ -72,33 +72,6 @@ const AdminLayout = () => {
                 </ListItem>
               </Link>
             </Accordion>
-            <Accordion open={open === 3}>
-              <Link to={'/admin/shift'} className="flex items-center gap-2">
-                <ListItem className="p-0" selected={open === 3}>
-                  <AccordionHeader onClick={() => handleOpen(3)} className="border-b-0 p-3">
-                    <ListItemPrefix>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
-                        />
-                      </svg>
-                    </ListItemPrefix>
-                    <Typography color="blue-gray" className="mr-auto font-normal">
-                      Ca Sân
-                    </Typography>
-                  </AccordionHeader>
-                </ListItem>
-              </Link>
-            </Accordion>
             <Accordion open={open === 4}>
               <Link to={'/admin/post'} className="flex items-center gap-2">
                 <ListItem className="p-0" selected={open === 4}>
@@ -126,33 +99,6 @@ const AdminLayout = () => {
                 </ListItem>
               </Link>
             </Accordion>
-            <Accordion open={open === 5}>
-              <Link to={'/admin/payment'} className="flex items-center gap-2">
-                <ListItem className="p-0" selected={open === 5}>
-                  <AccordionHeader onClick={() => handleOpen(5)} className="border-b-0 p-3">
-                    <ListItemPrefix>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"
-                        />
-                      </svg>
-                    </ListItemPrefix>
-                    <Typography color="blue-gray" className="mr-auto font-normal">
-                      Hóa Đơn
-                    </Typography>
-                  </AccordionHeader>
-                </ListItem>
-              </Link>
-            </Accordion>
             <Accordion open={open === 6}>
               <Link to={'/admin/banner'} className="flex items-center gap-2">
                 <ListItem className="p-0" selected={open === 6}>
@@ -175,33 +121,6 @@ const AdminLayout = () => {
                     </ListItemPrefix>
                     <Typography color="blue-gray" className="mr-auto font-normal">
                       Ảnh Bìa
-                    </Typography>
-                  </AccordionHeader>
-                </ListItem>
-              </Link>
-            </Accordion>
-            <Accordion open={open === 7}>
-              <Link to={'/admin/booking'} className="flex items-center gap-2">
-                <ListItem className="p-0" selected={open === 7}>
-                  <AccordionHeader onClick={() => handleOpen(7)} className="border-b-0 p-3">
-                    <ListItemPrefix>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                        />
-                      </svg>
-                    </ListItemPrefix>
-                    <Typography color="blue-gray" className="mr-auto font-normal">
-                      Lịch Sử
                     </Typography>
                   </AccordionHeader>
                 </ListItem>
