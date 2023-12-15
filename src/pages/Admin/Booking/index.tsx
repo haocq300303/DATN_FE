@@ -1,11 +1,12 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import Table, { ColumnsType } from "antd/es/table";
-import { format } from "date-fns";
-import React, { useEffect, useMemo, useState } from "react";
-import { IBooking } from "~/interfaces/booking.type";
-import { useGetAllBookingByUserIdQuery } from "../../../Redux/booking/bookingApi";
-import FormCreateBooking from "./CreateBooking";
+import { PlusOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import Table, { ColumnsType } from 'antd/es/table';
+import { format } from 'date-fns';
+import React, { useEffect, useMemo, useState } from 'react';
+import { IBooking } from '~/interfaces/booking.type';
+import { useGetAllBookingByUserIdQuery } from '../../../Redux/booking/bookingApi';
+import FormCreateBooking from './CreateBooking';
+import { useAppSelector } from '~/Redux/hook';
 
 interface DataType extends IBooking {
   key: React.Key;
@@ -14,29 +15,30 @@ const BookingAdminPage = () => {
   const [dataSource, setDataSource] = useState<DataType[]>([]);
   // const [isModalOpen, setIsModalOpen] = useState<boolean>();
   const [isOpenModalCreate, setIsOpenModalCreate] = useState<boolean>(false);
+  const user = useAppSelector((state) => state.user.currentUser);
 
   const columns: ColumnsType<DataType> = useMemo(
     () => [
       {
-        title: "#",
-        dataIndex: "index",
-        key: "index",
+        title: '#',
+        dataIndex: 'index',
+        key: 'index',
         width: 50,
-        fixed: "left",
+        fixed: 'left',
       },
       {
-        title: "Thông tin người đặt",
+        title: 'Thông tin người đặt',
         children: [
           {
-            title: "Họ và tên",
-            dataIndex: "user_booking",
+            title: 'Họ và tên',
+            dataIndex: 'user_booking',
             width: 200,
             render: (user_booking) => (
               <p
                 style={{
-                  maxWidth: "200px",
-                  whiteSpace: "normal",
-                  color: "#334155",
+                  maxWidth: '200px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -45,17 +47,17 @@ const BookingAdminPage = () => {
             ),
           },
           {
-            title: "Số điện thoại",
-            dataIndex: "user_booking",
-            key: "index",
+            title: 'Số điện thoại',
+            dataIndex: 'user_booking',
+            key: 'index',
             width: 200,
             render: (user_booking) => {
               return (
                 <p
                   style={{
-                    maxWidth: "200px",
-                    whiteSpace: "normal",
-                    color: "#334155",
+                    maxWidth: '200px',
+                    whiteSpace: 'normal',
+                    color: '#334155',
                   }}
                   className="text-line-3 text-base font-medium"
                 >
@@ -65,15 +67,15 @@ const BookingAdminPage = () => {
             },
           },
           {
-            title: "Email",
-            dataIndex: "user_booking",
+            title: 'Email',
+            dataIndex: 'user_booking',
             width: 200,
             render: (user_booking) => (
               <p
                 style={{
-                  maxWidth: "200px",
-                  whiteSpace: "normal",
-                  color: "#334155",
+                  maxWidth: '200px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -84,18 +86,18 @@ const BookingAdminPage = () => {
         ],
       },
       {
-        title: "Thông tin đặt sân",
+        title: 'Thông tin đặt sân',
         children: [
           {
-            title: "Tên sân",
+            title: 'Tên sân',
             width: 200,
-            dataIndex: "pitch",
+            dataIndex: 'pitch',
             render: (pitch) => (
               <p
                 style={{
-                  maxWidth: "200px",
-                  whiteSpace: "normal",
-                  color: "#334155",
+                  maxWidth: '200px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -104,15 +106,15 @@ const BookingAdminPage = () => {
             ),
           },
           {
-            title: "Địa chỉ",
-            dataIndex: "pitch",
+            title: 'Địa chỉ',
+            dataIndex: 'pitch',
             width: 200,
             render: (pitch) => (
               <p
                 style={{
-                  maxWidth: "200px",
-                  whiteSpace: "normal",
-                  color: "#334155",
+                  maxWidth: '200px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -121,15 +123,15 @@ const BookingAdminPage = () => {
             ),
           },
           {
-            title: "Giờ đặt",
-            dataIndex: "shift",
+            title: 'Giờ đặt',
+            dataIndex: 'shift',
             width: 200,
             render: (shift) => (
               <p
                 style={{
-                  maxWidth: "200px",
-                  whiteSpace: "normal",
-                  color: "#334155",
+                  maxWidth: '200px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
                 }}
                 className="text-line-3 text-base font-medium"
               >
@@ -140,16 +142,16 @@ const BookingAdminPage = () => {
         ],
       },
       {
-        title: "Mã thanh toán",
-        dataIndex: "payment_id",
+        title: 'Mã thanh toán',
+        dataIndex: 'payment_id',
         width: 200,
         render: (payment_id) => {
           return (
             <p
               style={{
-                maxWidth: "200px",
-                whiteSpace: "normal",
-                color: "#334155",
+                maxWidth: '200px',
+                whiteSpace: 'normal',
+                color: '#334155',
               }}
               className="text-line-3 text-base font-medium"
             >
@@ -159,23 +161,16 @@ const BookingAdminPage = () => {
         },
       },
       {
-        title: "Thời gian",
-        dataIndex: "createdAt",
-        key: "createdAt",
+        title: 'Thời gian',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
         width: 150,
         render: (createdAt) => (
           <div className="flex flex-col">
-            <span
-              style={{ color: "#64748b", fontWeight: "600", fontSize: "15px" }}
-            >
-              {format(new Date(createdAt), "dd-MM-yyyy")}
-            </span>
+            <span style={{ color: '#64748b', fontWeight: '600', fontSize: '15px' }}>{format(new Date(createdAt), 'dd-MM-yyyy')}</span>
 
-            <span
-              className="text-sm mt-0.5"
-              style={{ color: "#64748b", fontWeight: "500" }}
-            >
-              {format(new Date(createdAt), "HH:mm:ss")}
+            <span className="text-sm mt-0.5" style={{ color: '#64748b', fontWeight: '500' }}>
+              {format(new Date(createdAt), 'HH:mm:ss')}
             </span>
           </div>
         ),
@@ -202,7 +197,7 @@ const BookingAdminPage = () => {
     []
   );
 
-  const { data: booking, isFetching } = useGetAllBookingByUserIdQuery(null);
+  const { data: booking, isFetching } = useGetAllBookingByUserIdQuery({ user_id: user.values?._id });
 
   useEffect(() => {
     const _dataSource = booking?.data?.map((item, index) => ({
@@ -216,11 +211,7 @@ const BookingAdminPage = () => {
   return (
     <div className="w-full">
       <div className="flex justify-end mb-4">
-        <Button
-          icon={<PlusOutlined />}
-          className="bg-[#25964b] text-white"
-          onClick={() => setIsOpenModalCreate(true)}
-        >
+        <Button icon={<PlusOutlined />} className="bg-[#25964b] text-white" onClick={() => setIsOpenModalCreate(true)}>
           Chủ sân tạo booking
         </Button>
       </div>
@@ -235,10 +226,7 @@ const BookingAdminPage = () => {
         className="min-h-[500px]"
       />
 
-      <FormCreateBooking
-        isOpen={isOpenModalCreate}
-        setOpen={setIsOpenModalCreate}
-      />
+      <FormCreateBooking isOpen={isOpenModalCreate} setOpen={setIsOpenModalCreate} />
     </div>
   );
 };
