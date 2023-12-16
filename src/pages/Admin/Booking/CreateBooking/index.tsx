@@ -1,7 +1,11 @@
 import { Modal } from 'antd';
 import { Dispatch, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { useGetAllBookingByUserIdQuery, useNewBookingAfterPayMutation } from '~/Redux/booking/bookingApi';
+import { useAppSelector } from '~/Redux/hook';
 import { useNewPaymentMutation } from '~/Redux/payment/paymentApi';
+import { getCreatShift } from '~/api/shift';
 import { hideLoader, showLoader } from '~/components/LoaderAllPage';
 import { Show } from '~/components/Show';
 import InfoBooking from './InfoBooking';
@@ -9,10 +13,6 @@ import InfoUser from './InfoUser';
 import SelectChildrenPitch from './SelectChildrenPitch';
 import SelectService from './SelectService';
 import SelectShift from './SelectShift';
-import { toast } from 'react-toastify';
-import { useGetAllBookingByUserIdQuery, useNewBookingAffterPayMutation } from '~/Redux/booking/bookingApi';
-import { getCreatShift } from '~/api/shift';
-import { useAppSelector } from '~/Redux/hook';
 
 type FormCreateBookingProps = {
   isOpen: boolean;
@@ -61,7 +61,7 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
   const currentPitch: any = JSON.parse(localStorage.getItem('pitch') || '') || {};
 
   const [newPayment, { isLoading: isLoadingPayment }] = useNewPaymentMutation();
-  const [newBooking, { isLoading: isLoadingBooking }] = useNewBookingAffterPayMutation();
+  const [newBooking, { isLoading: isLoadingBooking }] = useNewBookingAfterPayMutation();
   const { refetch } = useGetAllBookingByUserIdQuery({ pitch_id: currentPitch._id }, { skip: !currentPitch._id });
 
   const handleBackPick = () => {

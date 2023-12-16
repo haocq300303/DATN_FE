@@ -8,7 +8,7 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { useAppDispatch, useAppSelector } from '~/Redux/hook';
 import { deleteCommentMid, getAllCommentMid, setDataComment } from '~/Redux/Slices/commentSlide';
 import { commentPagination, getAllComment } from '~/api/comment';
-import './comment.css'
+import './comment.css';
 
 interface DataType {
   key: string;
@@ -20,26 +20,23 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-
-
-
 const CommentManagement = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const [totalItems, setTotalItems] = useState(Number);//phantrang
-  const [currentPage, setCurrentPage] = useState(1);//phantrang
+  const [totalItems, setTotalItems] = useState(Number); //phantrang
+  const [currentPage, setCurrentPage] = useState(1); //phantrang
 
   const dispatch = useAppDispatch();
 
   const comments = useAppSelector((state) => state.comment.comments);
-  console.log("dataAminComment:", comments);
+  //console.log("dataAminComment:", comments);
 
   useEffect(() => {
     dispatch(getAllCommentMid());
   }, [dispatch]);
   const cancel = () => {
-    message.error("Đã hủy!");
+    message.error('Đã hủy!');
   };
   //delete
   const confirm = async (idComment: string) => {
@@ -53,7 +50,7 @@ const CommentManagement = () => {
       try {
         const response = await getAllComment(); // Gửi yêu cầu GET đến URL_API
         const allItemsPitch = response?.data?.data?.totalDocs;
-        setTotalItems(allItemsPitch)
+        setTotalItems(allItemsPitch);
       } catch (error) {
         console.error('Error:', error);
       }
@@ -69,26 +66,19 @@ const CommentManagement = () => {
     }
     dispatch(setDataComment(response?.data?.data?.data));
     // window.scrollTo({ top: 500, behavior: 'smooth' });
-  }
+  };
   // kết thức xử lí phân trang
 
   //data
-  const data: DataType[] = comments?.map((item: any) => (
-    {
-      key: item._id,
-      title: item?.id_post?.title,
-      name_user: item?.id_user?.name || "N/A",
-      email: item?.id_user?.email || "N/A",
-      content: item?.content
-    }
-  ))
+  const data: DataType[] = comments?.map((item: any) => ({
+    key: item._id,
+    title: item?.id_post?.title,
+    name_user: item?.id_user?.name || 'N/A',
+    email: item?.id_user?.email || 'N/A',
+    content: item?.content,
+  }));
 
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndex) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -121,11 +111,7 @@ const CommentManagement = () => {
           >
             Tìm Kiếm
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Xoá
           </Button>
           <Button
@@ -151,9 +137,7 @@ const CommentManagement = () => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
-    ),
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
@@ -205,13 +189,13 @@ const CommentManagement = () => {
       key: 'content',
       ...getColumnSearchProps('content'),
       render: (text) => {
-        return text.slice(0, 50).concat(" . . .");
+        return text.slice(0, 50).concat(' . . .');
       },
     },
     Table.EXPAND_COLUMN,
     {
-      title: "Hành Động",
-      key: "action",
+      title: 'Hành Động',
+      key: 'action',
       render: (record) => (
         <Space size="middle">
           <Popconfirm
@@ -224,15 +208,13 @@ const CommentManagement = () => {
             cancelText="Không"
           >
             <Button type="primary" danger>
-              <DeleteOutlined style={{ display: "inline-flex" }} />
+              <DeleteOutlined style={{ display: 'inline-flex' }} />
               Xoá
             </Button>
           </Popconfirm>
-
         </Space>
       ),
     },
-
   ];
   return (
     <div>
@@ -241,7 +223,7 @@ const CommentManagement = () => {
         dataSource={data}
         bordered
         expandable={{
-          expandedRowRender: (record) => <p className='w-[1200px]'>{record.content}</p>,
+          expandedRowRender: (record) => <p className="w-[1200px]">{record.content}</p>,
         }}
         pagination={{
           current: currentPage,
@@ -251,7 +233,7 @@ const CommentManagement = () => {
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default CommentManagement
+export default CommentManagement;

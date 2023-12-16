@@ -34,7 +34,7 @@ const DashboardPitchPage = () => {
     try {
       const response = await axios.get(apiUrl);
       const apiData = response.data;
-      console.log(apiData.data);
+      //console.log(apiData.data);
       const monthsFromAPI = apiData.data.months;
       const updatedMonthlyPrices = monthsFromAPI?.map((month: any) => month.totalPrice);
       const updatedCategories = monthsFromAPI.map((month: any) => `Tháng ${month.month}`);
@@ -53,7 +53,7 @@ const DashboardPitchPage = () => {
   };
 
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
-    console.log(date, dateString);
+    //console.log(date, dateString);
     if (dateString) {
       const apiUrl = `http://localhost:8080/api/statistical/revenue?year=${dateString}`;
       fetchData(apiUrl);
@@ -75,7 +75,7 @@ const DashboardPitchPage = () => {
   const onChangeDate: DatePickerProps['onChange'] = async (date, dateString) => {
     if (dateString) {
       const month = dateString.split('-')[1];
-      console.log(date);
+      //console.log(date);
 
       const apiUrl = `http://localhost:8080/api/statistical/revenue/${month}?year=2023&pitch_user=655c53ed6c0689551d7528a3&start_time=1&end_time=31`;
 
@@ -84,7 +84,7 @@ const DashboardPitchPage = () => {
         const apiData = response.data.data;
         const updatedSeriesData = apiData.days.map((day: any) => day.totalPrice);
         const updatedCategories = apiData.days.map((day: any) => day.day);
-        console.log(updatedSeriesData, updatedCategories);
+        //console.log(updatedSeriesData, updatedCategories);
 
         setSeriesData([{ name: 'Total Price', data: updatedSeriesData }]);
         setOptions((prevOptions) => ({
@@ -156,7 +156,7 @@ const DashboardPitchPage = () => {
       },
     },
   });
-  console.log(setChartData);
+  //console.log(setChartData);
   //  tỉ lệ đặt sân, huỷ sân
   const [cancelPitch, setCancelPitch] = useState({
     series: [
@@ -193,7 +193,7 @@ const DashboardPitchPage = () => {
     },
   });
   const labels = cancelPitch.series.map((item) => item.name);
-  console.log(setCancelPitch);
+  //console.log(setCancelPitch);
 
   return (
     <div className="w-[100%]">
@@ -204,7 +204,7 @@ const DashboardPitchPage = () => {
         </div>
         <div className="header">
           <div className="text flex justify-between items-center my-[50px]"></div>
-          <Swiper spaceBetween={30} slidesPerView={4.5} onSwiper={(swiper) => console.log(swiper)}>
+          <Swiper spaceBetween={30} slidesPerView={4.5}>
             <SwiperSlide>
               <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
                 <img

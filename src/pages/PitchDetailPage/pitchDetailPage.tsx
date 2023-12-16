@@ -21,6 +21,7 @@ import ModalBookMultipleDay from './ModalBookMultipleDay';
 import ModalBookOneShiftFullMonth from './ModalBookOneShiftFullMonth';
 import ModalBookPitchFullMonth from './ModalBookPitchFullMonth';
 import { updateUser } from '~/api/user';
+import useBookingSocket from '~/hooks/useBookingSocket';
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -152,6 +153,8 @@ const PitchDetailPage = () => {
 
   // end xử lí đội bóng liên quan
 
+  // Websocket relatime
+  useBookingSocket();
   // Xử lý totalStar
   useEffect(() => {
     const fetchData = async () => {
@@ -160,7 +163,7 @@ const PitchDetailPage = () => {
         const { data } = response.data;
         setTotalStar(data);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     };
 
@@ -200,12 +203,7 @@ const PitchDetailPage = () => {
       value: 'react',
       desc: (
         <div className="hot-pitch mx-auto max-w-screen-2xl xl px-[30px]">
-          <Swiper
-            spaceBetween={80}
-            slidesPerView={2}
-            onSlideChange={() => console.log('slide change')}
-            onSwiper={(swiper) => console.log(swiper)}
-          >
+          <Swiper spaceBetween={80} slidesPerView={2}>
             {filteredPitch && filteredPitch.length > 0 ? (
               filteredPitch.map((item: IPitch) => (
                 <SwiperSlide>

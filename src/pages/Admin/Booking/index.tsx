@@ -1,7 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
-import { format } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Show } from '~/components/Show';
 import { IBooking } from '~/interfaces/booking.type';
@@ -22,7 +21,7 @@ const BookingAdminPage = () => {
         title: '#',
         dataIndex: 'index',
         key: 'index',
-        width: 50,
+        width: 40,
         fixed: 'left',
       },
       {
@@ -39,7 +38,7 @@ const BookingAdminPage = () => {
                   whiteSpace: 'normal',
                   color: '#334155',
                 }}
-                className="text-line-3 text-sm font-medium"
+                className="text-line-3 text-sm font-medium text-center"
               >
                 {user_booking?.name}
               </p>
@@ -49,12 +48,12 @@ const BookingAdminPage = () => {
             title: 'Số điện thoại',
             dataIndex: 'user_booking',
             key: 'index',
-            width: 150,
+            width: 120,
             render: (user_booking) => {
               return (
                 <p
                   style={{
-                    maxWidth: '150px',
+                    maxWidth: '120px',
                     whiteSpace: 'normal',
                     color: '#334155',
                   }}
@@ -105,23 +104,6 @@ const BookingAdminPage = () => {
             ),
           },
           {
-            title: 'Địa chỉ',
-            dataIndex: 'pitch',
-            width: 200,
-            render: (pitch) => (
-              <p
-                style={{
-                  maxWidth: '150px',
-                  whiteSpace: 'normal',
-                  color: '#334155',
-                }}
-                className="text-line-3 text-[13px] font-medium"
-              >
-                {pitch?.address}
-              </p>
-            ),
-          },
-          {
             title: 'Giờ đặt',
             dataIndex: 'shift',
             width: 150,
@@ -140,20 +122,74 @@ const BookingAdminPage = () => {
                   </p>
                 </Show>
 
-                <Show when={!shift?.start_time && shift?.is_booking_month}>
-                  <div
-                    style={{
-                      maxWidth: '150px',
-                      whiteSpace: 'normal',
-                      color: '#334155',
-                    }}
-                    className="flex flex-col text-line-3 text-[13px] font-medium text-center"
-                  >
+                <div
+                  style={{
+                    maxWidth: '150px',
+                    whiteSpace: 'normal',
+                    color: '#334155',
+                  }}
+                  className="flex flex-col text-line-3 text-[13px] font-medium text-center"
+                >
+                  <Show when={!shift?.start_time && shift?.is_booking_month}>
                     <span>{shift?.is_booking_month && 'Đặt full tháng'}</span>
-                    <span className="text-red-500">{shift?.date?.[0]}</span>
-                  </div>
-                </Show>
+                  </Show>
+                  <span className="text-red-500">{shift?.date?.join(', ')}</span>
+                </div>
               </>
+            ),
+          },
+          {
+            title: 'Mã sân',
+            dataIndex: 'childrenPitch',
+            width: 90,
+            render: (childrenPitch) => (
+              <p
+                style={{
+                  maxWidth: '90px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
+                }}
+                className="text-line-3 text-[13px] font-medium text-center"
+              >
+                {childrenPitch?.code_chirldren_pitch}
+              </p>
+            ),
+          },
+          // {
+          //   title: 'Thời gian',
+          //   dataIndex: 'createdAt',
+          //   key: 'shift',
+          //   width: 130,
+          //   render: (shift) => {
+          //     console.log(shift);
+          //     return (
+          //       <div className="flex flex-col items-center">
+          //         <span style={{ color: '#64748b', fontWeight: '600', fontSize: '13px' }}>
+          //           {/* {format(new Date(shift.date[0]), 'dd-MM-yyyy')} */}
+          //         </span>
+
+          //         <span className="text-xs mt-0.5" style={{ color: '#64748b', fontWeight: '500' }}>
+          //           {/* {format(new Date(shift.date[0]), 'HH:mm:ss')} */}
+          //         </span>
+          //       </div>
+          //     );
+          //   },
+          // },
+          {
+            title: 'Địa chỉ',
+            dataIndex: 'pitch',
+            width: 200,
+            render: (pitch) => (
+              <p
+                style={{
+                  maxWidth: '150px',
+                  whiteSpace: 'normal',
+                  color: '#334155',
+                }}
+                className="text-line-3 text-[13px] font-medium text-left"
+              >
+                {pitch?.address}
+              </p>
             ),
           },
         ],
@@ -176,21 +212,6 @@ const BookingAdminPage = () => {
             </p>
           );
         },
-      },
-      {
-        title: 'Thời gian',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-        width: 130,
-        render: (createdAt) => (
-          <div className="flex flex-col items-center">
-            <span style={{ color: '#64748b', fontWeight: '600', fontSize: '13px' }}>{format(new Date(createdAt), 'dd-MM-yyyy')}</span>
-
-            <span className="text-xs mt-0.5" style={{ color: '#64748b', fontWeight: '500' }}>
-              {format(new Date(createdAt), 'HH:mm:ss')}
-            </span>
-          </div>
-        ),
       },
     ],
     []

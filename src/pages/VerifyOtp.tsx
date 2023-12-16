@@ -49,7 +49,7 @@ function VerifyOtp() {
     try {
       const otpCode = otp.join('');
       const response = await verify(saff_phone_number, otpCode);
-      console.log('res', response);
+      //console.log('res', response);
       if (response.status === 200) {
         const { _doc }: any = jwtDecode(response.data?.accessToken);
         localStorage.setItem('accessToken', response.data?.accessToken);
@@ -65,7 +65,7 @@ function VerifyOtp() {
         }, 1000);
       }
     } catch (error: any) {
-      console.log('error', error);
+      //console.log('error', error);
       message.error(error?.response?.data?.message);
     }
   };
@@ -80,7 +80,7 @@ function VerifyOtp() {
         message.error('Gửi lại mã otp thất bại!');
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -107,11 +107,7 @@ function VerifyOtp() {
             <div className="flex flex-row text-sm font-medium text-gray-400">
               <p>
                 We have sent a code to your phone{' '}
-                {saff_phone_number && (
-                  <span className="font-bold text-gray-500">
-                    {saff_phone_number}
-                  </span>
-                )}
+                {saff_phone_number && <span className="font-bold text-gray-500">{saff_phone_number}</span>}
               </p>
             </div>
           </div>
@@ -150,11 +146,7 @@ function VerifyOtp() {
             <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500 mt-5">
               <p>Bạn không nhận được mã hoặc đã hết hạn?</p>
               {'  '}
-              <button
-                className="flex flex-row items-center text-blue-600"
-                rel="noopener noreferrer"
-                onClick={handleRefetchOtp}
-              >
+              <button className="flex flex-row items-center text-blue-600" rel="noopener noreferrer" onClick={handleRefetchOtp}>
                 Gửi lại mã
               </button>
             </div>

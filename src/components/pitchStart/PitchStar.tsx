@@ -24,8 +24,8 @@ const PitchStar = () => {
                 <Swiper
                     spaceBetween={80}
                     slidesPerView={3}
-                    onSlideChange={() => console.log("slide change")}
-                    onSwiper={(swiper) => console.log(swiper)}
+                    onSlideChange={() => //console.log("slide change")}
+                    onSwiper={(swiper) => //console.log(swiper)}
                 >
                     {pitchs && pitchs.length > 0 ? (
                         pitchs.map((item: IPitch) => (
@@ -42,7 +42,7 @@ const PitchStar = () => {
                                             <p className="flex justify-between my-[10px]">
                                                 Dịch Vụ :
                                                 {item?.services.map((data: any) => {
-                                                    // console.log("data Sê vít", data);
+                                                    // //console.log("data Sê vít", data);
                                                     const service = services?.find(
                                                         (item) => item._id == data._id
                                                     );

@@ -25,7 +25,7 @@ const Register = () => {
         navigate(routes.login);
       }, 1000);
     } catch (error: any) {
-      console.log(error);
+      //console.log(error);
       message.error(error?.response?.data?.message);
     }
   };
@@ -48,7 +48,7 @@ const Register = () => {
         navigate(routes.home);
       });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

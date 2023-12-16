@@ -49,7 +49,7 @@ const ModalViewCreatePitch = () => {
       images,
       admin_pitch_id: user?.values?._id,
     };
-    console.log('valueAbc:', newValues);
+    //console.log('valueAbc:', newValues);
 
     await dispatch(fetchCreatPitch(newValues));
     message.success(`Tạo Sân Bóng thành công!`);

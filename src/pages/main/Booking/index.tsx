@@ -30,9 +30,10 @@ const BookingPage: React.FC = () => {
 
   useEffect(() => {
     const infoBooking = sessionStorage.getItem('infoBooking');
-    if (!infoBooking) {
+    const paymentId = searchParams.get('payment_id');
+    if (!paymentId && !infoBooking) {
       toast.info('Bạn chưa có thông tin đặt sân trước đó');
-      navigate(-1);
+      navigate('/pitch');
       return;
     }
     const mode = searchParams.get('mode');

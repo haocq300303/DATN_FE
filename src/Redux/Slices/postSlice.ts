@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllPost, createPost, updatePost, deletePost } from "../../api/post";
-import IPost from "../../interfaces/post";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { getAllPost, createPost, updatePost, deletePost } from '../../api/post';
+import IPost from '../../interfaces/post';
 
 interface initialState {
   posts: IPost[];
@@ -12,64 +12,52 @@ const initialState: initialState = {
   isLoading: false,
 };
 
-export const getAllPostMid = createAsyncThunk(
-  "post/getAllPostMid",
-  async (_, thunkAPI) => {
-    try {
-      const { data } = await getAllPost();
-      console.log("dataPostRedux", data);
-      return data.data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const getAllPostMid = createAsyncThunk('post/getAllPostMid', async (_, thunkAPI) => {
+  try {
+    const { data } = await getAllPost();
+    //console.log("dataPostRedux", data);
+    return data.data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const createPostMid = createAsyncThunk(
-  "post/createPostMid",
-  async (post: IPost, thunkAPI) => {
-    try {
-      const { data } = await createPost(post);
+export const createPostMid = createAsyncThunk('post/createPostMid', async (post: IPost, thunkAPI) => {
+  try {
+    const { data } = await createPost(post);
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const updatePostMid = createAsyncThunk(
-  "post/updatePostMid",
-  async ({ _id, post }: { _id: string; post: IPost }, thunkAPI) => {
-    try {
-      const { data } = await updatePost(_id, post);
+export const updatePostMid = createAsyncThunk('post/updatePostMid', async ({ _id, post }: { _id: string; post: IPost }, thunkAPI) => {
+  try {
+    const { data } = await updatePost(_id, post);
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const deletePostMid = createAsyncThunk(
-  "post/deletePostMid",
-  async (idPost: string, thunkAPI) => {
-    try {
-      const { data } = await deletePost(idPost);
+export const deletePostMid = createAsyncThunk('post/deletePostMid', async (idPost: string, thunkAPI) => {
+  try {
+    const { data } = await deletePost(idPost);
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
 const postSlice = createSlice({
-  name: "post",
+  name: 'post',
   initialState,
   reducers: {
     setData(state, action) {
@@ -106,9 +94,7 @@ const postSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(updatePostMid.fulfilled, (state, action) => {
-        state.posts = state.posts?.map((post: IPost) =>
-          post._id === action?.payload?._id ? action.payload : post
-        );
+        state.posts = state.posts?.map((post: IPost) => (post._id === action?.payload?._id ? action.payload : post));
         state.isLoading = false;
       })
       .addCase(updatePostMid.rejected, (state) => {
@@ -120,9 +106,7 @@ const postSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deletePostMid.fulfilled, (state, action) => {
-        state.posts = state.posts?.filter(
-          (post: IPost) => post._id !== action.payload._id
-        );
+        state.posts = state.posts?.filter((post: IPost) => post._id !== action.payload._id);
         state.isLoading = false;
       })
       .addCase(deletePostMid.rejected, (state) => {
@@ -131,5 +115,5 @@ const postSlice = createSlice({
   },
 });
 
-export const { setData } = postSlice.actions
+export const { setData } = postSlice.actions;
 export default postSlice.reducer;
