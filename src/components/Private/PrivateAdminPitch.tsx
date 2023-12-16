@@ -8,7 +8,7 @@ function PrivateAdminPitch({ children }: any) {
   if (role_name === 'adminPitch') {
     return children;
   }
-  return <Navigate to={routes.notfound} />;
+  return <Navigate to={routes.login} />;
 }
 
 export default PrivateAdminPitch;
