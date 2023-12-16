@@ -22,7 +22,7 @@ const PitchUserList = () => {
   const [form] = Form.useForm();
 
   const dispatch = useAppDispatch();
-  console.log('pitchs', pitchs);
+  //console.log('pitchs', pitchs);
 
   const host = 'http://localhost:8080/api/location/';
   useEffect(() => {
@@ -44,7 +44,7 @@ const PitchUserList = () => {
         setLoading(false);
       });
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }, []);
   const showModal = (mode: string) => {
@@ -127,11 +127,11 @@ const PitchUserList = () => {
 
   const onFinish = async (values: any) => {
     if (modalMode === 'edit') {
-      console.log('values:', values);
+      //console.log('values:', values);
 
       const images = values?.images?.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        values?.images?.fileList?.map((response: any) => response?.response?.data?.url || response?.url)
+          values?.images?.fileList?.map((response: any) => response?.response?.data?.url || response?.url)
         : values.images;
       const avatar = values.avatar.fileList
         ? values?.avatar?.fileList[0]?.response?.data?.url || values?.avatar?.fileList[0]?.url

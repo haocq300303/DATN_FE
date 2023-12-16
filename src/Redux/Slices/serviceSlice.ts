@@ -40,7 +40,7 @@ export const createServiceMid = createAsyncThunk('service/createServiceMid', asy
     const {
       data: { data },
     } = await createService(service);
-    console.log(data);
+    //console.log(data);
 
     return data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,7 +111,7 @@ const serviceSlice = createSlice({
       })
       .addCase(createServiceMid.fulfilled, (state, action) => {
         state.services = [...state.services, action.payload];
-        console.log(action.payload);
+        //console.log(action.payload);
         state.isLoading = false;
       })
       .addCase(createServiceMid.rejected, (state) => {

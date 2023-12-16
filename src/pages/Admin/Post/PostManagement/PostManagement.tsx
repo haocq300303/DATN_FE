@@ -165,9 +165,7 @@ const PostManagement = () => {
       key: 'description',
       dataIndex: 'description',
       render: (text) => {
-        return (
-          <div dangerouslySetInnerHTML={{ __html: text.slice(0, 50).concat(' . . .') }} />
-        );
+        return <div dangerouslySetInnerHTML={{ __html: text.slice(0, 50).concat(' . . .') }} />;
       },
     },
     Table.EXPAND_COLUMN,
@@ -263,11 +261,11 @@ const PostManagement = () => {
       await dispatch(getAllPostMid());
       message.success(`Tạo bài viết thành công!`);
     } else if (modalMode === 'edit') {
-      console.log("values", values);
+      //console.log("values", values);
 
       const newImages = values.images.fileList
         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        values.images.fileList.map(({ response }: any) => response.data.url)
+          values.images.fileList.map(({ response }: any) => response.data.url)
         : values.images;
 
       const newValues = { ...values, images: newImages };

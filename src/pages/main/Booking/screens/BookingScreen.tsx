@@ -1,17 +1,13 @@
 import { Button, Radio } from 'antd';
-import { memo, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { memo, useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
-import { useNewBookingAffterPayMutation } from '~/Redux/booking/bookingApi';
 import { useAppSelector } from '~/Redux/hook';
-import { sendMail } from '~/api/email';
-import { bookChildrenPicthFullMonth, bookMultipleDay, bookOneShiftFullMonth, getCreatShift } from '~/api/shift';
 import { createUrlVnpay } from '~/api/vnpay.api';
 import { hideLoader, showLoader } from '~/components/LoaderAllPage';
 import { Show } from '~/components/Show';
+import useCreateBooking from '~/hooks/useCreateBooking';
 import { IInfoBooking } from '~/interfaces/booking.type';
-import IShift from '~/interfaces/shift';
 
 type BookingScreenProps = {
   setCurrent: React.Dispatch<number>;
@@ -24,11 +20,8 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     (infoBooking?.services?.reduce((total, service) => total + service.price, 0) || 0) * infoBooking?.shift?.numberDate;
 
   const [modeBanking, setModeBanking] = useState<number>(1);
-  const [searchParams, setSearchParams] = useSearchParams();
   const [totalPrice, setTotalPrice] = useState<number>(infoBooking?.shift.totalPrice);
-  //
-  const [newBooking] = useNewBookingAffterPayMutation();
-  const user: any = useAppSelector((state) => state.user.currentUser);
+  const currentUser: any = useAppSelector((state) => state.user.currentUser);
 
   const handleChangeModeBanking = (e: any) => {
     if (e.target.value === 1) {
@@ -52,7 +45,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     }).then((result) => {
       if (result.isConfirmed) {
         const _infoBooking = {
-          user_bank: user?.values?._id,
+          user_bank: currentUser?.values?._id,
           user_receiver: infoBooking?.admin_pitch?._id,
           vnp_OrderInfo: 'Thanh toan',
           price_received: totalPrice,
@@ -67,7 +60,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           })
           .catch((error: any) => {
             toast.error('Lỗi ' + error.message);
-            console.log(error);
+            //console.log(error);
           })
           .finally(() => {
             hideLoader();
@@ -77,122 +70,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   };
 
   // handle create booking
-  useEffect(() => {
-    const handleNewBooking = async () => {
-      const paymentId = searchParams.get('payment_id');
-      const serviceIds = infoBooking?.services?.map((service) => service._id);
-
-      if (paymentId) {
-        // Show Loading
-        showLoader();
-
-        const _infoBooking = {
-          pitch_id: infoBooking?.pitch?._id,
-          user_id: user?.values?._id,
-          shift_id: '',
-          children_pitch_id: infoBooking?.children_pitch?._id,
-          payment_id: paymentId,
-          service_ids: serviceIds,
-        };
-
-        if (infoBooking?.type === 'singleDay') {
-          const dataBooking: IShift = {
-            id_pitch: infoBooking?.pitch?._id,
-            id_chirlden_pitch: infoBooking?.children_pitch?._id,
-            number_shift: infoBooking?.shift?.number_shift,
-            start_time: infoBooking?.shift?.start_time,
-            end_time: infoBooking?.shift?.end_time,
-            price: infoBooking?.shift?.price,
-            status_shift: true,
-            date: infoBooking?.shift?.date,
-            find_opponent: infoBooking?.shift?.find_opponent,
-          };
-
-          const { data } = await getCreatShift(dataBooking);
-
-          _infoBooking.shift_id = data?.data?._id;
-        } else if (infoBooking?.type === 'multipleDay') {
-          const dataBooking: IShift = {
-            id_pitch: infoBooking?.pitch?._id,
-            id_chirlden_pitch: infoBooking?.children_pitch?._id,
-            number_shift: infoBooking?.shift?.number_shift,
-            start_time: infoBooking?.shift?.start_time,
-            end_time: infoBooking?.shift?.end_time,
-            price: infoBooking?.shift?.price,
-            status_shift: true,
-            date: infoBooking?.shift?.date,
-          };
-
-          const { data } = await bookMultipleDay(dataBooking);
-
-          _infoBooking.shift_id = data?.data?._id;
-        } else if (infoBooking?.type === 'bookOneShiftFullMonth') {
-          const dataBooking: IShift = {
-            id_pitch: infoBooking?.pitch?._id,
-            id_chirlden_pitch: infoBooking?.children_pitch?._id,
-            number_shift: infoBooking?.shift?.number_shift,
-            start_time: infoBooking?.shift?.start_time,
-            end_time: infoBooking?.shift?.end_time,
-            price: infoBooking?.shift?.price,
-            status_shift: true,
-            is_booking_month: true,
-          };
-
-          const { data } = await bookOneShiftFullMonth(dataBooking);
-
-          _infoBooking.shift_id = data?.data?._id;
-        } else if (infoBooking?.type === 'bookChildrenPicthFullMonth') {
-          const dataBooking: IShift = {
-            id_pitch: infoBooking?.pitch?._id,
-            id_chirlden_pitch: infoBooking?.children_pitch?._id,
-            number_shift: null,
-            start_time: null,
-            end_time: null,
-            price: infoBooking?.shift?.price,
-            status_shift: true,
-            is_booking_month: true,
-          };
-
-          const { data } = await bookChildrenPicthFullMonth(dataBooking);
-
-          _infoBooking.shift_id = data?.data?._id;
-        } else {
-          toast.error('Không có kiểu đặt lịch !!!');
-        }
-
-        newBooking(_infoBooking as any)
-          .unwrap()
-          .then((result) => {
-            // Send build to user
-            sendMail({
-              email_to: user.values.email,
-              subject: 'FSport send bill to!!',
-              content: 'Nội dung',
-              html: 'Nội dung bill',
-            });
-
-            setSearchParams({
-              mode: 'check',
-              code: searchParams.get('code') as string,
-              payment_id: searchParams.get('payment_id') as string,
-            });
-
-            setCurrent(2);
-            sessionStorage.removeItem('infoBooking');
-            toast.success(result.message);
-          })
-          .catch((error) => {
-            toast.error('Booking thất bại ' + error.message);
-          })
-          .finally(() => {
-            // Hide loading
-            hideLoader();
-          });
-      }
-    };
-    handleNewBooking();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams.get('payment_id')]);
+  useCreateBooking({ infoBooking, currentUser, setCurrent });
 
   return (
     <div className="border border-solid px-5 py-2 rounded-md border-[#e7e7e7]">
