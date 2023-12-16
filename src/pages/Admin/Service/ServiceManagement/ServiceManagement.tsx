@@ -18,7 +18,7 @@ const ServiceManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('');
 
-  const dispatch = useAppDispatch();
+  const dispatch: any = useAppDispatch();
 
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
@@ -28,7 +28,6 @@ const ServiceManagement = () => {
   const searchInput = useRef<InputRef>(null);
   const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
   const id = pitchLocal._id;
-
   useEffect(() => {
     dispatch(fetchServicePitch(id));
   }, [dispatch, id]);

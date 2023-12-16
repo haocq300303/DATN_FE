@@ -29,6 +29,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   //
   const [newBooking] = useNewBookingAffterPayMutation();
   const user: any = useAppSelector((state) => state.user.currentUser);
+console.log(user);
 
   const handleChangeModeBanking = (e: any) => {
     if (e.target.value === 1) {
@@ -38,6 +39,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     }
     setModeBanking(e.target.value);
   };
+  console.log('Thông tin đặt', infoBooking);
 
   const handleBanking = () => {
     Swal.fire({
@@ -81,7 +83,6 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     const handleNewBooking = async () => {
       const paymentId = searchParams.get('payment_id');
       const serviceIds = infoBooking?.services?.map((service) => service._id);
-
       if (paymentId) {
         // Show Loading
         showLoader();
@@ -160,6 +161,8 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
           toast.error('Không có kiểu đặt lịch !!!');
         }
 
+        console.log(_infoBooking);
+        
         newBooking(_infoBooking as any)
           .unwrap()
           .then((result) => {
@@ -168,9 +171,8 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
               email_to: user.values.email,
               subject: 'FSport send bill to!!',
               content: 'Nội dung',
-              html: 'Nội dung bill',
+              html: "Nội dung bill",
             });
-
             setSearchParams({
               mode: 'check',
               code: searchParams.get('code') as string,

@@ -144,9 +144,7 @@ const BannerManagement = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
       );
-
       const url = urls[0];
-      // console.log(url);
       const newValues = { ...values, url };
 
       await dispatch(createBannerMid(newValues));
@@ -159,10 +157,12 @@ const BannerManagement = () => {
       const newValues = { ...values, url };
 
       const { _id, ...banner } = newValues;
+      console.log({ _id, banner });
+      
 
-      await dispatch(updateBannerMid({ _id, banner }));
+      // await dispatch(updateBannerMid({ _id, banner }));
 
-      message.success(`Sửa banner thành công!`);
+      // message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);
   };
