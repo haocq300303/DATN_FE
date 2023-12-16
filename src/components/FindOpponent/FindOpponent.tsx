@@ -88,9 +88,10 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
         email: dataMatchOpponent?.user?.email,
         phone_number: dataMatchOpponent?.user?.phone_number,
         nameUserFindOpponent: dataMatchOpponent?.user?.name,
-        currentUserEmail: email,
-        currentUserPhone: phoneNumber,
-        currentUserName: name,
+        currentUserEmail: user?.values?.email ? user?.values?.email : email,
+        currentUserPhone: user?.values?.phone_number ? user?.values?.phone_number : phoneNumber,
+        currentUserName: user?.values?.name ? user?.values?.name : name,
+        currentUserId: user?.values?._id ? user?.values?._id : '',
       };
 
       await matchOpponent(data);
