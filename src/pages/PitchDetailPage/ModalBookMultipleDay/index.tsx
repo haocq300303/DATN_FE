@@ -37,51 +37,61 @@ const ModalBookMultipleDay = ({
     (dataBooking[2]?.length > 0 ? dataBooking[1]?.price * dataBooking[2]?.length : dataBooking[1]?.price) +
     (dataBooking[3]?.reduce((total: any, service: any) => total + service.price, 0) || 0) * dataBooking[2]?.length;
 
-  const handleSubmitBooking = () => {
-    Swal.fire({
-      title: 'Vui Lòng Xác Nhận Đặt Lịch!',
-      showDenyButton: true,
-      confirmButtonText: 'Xác nhận',
-      denyButtonText: `Hủy`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        sessionStorage.setItem(
-          'infoBooking',
-          JSON.stringify({
-            pitch: {
-              _id: pitchId,
-              name: namePitch,
-              image: avatar,
-              address: address,
-            },
-            admin_pitch: {
-              _id: idAdminPitch,
-              name: nameAdminPitch,
-              phone,
-            },
-            children_pitch: {
-              _id: dataBooking[0]?._id,
-              children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
-            },
-            shift: {
-              price: dataBooking[1]?.price,
-              totalPrice,
-              shift_day: `${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time} | Các ngày ${dataBooking[2].join(', ')}`,
-              date: dataBooking[2],
-              numberDate: dataBooking[2].length || 0,
-              start_time: dataBooking[1]?.start_time,
-              end_time: dataBooking[1]?.end_time,
-              number_shift: dataBooking[1]?.number_shift,
-              status_shift: true,
-              find_opponent: 'NotFind',
-            },
-            services: dataBooking[3] || [],
-            type: 'multipleDay',
-          })
-        );
-        navigate('/checkout');
-      }
+  const handleSubmitBooking = async () => {
+    const { value: accept } = await Swal.fire({
+      title: 'Xác nhận đặt lịch',
+      icon: 'info',
+      text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
+      input: 'checkbox',
+      inputValue: 0,
+      inputPlaceholder: `
+       Tôi đồng ý với chính sách
+      `,
+      confirmButtonText: `
+        Tiếp tục &nbsp;<i class="fa fa-arrow-right"></i>
+      `,
+      inputValidator: (result) => {
+        return !result && 'Bạn cần phải đồng ý với chính sách trên!';
+      },
     });
+
+    if (accept) {
+      sessionStorage.setItem(
+        'infoBooking',
+        JSON.stringify({
+          pitch: {
+            _id: pitchId,
+            name: namePitch,
+            image: avatar,
+            address: address,
+          },
+          admin_pitch: {
+            _id: idAdminPitch,
+            name: nameAdminPitch,
+            phone,
+          },
+          children_pitch: {
+            _id: dataBooking[0]?._id,
+            children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
+          },
+          shift: {
+            price: dataBooking[1]?.price,
+            totalPrice,
+            shift_day: `${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time} | Các ngày ${dataBooking[2].join(', ')}`,
+            date: dataBooking[2],
+            numberDate: dataBooking[2].length || 0,
+            start_time: dataBooking[1]?.start_time,
+            end_time: dataBooking[1]?.end_time,
+            number_shift: dataBooking[1]?.number_shift,
+            status_shift: true,
+            find_opponent: 'NotFind',
+          },
+          services: dataBooking[3] || [],
+          type: 'multipleDay',
+        })
+      );
+      navigate('/checkout');
+    }
   };
 
   const handleBackPick = () => {

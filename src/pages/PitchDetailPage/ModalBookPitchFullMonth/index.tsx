@@ -46,51 +46,60 @@ const ModalBookPitchFullMonth = ({
   const formattedCurrentDate = format(currentDate, 'yyyy-MM-dd');
   const formattedFutureDate = format(futureDate, 'yyyy-MM-dd');
 
-  const handleSubmitBooking = () => {
-    Swal.fire({
-      title: 'Vui Lòng Xác Nhận Đặt Lịch!',
-      showDenyButton: true,
-      confirmButtonText: 'Xác nhận',
-      denyButtonText: `Hủy`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        sessionStorage.setItem(
-          'infoBooking',
-          JSON.stringify({
-            pitch: {
-              _id: pitchId,
-              name: namePitch,
-              image: avatar,
-              address: address,
-            },
-            admin_pitch: {
-              _id: idAdminPitch,
-              name: nameAdminPitch,
-              phone,
-            },
-            children_pitch: {
-              _id: dataBooking[0]?._id,
-              children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
-            },
-            shift: {
-              price: +averagePrice!,
-              totalPrice,
-              shift_day: `Từ ${formattedCurrentDate} - ${formattedFutureDate}`,
-              start_time: null,
-              end_time: null,
-              number_shift: null,
-              date: [],
-              numberDate: 30,
-              status_shift: true,
-              is_booking_month: true,
-            },
-            services: [],
-            type: 'bookChildrenPicthFullMonth',
-          })
-        );
-        navigate('/checkout');
-      }
+  const handleSubmitBooking = async () => {
+    const { value: accept } = await Swal.fire({
+      title: 'Xác nhận đặt lịch',
+      icon: 'info',
+      text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
+      input: 'checkbox',
+      inputValue: 0,
+      inputPlaceholder: `
+       Tôi đồng ý với chính sách
+      `,
+      confirmButtonText: `
+        Tiếp tục &nbsp;<i class="fa fa-arrow-right"></i>
+      `,
+      inputValidator: (result) => {
+        return !result && 'Bạn cần phải đồng ý với chính sách trên!';
+      },
     });
+    if (accept) {
+      sessionStorage.setItem(
+        'infoBooking',
+        JSON.stringify({
+          pitch: {
+            _id: pitchId,
+            name: namePitch,
+            image: avatar,
+            address: address,
+          },
+          admin_pitch: {
+            _id: idAdminPitch,
+            name: nameAdminPitch,
+            phone,
+          },
+          children_pitch: {
+            _id: dataBooking[0]?._id,
+            children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
+          },
+          shift: {
+            price: +averagePrice!,
+            totalPrice,
+            shift_day: `Từ ${formattedCurrentDate} - ${formattedFutureDate}`,
+            start_time: null,
+            end_time: null,
+            number_shift: null,
+            date: [],
+            numberDate: 30,
+            status_shift: true,
+            is_booking_month: true,
+          },
+          services: [],
+          type: 'bookChildrenPicthFullMonth',
+        })
+      );
+      navigate('/checkout');
+    }
   };
 
   useEffect(() => {
