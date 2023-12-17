@@ -1,7 +1,6 @@
 import { message } from 'antd';
-import banner from "../../assets/img/Web/banner1.png";
+import banner from '../../assets/img/Web/banner1.png';
 import emailjs from 'emailjs-com';
-
 
 const Contact = () => {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -20,17 +19,19 @@ const Contact = () => {
       message.warning('Please fill in all fields.');
       return;
     }
-    return (
-        <>
-            <section className="">
-    <div className="bannerPpitchPage relative ">
-        {/* banner cấc thứ */}
-        <div className="video relative">
-          <img src={banner} style={{ height: 400, width: "100%" }} />
+  }
+
+  return (
+    <>
+      <section className="">
+        <div className="bannerPpitchPage relative ">
+          {/* banner cấc thứ */}
+          <div className="video relative">
+            <img src={banner} style={{ height: 400, width: '100%' }} />
+          </div>
+          {/* chọn địa điêrm ở đây */}
         </div>
-        {/* chọn địa điêrm ở đây */}
-      </div>
-                {/* <div className="banner-about relative flex flex-col justify-center items-center">
+        {/* <div className="banner-about relative flex flex-col justify-center items-center">
 
     emailjs
       .sendForm(serviceID, templateID, e.currentTarget, userID)
@@ -62,7 +63,8 @@ const Contact = () => {
                   Kết nối với chúng tôi
                 </h2>
                 <p className="text-base leading-relaxed mb-9 text-body-color">
-                  Với các chính sách ưu đãi mà hiện tại website đang có, chúng tôi cung cấp cho các chủ sân và người dùng những giá trị mà chúng tôi có. Còn chần chờ gì nữa, hãy liên hệ cho chúng tôi ngay nào !
+                  Với các chính sách ưu đãi mà hiện tại website đang có, chúng tôi cung cấp cho các chủ sân và người dùng những giá trị mà
+                  chúng tôi có. Còn chần chờ gì nữa, hãy liên hệ cho chúng tôi ngay nào !
                 </p>
                 <div className="mb-8 flex w-full max-w-[370px]">
                   <div className="mr-6 flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary bg-opacity-5 text-primary sm:h-[70px] sm:max-w-[70px]">
@@ -198,8 +200,6 @@ const Contact = () => {
       </section>
     </>
   );
-}
 };
-
 
 export default Contact;

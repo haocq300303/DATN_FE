@@ -407,76 +407,82 @@ const PitchDetailPage = () => {
         {/* khu vực hiển thị ca sân  */}
         <div className="left_booking col-span-5">
           {!isLoading ? (
-            <div className="grid grid-cols-2 gap-[24px] list_shift">
-              {childrenPitchs?.map((item: any, index: number) => (
-                <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden" key={index}>
-                  <h3 className="bg-[#1fd392] text-center p-[10px] text-lg font-medium">Sân {item.code_chirldren_pitch}</h3>
+            childrenPitchs && childrenPitchs.length > 0 ? (
+              <div className="grid grid-cols-2 gap-[24px] list_shift">
+                {childrenPitchs?.map((item: any, index: number) => (
+                  <div className="rounded-[10px] border bg-[#fff] shadow-md overflow-hidden" key={index}>
+                    <h3 className="bg-[#1fd392] text-center p-[10px] text-lg font-medium">Sân {item.code_chirldren_pitch}</h3>
 
-                  <p className="mx-[16px] mt-[16px]">
-                    <p className="text-base font-semibold">Ca Sân:</p>
-                    <div className="flex flex-wrap justify-between mt-[8px] mb-[20px] gap-y-[16px]">
-                      {item.shifts?.map((shift: any, index: number) => {
-                        const [inputHours, inputMinutes] = shift.start_time.split(':');
+                    <p className="mx-[16px] mt-[16px]">
+                      <p className="text-base font-semibold">Ca Sân:</p>
+                      <div className="flex flex-wrap justify-between mt-[8px] mb-[20px] gap-y-[16px]">
+                        {item.shifts?.map((shift: any, index: number) => {
+                          const [inputHours, inputMinutes] = shift.start_time.split(':');
 
-                        let overtime = false;
+                          let overtime = false;
 
-                        const inputDate = new Date(selectedDate);
+                          const inputDate = new Date(selectedDate);
 
-                        if (
-                          currentTime.getFullYear() === inputDate.getFullYear() &&
-                          currentTime.getMonth() + 1 === inputDate.getMonth() + 1 &&
-                          currentTime.getDate() === inputDate.getDate() &&
-                          currentHour >= parseInt(inputHours, 10) &&
-                          currentMinutes >= parseInt(inputMinutes, 10)
-                        ) {
-                          overtime = true;
-                        }
+                          if (
+                            currentTime.getFullYear() === inputDate.getFullYear() &&
+                            currentTime.getMonth() + 1 === inputDate.getMonth() + 1 &&
+                            currentTime.getDate() === inputDate.getDate() &&
+                            currentHour >= parseInt(inputHours, 10) &&
+                            currentMinutes >= parseInt(inputMinutes, 10)
+                          ) {
+                            overtime = true;
+                          }
 
-                        return (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              if (!shift.status_shift && !overtime) {
-                                handleComfirmBookShift({
-                                  id_chirlden_pitch: item._id,
-                                  code_chirldren_pitch: item.code_chirldren_pitch,
-                                  id_pitch: item.idParentPitch,
-                                  number_shift: shift.number_shift,
-                                  start_time: shift.start_time,
-                                  end_time: shift.end_time,
-                                  price: shift.price,
-                                  date: shift.date,
-                                });
-                              }
-                            }}
-                            className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
-                              overtime ? 'overtime' : ''
-                            } ${shift.status_shift ? 'disabled' : ''}`}
-                          >
-                            <p className="font-semibold mb-[2px] ">Ca {shift.number_shift}</p>
-                            <p className="mb-[2px] font-semibold ">
-                              {shift.start_time}h - {shift.end_time}h
-                            </p>
-                            <p className="font-semibold">
-                              {shift.price?.toLocaleString('it-IT', {
-                                style: 'currency',
-                                currency: 'VND',
-                              })}
-                            </p>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </p>
-                  {/* <div className="border-t">
+                          return (
+                            <button
+                              key={index}
+                              onClick={() => {
+                                if (!shift.status_shift && !overtime) {
+                                  handleComfirmBookShift({
+                                    id_chirlden_pitch: item._id,
+                                    code_chirldren_pitch: item.code_chirldren_pitch,
+                                    id_pitch: item.idParentPitch,
+                                    number_shift: shift.number_shift,
+                                    start_time: shift.start_time,
+                                    end_time: shift.end_time,
+                                    price: shift.price,
+                                    date: shift.date,
+                                  });
+                                }
+                              }}
+                              className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
+                                overtime ? 'overtime' : ''
+                              } ${shift.status_shift ? 'disabled' : ''}`}
+                            >
+                              <p className="font-semibold mb-[2px] ">Ca {shift.number_shift}</p>
+                              <p className="mb-[2px] font-semibold ">
+                                {shift.start_time}h - {shift.end_time}h
+                              </p>
+                              <p className="font-semibold">
+                                {shift.price?.toLocaleString('it-IT', {
+                                  style: 'currency',
+                                  currency: 'VND',
+                                })}
+                              </p>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </p>
+                    {/* <div className="border-t">
                       <button className="justify-center mx-auto flex py-3 w-full items-center">
                         <i className="fa-solid fa-check mx-3 text-[#1fd392] text-[20px]"></i>
                         Đặt Sân
                       </button>
                     </div> */}
-                </div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex align-center mt-[20px] justify-center">
+                <Empty />
+              </div>
+            )
           ) : (
             <div className="flex align-center mt-[80px] justify-center">
               <Loading />
