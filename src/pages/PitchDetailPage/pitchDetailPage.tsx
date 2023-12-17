@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Tab, TabPanel, Tabs, TabsBody, TabsHeader, Typography, Checkbox } from '@material-tailwind/react';
-import { Button, Carousel, DatePicker, Empty, Form, Image, Input, Modal, Rate, Space, Switch } from 'antd';
+import { Button, Carousel, DatePicker, Empty, Form, Image, Modal, Rate, Space, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -20,8 +20,8 @@ import Loading from '~/components/Loading';
 import ModalBookMultipleDay from './ModalBookMultipleDay';
 import ModalBookOneShiftFullMonth from './ModalBookOneShiftFullMonth';
 import ModalBookPitchFullMonth from './ModalBookPitchFullMonth';
-import { updateUser } from '~/api/user';
-import useBookingSocket from '~/hooks/useBookingSocket';
+import Swal from 'sweetalert2';
+import { socket } from '~/config/socket';
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -44,11 +44,8 @@ const PitchDetailPage = () => {
   const [isModalBookMultipleDay, setIsModalBookMultipleDay] = useState<boolean>(false);
   const [isModalBookOneShiftMonth, setIsModalBookOneShiftMonth] = useState<boolean>(false);
   const [isModalBookPitchMonth, setIsModalBookPitchMonth] = useState<boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [error, setError] = useState('');
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
-  const user: any = useAppSelector((state) => state.user.currentUser);
 
   const totalPrice = dataBookShift?.price + (selectedServices?.reduce((total: any, service: any) => total + service.price, 0) || 0);
 
@@ -77,57 +74,58 @@ const PitchDetailPage = () => {
   };
 
   const onFinishModalBookShift = async () => {
-    if (!user?.values?.phone_number && findOpponent) {
-      const phoneRegex = /^[0-9]{10,}$/;
-
-      if (!phoneNumber) {
-        setError('Vui lòng nhập số điện thoại!');
-        return;
-      }
-
-      if (!phoneRegex.test(phoneNumber)) {
-        setError('Vui lòng nhập số điện thoại hợp lệ');
-        return;
-      }
-
-      setError('');
-      await updateUser(user.values._id, { phone_number: phoneNumber });
+    const { value: accept } = await Swal.fire({
+      title: 'Xác nhận đặt lịch',
+      icon: 'info',
+      text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
+      input: 'checkbox',
+      inputValue: 0,
+      inputPlaceholder: `
+       Tôi đồng ý với chính sách
+      `,
+      confirmButtonText: `
+        Tiếp tục &nbsp;<i class="fa fa-arrow-right"></i>
+      `,
+      inputValidator: (result) => {
+        return !result && 'Bạn cần phải đồng ý với chính sách trên!';
+      },
+    });
+    if (accept) {
+      sessionStorage.setItem(
+        'infoBooking',
+        JSON.stringify({
+          pitch: {
+            _id: dataBookShift.id_pitch,
+            name: Pitch.name,
+            image: Pitch.avatar,
+            address: Pitch.address,
+          },
+          admin_pitch: {
+            _id: Pitch?.admin_pitch_id?._id,
+            name: Pitch?.admin_pitch_id?.name,
+            phone: Pitch?.admin_pitch_id?.phone_number,
+          },
+          children_pitch: {
+            _id: dataBookShift?.id_chirlden_pitch,
+            children_pitch_code: dataBookShift?.code_chirldren_pitch,
+          },
+          shift: {
+            price: dataBookShift?.price,
+            totalPrice,
+            shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
+            date: [selectedDate],
+            numberDate: 1,
+            start_time: dataBookShift?.start_time,
+            end_time: dataBookShift?.end_time,
+            number_shift: dataBookShift?.number_shift,
+            find_opponent: findOpponent ? 'Find' : 'NotFind',
+          },
+          services: selectedServices,
+          type: 'singleDay',
+        })
+      );
+      navigate('/checkout');
     }
-
-    sessionStorage.setItem(
-      'infoBooking',
-      JSON.stringify({
-        pitch: {
-          _id: dataBookShift.id_pitch,
-          name: Pitch.name,
-          image: Pitch.avatar,
-          address: Pitch.address,
-        },
-        admin_pitch: {
-          _id: Pitch?.admin_pitch_id?._id,
-          name: Pitch?.admin_pitch_id?.name,
-          phone: Pitch?.admin_pitch_id?.phone_number,
-        },
-        children_pitch: {
-          _id: dataBookShift?.id_chirlden_pitch,
-          children_pitch_code: dataBookShift?.code_chirldren_pitch,
-        },
-        shift: {
-          price: dataBookShift?.price,
-          totalPrice,
-          shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
-          date: [selectedDate],
-          numberDate: 1,
-          start_time: dataBookShift?.start_time,
-          end_time: dataBookShift?.end_time,
-          number_shift: dataBookShift?.number_shift,
-          find_opponent: findOpponent ? 'Find' : 'NotFind',
-        },
-        services: selectedServices,
-        type: 'singleDay',
-      })
-    );
-    navigate('/checkout');
   };
 
   const handleServiceSelection = (service: any) => {
@@ -153,8 +151,6 @@ const PitchDetailPage = () => {
 
   // end xử lí đội bóng liên quan
 
-  // Websocket relatime
-  useBookingSocket();
   // Xử lý totalStar
   useEffect(() => {
     const fetchData = async () => {
@@ -169,6 +165,22 @@ const PitchDetailPage = () => {
 
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    socket.on('booking-success', (data) => {
+      if (!data) return;
+      const newData: any = childrenPitchs?.map((item: any) => {
+        if (item._id === data.id_chirlden_pitch) {
+          const newShifts = item.shifts?.map((shift: any) => (shift.number_shift === data.number_shift ? data : shift));
+          return { ...item, shifts: newShifts };
+        } else {
+          return item;
+        }
+      });
+
+      setShildrenPitchs(newData);
+    });
+  }, [childrenPitchs]);
 
   const data = [
     {
@@ -189,9 +201,9 @@ const PitchDetailPage = () => {
               </Image.PreviewGroup>
             </div>
             {Pitch?.images && Pitch.images.length > 0 && (
-              <div className="right-img w-[30%] xl:grid md:hidden">
-                <img src={Pitch?.images[1]} alt="No Image 1" className="w-[100%] h-[100%]" />
-                <img src={Pitch?.images[2]} alt="No Image 2" className="w-[100%] h-[100%]" />
+              <div className="right-img w-[30%] xl:grid md:hidden pt-[20px]">
+                <Image width={200} height={160} src={Pitch?.images[1]} />
+                <Image width={200} height={160} src={Pitch?.images[2]} />
               </div>
             )}
           </div>
@@ -646,19 +658,6 @@ const PitchDetailPage = () => {
               <div className="flex align-center mb-[8px]">
                 <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">Bạn muốn tìm đối?</span>
                 <Switch className="bg-[#00000073]" checked={findOpponent} onChange={onChangeFindOpponent} />
-              </div>
-              <div className={`mb-[8px] ${!user?.values?.phone_number && findOpponent ? '' : 'hidden'}`}>
-                <span className="inline-block min-w-[100px] text-[16px] font-semibold mb-[8px]">Vui lòng nhập số điện thoại của bạn</span>
-                {!user?.values?.phone_number && findOpponent && (
-                  <Form.Item validateStatus={error ? 'error' : ''} help={error}>
-                    <Input
-                      className="w-[50%]"
-                      placeholder="Nhập số điện thoại"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </Form.Item>
-                )}
               </div>
               <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">Dịch vụ:</span>
 

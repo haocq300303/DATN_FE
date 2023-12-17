@@ -12,10 +12,8 @@ import { IInfoBooking } from '~/interfaces/booking.type';
 type BookingScreenProps = {
   setCurrent: React.Dispatch<number>;
 };
-
 const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   const [infoBooking] = useState<IInfoBooking>(JSON.parse(sessionStorage.getItem('infoBooking') as string) as IInfoBooking);
-
   const _totalPriceService =
     (infoBooking?.services?.reduce((total, service) => total + service.price, 0) || 0) * infoBooking?.shift?.numberDate;
 
@@ -31,6 +29,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     }
     setModeBanking(e.target.value);
   };
+  console.log('Thông tin đặt', infoBooking);
 
   const handleBanking = () => {
     Swal.fire({
@@ -71,7 +70,6 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
 
   // handle create booking
   useCreateBooking({ infoBooking, currentUser, setCurrent });
-
   return (
     <div className="border border-solid px-5 py-2 rounded-md border-[#e7e7e7]">
       <div className="note">Vui lòng xác nhận đúng thông tin và thời gian đặt sân để chúng tôi có thể xử lý cho bạn chính xác nhất</div>

@@ -57,14 +57,15 @@ function App() {
       <Routes>
         <Route path={routes.home} element={<MainLayout />}>
           <Route index element={<Home />} />
+
+        </Route>
+
+        <Route path="/" element={<LayoutPage />}>
+          <Route index path={routes.checkout} element={<BookingPage />} />
+          <Route index path={routes.bookingHistory} element={<BookingHistoryPage />} />
           <Route path={routes.about} element={<About />} />
           <Route path={routes.contact} element={<Contact />} />
         </Route>
-        
-        <Route path="/" element={<LayoutPage />}>
-                    <Route index path={routes.checkout} element={<BookingPage />} />
-                    <Route index path={routes.bookingHistory} element={<BookingHistoryPage />} />
-                </Route>
         {/* Pitch Page */}
         <Route path="/pitch" element={<LayoutPage />}>
           <Route index path={routes.pitch_client} element={<PitchPage />} />
@@ -94,8 +95,8 @@ function App() {
           <Route path={routes.location} element={<LocationList />} />
           <Route path={routes.payment} element={<PaymentAdminPage />} />
           <Route path={routes.booking} element={<BookingAdminPage />} />
-            <Route path={routes.shift} element={<Shift />} />
-            <Route path={routes.user_admin} element={<UserList />} /> 
+          <Route path={routes.shift} element={<Shift />} />
+          <Route path={routes.user_admin} element={<UserList />} />
         </Route>
         <Route
           path={routes.admin_pitch}
@@ -107,7 +108,7 @@ function App() {
         >
           <Route index element={<DashboardPitchPage />} />
           <Route path={routes.service_admin} element={<ServiceManagement />} />
-           <Route path={routes.pitch_admin} element={<PitchUserList />} />
+          <Route path={routes.pitch_admin} element={<PitchUserList />} />
           <Route
             path={routes.childrenpitch_admin}
             element={<ChildrentPitch />}

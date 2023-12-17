@@ -21,7 +21,7 @@ const BookingAdminPage = () => {
         title: '#',
         dataIndex: 'index',
         key: 'index',
-        width: 40,
+        width: 50,
         fixed: 'left',
       },
       {

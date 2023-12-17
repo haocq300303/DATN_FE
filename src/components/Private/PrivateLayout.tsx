@@ -8,7 +8,7 @@ function PrivateLayout({ children }: any) {
   if (role_name === 'admin') {
     return children;
   }
-  return <Navigate to={routes.notfound} />;
+  return <Navigate to={routes.login} />;
 }
 
 export default PrivateLayout;

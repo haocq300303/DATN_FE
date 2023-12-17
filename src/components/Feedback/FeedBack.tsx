@@ -92,7 +92,7 @@ const FeedBack = () => {
             <span className="pl-[5px] pb-[5px] font-[400]">{TotalStar?.averageRating?.toFixed(1)}</span>
           </div>
         </div>
-        <div className="border-b-[3px] mt-[20px] border-gray-700"></div>
+        <div className="border-b-[1px] mt-[20px] border-gray-700"></div>
         <div className=" overflow-y-scroll h-[450px]">
           {IdFeedback && IdFeedback.length > 0 ? (
             IdFeedback?.map((feed: any) => (

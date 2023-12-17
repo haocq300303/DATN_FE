@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Form, Input, Modal, Select } from 'antd';
+import { Button, Empty, Form, Input, Modal, Select } from 'antd';
 import banner from '../../assets/img/Web/banner1.png';
 import { useAppDispatch, useAppSelector } from '~/Redux/hook';
-import { fetchAllPitch } from '~/Redux/Slices/pitchSlice';
 import { toast } from 'react-toastify';
 import { fetchAllShiftFindOpponent } from '~/Redux/Slices/shiftSlice';
 import IShift from '~/interfaces/shift';
 import { matchOpponent } from '~/api/shift';
+import Loading from '~/components/Loading';
 
 const FindOpponentPage = () => {
   const host = 'http://localhost:8080/api/location/';
@@ -25,9 +25,10 @@ const FindOpponentPage = () => {
   const [errorEmail, setErrorEmail] = useState('');
   const [errorName, setErrorName] = useState('');
   const [dataMatchOpponent, setDataMatchOpponent] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useAppDispatch();
-  const shifts = useAppSelector((state) => state.shift.shift);
+  const { shift: shifts, isLoading: isFetching } = useAppSelector((state) => state.shift);
   const user: any = useAppSelector((state) => state.user.currentUser);
 
   const { Option } = Select;
@@ -41,7 +42,7 @@ const FindOpponentPage = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchAllShiftFindOpponent());
+    dispatch(fetchAllShiftFindOpponent(''));
   }, [dispatch]);
 
   const handleCityChange = async (value: string) => {
@@ -85,15 +86,17 @@ const FindOpponentPage = () => {
     return '';
   };
 
-  const onHandleSubmitSearch = async () => {
-    if (selectedWard === '' || selectedWard === undefined) {
-      if (selectedDistrict === '' || selectedDistrict === undefined) {
-        await dispatch(fetchAllPitch(``));
+  const onHandleSubmitSearch = () => {
+    if (selectedCity || selectedDistrict || selectedWard) {
+      if (selectedWard === '' || selectedWard === undefined) {
+        if (selectedDistrict === '' || selectedDistrict === undefined) {
+          dispatch(fetchAllShiftFindOpponent(''));
+        } else {
+          dispatch(fetchAllShiftFindOpponent(`?districtId=${selectedDistrict}`));
+        }
       } else {
-        await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
+        dispatch(fetchAllShiftFindOpponent(`?wardId=${selectedWard}`));
       }
-    } else {
-      await dispatch(fetchAllPitch(`?wardId=${selectedWard}`));
     }
   };
 
@@ -148,18 +151,23 @@ const FindOpponentPage = () => {
 
         setErrorEmail('');
       }
+
+      setIsLoading(true);
+
       const data = {
         idUserFindOpponent: dataMatchOpponent?.user?._id,
         email: dataMatchOpponent?.user?.email,
         phone_number: dataMatchOpponent?.user?.phone_number,
         nameUserFindOpponent: dataMatchOpponent?.user?.name,
-        currentUserEmail: email,
-        currentUserPhone: phoneNumber,
-        currentUserName: name,
+        currentUserEmail: user?.values?.email ? user?.values?.email : email,
+        currentUserPhone: user?.values?.phone_number ? user?.values?.phone_number : phoneNumber,
+        currentUserName: user?.values?.name ? user?.values?.name : name,
+        currentUserId: user?.values?._id ? user?.values?._id : '',
       };
 
       await matchOpponent(data);
-      toast('🦄 Ghép kèo thành công. Thông tin đối đã được gửi về email của bạn!', {
+      setIsLoading(false);
+      toast(`🦄 Ghép kèo thành công. Thông tin đối đã được gửi về ${user?.values?.email ? user?.values?.email : email}!`, {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -195,7 +203,7 @@ const FindOpponentPage = () => {
               TÌM KIẾM ĐỐI THEO KHU VỰC
             </h1>
             <div className="items-center flex-wrap flex  min-w-0 mx-auto justify-between w-full max-w-screen-2xl">
-              <Select className="w-[25%] h-[45px]" placeholder="Thành Phố" onChange={handleCityChange} allowClear showSearch>
+              <Select className="w-[25%] h-[45px]" placeholder="Thành Phố" onChange={handleCityChange} showSearch>
                 {cities?.map((city: { id: string; name: string }) => (
                   <Option key={city.id} value={city.id}>
                     {city.name}
@@ -203,14 +211,14 @@ const FindOpponentPage = () => {
                 ))}
               </Select>
 
-              <Select className="w-[25%] h-[45px]" placeholder="Quận Huyện" onChange={handleDistrictChange}>
+              <Select className="w-[25%] h-[45px]" placeholder="Quận Huyện" onChange={handleDistrictChange} allowClear>
                 {districts?.map((district: { id: string; name: string }) => (
                   <Option key={district.id} value={district.id}>
                     {district.name}
                   </Option>
                 ))}
               </Select>
-              <Select className="w-[25%] h-[45px]" placeholder="Phường Xã" onChange={handleWardChange}>
+              <Select className="w-[25%] h-[45px]" placeholder="Phường Xã" onChange={handleWardChange} allowClear>
                 {wards?.map((ward: { id: string; name: string }) => (
                   <Option key={ward.id} value={ward.id}>
                     {ward.name}
@@ -248,61 +256,73 @@ const FindOpponentPage = () => {
               </div>
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
-              <div className="flex flex-wrap mt-[40px] mx-[-8px]">
-                {shifts?.map((item: IShift) => (
-                  <div key={item._id} className="w-[33%] px-[8px] mb-[24px]">
-                    <div className="relative flex max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg">
-                      <div className="relative mx-4 mt-4 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 bg-clip-border shadow-blue-gray-500/40">
-                        <img src={item?.id_pitch?.avatar} alt="ui/ux review check" />
-                        <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-tr from-transparent via-transparent to-black/60"></div>
-                      </div>
-                      <div className="px-6 py-4">
-                        <div className="flex items-center justify-between mb-3">
-                          <h5 className="block font-bold font-sans text-xl antialiased leading-snug tracking-normal text-blue-gray-900">
-                            {item?.id_pitch?.name}
-                          </h5>
-                        </div>
-                        <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                          <span className="text-pink-500">Vị trí:</span> {item?.id_pitch?.address}
-                        </p>
-                        <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                          <span className="text-pink-500">Giá sân:</span> {`${item.price.toLocaleString('vi-VN')}vnđ`}
-                        </p>
-                        <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                          <span className="text-pink-500"> Ca sân:</span> Ca {item.number_shift}
-                          {` (${item.start_time}h - ${item.end_time}h)`}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <p className="block font-sans text-base antialiased font-light leading-relaxed text-pink-500">
-                            Tài khoản đặt sân:
-                          </p>
-                          <div className="cursor-pointer">
-                            <img
-                              className="inline-block h-8 w-8 rounded-full object-cover object-center mr-2"
-                              alt="Image placeholder"
-                              src="https://res.cloudinary.com/dn3jydehx/image/upload/v1702435936/no-user-image_gkpyv1.jpg"
-                            />
-                            <p className="inline-block font-sans text-sm font-medium leading-normal text-blue-gray-900">
-                              {item?.user ? item?.user?.name : 'Thằng nào xóa booking rồi'}
+              <div className="flex flex-wrap justify-center mt-[40px] mx-[-8px]">
+                {!isFetching ? (
+                  shifts && shifts.length > 0 ? (
+                    shifts?.map((item: IShift) => (
+                      <div key={item._id} className="w-[33%] px-[8px] mb-[24px]">
+                        <div className="relative flex max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg">
+                          <div className="relative mx-4 mt-4 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 bg-clip-border shadow-blue-gray-500/40">
+                            <img src={item?.id_pitch?.avatar} alt="ui/ux review check" />
+                            <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-tr from-transparent via-transparent to-black/60"></div>
+                          </div>
+                          <div className="px-6 py-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <h5 className="block font-bold font-sans text-xl antialiased leading-snug tracking-normal text-blue-gray-900">
+                                {item?.id_pitch?.name}
+                              </h5>
+                            </div>
+                            <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
+                              <span className="text-pink-500">Vị trí:</span> {item?.id_pitch?.address}
+                            </p>
+                            <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
+                              <span className="text-pink-500">Giá sân:</span> {`${item.price.toLocaleString('vi-VN')}vnđ`}
+                            </p>
+                            <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
+                              <span className="text-pink-500"> Ca sân:</span> Ca {item.number_shift}
+                              {` (${item.start_time}h - ${item.end_time}h)`}
+                            </p>
+                            <div className="flex items-center justify-between">
+                              <p className="block font-sans text-base antialiased font-light leading-relaxed text-pink-500">
+                                Tài khoản đặt sân:
+                              </p>
+                              <div className="cursor-pointer">
+                                <img
+                                  className="inline-block h-8 w-8 rounded-full object-cover object-center mr-2"
+                                  alt="Image placeholder"
+                                  src="https://res.cloudinary.com/dn3jydehx/image/upload/v1702435936/no-user-image_gkpyv1.jpg"
+                                />
+                                <p className="inline-block font-sans text-sm font-medium leading-normal text-blue-gray-900">
+                                  {item?.user ? item?.user?.name : 'Thằng nào xóa booking rồi'}
+                                </p>
+                              </div>
+                            </div>
+                            <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
+                              <span className="text-pink-500">Ngày:</span> {item.date[0]}
                             </p>
                           </div>
+                          <div className="px-6 pb-4 pt-0">
+                            <button
+                              onClick={() => handleComfirm(item)}
+                              className="block w-full select-none rounded-lg bg-pink-500 py-3 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                              type="button"
+                            >
+                              Ghép kèo
+                            </button>
+                          </div>
                         </div>
-                        <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
-                          <span className="text-pink-500">Ngày:</span> {item.date[0]}
-                        </p>
                       </div>
-                      <div className="px-6 pb-4 pt-0">
-                        <button
-                          onClick={() => handleComfirm(item)}
-                          className="block w-full select-none rounded-lg bg-pink-500 py-3 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                          type="button"
-                        >
-                          Ghép kèo
-                        </button>
-                      </div>
+                    ))
+                  ) : (
+                    <div className="flex align-center mt-[20px] justify-center">
+                      <Empty />
                     </div>
+                  )
+                ) : (
+                  <div className="flex align-center mt-[40px] justify-center">
+                    <Loading />
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
@@ -401,7 +421,7 @@ const FindOpponentPage = () => {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={onHandleSubmit}>Xác nhận</Button>
+          <Button onClick={onHandleSubmit}>{isLoading ? 'Loading...' : 'Xác nhận'}</Button>
         </div>
       </Modal>
     </div>

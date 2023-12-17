@@ -15,7 +15,6 @@ const { Dragger } = Upload;
 const BannerManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('');
-
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
 
@@ -121,19 +120,16 @@ const BannerManagement = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
       );
-
       const url = urls[0];
-      // //console.log(url);
       const newValues = { ...values, url };
 
       await dispatch(createBannerMid(newValues));
       message.success(`Tạo banner thành công!`);
     } else if (modalMode === 'edit') {
       const newImages = values.url.fileList;
-      const url = newImages.length > 0 ? newImages[0].response.data.url : values.url;
+      const url = newImages > 0 ? newImages[0].response.data.url : values.url;
 
       const newValues = { ...values, url };
-
       const { _id, ...banner } = newValues;
 
       await dispatch(updateBannerMid({ _id, banner }));

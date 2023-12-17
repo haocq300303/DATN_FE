@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import IShift from "~/interfaces/shift";
-import instance from "./config";
+import IShift from '~/interfaces/shift';
+import instance from './config';
 
 export const getAllShift = () => {
   return instance.get(`/shift`);
 };
-export const getAllShiftFindOpponent = () => {
-  return instance.get(`/shift/find-opponent/all`);
+export const getAllShiftFindOpponent = (query?: string) => {
+  return instance.get(`/shift/find-opponent/all${query ?? ''}`);
 };
 export const getAllShiftFindOpponentByPitch = (idPitch: any) => {
   return instance.get(`/shift/find-opponent/pitch/${idPitch}`);
@@ -34,13 +34,8 @@ export const getShiftDefaultByPitch = (idPitch: string) => {
   return instance.get(`shift/default/pitch/${idPitch}`);
 };
 
-export const getShiftBookedByChildPitchAndNumberShift = (
-  idChildPitch: string,
-  number_shift: number
-) => {
-  return instance.get(
-    `shift/shift-booked/child-pitch-number-shift/${idChildPitch}?number_shift=${number_shift}`
-  );
+export const getShiftBookedByChildPitchAndNumberShift = (idChildPitch: string, number_shift: number) => {
+  return instance.get(`shift/shift-booked/child-pitch-number-shift/${idChildPitch}?number_shift=${number_shift}`);
 };
 
 export const changeFindOpponent = (idShift: string, data: any) => {
@@ -76,4 +71,8 @@ export const bookOneShiftFullMonth = (shift: IShift) => {
 
 export const bookChildrenPicthFullMonth = (shift: IShift) => {
   return instance.post(`/shift/book-childrenPicth-full-month`, shift);
+};
+
+export const cancelBooking = (shiftId: any, id_booking: any) => {
+  return instance.put(`/shift/cancel-booking/${shiftId}?id_booking=${id_booking}`);
 };

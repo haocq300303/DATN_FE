@@ -1,6 +1,5 @@
-import { Space, Table, Button, DatePicker } from 'antd';
+import { Space, Table, DatePicker } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FilterOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import IShift from '~/interfaces/shift';
 import dayjs from 'dayjs';
@@ -103,9 +102,13 @@ const Shift = () => {
       dataIndex: 'status_shift',
       key: 'status_shift',
       width: 140,
-      render: (status_shift) => (
-        <span className={`px-[10px] py-[4px] rounded-full text-[#fff] ${status_shift ? 'bg-red-500' : 'bg-green-500'}`}>
-          {status_shift ? 'Đã đặt' : 'Còn trống'}
+      render: (status_shift, record) => (
+        <span
+          className={`px-[10px] py-[4px] rounded-full text-[#fff] ${
+            record.isCancelBooking ? 'bg-yellow-500' : status_shift ? 'bg-red-500' : 'bg-green-500'
+          }`}
+        >
+          {record.isCancelBooking ? 'Đã hủy' : status_shift ? 'Đã đặt' : 'Còn trống'}
         </span>
       ),
     },
@@ -125,7 +128,7 @@ const Shift = () => {
         <Space direction="vertical">
           <DatePicker onChange={handleDateChange} value={dayjs(selectedDate, 'YYYY-MM-DD')} size={'large'} />
         </Space>
-        <Button type="primary" size="large" icon={<FilterOutlined />} className="bg-[#2988bc]"></Button>
+        {/* <Button type="primary" size="large" icon={<FilterOutlined />} className="bg-[#2988bc]"></Button> */}
       </div>
 
       <Table
