@@ -279,20 +279,13 @@ const PitchDetailPage = () => {
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
                   <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
-                    <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 my-0 mx-auto">
-                      <img className="w-full object-contain h-full" src={service?.image} alt="card-image" />
+                    <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 mt-">
+                      <img className="w-full" src={service?.image} alt="card-image" />
                     </CardHeader>
-                    <CardBody className="px-6 pt-2 pb-0">
-                      <Typography color="blue-gray" className="text-base font-bold w-max">
+                    <CardBody>
+                      <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
                         {service?.name}
                       </Typography>
-                      <p>
-                        Giá:{' '}
-                        {service.price?.toLocaleString('it-IT', {
-                          style: 'currency',
-                          currency: 'VND',
-                        })}
-                      </p>
                     </CardBody>
                   </Card>
                 ))
@@ -681,10 +674,10 @@ const PitchDetailPage = () => {
                       <Card className="mt-4 w-[45%]" key={service?._id}>
                         <Checkbox crossOrigin={undefined} onChange={() => handleServiceSelection(service)} />
                         <CardHeader color="blue-gray" className="w-[148px] h-28 pl-0 mt-0">
-                          <img className="w-full h-full object-contain" src={service?.image} alt="card-image" />
+                          <img className="w-full h-full object-cover" src={service?.image} alt="card-image" />
                         </CardHeader>
                         <CardBody className="px-[16px] py-[8px]">
-                          <Typography color="blue-gray" className="text-base font-bold w-max">
+                          <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
                             {service?.name}
                           </Typography>
                           <Typography>
