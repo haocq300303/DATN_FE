@@ -223,10 +223,10 @@ const PitchDetailPage = () => {
                           Dịch Vụ :
                           {Pitch?.services && Pitch?.services.length > 0
                             ? Pitch?.services?.map((service: any) => (
-                                <span key={service?._id}>
-                                  <i className="fa-solid fa-check"></i> {service.name}
-                                </span>
-                              ))
+                              <span key={service?._id}>
+                                <i className="fa-solid fa-check"></i> {service.name}
+                              </span>
+                            ))
                             : ''}
                         </p>
                         <p className="flex justify-between">
@@ -266,17 +266,17 @@ const PitchDetailPage = () => {
           <div className="flex gap-[20px] overflow-y-auto pt-[16px]">
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
-                  <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
-                    <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 mt-">
-                      <img className="w-full" src={service?.image} alt="card-image" />
-                    </CardHeader>
-                    <CardBody>
-                      <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
-                        {service?.name}
-                      </Typography>
-                    </CardBody>
-                  </Card>
-                ))
+                <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
+                  <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 mt-">
+                    <img className="w-full" src={service?.image} alt="card-image" />
+                  </CardHeader>
+                  <CardBody>
+                    <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                      {service?.name}
+                    </Typography>
+                  </CardBody>
+                </Card>
+              ))
               : 'Không có dịch vụ'}
           </div>
         </>
@@ -430,9 +430,8 @@ const PitchDetailPage = () => {
                                 });
                               }
                             }}
-                            className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${
-                              overtime ? 'overtime' : ''
-                            } ${shift.status_shift ? 'disabled' : ''}`}
+                            className={`border rounded-lg border-[#1fd392] hover:bg-[#1fd392] hover:text-[#fff] py-[8px] px-[4px] w-[31%] text-[16px] text-[#333] ${overtime ? 'overtime' : ''
+                              } ${shift.status_shift ? 'disabled' : ''}`}
                           >
                             <p className="font-semibold mb-[2px] ">Ca {shift.number_shift}</p>
                             <p className="mb-[2px] font-semibold ">
@@ -666,24 +665,24 @@ const PitchDetailPage = () => {
               <div className="flex gap-[20px] align-center justify-center mb-[24px] flex-wrap">
                 {Pitch?.services && Pitch?.services.length > 0
                   ? Pitch?.services?.map((service: any) => (
-                      <Card className="mt-4 w-[45%]" key={service?._id}>
-                        <Checkbox crossOrigin={undefined} onChange={() => handleServiceSelection(service)} />
-                        <CardHeader color="blue-gray" className="w-[148px] h-28 pl-0 mt-0">
-                          <img className="w-full h-full object-cover" src={service?.image} alt="card-image" />
-                        </CardHeader>
-                        <CardBody className="px-[16px] py-[8px]">
-                          <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
-                            {service?.name}
-                          </Typography>
-                          <Typography>
-                            {service?.price.toLocaleString('it-IT', {
-                              style: 'currency',
-                              currency: 'VND',
-                            })}
-                          </Typography>
-                        </CardBody>
-                      </Card>
-                    ))
+                    <Card className="mt-4 w-[45%]" key={service?._id}>
+                      <Checkbox crossOrigin={undefined} onChange={() => handleServiceSelection(service)} />
+                      <CardHeader color="blue-gray" className="w-[148px] h-28 pl-0 mt-0">
+                        <img className="w-full h-full object-cover" src={service?.image} alt="card-image" />
+                      </CardHeader>
+                      <CardBody className="px-[16px] py-[8px]">
+                        <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                          {service?.name}
+                        </Typography>
+                        <Typography>
+                          {service?.price.toLocaleString('it-IT', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}
+                        </Typography>
+                      </CardBody>
+                    </Card>
+                  ))
                   : 'Không có dịch vụ'}
               </div>
             </div>
