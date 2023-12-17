@@ -22,17 +22,17 @@ const ServiceManagement = () => {
 
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
-  const servicePitch = useAppSelector((state) => state.service.services);
+  const { services, isLoading } = useAppSelector((state) => state.service);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const pitchLocal = JSON.parse(localStorage.getItem('pitch')!);
+  const pitchLocal = JSON.parse(localStorage.getItem('pitch') || '');
   const id = pitchLocal._id;
-  const idUser = user.values?._id;
 
   useEffect(() => {
-    dispatch(fetchServicePitch(idUser));
-  }, [dispatch, idUser]);
+    dispatch(fetchServicePitch(id));
+  }, [dispatch, id]);
+
   const confirm = (id: string) => {
     void dispatch(deleteServiceMid(id));
   };
@@ -155,7 +155,7 @@ const ServiceManagement = () => {
       title: 'Image',
       dataIndex: 'image',
       key: 'image',
-      render: (image: string) => <img width={140} className="object-cover h-[100px]" src={image} alt="Img" />,
+      render: (image: string) => <img width={140} className="object-contain h-[60px]" src={image} alt="Img" />,
     },
     {
       title: 'Action',
@@ -199,7 +199,7 @@ const ServiceManagement = () => {
       ),
     },
   ];
-  const services = servicePitch.map((item, index) => {
+  const newServices = services.map((item, index) => {
     return {
       ...item,
       key: item._id,
@@ -292,7 +292,7 @@ const ServiceManagement = () => {
           }}
         ></Button>
       </div>
-      <Table pagination={{ pageSize: 8 }} dataSource={services} columns={columns} scroll={{ y: 100 }} />
+      <Table pagination={{ pageSize: 8 }} dataSource={newServices} loading={isLoading} columns={columns} scroll={{ y: 100 }} />
       <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
         <Form form={form} {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} layout="vertical">
           {modalMode === 'edit' && (

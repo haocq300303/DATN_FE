@@ -1,7 +1,6 @@
 import { Checkbox } from 'antd';
-import { useEffect, useState } from 'react';
-import { fetchServicePitch } from '~/Redux/Slices/serviceSlice';
-import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import { useState } from 'react';
+import { useGetServicesQuery } from '~/Redux/service/service.api';
 import Loading from '~/components/Loading';
 import { IService } from '~/interfaces/service';
 
@@ -19,7 +18,7 @@ const ServiceItem = ({ name, image, price }: IService) => {
       className="grid grid-cols-[1fr_2fr_1fr_1fr] border border-gray-500  rounded-md cursor-pointer hover:bg-red-100 px-4 py-2 mb-4"
     >
       <div className="w-20">
-        <img src={image} className="aspect-square w-full rounded-md" />
+        <img src={image} className="aspect-square w-full rounded-md object-contain" />
       </div>
 
       <div className="text-xl font-medium pt-[10px]">{name}</div>
@@ -40,13 +39,8 @@ const ServiceItem = ({ name, image, price }: IService) => {
 
 const SelectService = ({ setDataBooking, dataBooking, pitchId }: ISelectService) => {
   const [selectedServices, setSelectedServices] = useState<IService[]>([]);
-  const dispatch = useAppDispatch();
 
-  const { isLoading, services } = useAppSelector((state) => state.service);
-
-  useEffect(() => {
-    dispatch(fetchServicePitch(pitchId));
-  }, [dispatch, pitchId]);
+  const { data, isFetching } = useGetServicesQuery({ pitch_id: pitchId }, { skip: !pitchId });
 
   const handleSelectService = (service: any) => {
     const isMatch = [...selectedServices].some((item) => item._id === service._id);
@@ -75,7 +69,7 @@ const SelectService = ({ setDataBooking, dataBooking, pitchId }: ISelectService)
     <>
       <h2 className="text-xl font-medium leading-3">Dịch vụ đi kèm</h2>
       <hr className="my-3" />
-      {isLoading && services.length === 0 ? (
+      {isFetching && data?.data?.length === 0 ? (
         <div className="flex align-center mt-[80px] justify-center">
           <Loading />
         </div>
@@ -83,11 +77,13 @@ const SelectService = ({ setDataBooking, dataBooking, pitchId }: ISelectService)
         ''
       )}
       <div className="pt-4">
-        {services?.map((item: any) => (
-          <div key={item?._id} onClick={() => handleSelectService(item)}>
-            <ServiceItem {...item} />
-          </div>
-        ))}
+        {data?.data && data?.data?.length > 0
+          ? data?.data?.map((item: any) => (
+              <div key={item?._id} onClick={() => handleSelectService(item)}>
+                <ServiceItem {...item} />
+              </div>
+            ))
+          : 'Không có dịch vụ'}
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 // src/redux/bannerSlice.js
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { IService } from '../../interfaces/service';
-import { createService, deleteService, getAllService, getServiceByUser, updateService } from '../../api/service';
+import { createService, deleteService, getAllService, getServicePitch, updateService } from '../../api/service';
 
 interface initState {
   services: IService[];
@@ -25,9 +25,9 @@ export const getAllServiceMid = createAsyncThunk('service/getAllServiceMid', asy
   }
 });
 
-export const fetchServicePitch = createAsyncThunk('service/fetchServicePitch', async (idUser: any, thunkAPI) => {
+export const fetchServicePitch = createAsyncThunk('service/fetchServicePitch', async (pitch_id: any, thunkAPI) => {
   try {
-    const { data } = await getServiceByUser(idUser);
+    const { data } = await getServicePitch(pitch_id);
     return data.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
