@@ -15,7 +15,7 @@ const PostDetailPage = () => {
   const [post, setPost] = useState<IPost>();
   const [Char, setChar] = useState('');
   const [IdComment, setIdComment] = useState<any>();
-  console.log(post);
+  //console.log(post);
 
   const posts = useAppSelector((state) => state.post.posts);
   useEffect(() => {
@@ -24,7 +24,7 @@ const PostDetailPage = () => {
         const { data } = await getOnePost(String(id));
         setPost(data.data);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     })();
   }, [id]);
@@ -35,7 +35,7 @@ const PostDetailPage = () => {
         const { data } = await getCommentPost(String(id));
         setIdComment(data.data.comment_id);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     })();
   }, [id]);
@@ -52,7 +52,7 @@ const PostDetailPage = () => {
   const onFinishComment = async (values: any) => {
     try {
       if (values.content.trim() === '') {
-        message.warning("Nội dung không được để trống.")
+        message.warning('Nội dung không được để trống.');
         return;
       }
       const response = await dispatch(createCommentMid(values));
@@ -64,10 +64,9 @@ const PostDetailPage = () => {
       form.resetFields(['content']);
       setChar('');
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
-
 
   const contentStyle: React.CSSProperties = {
     height: '520px',
@@ -97,14 +96,14 @@ const PostDetailPage = () => {
             </li>
 
             <li className="relative flex items-center">
-              <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
+              <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clipPath:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
 
               <Link to={`/post`} className="flex h-10 items-center  pe-4 ps-8 text-xs font-medium transition hover:text-gray-900">
                 Tin Tức
               </Link>
             </li>
             <li className="relative flex items-center">
-              <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100/50 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
+              <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100/50 [clipPath:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
 
               <Link to={`#`} className="flex h-10 items-center  pe-4 ps-8 text-xs font-medium transition hover:text-gray-900">
                 {post?.title}
@@ -123,11 +122,7 @@ const PostDetailPage = () => {
                 <Carousel autoplay>
                   {post?.images?.map((data) => (
                     <div>
-                      <Image
-                        style={contentStyle}
-                        width={900}
-                        src={data}
-                      />
+                      <Image style={contentStyle} width={900} src={data} />
                     </div>
                   ))}
                 </Carousel>
@@ -140,7 +135,7 @@ const PostDetailPage = () => {
                       <a key={item?._id} href={`/post/${item._id}`}>
                         <div className="flex items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
                           <img className="w-[100px] h-[70px] rounded-md" src={item?.images[0]} alt="" />
-                          <h1 className='w-[330px]'>{item?.title}</h1>
+                          <h1 className="w-[330px]">{item?.title}</h1>
                         </div>
                       </a>
                     ))

@@ -99,10 +99,10 @@ const PitchList = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   }, [selectedId]);
-  console.log('pitchModel:', Pitch);
+  //console.log('pitchModel:', Pitch);
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -267,9 +267,9 @@ const PitchList = () => {
             onCancel={cancel}
             okText="Đồng ý"
             cancelText="Không"
-            className='bg-red-500'
+            className="bg-red-500"
           >
-            <Button className='bg-red-500' type="primary" danger>
+            <Button className="bg-red-500" type="primary" danger>
               <DeleteOutlined style={{ display: 'inline-flex' }} />
             </Button>
           </Popconfirm>

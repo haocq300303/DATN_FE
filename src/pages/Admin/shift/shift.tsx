@@ -12,18 +12,16 @@ const Shift = () => {
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const [shifts, setShifts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const pitch = JSON.parse(localStorage.getItem('pitch') || '{}');
+  const pitchId = pitch?._id;
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const { data } = await getShiftsByPitch(
-        '653ca30f5d70cbab41a2e5d0',
-        selectedDate && selectedDate.trim() !== '' ? `?date=${selectedDate}` : ''
-      );
+      const { data } = await getShiftsByPitch(pitchId, selectedDate && selectedDate.trim() !== '' ? `?date=${selectedDate}` : '');
       setShifts(data.data);
       setIsLoading(false);
     })();
-  }, [selectedDate]);
+  }, [selectedDate, pitchId]);
 
   const handleDateChange = (e: any) => {
     const datePicker = format(e.$d, 'yyyy-MM-dd');

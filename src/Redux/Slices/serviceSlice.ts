@@ -1,7 +1,7 @@
 // src/redux/bannerSlice.js
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IService } from "../../interfaces/service";
-import { createService, deleteService, getAllService, getServicePitch, updateService } from "../../api/service";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { IService } from '../../interfaces/service';
+import { createService, deleteService, getAllService, getServiceByUser, updateService } from '../../api/service';
 
 interface initState {
   services: IService[];
@@ -13,52 +13,49 @@ const initialState: initState = {
   isLoading: false,
 };
 
-export const getAllServiceMid = createAsyncThunk(
-  "service/getAllServiceMid",
-  async (_, thunkAPI) => {
-    try {
-      const { data: { data } } = await getAllService();
-      return data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const getAllServiceMid = createAsyncThunk('service/getAllServiceMid', async (_, thunkAPI) => {
+  try {
+    const {
+      data: { data },
+    } = await getAllService();
+    return data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const fetchServicePitch = createAsyncThunk(
-  "service/fetchServicePitch",
-  async (idPitch: any, thunkAPI) => {
-    try {
-      const { data } = await getServicePitch(idPitch);
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const fetchServicePitch = createAsyncThunk('service/fetchServicePitch', async (idUser: any, thunkAPI) => {
+  try {
+    const { data } = await getServiceByUser(idUser);
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const createServiceMid = createAsyncThunk(
-  "service/createServiceMid",
-  async (service: IService, thunkAPI) => {
-    try {
-      const { data: { data } } = await createService(service);
-      console.log(data);
-      
-      return data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const createServiceMid = createAsyncThunk('service/createServiceMid', async (service: IService, thunkAPI) => {
+  try {
+    const {
+      data: { data },
+    } = await createService(service);
+    //console.log(data);
+
+    return data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
 export const updateServiceMid = createAsyncThunk(
-  "service/updateServiceMid",
+  'service/updateServiceMid',
   async ({ _id, service }: { _id: string; service: IService }, thunkAPI) => {
     try {
-      const { data: { data } } = await updateService(_id, service);
+      const {
+        data: { data },
+      } = await updateService(_id, service);
       return data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -67,22 +64,21 @@ export const updateServiceMid = createAsyncThunk(
   }
 );
 
-export const deleteServiceMid = createAsyncThunk(
-  "service/deleteServiceMid",
-  async (idService: string, thunkAPI) => {
-    try {
-      const { data: { data } } = await deleteService(idService);
-      
-      return data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const deleteServiceMid = createAsyncThunk('service/deleteServiceMid', async (idService: string, thunkAPI) => {
+  try {
+    const {
+      data: { data },
+    } = await deleteService(idService);
+
+    return data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
 const serviceSlice = createSlice({
-  name: "services",
+  name: 'services',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -115,7 +111,7 @@ const serviceSlice = createSlice({
       })
       .addCase(createServiceMid.fulfilled, (state, action) => {
         state.services = [...state.services, action.payload];
-        console.log(action.payload);
+        //console.log(action.payload);
         state.isLoading = false;
       })
       .addCase(createServiceMid.rejected, (state) => {
@@ -127,9 +123,7 @@ const serviceSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(updateServiceMid.fulfilled, (state, action) => {
-        state.services = state.services?.map((service: IService) =>
-          service._id === action?.payload?._id ? action.payload : service
-        );
+        state.services = state.services?.map((service: IService) => (service._id === action?.payload?._id ? action.payload : service));
         state.isLoading = false;
       })
       .addCase(updateServiceMid.rejected, (state) => {
@@ -141,9 +135,7 @@ const serviceSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(deleteServiceMid.fulfilled, (state, action) => {
-        state.services = state.services?.filter(
-          (service: IService) => service._id !== action.payload._id
-        );
+        state.services = state.services?.filter((service: IService) => service._id !== action.payload._id);
         state.isLoading = false;
       })
       .addCase(deleteServiceMid.rejected, (state) => {

@@ -1,45 +1,24 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Popconfirm,
-  Space,
-  Table,
-  Button,
-  message,
-  Form,
-  Input,
-  Upload,
-} from "antd";
-import type { ColumnsType } from "antd/es/table";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import ModalForm from "../../../../components/ModalForm/ModalForm";
-import { useAppDispatch, useAppSelector } from "../../../../Redux/hook";
-import axios from "axios";
-import IBanner from "../../../../interfaces/Banner";
-import {
-  createBannerMid,
-  deleteBannerMid,
-  getAllBannerMid,
-  updateBannerMid,
-} from "../../../../Redux/Slices/bannerSlice";
+import { Popconfirm, Space, Table, Button, message, Form, Input, Upload } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, UploadOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
+import ModalForm from '../../../../components/ModalForm/ModalForm';
+import { useAppDispatch, useAppSelector } from '../../../../Redux/hook';
+import axios from 'axios';
+import IBanner from '../../../../interfaces/Banner';
+import { createBannerMid, deleteBannerMid, getAllBannerMid, updateBannerMid } from '../../../../Redux/Slices/bannerSlice';
 
 const { Dragger } = Upload;
 
 const BannerManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState("");
-  
-
+  const [modalMode, setModalMode] = useState('');
   const dispatch = useAppDispatch();
   const banners = useAppSelector((state) => state.banner.banners);
 
-  // console.log(banners);
+  // //console.log(banners);
 
   useEffect(() => {
     dispatch(getAllBannerMid());
@@ -50,44 +29,42 @@ const BannerManagement = () => {
   };
 
   const cancel = () => {
-    message.error("Đã hủy!");
+    message.error('Đã hủy!');
   };
 
   const columns: ColumnsType<IBanner> = [
     {
-      title: "Image",
-      dataIndex: "url",
-      key: "url",
+      title: 'Image',
+      dataIndex: 'url',
+      key: 'url',
       render: (image: string) => <img width={200} src={image} alt="Banner" />,
     },
     {
-      title: "Title",
-      key: "title",
-      dataIndex: "title",
+      title: 'Title',
+      key: 'title',
+      dataIndex: 'title',
       render: (text: string) => {
-        return text.slice(0, 30).concat(" . . .");
+        return text.slice(0, 30).concat(' . . .');
       },
     },
     Table.EXPAND_COLUMN,
     {
-      title: "Description",
-      key: "content",
-      dataIndex: "content",
+      title: 'Description',
+      key: 'content',
+      dataIndex: 'content',
       render: (text: string) => {
-        return text.slice(0, 40).concat(" . . .");
+        return text.slice(0, 40).concat(' . . .');
       },
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (record: any) => (
         <Space size="middle">
           <Button
             type="primary"
             onClick={() => {
-              const banner = banners?.find(
-                (banner: IBanner) => banner._id === record._id
-              );
+              const banner = banners?.find((banner: IBanner) => banner._id === record._id);
 
               form.setFieldsValue({
                 _id: banner?._id,
@@ -95,11 +72,11 @@ const BannerManagement = () => {
                 title: banner?.title,
                 content: banner?.content,
               });
-              showModal("edit");
+              showModal('edit');
             }}
             ghost
           >
-            <EditOutlined style={{ display: "inline-flex" }} />
+            <EditOutlined style={{ display: 'inline-flex' }} />
           </Button>
           <Popconfirm
             placement="topRight"
@@ -112,7 +89,6 @@ const BannerManagement = () => {
           >
             <Button type="primary" danger>
               <DeleteOutlined />
-
             </Button>
           </Popconfirm>
         </Space>
@@ -135,11 +111,11 @@ const BannerManagement = () => {
   };
 
   const validateMessages = {
-    required: "${label} is required!",
+    required: '${label} is required!',
   };
 
   const onFinish = async (values: any) => {
-    if (modalMode === "add") {
+    if (modalMode === 'add') {
       const urls = values?.url?.fileList?.map(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ({ response }: any) => response.data.url
@@ -149,20 +125,16 @@ const BannerManagement = () => {
 
       await dispatch(createBannerMid(newValues));
       message.success(`Tạo banner thành công!`);
-    } else if (modalMode === "edit") {
+    } else if (modalMode === 'edit') {
       const newImages = values.url.fileList;
-      const url =
-        newImages.length > 0 ? newImages[0].response.data.url : values.url;
+      const url = newImages > 0 ? newImages[0].response.data.url : values.url;
 
       const newValues = { ...values, url };
-
       const { _id, ...banner } = newValues;
-      console.log({ _id, banner });
-      
 
-      // await dispatch(updateBannerMid({ _id, banner }));
+      await dispatch(updateBannerMid({ _id, banner }));
 
-      // message.success(`Sửa banner thành công!`);
+      message.success(`Sửa banner thành công!`);
     }
     setIsModalOpen(false);
   };
@@ -170,15 +142,15 @@ const BannerManagement = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const uploadFiles = async (file: any) => {
     if (file) {
-      const CLOUD_NAME = "dlu4tkcct";
-      const PRESET_NAME = "datn-img";
-      const FOLDER_NAME = "datn-img";
+      const CLOUD_NAME = 'dlu4tkcct';
+      const PRESET_NAME = 'datn-img';
+      const FOLDER_NAME = 'datn-img';
       const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
 
       const formData = new FormData();
-      formData.append("upload_preset", PRESET_NAME);
-      formData.append("folder", FOLDER_NAME);
-      formData.append("file", file);
+      formData.append('upload_preset', PRESET_NAME);
+      formData.append('folder', FOLDER_NAME);
+      formData.append('file', file);
 
       const response = await axios.post(api, formData);
 
@@ -201,7 +173,7 @@ const BannerManagement = () => {
       }
     } catch (error) {
       // Xử lý lỗi nếu có
-      message.error("An error occurred while uploading the image.");
+      message.error('An error occurred while uploading the image.');
       onError(error);
     }
   };
@@ -214,14 +186,13 @@ const BannerManagement = () => {
         <Button
           type="primary"
           icon={<PlusCircleOutlined />}
-          size={"large"}
+          size={'large'}
           className="bg-[#1677ff]"
           onClick={() => {
             form.resetFields();
-            showModal("add");
+            showModal('add');
           }}
-        >
-        </Button>
+        ></Button>
       </div>
       <Table
         pagination={{ pageSize: 8 }}
@@ -229,27 +200,13 @@ const BannerManagement = () => {
         dataSource={data}
         rowSelection={{}}
         expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.content}</p>
-          ),
+          expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.content}</p>,
         }}
       />
-      <ModalForm
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        form={form}
-        modalMode={modalMode}
-      >
-        <Form
-          form={form}
-          {...layout}
-          name="nest-messages"
-          onFinish={onFinish}
-          validateMessages={validateMessages}
-          layout="vertical"
-        >
-          {modalMode === "edit" && (
-            <Form.Item name="_id" style={{ display: "none" }}>
+      <ModalForm isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} form={form} modalMode={modalMode}>
+        <Form form={form} {...layout} name="nest-messages" onFinish={onFinish} validateMessages={validateMessages} layout="vertical">
+          {modalMode === 'edit' && (
+            <Form.Item name="_id" style={{ display: 'none' }}>
               <Input />
             </Form.Item>
           )}
@@ -260,24 +217,14 @@ const BannerManagement = () => {
             </Dragger>
           </Form.Item>
 
-          <Form.Item
-            name="title"
-            label="Title"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
-            ]}
-          >
+          <Form.Item name="title" label="Title" rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}>
             <Input placeholder="Title" />
           </Form.Item>
 
           <Form.Item
             name="content"
             label="Description"
-            rules={[
-              { required: true },
-              { whitespace: true, message: "${label} is required!" },
-            ]}
+            rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}
           >
             <Input.TextArea rows={4} placeholder="Description" />
           </Form.Item>

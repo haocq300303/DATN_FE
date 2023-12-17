@@ -1,17 +1,4 @@
-import {
-  Button,
-  message,
-  Form,
-  Input,
-  Upload,
-  Select,
-  InputNumber,
-  Checkbox,
-  Col,
-  Row,
-  Empty,
-  Modal,
-} from 'antd';
+import { Button, message, Form, Input, Upload, Select, InputNumber, Modal } from 'antd';
 import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { UploadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
@@ -21,8 +8,6 @@ import axios from 'axios';
 const { Dragger } = Upload;
 import { fetchCreatPitch } from '../../../Redux/Slices/pitchSlice';
 import { Option } from 'antd/es/mentions';
-import { getAllServiceMid } from '~/Redux/Slices/serviceSlice';
-import { IService } from '~/interfaces/service';
 
 const ModalViewCreatePitch = () => {
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -33,7 +18,6 @@ const ModalViewCreatePitch = () => {
 
   const dispatch = useAppDispatch();
 
-  const services = useAppSelector((state) => state.service.services);
   const host = 'http://localhost:8080/api/location/';
 
   useEffect(() => {
@@ -43,11 +27,6 @@ const ModalViewCreatePitch = () => {
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    dispatch(getAllServiceMid());
-  }, [dispatch]);
-  // console.log("service", services);
 
   const layout = {
     labelCol: { span: 8 },
@@ -60,23 +39,17 @@ const ModalViewCreatePitch = () => {
 
   const [form] = Form.useForm();
 
-  const onChange = (checkedValues: CheckboxValueType[]) => {
-    console.log('checked = ', checkedValues);
-  };
-
   const onFinish = async (values: any) => {
-    const images = values?.images?.fileList?.map(
-      ({ response }: any) => response.data.url
-    );
+    const images = values?.images?.fileList?.map(({ response }: any) => response.data.url);
     const avatar = values?.avatar?.fileList[0]?.response?.data?.url;
 
     const newValues = {
       ...values,
       avatar,
       images,
-      admin_pitch_id: user.values._id,
+      admin_pitch_id: user?.values?._id,
     };
-    console.log('valueAbc:', newValues);
+    //console.log('valueAbc:', newValues);
 
     await dispatch(fetchCreatPitch(newValues));
     message.success(`Tạo Sân Bóng thành công!`);
@@ -161,37 +134,15 @@ const ModalViewCreatePitch = () => {
         className="flex gap-4"
       >
         <div className="w-1/2">
-          <Form.Item
-            name="address"
-            label="Địa chỉ"
-            rules={[
-              { required: true },
-              { whitespace: true, message: '${label} is required!' },
-            ]}
-          >
+          <Form.Item name="address" label="Địa chỉ" rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}>
             <Input.TextArea rows={2} placeholder="address" />
           </Form.Item>
-          <Form.Item
-            name="name"
-            label="Tên Sân"
-            rules={[
-              { required: true },
-              { whitespace: true, message: '${label} is required!' },
-            ]}
-          >
+          <Form.Item name="name" label="Tên Sân" rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}>
             <Input size="large" placeholder="Name" />
           </Form.Item>
 
-          <Form.Item
-            name="numberPitch"
-            label="Số Lượng Sân"
-            rules={[{ required: true, type: 'number', min: 0 }]}
-          >
-            <InputNumber
-              size="large"
-              placeholder="numberPitch"
-              style={{ width: '100%' }}
-            />
+          <Form.Item name="numberPitch" label="Số Lượng Sân" rules={[{ required: true, type: 'number', min: 0 }]}>
+            <InputNumber size="large" placeholder="numberPitch" style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item name="images" label="Images" rules={[{ required: true }]}>
@@ -203,10 +154,7 @@ const ModalViewCreatePitch = () => {
           <Form.Item
             name="description"
             label="Thông Tin Sân"
-            rules={[
-              { required: true },
-              { whitespace: true, message: '${label} is required!' },
-            ]}
+            rules={[{ required: true }, { whitespace: true, message: '${label} is required!' }]}
           >
             <Input.TextArea rows={4} placeholder="Description" />
           </Form.Item>
@@ -214,11 +162,7 @@ const ModalViewCreatePitch = () => {
 
         <div className="w-1/2">
           <Form.Item label="Tỉnh" rules={[{ required: true }]}>
-            <Select
-              onChange={handleCityChange}
-              size="large"
-              placeholder="---- Tỉnh ----"
-            >
+            <Select onChange={handleCityChange} size="large" placeholder="---- Tỉnh ----">
               {cities.map((item: { id: string; name: string }) => (
                 <Option key={item.id} value={item.id}>
                   {item.name}
@@ -227,16 +171,8 @@ const ModalViewCreatePitch = () => {
             </Select>
           </Form.Item>
 
-          <Form.Item
-            name="districts_id"
-            label="Quận, Huyện"
-            rules={[{ required: true }]}
-          >
-            <Select
-              onChange={handleDistrictChange}
-              size="large"
-              placeholder="---- Quận Huyện ----"
-            >
+          <Form.Item name="districts_id" label="Quận, Huyện" rules={[{ required: true }]}>
+            <Select onChange={handleDistrictChange} size="large" placeholder="---- Quận Huyện ----">
               {districts.map((item: { id: string; name: string }) => (
                 <Option key={item.id} value={item.id}>
                   {item.name}
@@ -254,42 +190,6 @@ const ModalViewCreatePitch = () => {
               ))}
             </Select>
           </Form.Item>
-
-          <Form.Item
-            name="deposit_price"
-            label="Giá Thấp Nhất"
-            rules={[{ required: true, type: 'number', min: 0 }]}
-          >
-            <InputNumber
-              size="large"
-              placeholder="Giá Thấp Nhất"
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="services"
-            label="Services"
-            rules={[{ required: true }]}
-          >
-            <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
-              <Row>
-                {services && services.length > 0 ? (
-                  services.map((item: IService) => (
-                    <Col span={8}>
-                      <Checkbox value={item._id}>{item.name}</Checkbox>
-                    </Col>
-                  ))
-                ) : (
-                  <div>
-                    {' '}
-                    <Empty />
-                  </div>
-                )}
-              </Row>
-            </Checkbox.Group>
-          </Form.Item>
-
           <Form.Item name="avatar" label="Avatar" rules={[{ required: true }]}>
             <Dragger listType="picture" customRequest={customRequest}>
               <Button icon={<UploadOutlined />}>Thêm Ảnh Tổng Quan</Button>

@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
 
-
 const Home = () => {
   const dispatch = useAppDispatch();
   const posts = useAppSelector((state) => state.post.posts);
@@ -18,29 +17,20 @@ const Home = () => {
     <div className="gradient">
       <section className="bg-white box-border py-2">
         <div className="container max-w-5xl mx-auto m-8">
-          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800 ">
-            FootieMatchFinder
-          </h2>
+          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800 ">FootieMatchFinder</h2>
           <div className="w-full">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
           <section className="bg-white dark:bg-gray-900">
             <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-10 lg:px-2">
               <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-                <h2 className="pb-2 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-                  Hệ thống đặt lịch hàng đầu
-                </h2>
+                <h2 className="pb-2 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Hệ thống đặt lịch hàng đầu</h2>
                 <p className="mb-4">
-                  Tại trang web của chúng tôi, bạn sẽ dễ dàng thực hiện việc lên
-                  lịch luyện tập và tham gia các cuộc thi thể thao một cách
-                  nhanh chóng và thuận tiện. Bạn cũng có thể theo dõi thông tin
-                  về các sự kiện thể thao, tham gia đội thi, và tương tác với
+                  Tại trang web của chúng tôi, bạn sẽ dễ dàng thực hiện việc lên lịch luyện tập và tham gia các cuộc thi thể thao một cách
+                  nhanh chóng và thuận tiện. Bạn cũng có thể theo dõi thông tin về các sự kiện thể thao, tham gia đội thi, và tương tác với
                   cộng đồng yêu thể thao của chúng tôi.
                 </p>
-                <p>
-                  Với chúng tôi, việc tổ chức và tham gia vào các hoạt động thể
-                  thao trở nên đơn giản và tiện lợi hơn bao giờ hết
-                </p>
+                <p>Với chúng tôi, việc tổ chức và tham gia vào các hoạt động thể thao trở nên đơn giản và tiện lợi hơn bao giờ hết</p>
               </div>
               <div className="grid grid-cols-2 gap-4 mt-8">
                 <img
@@ -60,80 +50,71 @@ const Home = () => {
       </section>
       <section className="bg-white">
         <div className="container mx-auto flex flex-wrap pt-4 pb-12">
-          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800">
-            Tin Tức Mới Nhất
-          </h2>
+          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800">Tin Tức Mới Nhất</h2>
           <div className="w-full my-8">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 md:gap-6 w-full xl:grid-cols-3 xl:gap-8">
-            {posts?.slice(0, 3)?.reverse()?.map((post: IPost) => (
-              <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">
-                <Link
-                  to={`/post/${post._id}`}
+            {posts
+              ?.slice(0, 3)
+              ?.reverse()
+              ?.map((post: IPost) => (
+                <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">
+                  <Link to={`/post/${post._id}`} className="group relative block h-48 overflow-hidden bg-gray-100 md:h-64">
+                    <img
+                      src={post.images[0]}
+                      loading="lazy"
+                      alt="Photo by Minh Pham"
+                      className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
+                    />
+                  </Link>
 
-                  className="group relative block h-48 overflow-hidden bg-gray-100 md:h-64"
-                >
-                  <img
-                    src={post.images[0]}
-                    loading="lazy"
-                    alt="Photo by Minh Pham"
-                    className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
-                  />
-                </Link>
+                  <div className="flex flex-1 flex-col p-4 sm:p-6">
+                    <h2 className="mb-2 text-lg font-semibold text-gray-800">
+                      <Link to={`/post/${post._id}`} className="transition duration-100 hover:text-indigo-500 active:text-indigo-600">
+                        {' '}
+                        {post.title}
+                      </Link>
+                    </h2>
 
-                <div className="flex flex-1 flex-col p-4 sm:p-6">
-                  <h2 className="mb-2 text-lg font-semibold text-gray-800">
-                    <Link
-                      to={`/post/${post._id}`}
-                      className="transition duration-100 hover:text-indigo-500 active:text-indigo-600"
-                    >
-                      {' '}
-                      {post.title}
-                    </Link>
-                  </h2>
+                    <div className="mb-8" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
 
-                  <div className="mb-8" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
+                    <div className="mt-auto flex items-end justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
+                          <img
+                            src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
+                            loading="lazy"
+                            alt="Photo by Brock Wegner"
+                            className="h-full w-full object-cover object-center"
+                          />
+                        </div>
 
-
-                  <div className="mt-auto flex items-end justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
-                        <img
-                          src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
-                          loading="lazy"
-                          alt="Photo by Brock Wegner"
-                          className="h-full w-full object-cover object-center"
-                        />
+                        <div>
+                          <span className="block text-gray-400">Hệ Thống</span>
+                          <span className="block text-sm text-gray-400">{post.updatedAt}</span>
+                        </div>
                       </div>
 
-                      <div>
-                        <span className="block text-gray-400">
-                          Hệ Thống
-                        </span>
-                        <span className="block text-sm text-gray-400">
-                          {post.updatedAt}
-                        </span>
-                      </div>
+                      <span className="rounded border px-2 py-1 text-sm text-gray-500">Thông Báo</span>
                     </div>
-
-                    <span className="rounded border px-2 py-1 text-sm text-gray-500">
-                      Thông Báo
-                    </span>
                   </div>
                 </div>
-              </div>
-            ))}
-
+              ))}
           </div>
-          <div className='flex justify-center w-full mt-[30px]'>
-            <Link to={`/post`}
+          <div className="flex justify-center w-full mt-[30px]">
+            <Link
+              to={`/post`}
               className="flex flex-row items-center justify-center w-full px-4 py-4 mb-4 text-sm font-bold bg-green-300 leading-6 capitalize duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:mb-0 sm:w-auto sm:mr-4 md:pl-8 md:pr-6 xl:pl-12 xl:pr-10   hover:shadow-lg hover:-translate-y-1"
             >
               Xem Thêm
               <span className="ml-4">
-                <svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path fill="currentColor" d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                  <path
+                    fill="currentColor"
+                    d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"
+                  ></path>
                 </svg>
               </span>
             </Link>
@@ -145,12 +126,9 @@ const Home = () => {
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-6">
-                <h2 className="mb-4 text-3xl font-bold text-black sm:text-4xl md:text-[40px]">
-                  Thông tin về trang web chúng tôi
-                </h2>
+                <h2 className="mb-4 text-3xl font-bold text-black sm:text-4xl md:text-[40px]">Thông tin về trang web chúng tôi</h2>
                 <p className="text-black text-body-color">
-                  Ở đây chúng tôi đã và đang có gắng đem đến cho mọi người có
-                  một trải nghiệm tốt nhất
+                  Ở đây chúng tôi đã và đang có gắng đem đến cho mọi người có một trải nghiệm tốt nhất
                 </p>
               </div>
             </div>
@@ -176,10 +154,7 @@ const Home = () => {
                   </svg>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Tùy Chỉnh</h3>
-                    <p className="text-gray-500 text-sm">
-                      Điều chỉnh sản phẩm của chúng tôi để phù hợp với nhu cầu
-                      của bạn.
-                    </p>
+                    <p className="text-gray-500 text-sm">Điều chỉnh sản phẩm của chúng tôi để phù hợp với nhu cầu của bạn.</p>
                   </div>
                 </div>
                 <div className="p-4 flex bg-white rounded-md shadow-md">
@@ -197,29 +172,23 @@ const Home = () => {
                     <g
                       fill="none"
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-miterlimit="10"
-                      stroke-width="40"
-                      clip-path="url(#a)"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeMiterlimit="10"
+                      strokeWidth="40"
+                      clipPath="url(#a)"
                       transform="matrix(1.33 0 0 -1.33 0 682.667)"
                     >
                       <path
                         d="M256 492 60 410.623v-98.925C60 183.674 137.469 68.38 256 20c118.53 48.38 196 163.674 196 291.698v98.925z"
                         data-original="#000000"
                       />
-                      <path
-                        d="M178 271.894 233.894 216 334 316.105"
-                        data-original="#000000"
-                      />
+                      <path d="M178 271.894 233.894 216 334 316.105" data-original="#000000" />
                     </g>
                   </svg>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Bảo mật</h3>
-                    <p className="text-gray-500 text-sm">
-                      Dữ liệu của bạn được bảo vệ bằng các biện pháp bảo mật mới
-                      nhất.
-                    </p>
+                    <p className="text-gray-500 text-sm">Dữ liệu của bạn được bảo vệ bằng các biện pháp bảo mật mới nhất.</p>
                   </div>
                 </div>
                 <div className="p-4 flex bg-white rounded-md shadow-md">
@@ -237,8 +206,7 @@ const Home = () => {
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Hỗ trợ</h3>
                     <p className="text-gray-500 text-sm">
-                      Điều chỉnh sản phẩm của chúng tôi để phù hợp với nhu cầu
-                      của bạn. Hỗ trợ khách hàng 24/7 cho mọi thắc mắc của bạn.
+                      Điều chỉnh sản phẩm của chúng tôi để phù hợp với nhu cầu của bạn. Hỗ trợ khách hàng 24/7 cho mọi thắc mắc của bạn.
                     </p>
                   </div>
                 </div>
@@ -249,7 +217,7 @@ const Home = () => {
                     className="w-12 h-12 mr-6 bg-gray-100 p-3 rounded-md shrink-0"
                     viewBox="0 0 24 24"
                   >
-                    <g fill-rule="evenodd" clip-rule="evenodd">
+                    <g fillRule="evenodd" clipRule="evenodd">
                       <path
                         d="M17.03 8.97a.75.75 0 0 1 0 1.06l-4.2 4.2a.75.75 0 0 1-1.154-.114l-1.093-1.639L8.03 15.03a.75.75 0 0 1-1.06-1.06l3.2-3.2a.75.75 0 0 1 1.154.114l1.093 1.639L15.97 8.97a.75.75 0 0 1 1.06 0z"
                         data-original="#000000"
@@ -266,10 +234,7 @@ const Home = () => {
                   </svg>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Hiệu suất</h3>
-                    <p className="text-gray-500 text-sm">
-                      Trải nghiệm hiệu suất nhanh chóng với sản phẩm của chúng
-                      tôi.
-                    </p>
+                    <p className="text-gray-500 text-sm">Trải nghiệm hiệu suất nhanh chóng với sản phẩm của chúng tôi.</p>
                   </div>
                 </div>
                 <div className="p-4 flex bg-white rounded-md shadow-md">
@@ -310,10 +275,7 @@ const Home = () => {
                   </svg>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Phạm vi</h3>
-                    <p className="text-gray-500 text-sm">
-                      Mở rộng phạm vi tiếp cận của bạn với mạng lưới toàn Việt
-                      Nam của chúng tôi.
-                    </p>
+                    <p className="text-gray-500 text-sm">Mở rộng phạm vi tiếp cận của bạn với mạng lưới toàn Việt Nam của chúng tôi.</p>
                   </div>
                 </div>
                 <div className="p-4 flex bg-white rounded-md shadow-md">
@@ -331,9 +293,9 @@ const Home = () => {
                     <g
                       fill="none"
                       stroke="currentColor"
-                      stroke-miterlimit="10"
-                      stroke-width="30"
-                      clip-path="url(#a)"
+                      strokeMiterlimit="10"
+                      strokeWidth="30"
+                      clipPath="url(#a)"
                       transform="matrix(1.33 0 0 -1.33 0 682.667)"
                     >
                       <path
@@ -344,9 +306,7 @@ const Home = () => {
                   </svg>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Kết Nối</h3>
-                    <p className="text-gray-500 text-sm">
-                      Bạn có thể tự do thoải mái kết nối với các đội bóng khác.
-                    </p>
+                    <p className="text-gray-500 text-sm">Bạn có thể tự do thoải mái kết nối với các đội bóng khác.</p>
                   </div>
                 </div>
               </div>
@@ -359,24 +319,17 @@ const Home = () => {
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
               <div className="flex items-center gap-12">
-                <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">
-                  Một số hoạt động
-                </h2>
+                <h2 className="text-2xl font-bold text-gray-800 lg:text-3xl">Một số hoạt động</h2>
 
                 <p className="hidden max-w-screen-sm text-gray-500 md:block">
-                  Dưới đây là một bộ sưu tập hình ảnh động, thể hiện đầy đủ sự
-                  năng động và sôi động của các hoạt động thể thao đa dạng mà
-                  chúng tôi thực hiện, từ những pha ghi bàn mãn nhãn trên sân
-                  bóng.
+                  Dưới đây là một bộ sưu tập hình ảnh động, thể hiện đầy đủ sự năng động và sôi động của các hoạt động thể thao đa dạng mà
+                  chúng tôi thực hiện, từ những pha ghi bàn mãn nhãn trên sân bóng.
                 </p>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-6 xl:gap-8">
-              <a
-                href="#"
-                className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80"
-              >
+              <a href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80">
                 <img
                   src="https://images2.thanhnien.vn/528068263637045248/2023/2/6/cau-thu-nguyen-van-thuan-phat-so-10--anh-nhat-thinh-16757183358981451072091.jpg"
                   loading="lazy"
@@ -414,10 +367,7 @@ const Home = () => {
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-800 via-transparent to-transparent opacity-50"></div>
               </a>
-              <a
-                href="#"
-                className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80"
-              >
+              <a href="#" className="group relative flex h-48 items-end overflow-hidden rounded-lg bg-gray-100 shadow-lg md:h-80">
                 <img
                   src="https://image.vtc.vn/resize/th/upload/2022/11/28/716914-638052413659776917-14092651.png"
                   loading="lazy"
@@ -433,9 +383,7 @@ const Home = () => {
       </section>
       <section className="bg-white py-8" id="dkdt">
         <div className="container mx-auto px-2 pt-4 pb-12 text-gray-800">
-          <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">
-            Đăng Kí Đối Tác
-          </h2>
+          <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">Đăng Kí Đối Tác</h2>
           <div className="w-full mb-4">
             <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
           </div>
@@ -458,12 +406,7 @@ const Home = () => {
                       className="w-[18px] h-[18px] absolute right-2"
                       viewBox="0 0 24 24"
                     >
-                      <circle
-                        cx="10"
-                        cy="7"
-                        r="6"
-                        data-original="#000000"
-                      ></circle>
+                      <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
                       <path
                         d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
                         data-original="#000000"
@@ -483,12 +426,7 @@ const Home = () => {
                       className="w-[18px] h-[18px] absolute right-2"
                       viewBox="0 0 24 24"
                     >
-                      <circle
-                        cx="10"
-                        cy="7"
-                        r="6"
-                        data-original="#000000"
-                      ></circle>
+                      <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
                       <path
                         d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z"
                         data-original="#000000"
@@ -501,11 +439,7 @@ const Home = () => {
                       placeholder="Phone No."
                       className="px-2 py-3 bg-white text-black w-full text-sm border-b-2 focus:border-[#011c2b] outline-none"
                     />
-                    <svg
-                      fill="#bbb"
-                      className="w-[18px] h-[18px] absolute right-2"
-                      viewBox="0 0 64 64"
-                    >
+                    <svg fill="#bbb" className="w-[18px] h-[18px] absolute right-2" viewBox="0 0 64 64">
                       <path
                         d="m52.148 42.678-6.479-4.527a5 5 0 0 0-6.963 1.238l-1.504 2.156c-2.52-1.69-5.333-4.05-8.014-6.732-2.68-2.68-5.04-5.493-6.73-8.013l2.154-1.504a4.96 4.96 0 0 0 2.064-3.225 4.98 4.98 0 0 0-.826-3.739l-4.525-6.478C20.378 10.5 18.85 9.69 17.24 9.69a4.69 4.69 0 0 0-1.628.291 8.97 8.97 0 0 0-1.685.828l-.895.63a6.782 6.782 0 0 0-.63.563c-1.092 1.09-1.866 2.472-2.303 4.104-1.865 6.99 2.754 17.561 11.495 26.301 7.34 7.34 16.157 11.9 23.011 11.9 1.175 0 2.281-.136 3.29-.406 1.633-.436 3.014-1.21 4.105-2.302.199-.199.388-.407.591-.67l.63-.899a9.007 9.007 0 0 0 .798-1.64c.763-2.06-.007-4.41-1.871-5.713z"
                         data-original="#000000"
@@ -527,20 +461,14 @@ const Home = () => {
                     >
                       <defs>
                         <clipPath id="a" clipPathUnits="userSpaceOnUse">
-                          <path
-                            d="M0 512h512V0H0Z"
-                            data-original="#000000"
-                          ></path>
+                          <path d="M0 512h512V0H0Z" data-original="#000000"></path>
                         </clipPath>
                       </defs>
-                      <g
-                        clip-path="url(#a)"
-                        transform="matrix(1.33 0 0 -1.33 0 682.667)"
-                      >
+                      <g clipPath="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
                         <path
                           fill="none"
-                          stroke-miterlimit="10"
-                          stroke-width="40"
+                          strokeMiterlimit="10"
+                          strokeWidth="40"
                           d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z"
                           data-original="#000000"
                         ></path>
@@ -565,20 +493,14 @@ const Home = () => {
                     >
                       <defs>
                         <clipPath id="a" clipPathUnits="userSpaceOnUse">
-                          <path
-                            d="M0 512h512V0H0Z"
-                            data-original="#000000"
-                          ></path>
+                          <path d="M0 512h512V0H0Z" data-original="#000000"></path>
                         </clipPath>
                       </defs>
-                      <g
-                        clip-path="url(#a)"
-                        transform="matrix(1.33 0 0 -1.33 0 682.667)"
-                      >
+                      <g clipPath="url(#a)" transform="matrix(1.33 0 0 -1.33 0 682.667)">
                         <path
                           fill="none"
-                          stroke-miterlimit="10"
-                          stroke-width="40"
+                          strokeMiterlimit="10"
+                          strokeWidth="40"
                           d="M452 444H60c-22.091 0-40-17.909-40-40v-39.446l212.127-157.782c14.17-10.54 33.576-10.54 47.746 0L492 364.554V404c0 22.091-17.909 40-40 40Z"
                           data-original="#000000"
                         ></path>
@@ -603,9 +525,9 @@ const Home = () => {
                     viewBox="0 0 548.244 548.244"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M392.19 156.054 211.268 281.667 22.032 218.58C8.823 214.168-.076 201.775 0 187.852c.077-13.923 9.078-26.24 22.338-30.498L506.15 1.549c11.5-3.697 24.123-.663 32.666 7.88 8.542 8.543 11.577 21.165 7.879 32.666L390.89 525.906c-4.258 13.26-16.575 22.261-30.498 22.338-13.923.076-26.316-8.823-30.728-22.032l-63.393-190.153z"
-                      clip-rule="evenodd"
+                      clipRule="evenodd"
                       data-original="#000000"
                     />
                   </svg>
@@ -617,12 +539,7 @@ const Home = () => {
         </div>
       </section>
 
-      <svg
-        className="wave-top"
-        viewBox="0 0 1439 147"
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="wave-top" viewBox="0 0 1439 147" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
           <g transform="translate(-1.000000, -14.000000)" fillRule="nonzero">
             <g className="wave" fill="#f8fafc">
@@ -648,15 +565,11 @@ const Home = () => {
         </g>
       </svg>
       <section className="container mx-auto text-center py-6 mb-12">
-        <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-white">
-          Đặt Sân Ngay
-        </h2>
+        <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-white">Đặt Sân Ngay</h2>
         <div className="w-full mb-4">
           <div className="h-1 mx-auto bg-white w-1/6 opacity-25 my-0 py-0 rounded-t"></div>
         </div>
-        <h3 className="my-4 text-3xl leading-tight text-white">
-          Đặt sân nay để nhận được những ưu đãi tốt nhất từ chúng tôi!
-        </h3>
+        <h3 className="my-4 text-3xl leading-tight text-white">Đặt sân nay để nhận được những ưu đãi tốt nhất từ chúng tôi!</h3>
         <button className="mx-auto border-none lg:mx-0 bg-white text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
           Đặt Sân Ngay
         </button>

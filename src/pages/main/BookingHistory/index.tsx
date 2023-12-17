@@ -8,7 +8,7 @@ const BookingHistoryPage = () => {
   const { data: bookingHistory } = useGetAllBookingByUserIdQuery({ user_id: user?.values?._id });
 
   // const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-  //     console.log(date, dateString);
+  //     //console.log(date, dateString);
   // };
   return (
     <div className="mt-24  max-w-6xl mx-auto">

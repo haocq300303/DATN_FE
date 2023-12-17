@@ -1,7 +1,11 @@
 import { Modal } from 'antd';
 import { Dispatch, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
+import { useGetAllBookingByUserIdQuery, useNewBookingAfterPayMutation } from '~/Redux/booking/bookingApi';
+import { useAppSelector } from '~/Redux/hook';
 import { useNewPaymentMutation } from '~/Redux/payment/paymentApi';
+import { getCreatShift } from '~/api/shift';
 import { hideLoader, showLoader } from '~/components/LoaderAllPage';
 import { Show } from '~/components/Show';
 import InfoBooking from './InfoBooking';
@@ -9,9 +13,6 @@ import InfoUser from './InfoUser';
 import SelectChildrenPitch from './SelectChildrenPitch';
 import SelectService from './SelectService';
 import SelectShift from './SelectShift';
-import { toast } from 'react-toastify';
-import { useGetAllBookingByUserIdQuery, useNewBookingAffterPayMutation } from '~/Redux/booking/bookingApi';
-import { getCreatShift } from '~/api/shift';
 
 type FormCreateBookingProps = {
   isOpen: boolean;
@@ -44,9 +45,10 @@ export type ServiceType = {
 };
 
 export type UserBookingType = {
+  index?: number;
   _id?: string;
-  fullName: string;
-  phone: string;
+  name: string;
+  phone_number: string;
   email: string;
 };
 
@@ -55,25 +57,12 @@ export type DataBookingType = [UserBookingType?, PitchChildrenInfoType?, ShiftIn
 const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
   const [dataBooking, setDataBooking] = useState<DataBookingType>([]);
   // Get redux store
-  const currentUser: any = {
-    _id: '655c53ed6c0689551d7528a3',
-    phone: '0788062634',
-    fullname: 'Trương Minh Hiếu',
-    email: 'hahuu02dev@gmail.com',
-  };
-
-  const currentPitch: any = {
-    _id: '653ca30f5d70cbab41a2e5d0',
-  };
-
-  const infoPitch = {
-    name: 'Sân Bóng Trần Hữu Dực',
-    address: 'Số 6, Trần Hữu Dực, Nam Từ Liêm, Hà Nội',
-  };
+  const currentUser: any = useAppSelector((state) => state.user.currentUser.values);
+  const currentPitch: any = JSON.parse(localStorage.getItem('pitch') || '') || {};
 
   const [newPayment, { isLoading: isLoadingPayment }] = useNewPaymentMutation();
-  const [newBooking, { isLoading: isLoadingBooking }] = useNewBookingAffterPayMutation();
-  const { refetch } = useGetAllBookingByUserIdQuery(null);
+  const [newBooking, { isLoading: isLoadingBooking }] = useNewBookingAfterPayMutation();
+  const { refetch } = useGetAllBookingByUserIdQuery({ pitch_id: currentPitch._id }, { skip: !currentPitch._id });
 
   const handleBackPick = () => {
     const _dataBooking = [...dataBooking];
@@ -109,7 +98,7 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
             price_received: totalPrice,
             total_received: totalPrice,
             status: 'success',
-            message: userBooking?.fullName + ' thanh toán đặt sân',
+            message: userBooking?.name + ' thanh toán đặt sân',
           };
 
           const resultPayment = await newPayment(_infoPayment as any).unwrap();
@@ -168,7 +157,7 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
               Thông tin đặt lịch
             </h3>
 
-            <InfoBooking dataBooking={dataBooking} infoPitch={infoPitch} />
+            <InfoBooking dataBooking={dataBooking} infoPitch={currentPitch} />
           </div>
 
           <div className="rounded-xl shadow-md bg-white overflow-hidden">

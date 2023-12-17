@@ -24,9 +24,15 @@ import { UserOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "~/Redux/store";
 import { routes } from "~/routes";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 
 const profileMenuItems = [
+  {
+    label: "Thông tin cá nhân",
+    icon: UserCircleIcon,
+    href: "/booking/history",
+  },
   {
     label: "Đăng Xuất",
     icon: PowerIcon,

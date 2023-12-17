@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 // import { Carousel } from 'antd';
-import "./Banner.css";
-import { useAppDispatch, useAppSelector } from "~/Redux/hook";
-import { getAllBannerMid } from "~/Redux/Slices/bannerSlice";
-import IBanner from "~/interfaces/Banner";
+import './Banner.css';
+import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import { getAllBannerMid } from '~/Redux/Slices/bannerSlice';
+import IBanner from '~/interfaces/Banner';
 
 // const contentStyle: React.CSSProperties = {
 //     overflow: 'hidden',

@@ -6,8 +6,8 @@ import {
   getCreatShift,
   getDeleteShift,
   getUpdateShift,
-} from "../../api/shift";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+} from '../../api/shift';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 interface initialState {
   shift: any;
@@ -19,71 +19,59 @@ const initialState: initialState = {
   isLoading: false,
 };
 
-export const fetchAllShift = createAsyncThunk(
-  "shift/fetchAllShift",
-  async (_, thunkAPI) => {
-    try {
-      const { data } = await getAllShift();
+export const fetchAllShift = createAsyncThunk('shift/fetchAllShift', async (_, thunkAPI) => {
+  try {
+    const { data } = await getAllShift();
 
-      console.log("ahaha", data);
+    //console.log("ahaha", data);
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const fetchAllShiftFindOpponent = createAsyncThunk(
-  "shift/fetchAllShiftFindOpponent",
-  async (_, thunkAPI) => {
-    try {
-      const { data } = await getAllShiftFindOpponent();
+export const fetchAllShiftFindOpponent = createAsyncThunk('shift/fetchAllShiftFindOpponent', async (_, thunkAPI) => {
+  try {
+    const { data } = await getAllShiftFindOpponent();
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const fetchFindOpponent = createAsyncThunk(
-  "shift/fetchFindOpponent",
-  async ({ idShift, value }: any, thunkAPI) => {
-    try {
-      const { data } = await findOpponent(idShift, value);
+export const fetchFindOpponent = createAsyncThunk('shift/fetchFindOpponent', async ({ idShift, value }: any, thunkAPI) => {
+  try {
+    const { data } = await findOpponent(idShift, value);
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const toggleFindOpponent = createAsyncThunk(
-  'shift/toggleFindOpponent',
-  async ({ id, currentStatus }: any, thunkAPI) => {
-    try {
-      const newStatus = currentStatus === 'Find' ? 'NotFind' : 'Find';
-      const response = await changeFindOpponent(id, { find_opponent: newStatus });
-      return response.data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const toggleFindOpponent = createAsyncThunk('shift/toggleFindOpponent', async ({ id, currentStatus }: any, thunkAPI) => {
+  try {
+    const newStatus = currentStatus === 'Find' ? 'NotFind' : 'Find';
+    const response = await changeFindOpponent(id, { find_opponent: newStatus });
+    return response.data;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
 // export const fetchFilterDate = createAsyncThunk(
 //     "shift/fetchAllShift",
 //     async (_, thunkAPI) => {
 //         try {
 //             const { data } = await getAllShift("");
-            
-//             console.log("ahaha",data);
-            
+
+//             //console.log("ahaha",data);
+
 //             return data.data;
 //             // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //         } catch (error: any) {
@@ -92,51 +80,42 @@ export const toggleFindOpponent = createAsyncThunk(
 //     }
 // );
 
-export const fetchCreatShift = createAsyncThunk(
-  "Shift/fetchCreatShift",
-  async (Shift: any, thunkAPI) => {
-    try {
-      const { data } = await getCreatShift(Shift);
+export const fetchCreatShift = createAsyncThunk('Shift/fetchCreatShift', async (Shift: any, thunkAPI) => {
+  try {
+    const { data } = await getCreatShift(Shift);
 
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const fetchUpdateShift = createAsyncThunk(
-  "shift/fetchUpdateShift",
-  async ({ _id, shift }: { _id: any; shift: any }, thunkAPI) => {
-    try {
-      console.log(_id);
+export const fetchUpdateShift = createAsyncThunk('shift/fetchUpdateShift', async ({ _id, shift }: { _id: any; shift: any }, thunkAPI) => {
+  try {
+    //console.log(_id);
 
-      const { data } = await getUpdateShift(_id, shift);
-      console.log("ahaha", data);
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+    const { data } = await getUpdateShift(_id, shift);
+    //console.log("ahaha", data);
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
-export const fetchDeleteShift = createAsyncThunk(
-  "shift/fetchDeleteShift",
-  async (idShift: string, thunkAPI) => {
-    try {
-      const { data } = await getDeleteShift(idShift);
-      return data.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue({ message: error.message });
-    }
+export const fetchDeleteShift = createAsyncThunk('shift/fetchDeleteShift', async (idShift: string, thunkAPI) => {
+  try {
+    const { data } = await getDeleteShift(idShift);
+    return data.data;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue({ message: error.message });
   }
-);
+});
 
 const ShiftPitchSlice = createSlice({
-  name: "Shift",
+  name: 'Shift',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -180,9 +159,7 @@ const ShiftPitchSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchUpdateShift.fulfilled, (state, action) => {
-        state.shift = state.shift?.map((Shift: any) =>
-          Shift._id === action?.payload?._id ? action.payload : Shift
-        );
+        state.shift = state.shift?.map((Shift: any) => (Shift._id === action?.payload?._id ? action.payload : Shift));
         state.isLoading = false;
       })
       .addCase(fetchUpdateShift.rejected, (state) => {
@@ -194,9 +171,7 @@ const ShiftPitchSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchDeleteShift.fulfilled, (state, action) => {
-        state.shift = state.shift?.filter(
-          (location: any) => location._id !== action.payload._id
-        );
+        state.shift = state.shift?.filter((location: any) => location._id !== action.payload._id);
         state.isLoading = false;
       })
       .addCase(fetchDeleteShift.rejected, (state) => {
@@ -208,24 +183,22 @@ const ShiftPitchSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(fetchFindOpponent.fulfilled, (state, action) => {
-        state.shift = state.shift?.filter(
-          (item: any) => item._id !== action.payload._id
-        );
+        state.shift = state.shift?.filter((item: any) => item._id !== action.payload._id);
         state.isLoading = false;
       })
       .addCase(fetchFindOpponent.rejected, (state) => {
         state.isLoading = false;
       });
-      // builder
-      // .addCase(toggleFindOpponent.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(toggleFindOpponent.fulfilled, (state, action) => {
-      //   // state.isLoading = true;
-      // })
-      // .addCase(toggleFindOpponent.rejected, (state) => {
-      //   state.isLoading = false;
-      // });
+    // builder
+    // .addCase(toggleFindOpponent.pending, (state) => {
+    //   state.isLoading = true;
+    // })
+    // .addCase(toggleFindOpponent.fulfilled, (state, action) => {
+    //   // state.isLoading = true;
+    // })
+    // .addCase(toggleFindOpponent.rejected, (state) => {
+    //   state.isLoading = false;
+    // });
   },
 });
 

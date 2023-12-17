@@ -24,7 +24,9 @@ import {
   Avatar,
 } from "@material-tailwind/react";
 import {
+  BookmarkIcon,
   PowerIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/solid";
 import { RootState } from '~/Redux/store';
 
@@ -41,6 +43,16 @@ const Header = () => {
     );
   }, []);
   const profileMenuItems = [
+    {
+      label: "Thông tin cá nhân",
+      icon: UserCircleIcon,
+      href: "/booking/history",
+    },
+    {
+      label: "Lịch Sử Đặt",
+      icon: BookmarkIcon,
+      href: "/booking/history",
+    },
     {
       label: "Đăng Xuất",
       icon: PowerIcon,

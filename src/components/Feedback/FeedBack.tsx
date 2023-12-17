@@ -17,10 +17,10 @@ const FeedBack = () => {
     (async () => {
       try {
         const { data } = await getOnePitchFeedback(String(id));
-        // console.log("dataFeedback", data);
+        // //console.log("dataFeedback", data);
         setIdFeedback(data.data.feedback_id);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     })();
   }, [id]);
@@ -33,7 +33,7 @@ const FeedBack = () => {
         const { data } = response.data;
         setTotalStar(data);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     };
 
@@ -41,13 +41,12 @@ const FeedBack = () => {
   }, [id]);
 
   const handleRateChange = async (value: number) => {
-    console.log('Giá trị đánh giá:', value);
+    //console.log('Giá trị đánh giá:', value);
   };
 
   const onFinish = async (values: any) => {
     try {
       const response = await dispatch(fetchCreatFeedback(values));
-      console.log('responseFB:', response);
 
       if (response?.meta?.requestStatus === 'fulfilled') {
         message.success('Đánh giá Thành Công !');
@@ -56,11 +55,10 @@ const FeedBack = () => {
 
       const totalStarResponse = await totalStarByPitch(String(id));
       const totalStarData = totalStarResponse?.data?.data;
-      console.log({ totalStarData });
 
       setTotalStar(totalStarData);
     } catch (error: any) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -94,7 +92,7 @@ const FeedBack = () => {
             <span className="pl-[5px] pb-[5px] font-[400]">{TotalStar?.averageRating?.toFixed(1)}</span>
           </div>
         </div>
-        <div className="border-b-[3px] mt-[20px] border-gray-700"></div>
+        <div className="border-b-[1px] mt-[20px] border-gray-700"></div>
         <div className=" overflow-y-scroll h-[450px]">
           {IdFeedback && IdFeedback.length > 0 ? (
             IdFeedback?.map((feed: any) => (

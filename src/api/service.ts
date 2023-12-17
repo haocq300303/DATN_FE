@@ -1,5 +1,5 @@
-import { IService } from "../interfaces/service";
-import instance from "./config";
+import { IService } from '../interfaces/service';
+import instance from './config';
 
 const getAllService = () => {
   return instance.get(`services`);
@@ -7,6 +7,10 @@ const getAllService = () => {
 
 const getServicePitch = (idService: string) => {
   return instance.get(`pitch/service/${idService}`);
+};
+
+const getServiceByUser = (idUser: string) => {
+  return instance.get(`services/${idUser}`);
 };
 
 const createService = (service: IService) => {
@@ -21,10 +25,4 @@ const deleteService = (idService: string) => {
   return instance.delete(`services/${idService}`);
 };
 
-export {
-  getAllService,
-  getServicePitch,
-  createService,
-  updateService,
-  deleteService,
-};
+export { getAllService, getServicePitch, createService, updateService, deleteService, getServiceByUser };

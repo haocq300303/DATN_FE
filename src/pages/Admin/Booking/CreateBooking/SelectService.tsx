@@ -1,9 +1,9 @@
-import { Dispatch, useState } from "react";
-import { DataBookingType, ServiceType } from ".";
-import { useGetServicesQuery } from "~/Redux/service/service.api";
-import { Show } from "~/components/Show";
-import { Checkbox } from "antd";
-import { IService } from "~/interfaces/service";
+import { Checkbox } from 'antd';
+import { Dispatch, useState } from 'react';
+import { useGetServicesQuery } from '~/Redux/service/service.api';
+import { Show } from '~/components/Show';
+import { IService } from '~/interfaces/service';
+import { DataBookingType, ServiceType } from '.';
 
 const ServiceItem = ({ name, image, price }: IService) => {
   const [checked, setChecked] = useState<boolean>(false);
@@ -18,9 +18,7 @@ const ServiceItem = ({ name, image, price }: IService) => {
 
       <div className="text-xl font-medium">{name}</div>
 
-      <div className="text-base text-red-600 flex items-center">
-        {price?.toLocaleString()} VNĐ
-      </div>
+      <div className="text-base text-red-600 flex items-center">{price?.toLocaleString()} VNĐ</div>
 
       <div className="flex justify-end items-center">
         <Checkbox value={1} checked={checked} />
@@ -29,27 +27,19 @@ const ServiceItem = ({ name, image, price }: IService) => {
   );
 };
 
-const SelectService = ({
-  setDataBooking,
-  dataBooking,
-}: {
-  setDataBooking: Dispatch<DataBookingType>;
-  dataBooking: DataBookingType;
-}) => {
-  const { data, isFetching } = useGetServicesByPitchIdQuery({ pitch_id: "" });
+const SelectService = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
+  const currentPitch = JSON.parse(localStorage.getItem('pitch') || '');
+
+  const { data, isFetching } = useGetServicesQuery({ pitch_id: currentPitch._id }, { skip: !currentPitch._id });
 
   const [selectedServices, setSelectedServices] = useState<IService[]>([]);
 
   const handleSelectService = (service: ServiceType) => {
-    const isMatch = [...selectedServices].some(
-      (item) => item._id === service._id
-    );
+    const isMatch = [...selectedServices].some((item) => item._id === service._id);
     const _dataBooking = [...dataBooking];
 
     if (isMatch) {
-      const _selectedServices = [...selectedServices].filter(
-        (item) => item._id !== service._id
-      );
+      const _selectedServices = [...selectedServices].filter((item) => item._id !== service._id);
       setSelectedServices(_selectedServices);
 
       _dataBooking[3] = _selectedServices;
@@ -78,12 +68,9 @@ const SelectService = ({
       </Show>
       <Show when={!isFetching}>
         <div className="space-y-2">
+          {(!data?.data || data?.data?.length === 0) && <p>Sân bạn chưa có dịch vụ nào!</p>}
           {data?.data.map((service: any) => (
-            <div
-              className=""
-              onClick={() => handleSelectService(service)}
-              key={service._id}
-            >
+            <div className="" onClick={() => handleSelectService(service)} key={service._id}>
               <ServiceItem {...service} />
             </div>
           ))}

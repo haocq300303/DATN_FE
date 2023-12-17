@@ -11,17 +11,13 @@ import Backgound from '../assets/img/Web/banner1.png';
 import { Tabs, message } from 'antd';
 import type { TabsProps } from 'antd';
 import MaskedInput from 'react-text-mask';
-import {
-  loginAsync,
-  loginWithGoogleAsync,
-  logout,
-} from '~/Redux/Slices/userSlice';
+import { loginAsync, loginWithGoogleAsync, logout } from '~/Redux/Slices/userSlice';
 import { SigninFormEmail, signinSchema } from '~/interfaces/auth';
 import { loginSMS } from '~/api/auth';
 
 const Login = () => {
   const user = useSelector((state: RootState) => state.user);
-  
+
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
   const role_name = useSelector((state: RootState) => state.user.role_name);
   const navigate = useNavigate();
@@ -29,7 +25,7 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errorPhonenumber, setErrorPhonenumber] = useState(false);
   const onChange = (key: string) => {
-    console.log(key);
+    //console.log(key);
   };
   const {
     register,
@@ -51,7 +47,7 @@ const Login = () => {
       const idToken = await res.user.getIdToken();
       dispatch(loginWithGoogleAsync(idToken));
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 
@@ -73,7 +69,7 @@ const Login = () => {
         localStorage.setItem('saff_phone_number', phoneNumber);
       }
     } catch (error: any) {
-      console.log(error);
+      //console.log(error);
       message.error(error?.response?.data?.message);
       setErrorPhonenumber(true);
     }
@@ -88,18 +84,7 @@ const Login = () => {
           <div className="mt-4">
             <label className="block text-gray-700">Phone number</label>
             <MaskedInput
-              mask={[
-                /[0]/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-              ]}
+              mask={[/[0]/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
               minLength={10}
               placeholder="Enter a phone number"
               guide={false}
@@ -112,11 +97,7 @@ const Login = () => {
                 errorPhonenumber && 'border-red-500'
               } focus:border-blue-500 focus:bg-white focus:outline-none`}
             />
-            {errorPhonenumber && (
-              <span className="block text-red-500 mt-2">
-                Số điện thoại không hợp lệ!!!
-              </span>
-            )}
+            {errorPhonenumber && <span className="block text-red-500 mt-2">Số điện thoại không hợp lệ!!!</span>}
           </div>
           <button
             type="submit"
@@ -145,11 +126,7 @@ const Login = () => {
                 } focus:border-blue-500 focus:bg-white focus:outline-none`}
                 {...register('email')}
               />
-              {errors.email && (
-                <span className="block text-red-500 mt-2">
-                  {errors?.email.message}
-                </span>
-              )}
+              {errors.email && <span className="block text-red-500 mt-2">{errors?.email.message}</span>}
             </div>
 
             <div className="mt-4">
@@ -162,18 +139,11 @@ const Login = () => {
                 } focus:border-blue-500 focus:bg-white focus:outline-none`}
                 {...register('password')}
               />
-              {errors.password && (
-                <span className="block text-red-500 mt-2">
-                  {errors?.password.message}
-                </span>
-              )}
+              {errors.password && <span className="block text-red-500 mt-2">{errors?.password.message}</span>}
             </div>
 
             <div className="text-right mt-2">
-              <a
-                href="#"
-                className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700"
-              >
+              <a href="#" className="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">
                 Forgot Password?
               </a>
             </div>
@@ -226,10 +196,7 @@ const Login = () => {
         flex items-center justify-center"
       >
         <div className="w-full h-100">
-          <h1
-            className="text-xl md:text-2xl font-bold leading-tight mt-12 "
-            style={{ fontFamily: 'sans-serif' }}
-          >
+          <h1 className="text-xl md:text-2xl font-bold leading-tight mt-12 " style={{ fontFamily: 'sans-serif' }}>
             Log in to your account
           </h1>
 
@@ -241,16 +208,8 @@ const Login = () => {
             type="button"
             className="w-full block bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-900 font-semibold rounded-lg px-4 py-3 border border-gray-300"
           >
-            <div
-              className="flex items-center justify-center"
-              onClick={handleLoginWithGoogle}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                className="w-6 h-6"
-                viewBox="0 0 48 48"
-              >
+            <div className="flex items-center justify-center" onClick={handleLoginWithGoogle}>
+              <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" className="w-6 h-6" viewBox="0 0 48 48">
                 <defs>
                   <path
                     id="a"
@@ -261,31 +220,16 @@ const Login = () => {
                   <use xlinkHref="#a" overflow="visible" />
                 </clipPath>
                 <path clipPath="url(#b)" fill="#FBBC05" d="M0 37V11l17 13z" />
-                <path
-                  clipPath="url(#b)"
-                  fill="#EA4335"
-                  d="M0 11l17 13 7-6.1L48 14V0H0z"
-                />
-                <path
-                  clipPath="url(#b)"
-                  fill="#34A853"
-                  d="M0 37l30-23 7.9 1L48 0v48H0z"
-                />
-                <path
-                  clipPath="url(#b)"
-                  fill="#4285F4"
-                  d="M48 48L17 24l-4-3 35-10z"
-                />
+                <path clipPath="url(#b)" fill="#EA4335" d="M0 11l17 13 7-6.1L48 14V0H0z" />
+                <path clipPath="url(#b)" fill="#34A853" d="M0 37l30-23 7.9 1L48 0v48H0z" />
+                <path clipPath="url(#b)" fill="#4285F4" d="M48 48L17 24l-4-3 35-10z" />
               </svg>
               <span className="ml-4">Log in with Google</span>
             </div>
           </button>
           <p className="mt-8">
             Need an account?{' '}
-            <Link
-              to={routes.register}
-              className="text-blue-500 hover:text-blue-700 font-semibold"
-            >
+            <Link to={routes.register} className="text-blue-500 hover:text-blue-700 font-semibold">
               Create an account
             </Link>
           </p>

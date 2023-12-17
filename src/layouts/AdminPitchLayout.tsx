@@ -16,7 +16,7 @@ const AdminPitchLayout = () => {
   };
   const fetchUserByPitch = async () => {
     const res = await getUserPitch();
-    if (res.status === 200) {
+    if (res.data.statusCode === 200) {
       localStorage.setItem('pitch', JSON.stringify(res.data.data));
       setIsModalOpen(false);
     } else {

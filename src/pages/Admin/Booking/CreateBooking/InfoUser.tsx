@@ -2,20 +2,31 @@ import { ArrowRightOutlined, CloseOutlined, PlusOutlined } from '@ant-design/ico
 import { Button, Col, Form, Input, Row } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import Search from 'antd/es/input/Search';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { signup } from '~/api/auth';
+import { getAllUser, signup } from '~/api/auth';
 import { Show } from '~/components/Show';
 import { DataBookingType, UserBookingType } from '.';
-
-const users = [
-  { _id: '6574ae1aa7c00a98ffebef54', fullName: 'Nguyễn Hà Hữu', emai: '1', phone: '113' },
-  { _id: '656f227d107a271bfb90063c', fullName: 'Trương Minh Hiếu', email: '1', phone: '114' },
-];
 
 const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
   const [form] = useForm();
   const [isCreateAccount, setIsCreateAccount] = useState<boolean>(false);
+  const [users, setUsers] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await getAllUser();
+      if (response.status === 200) {
+        setUsers(response.data.data);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleSubmitInfo = async (values: any) => {
     try {
@@ -38,7 +49,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
       _dataBooking[0] = { ...data.data, fullName: data.data.name } as any;
       setDataBooking(_dataBooking as DataBookingType);
     } catch (error: any) {
-      toast.error('Đăng ký thất bại', error.message);
+      toast.error('Đăng ký thất bại -' + ' ' + error?.response?.data?.message);
     }
   };
   const handlePickUser = (user: UserBookingType) => {
@@ -68,9 +79,9 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
 
       <Show when={!isCreateAccount}>
         <div className="space-y-2">
-          {users?.map((user: any) => (
+          {users?.map((user: any, index) => (
             <div key={user._id} onClick={() => handlePickUser(user)}>
-              <InfoUserItem {...user} />
+              <InfoUserItem {...user} index={index} />
             </div>
           ))}
         </div>
@@ -84,7 +95,7 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
               <Form.Item
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
-                name="phone"
+                name="phone_number"
                 label="Số điện thoại"
                 rules={[{ required: true }, { whitespace: true }]}
               >
@@ -146,16 +157,16 @@ const InfoUser = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<Da
 
 export default InfoUser;
 
-const InfoUserItem = ({ fullName, phone }: UserBookingType) => {
+const InfoUserItem = ({ name, phone_number, index }: UserBookingType) => {
   return (
     <div className="flex border border-gray-500  rounded-md cursor-pointer hover:bg-red-100 px-4 py-2">
       <div className="w-20">
-        <img src="https://picsum.photos/300/300" className="rounded-sm aspect-square" />
+        <img src={`https://picsum.photos/id/${index}/300/300`} className="rounded-sm aspect-square" />
       </div>
 
       <div className="flex-1 ml-4">
-        <h3 className="text-base">{fullName}</h3>
-        <p className="my-1 text-sm">{phone}</p>
+        <h3 className="text-base">{name}</h3>
+        <p className="my-1 text-sm">{phone_number}</p>
       </div>
     </div>
   );
