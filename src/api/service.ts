@@ -5,8 +5,8 @@ const getAllService = () => {
   return instance.get(`services`);
 };
 
-const getServicePitch = (idService: string) => {
-  return instance.get(`pitch/service/${idService}`);
+const getServicePitch = (pitchId: string) => {
+  return instance.get(`services?pitch_id=${pitchId}`);
 };
 
 const getServiceByUser = (idUser: string) => {
