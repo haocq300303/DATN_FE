@@ -44,11 +44,10 @@ const Contact = () => {
             <div className="w-full  lg:w-1/2 xl:w-6/12">
               <div className="mb-12 max-w-[570px] lg:mb-0">
                 <h2 className="mb-6 text-[32px] font-bold uppercase text-lime-600 sm:text-[40px] lg:text-[36px] xl:text-[40px]">
-                  GET IN TOUCH WITH US
+                  Kết nối với chúng tôi
                 </h2>
                 <p className="text-base leading-relaxed mb-9 text-body-color">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eius tempor incididunt ut labore e dolore magna aliqua. Ut
-                  enim adiqua minim veniam quis nostrud exercitation ullamco
+                  Với các chính sách ưu đãi mà hiện tại website đang có, chúng tôi cung cấp cho các chủ sân và người dùng những giá trị mà chúng tôi có. Còn chần chờ gì nữa, hãy liên hệ cho chúng tôi ngay nào !
                 </p>
                 <div className="mb-8 flex w-full max-w-[370px]">
                   <div className="mr-6 flex h-[60px] w-full max-w-[60px] items-center justify-center overflow-hidden rounded bg-primary bg-opacity-5 text-primary sm:h-[70px] sm:max-w-[70px]">
@@ -57,8 +56,8 @@ const Contact = () => {
                     </svg>
                   </div>
                   <div className="w-full">
-                    <h4 className="mb-1 text-xl font-bold text-dark">Our Location</h4>
-                    <p className="text-base text-body-color">Trinh Van Bo, Viet Nam</p>
+                    <h4 className="mb-1 text-xl font-bold text-dark">Địa chỉ công ty</h4>
+                    <p className="text-base text-body-color">Trịnh Văn Bô, Việt Nam</p>
                   </div>
                 </div>
                 <div className="mb-8 flex w-full max-w-[370px]">
@@ -70,7 +69,7 @@ const Contact = () => {
                     </svg>
                   </div>
                   <div className="w-full">
-                    <h4 className="mb-1 text-xl font-bold text-dark">Phone Number</h4>
+                    <h4 className="mb-1 text-xl font-bold text-dark">Số điện thoại</h4>
                     <p className="text-base text-body-color">(+84)339580923</p>
                   </div>
                 </div>
@@ -81,8 +80,8 @@ const Contact = () => {
                     </svg>
                   </div>
                   <div className="w-full">
-                    <h4 className="mb-1 text-xl font-bold text-dark">Email Address</h4>
-                    <p className="text-base text-body-color">datlichdabongsieutoc@gmail.com</p>
+                    <h4 className="mb-1 text-xl font-bold text-dark">Địa chỉ email</h4>
+                    <p className="text-base text-body-color">footiematchfinder1006@gmail.com</p>
                   </div>
                 </div>
               </div>
@@ -93,7 +92,7 @@ const Contact = () => {
                   <div className="mb-6">
                     <input
                       type="text"
-                      placeholder="Your name"
+                      placeholder="Họ tên của bạn"
                       name="from_name"
                       className="border-[f0f0f0] w-full rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                     />
@@ -101,7 +100,7 @@ const Contact = () => {
                   <div className="mb-6">
                     <input
                       type="text"
-                      placeholder="Your email"
+                      placeholder="Email của bạn"
                       name="email_id"
                       className="border-[f0f0f0] w-full rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                     />
@@ -109,7 +108,7 @@ const Contact = () => {
                   <div className="mb-6">
                     <input
                       type="text"
-                      placeholder="Your adress"
+                      placeholder="Địa chỉ của bạn"
                       name="adress"
                       className="border-[f0f0f0] w-full rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                     />
@@ -117,7 +116,7 @@ const Contact = () => {
                   <div className="mb-6">
                     <textarea
                       rows={6}
-                      placeholder="Message"
+                      placeholder="Lời nhắn"
                       name="messages"
                       className="border-[#f0f0f0] w-full resize-none rounded border py-3 px-[14px] text-base text-body-color outline-none focus:border-primary focus-visible:shadow-none"
                     />
@@ -127,7 +126,7 @@ const Contact = () => {
                       type="submit"
                       className="w-full p-3 text-white border-black rounded bg-black transition duration-200 ease-in-out hover:bg-lime-700 hover:text-white"
                     >
-                      Send Message
+                      GỬI NGAY !!!
                     </button>
                   </div>
                 </form>
