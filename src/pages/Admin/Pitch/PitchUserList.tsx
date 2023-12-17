@@ -196,7 +196,7 @@ const PitchUserList = () => {
               <p className="py-[5px]">
                 Giá tiền giao động :{' '}
                 <span className="text-red-400">
-                  {pitchs?.average_price?.toLocaleString('vi-VN') || pitchs?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫
+                  {pitchs?.average_price?.toLocaleString('vi-VN') || pitchs?.average_price?.toLocaleString('vi-VN')}₫ - 850.000₫
                 </span>
               </p>
               <p className="py-[5px]">

@@ -62,7 +62,7 @@ const PitchStar = () => {
                                                     </del>
                                                 </span>
                                                 <span className="text-[23px] text-[#ffb932] text-bold">
-                                                    {item?.deposit_price?.toLocaleString('vi-VN')} - 850.000
+                                                    {item?.average_price?.toLocaleString('vi-VN')} - 850.000
                                                 </span>
                                             </p>
                                         </div>

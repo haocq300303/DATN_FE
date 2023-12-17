@@ -91,7 +91,7 @@ const pitchSlice = createSlice({
     filterPrice(state, action) {
       const { minPrice, maxPrice } = action.payload;
 
-      const filteredByPrice = state.listData.filter((pitch) => pitch.deposit_price >= minPrice && pitch.deposit_price <= maxPrice);
+      const filteredByPrice = state.listData.filter((pitch) => pitch.average_price >= minPrice && pitch.average_price <= maxPrice);
 
       return {
         ...state,

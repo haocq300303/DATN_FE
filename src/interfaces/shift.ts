@@ -10,8 +10,9 @@ interface IShift {
   find_opponent?: string;
   date?: any;
   is_booking_month?: boolean;
+  isCancelBooking?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  user?: any
+  user?: any;
 }
 export default IShift;
