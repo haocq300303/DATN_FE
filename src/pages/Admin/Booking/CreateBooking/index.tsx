@@ -13,6 +13,7 @@ import InfoUser from './InfoUser';
 import SelectChildrenPitch from './SelectChildrenPitch';
 import SelectService from './SelectService';
 import SelectShift from './SelectShift';
+import { socket } from '~/config/socket';
 
 type FormCreateBookingProps = {
   isOpen: boolean;
@@ -82,7 +83,7 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
       denyButtonText: 'Cancel',
     }).then(async (result) => {
       try {
-        if (result) {
+        if (result.isConfirmed) {
           const userBooking = dataBooking[0];
           const childrenPitchBooking = dataBooking[1];
           const shiftBooking: any = dataBooking[2];
@@ -117,6 +118,8 @@ const FormCreateBooking = ({ isOpen, setOpen }: FormCreateBookingProps) => {
           if (!resultPayment) return;
 
           const { data } = await getCreatShift(newShiftBooking);
+          // relatime
+          socket.emit('booking-success', data?.data?._id);
           const _dataBooking: any = {
             pitch_id: currentPitch._id,
             user_id: userBooking?._id,

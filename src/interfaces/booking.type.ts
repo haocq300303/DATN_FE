@@ -16,6 +16,7 @@ export interface IBooking {
   shift?: IShift;
   services?: IService[];
   status: 'success' | 'cancel';
+  createdAt: any;
   updatedAt: string;
   //user đặt lịch thành công và user hủy bỏ lịch
 }

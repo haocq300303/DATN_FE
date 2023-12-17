@@ -21,7 +21,8 @@ import ModalBookMultipleDay from './ModalBookMultipleDay';
 import ModalBookOneShiftFullMonth from './ModalBookOneShiftFullMonth';
 import ModalBookPitchFullMonth from './ModalBookPitchFullMonth';
 import { updateUser } from '~/api/user';
-import useBookingSocket from '~/hooks/useBookingSocket';
+import Swal from 'sweetalert2';
+import { socket } from '~/config/socket';
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -91,43 +92,61 @@ const PitchDetailPage = () => {
       }
 
       setError('');
-      await updateUser(user.values._id, { phone_number: phoneNumber });
+      await updateUser(user?.values?._id, { phone_number: phoneNumber });
     }
 
-    sessionStorage.setItem(
-      'infoBooking',
-      JSON.stringify({
-        pitch: {
-          _id: dataBookShift.id_pitch,
-          name: Pitch.name,
-          image: Pitch.avatar,
-          address: Pitch.address,
-        },
-        admin_pitch: {
-          _id: Pitch?.admin_pitch_id?._id,
-          name: Pitch?.admin_pitch_id?.name,
-          phone: Pitch?.admin_pitch_id?.phone_number,
-        },
-        children_pitch: {
-          _id: dataBookShift?.id_chirlden_pitch,
-          children_pitch_code: dataBookShift?.code_chirldren_pitch,
-        },
-        shift: {
-          price: dataBookShift?.price,
-          totalPrice,
-          shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
-          date: [selectedDate],
-          numberDate: 1,
-          start_time: dataBookShift?.start_time,
-          end_time: dataBookShift?.end_time,
-          number_shift: dataBookShift?.number_shift,
-          find_opponent: findOpponent ? 'Find' : 'NotFind',
-        },
-        services: selectedServices,
-        type: 'singleDay',
-      })
-    );
-    navigate('/checkout');
+    const { value: accept } = await Swal.fire({
+      title: 'Xác nhận đặt lịch',
+      icon: 'info',
+      text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
+      input: 'checkbox',
+      inputValue: 0,
+      inputPlaceholder: `
+       Tôi đồng ý với chính sách
+      `,
+      confirmButtonText: `
+        Tiếp tục &nbsp;<i class="fa fa-arrow-right"></i>
+      `,
+      inputValidator: (result) => {
+        return !result && 'Bạn cần phải đồng ý với chính sách trên!';
+      },
+    });
+    if (accept) {
+      sessionStorage.setItem(
+        'infoBooking',
+        JSON.stringify({
+          pitch: {
+            _id: dataBookShift.id_pitch,
+            name: Pitch.name,
+            image: Pitch.avatar,
+            address: Pitch.address,
+          },
+          admin_pitch: {
+            _id: Pitch?.admin_pitch_id?._id,
+            name: Pitch?.admin_pitch_id?.name,
+            phone: Pitch?.admin_pitch_id?.phone_number,
+          },
+          children_pitch: {
+            _id: dataBookShift?.id_chirlden_pitch,
+            children_pitch_code: dataBookShift?.code_chirldren_pitch,
+          },
+          shift: {
+            price: dataBookShift?.price,
+            totalPrice,
+            shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
+            date: [selectedDate],
+            numberDate: 1,
+            start_time: dataBookShift?.start_time,
+            end_time: dataBookShift?.end_time,
+            number_shift: dataBookShift?.number_shift,
+            find_opponent: findOpponent ? 'Find' : 'NotFind',
+          },
+          services: selectedServices,
+          type: 'singleDay',
+        })
+      );
+      navigate('/checkout');
+    }
   };
 
   const handleServiceSelection = (service: any) => {
@@ -153,8 +172,6 @@ const PitchDetailPage = () => {
 
   // end xử lí đội bóng liên quan
 
-  // Websocket relatime
-  useBookingSocket();
   // Xử lý totalStar
   useEffect(() => {
     const fetchData = async () => {
@@ -169,6 +186,22 @@ const PitchDetailPage = () => {
 
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    socket.on('booking-success', (data) => {
+      if (!data) return;
+      const newData: any = childrenPitchs?.map((item: any) => {
+        if (item._id === data.id_chirlden_pitch) {
+          const newShifts = item.shifts?.map((shift: any) => (shift.number_shift === data.number_shift ? data : shift));
+          return { ...item, shifts: newShifts };
+        } else {
+          return item;
+        }
+      });
+
+      setShildrenPitchs(newData);
+    });
+  }, [childrenPitchs]);
 
   const data = [
     {
@@ -189,9 +222,9 @@ const PitchDetailPage = () => {
               </Image.PreviewGroup>
             </div>
             {Pitch?.images && Pitch.images.length > 0 && (
-              <div className="right-img w-[30%] xl:grid md:hidden">
-                <img src={Pitch?.images[1]} alt="No Image 1" className="w-[100%] h-[100%]" />
-                <img src={Pitch?.images[2]} alt="No Image 2" className="w-[100%] h-[100%]" />
+              <div className="right-img w-[30%] xl:grid md:hidden pt-[20px]">
+                <Image width={200} height={160} src={Pitch?.images[1]} />
+                <Image width={200} height={160} src={Pitch?.images[2]} />
               </div>
             )}
           </div>
@@ -267,13 +300,20 @@ const PitchDetailPage = () => {
             {Pitch?.services && Pitch?.services.length > 0
               ? Pitch?.services?.map((service: any) => (
                   <Card className="mt-6 pt-4 w-[250px] mr-2 h-[200px]" key={service?._id}>
-                    <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 mt-">
-                      <img className="w-full" src={service?.image} alt="card-image" />
+                    <CardHeader color="blue-gray" className="w-[200px] h-28 pl-0 my-0 mx-auto">
+                      <img className="w-full object-contain h-full" src={service?.image} alt="card-image" />
                     </CardHeader>
-                    <CardBody>
-                      <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                    <CardBody className="px-6 pt-2 pb-0">
+                      <Typography color="blue-gray" className="text-base font-bold w-max">
                         {service?.name}
                       </Typography>
+                      <p>
+                        Giá:{' '}
+                        {service.price?.toLocaleString('it-IT', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}
+                      </p>
                     </CardBody>
                   </Card>
                 ))
@@ -669,10 +709,10 @@ const PitchDetailPage = () => {
                       <Card className="mt-4 w-[45%]" key={service?._id}>
                         <Checkbox crossOrigin={undefined} onChange={() => handleServiceSelection(service)} />
                         <CardHeader color="blue-gray" className="w-[148px] h-28 pl-0 mt-0">
-                          <img className="w-full h-full object-cover" src={service?.image} alt="card-image" />
+                          <img className="w-full h-full object-contain" src={service?.image} alt="card-image" />
                         </CardHeader>
                         <CardBody className="px-[16px] py-[8px]">
-                          <Typography color="blue-gray" className="mb-2 text-base font-bold w-max">
+                          <Typography color="blue-gray" className="text-base font-bold w-max">
                             {service?.name}
                           </Typography>
                           <Typography>
