@@ -22,10 +22,22 @@ const fixedOptions = [
   { value: 'yoga', label: 'Yoga' },
   { value: 'tennis', label: 'Tennis' },
 ];
+const filterServiceOptions = [
+  { value: 'trong-tai', label: 'Trọng Tài' },
+  { value: 'binh-luan-vien', label: 'Bình Luận Viên' },
+  { value: 'ao', label: 'Áo đấu' },
+  { value: 'bac-si', label: 'Bác sĩ' },
+];
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
 };
-
+const convertToFilterFormat = (serviceName: any) => {
+  return  serviceName
+  .toLowerCase()
+  .replace(/\s/g, '-')
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "");
+};
 const PitchPage = () => {
   const [form] = Form.useForm();
   const host = 'http://localhost:8080/api/location/';
@@ -45,6 +57,7 @@ const PitchPage = () => {
   const { pitchs, isLoading } = useAppSelector((state) => state.pitch);
   const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +67,15 @@ const PitchPage = () => {
     fetchData();
   }, []);
 
+  const handleServiceChange = (serviceValue: string) => {
+    // Convert the selected service value to the desired format
+    const formattedServiceValue = convertToFilterFormat(serviceValue);
+
+    const updatedServices = selectedServices.includes(formattedServiceValue)
+      ? selectedServices.filter((service) => service !== formattedServiceValue)
+      : [...selectedServices, formattedServiceValue];
+    setSelectedServices(updatedServices); 
+  };
   useEffect(() => {
     dispatch(fetchAllPitch(''));
   }, [dispatch]);
@@ -96,22 +118,21 @@ const PitchPage = () => {
 
     fetchTotalStars();
   }, [pitchs]);
-  // //console.log({ totalStar });
-
   // pitchs.forEach((item: any, index: any) => {
   //   //console.log(`TotalStar${item.name}`, totalStar[index]);
   // });
-  const handleServiceChange = (serviceValue: string) => {
-    const updatedServices = selectedServices.includes(serviceValue)
-      ? selectedServices.filter((service) => service !== serviceValue)
-      : [...selectedServices, serviceValue];
-    setSelectedServices(updatedServices);
-  };
 
   const filteredPitchs = pitchs.filter((pitch: any) => {
-    // //console.log("Pitch Services:", pitch.services);
-    return selectedServices.every((service) => pitch.services.some((item: any) => item._id === service));
+    return selectedServices.every((service) => 
+      pitch.services.some((item: any) => {
+        const formattedServiceValue = convertToFilterFormat(item.name);
+        console.log(formattedServiceValue.startsWith(service));
+        return formattedServiceValue.startsWith(service);
+      })
+    );
   });
+  
+  
 
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
@@ -327,9 +348,9 @@ const PitchPage = () => {
                 <p className="mb-[10px] text-[23px] font-[600]">Lọc theo dịch vụ</p>
                 <span className="font-[600]">Bộ lọc phổ biến nhất</span>
                 <div className="grid mt-4 gap-[10px]">
-                  {services.map((service: any) => (
-                    <div key={service._id}>
-                      <Checkbox onChange={() => handleServiceChange(service._id)}>{service.name}</Checkbox>
+                  {filterServiceOptions.map((service: any) => (
+                    <div key={service.value}>
+                      <Checkbox onChange={() => handleServiceChange(service.value)}>{service.label}</Checkbox>
                     </div>
                   ))}
                 </div>

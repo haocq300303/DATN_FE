@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { Carousel, Col, Row } from 'antd';
 import './About.css';
-
+import banner from '../../assets/img/Web/banner1.png';
 const contentStyle = {
   height: '240px',
   width: '100%',
@@ -19,6 +19,14 @@ const About = () => {
 
   return (
     <div className="">
+      <div className="bannerPpitchPage relative ">
+        {/* banner cấc thứ */}
+        <div className="video relative">
+          <img src={banner} style={{ height: 400, width: '100%' }} />
+          <div className="absolute book-banner w-[70%] right-0 top-[50%] left-0 mx-auto"></div>
+        </div>
+        {/* chọn địa điêrm ở đây */}
+      </div>
       {/* <div className="banner-about relative flex flex-col justify-center items-center">
         <span className="block text-2xl font-semibold text-primary text-center text-white absolute z-10">
           ABOUT US

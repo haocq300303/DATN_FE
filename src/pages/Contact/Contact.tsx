@@ -1,5 +1,7 @@
 import { message } from 'antd';
+import banner from "../../assets/img/Web/banner1.png";
 import emailjs from 'emailjs-com';
+
 
 const Contact = () => {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -18,6 +20,18 @@ const Contact = () => {
       message.warning('Please fill in all fields.');
       return;
     }
+    return (
+        <>
+            <section className="">
+    <div className="bannerPpitchPage relative ">
+        {/* banner cấc thứ */}
+        <div className="video relative">
+          <img src={banner} style={{ height: 400, width: "100%" }} />
+        </div>
+        {/* chọn địa điêrm ở đây */}
+      </div>
+                {/* <div className="banner-about relative flex flex-col justify-center items-center">
+
     emailjs
       .sendForm(serviceID, templateID, e.currentTarget, userID)
       .then((response) => {
@@ -34,6 +48,7 @@ const Contact = () => {
     <>
       <section className="">
         {/* <div className="banner-about relative flex flex-col justify-center items-center">
+
                     <span className="block text-2xl font-semibold text-primary text-center text-white absolute z-10">
                         CONTACT
                     </span>
@@ -183,6 +198,8 @@ const Contact = () => {
       </section>
     </>
   );
+}
 };
+
 
 export default Contact;
