@@ -18,7 +18,7 @@ const ServiceManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('');
 
-  const dispatch = useAppDispatch();
+  const dispatch: any = useAppDispatch();
 
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
@@ -169,8 +169,6 @@ const ServiceManagement = () => {
 
               form.setFieldsValue({
                 _id: service?._id,
-                admin_pitch_id: user?.values?._id,
-                pitch_id: pitchLocal._id,
                 name: service?.name,
                 price: service?.price,
                 image: service?.image,
@@ -298,12 +296,6 @@ const ServiceManagement = () => {
           {modalMode === 'edit' && (
             <>
               <Form.Item name="_id" style={{ display: 'none' }}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="admin_pitch_id" style={{ display: 'none' }}>
-                <Input />
-              </Form.Item>
-              <Form.Item name="pitch_id" style={{ display: 'none' }}>
                 <Input />
               </Form.Item>
             </>
