@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Tab, TabPanel, Tabs, TabsBody, TabsHeader, Typography, Checkbox } from '@material-tailwind/react';
-import { Button, Carousel, DatePicker, Empty, Form, Image, Input, Modal, Rate, Space, Switch } from 'antd';
+import { Button, Carousel, DatePicker, Empty, Form, Image, Modal, Rate, Space, Switch } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -20,7 +20,6 @@ import Loading from '~/components/Loading';
 import ModalBookMultipleDay from './ModalBookMultipleDay';
 import ModalBookOneShiftFullMonth from './ModalBookOneShiftFullMonth';
 import ModalBookPitchFullMonth from './ModalBookPitchFullMonth';
-import { updateUser } from '~/api/user';
 import Swal from 'sweetalert2';
 import { socket } from '~/config/socket';
 
@@ -45,11 +44,8 @@ const PitchDetailPage = () => {
   const [isModalBookMultipleDay, setIsModalBookMultipleDay] = useState<boolean>(false);
   const [isModalBookOneShiftMonth, setIsModalBookOneShiftMonth] = useState<boolean>(false);
   const [isModalBookPitchMonth, setIsModalBookPitchMonth] = useState<boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [error, setError] = useState('');
 
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
-  const user: any = useAppSelector((state) => state.user.currentUser);
 
   const totalPrice = dataBookShift?.price + (selectedServices?.reduce((total: any, service: any) => total + service.price, 0) || 0);
 
@@ -78,23 +74,6 @@ const PitchDetailPage = () => {
   };
 
   const onFinishModalBookShift = async () => {
-    if (!user?.values?.phone_number && findOpponent) {
-      const phoneRegex = /^[0-9]{10,}$/;
-
-      if (!phoneNumber) {
-        setError('Vui lòng nhập số điện thoại!');
-        return;
-      }
-
-      if (!phoneRegex.test(phoneNumber)) {
-        setError('Vui lòng nhập số điện thoại hợp lệ');
-        return;
-      }
-
-      setError('');
-      await updateUser(user?.values?._id, { phone_number: phoneNumber });
-    }
-
     const { value: accept } = await Swal.fire({
       title: 'Xác nhận đặt lịch',
       icon: 'info',
@@ -687,19 +666,6 @@ const PitchDetailPage = () => {
               <div className="flex align-center mb-[8px]">
                 <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">Bạn muốn tìm đối?</span>
                 <Switch className="bg-[#00000073]" checked={findOpponent} onChange={onChangeFindOpponent} />
-              </div>
-              <div className={`mb-[8px] ${!user?.values?.phone_number && findOpponent ? '' : 'hidden'}`}>
-                <span className="inline-block min-w-[100px] text-[16px] font-semibold mb-[8px]">Vui lòng nhập số điện thoại của bạn</span>
-                {!user?.values?.phone_number && findOpponent && (
-                  <Form.Item validateStatus={error ? 'error' : ''} help={error}>
-                    <Input
-                      className="w-[50%]"
-                      placeholder="Nhập số điện thoại"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                    />
-                  </Form.Item>
-                )}
               </div>
               <span className="inline-block min-w-[100px] text-[18px] mr-[10px] font-semibold">Dịch vụ:</span>
 

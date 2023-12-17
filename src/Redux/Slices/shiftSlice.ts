@@ -32,9 +32,9 @@ export const fetchAllShift = createAsyncThunk('shift/fetchAllShift', async (_, t
   }
 });
 
-export const fetchAllShiftFindOpponent = createAsyncThunk('shift/fetchAllShiftFindOpponent', async (_, thunkAPI) => {
+export const fetchAllShiftFindOpponent = createAsyncThunk('shift/fetchAllShiftFindOpponent', async (query: string, thunkAPI) => {
   try {
-    const { data } = await getAllShiftFindOpponent();
+    const { data } = await getAllShiftFindOpponent(query);
 
     return data.data;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

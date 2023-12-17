@@ -13,6 +13,7 @@ import { getAllServiceMid } from '~/Redux/Slices/serviceSlice';
 import { PitchPagination, filterFeedbackPitch, getAllPitch, searchPitch } from '~/api/pitch';
 import { totalStarByPitch } from '~/api/feedback';
 import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+import Loading from '~/components/Loading';
 
 const fixedOptions = [
   { value: 'bong-da', label: 'Bóng đá' },
@@ -22,7 +23,7 @@ const fixedOptions = [
   { value: 'tennis', label: 'Tennis' },
 ];
 const handleChange = (value: ChangeEventHandler) => {
-  //console.log(`selected ${value}`);
+  console.log(`selected ${value}`);
 };
 
 const PitchPage = () => {
@@ -41,7 +42,7 @@ const PitchPage = () => {
   const [totalStar, setTotalStar] = useState<any>(Number);
 
   const dispatch = useAppDispatch();
-  const pitchs = useAppSelector((state) => state.pitch.pitchs);
+  const { pitchs, isLoading } = useAppSelector((state) => state.pitch);
   const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
 
@@ -148,18 +149,20 @@ const PitchPage = () => {
   };
 
   const onHandleSubmitSearch = async () => {
-    if (selectedWard === '' || selectedWard === undefined) {
-      if (selectedDistrict === '' || selectedDistrict === undefined) {
-        await dispatch(fetchAllPitch(``));
+    if (selectedCity || selectedDistrict || selectedWard) {
+      if (selectedWard === '' || selectedWard === undefined) {
+        if (selectedDistrict === '' || selectedDistrict === undefined) {
+          await dispatch(fetchAllPitch(``));
+        } else {
+          const reponse = await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
+          const totalitem = reponse?.payload?.length;
+          setTotalItems(totalitem);
+        }
       } else {
-        const reponse = await dispatch(fetchAllPitch(`?districtId=${selectedDistrict}`));
+        const reponse = await dispatch(fetchAllPitch(`?wardId=${selectedWard}`));
         const totalitem = reponse?.payload?.length;
         setTotalItems(totalitem);
       }
-    } else {
-      const reponse = await dispatch(fetchAllPitch(`?wardId=${selectedWard}`));
-      const totalitem = reponse?.payload?.length;
-      setTotalItems(totalitem);
     }
   };
   //lọc theo giá
@@ -244,7 +247,6 @@ const PitchPage = () => {
                 className="w-[25%] h-[45px]"
                 placeholder="Thành Phố"
                 onChange={handleCityChange}
-                allowClear
                 showSearch
                 value={selectedCity ? selectedCity : undefined}
               >
@@ -259,6 +261,7 @@ const PitchPage = () => {
                 className="w-[25%] h-[45px]"
                 placeholder="Quận Huyện"
                 onChange={handleDistrictChange}
+                allowClear
                 value={selectedDistrict ? selectedDistrict : undefined}
               >
                 {districts?.map((district: { id: string; name: string }) => (
@@ -271,6 +274,7 @@ const PitchPage = () => {
                 className="w-[25%] h-[45px]"
                 placeholder="Phường Xã"
                 onChange={handleWardChange}
+                allowClear
                 value={selectedWard ? selectedWard : undefined}
               >
                 {wards?.map((ward: { id: string; name: string }) => (
@@ -405,9 +409,6 @@ const PitchPage = () => {
             <div className="header-pitch">
               <div className="container mx-auto flex justify-between">
                 <div>
-                  <p>
-                    <span>2368</span> Kết quả :
-                  </p>
                   <h1 className="text-[23px] font-sans text-[#343434] relative font-[600]">
                     Kết quả tìm kiếm : <span>{printResult()}</span>
                   </h1>
@@ -423,53 +424,62 @@ const PitchPage = () => {
               </div>
             </div>
             <div className="content-pitch container mx-auto max-w-screen-2xl">
-              {filteredPitchs && filteredPitchs.length > 0 ? (
-                filteredPitchs.map((pitch: IPitch, index: any) => (
-                  <div className="list-pitch mt-[40px]" key={index}>
-                    <Link to={`/pitch/detail/${pitch._id}`}>
-                      <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
-                        <div className="imgae-item-pitch col-span-5">
-                          <img src={pitch?.avatar} className="rounded-l-[20px] h-[250px] object-cover" width="100%" alt="" />
-                        </div>
+              {!isLoading ? (
+                filteredPitchs && filteredPitchs.length > 0 ? (
+                  filteredPitchs.map((pitch: IPitch, index: any) => (
+                    <div className="list-pitch mt-[40px]" key={index}>
+                      <Link to={`/pitch/detail/${pitch._id}`}>
+                        <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
+                          <div className="imgae-item-pitch col-span-5">
+                            <img src={pitch?.avatar} className="rounded-l-[20px] h-[250px] object-cover" width="100%" alt="" />
+                          </div>
 
-                        <div className="text-item-pitch col-span-7 ml-[20px]">
-                          <h3 className=" text-[23px] font-[600] font-sans">{pitch?.name}</h3>
-                          <Rate disabled allowHalf value={totalStar[index]?.averageRating?.toFixed(1) ?? ''} />
-                          <span>( {pitch?.feedback_id?.length} Review)</span>
-                          <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
-                          <p>Vị Trí Sân : {pitch?.address}</p>
-                          <p className="flex justify-between my-[10px]">
-                            Dịch Vụ :
-                            {pitch?.services?.map((data: any) => {
-                              // //console.log("data Sê vít", data);
-                              const service = services.find((item) => item._id == data._id);
-                              return (
-                                <span key={data._id!}>
-                                  <i className="fa-solid fa-check"></i> {service ? service.name : 'Chưa có dịch vụ'}
-                                </span>
-                              );
-                            })}
-                          </p>
-                          <p className="flex justify-between">
-                            Giá :
-                            <span>
-                              <del className="italic text-[13px]">300.000-1.200.000</del>
-                            </span>
-                            <span className="text-[23px] text-[#ffb932] text-bold">
-                              {pitch?.average_price?.toLocaleString('vi-VN')} - 850.000
-                            </span>
-                          </p>
+                          <div className="text-item-pitch col-span-7 ml-[20px]">
+                            <h3 className=" text-[23px] font-[600] font-sans">{pitch?.name}</h3>
+                            <Rate disabled allowHalf value={totalStar[index]?.averageRating?.toFixed(1) ?? ''} />
+                            <span>( {pitch?.feedback_id?.length} Review)</span>
+                            <p className="my-[5px]">Kiểu Sân : Sân 7 Người</p>
+                            <p>Vị Trí Sân : {pitch?.address}</p>
+                            <p className="flex justify-between my-[10px]">
+                              Dịch Vụ :
+                              {pitch?.services?.map((data: any) => {
+                                // //console.log("data Sê vít", data);
+                                const service = services.find((item) => item._id == data._id);
+                                return (
+                                  <span key={data._id!}>
+                                    <i className="fa-solid fa-check"></i> {service ? service.name : 'Chưa có dịch vụ'}
+                                  </span>
+                                );
+                              })}
+                            </p>
+                            <p className="flex justify-between">
+                              Giá :
+                              <span>
+                                <del className="italic text-[13px]">300.000-1.200.000</del>
+                              </span>
+                              <span className="text-[23px] text-[#ffb932] text-bold">
+                                {pitch?.average_price?.toLocaleString('vi-VN')} - 850.000
+                              </span>
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </Link>
+                      </Link>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex align-center mt-[80px] justify-center">
+                    <Empty />
                   </div>
-                ))
+                )
               ) : (
-                <div>
-                  <Empty />
+                <div className="flex align-center mt-[80px] justify-center">
+                  <Loading />
                 </div>
               )}
-              <Pagination current={currentPage} total={totalItems} pageSize={7} onChange={handlePageChange} />
+              {isLoading ||
+                (filteredPitchs && filteredPitchs.length > 0 && (
+                  <Pagination current={currentPage} total={totalItems} pageSize={7} onChange={handlePageChange} />
+                ))}
             </div>
           </div>
         </div>

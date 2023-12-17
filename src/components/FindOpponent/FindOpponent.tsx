@@ -15,6 +15,7 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
   const [errorPhone, setErrorPhone] = useState('');
   const [errorEmail, setErrorEmail] = useState('');
   const [errorName, setErrorName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const user: any = useAppSelector((state) => state.user.currentUser);
 
@@ -83,6 +84,8 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
         setErrorEmail('');
       }
 
+      setIsLoading(true);
+
       const data = {
         idUserFindOpponent: dataMatchOpponent?.user?._id,
         email: dataMatchOpponent?.user?.email,
@@ -95,7 +98,8 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
       };
 
       await matchOpponent(data);
-      toast('🦄 Ghép kèo thành công. Thông tin đối đã được gửi về email của bạn!', {
+      setIsLoading(false);
+      toast(`🦄 Ghép kèo thành công. Thông tin đối đã được gửi về ${user?.values?.email ? user?.values?.email : email}!`, {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -265,7 +269,7 @@ const FindOpponent = ({ idPitch }: { idPitch: string }) => {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={onHandleSubmit}>Xác nhận</Button>
+          <Button onClick={onHandleSubmit}>{isLoading ? 'Loading...' : 'Xác nhận'}</Button>
         </div>
       </Modal>
     </div>

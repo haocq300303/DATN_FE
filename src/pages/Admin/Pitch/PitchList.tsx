@@ -28,7 +28,7 @@ interface DataType {
   location_id?: string;
   feedback_id: IFeedback[];
   districts_id?: string;
-  deposit_price: number;
+  average_price: number;
   averageStars?: number;
   avatar: string;
   createdAt?: string;
@@ -347,7 +347,7 @@ const PitchList = () => {
                     <p className="py-[5px]">
                       Giá tiền giao động :{' '}
                       <span className="text-red-400">
-                        {Pitch?.average_price?.toLocaleString('vi-VN') || Pitch?.deposit_price?.toLocaleString('vi-VN')}₫ - 850.000₫
+                        {Pitch?.average_price?.toLocaleString('vi-VN') || Pitch?.average_price?.toLocaleString('vi-VN')}₫ - 850.000₫
                       </span>
                     </p>
                   </div>

@@ -5,8 +5,8 @@ import instance from './config';
 export const getAllShift = () => {
   return instance.get(`/shift`);
 };
-export const getAllShiftFindOpponent = () => {
-  return instance.get(`/shift/find-opponent/all`);
+export const getAllShiftFindOpponent = (query?: string) => {
+  return instance.get(`/shift/find-opponent/all${query ?? ''}`);
 };
 export const getAllShiftFindOpponentByPitch = (idPitch: any) => {
   return instance.get(`/shift/find-opponent/pitch/${idPitch}`);
