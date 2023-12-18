@@ -22,6 +22,8 @@ const ServiceManagement = () => {
 
   const [form] = Form.useForm();
   const user = useAppSelector((state) => state.user.currentUser);
+  console.log(user);
+  
   const { services, isLoading } = useAppSelector((state) => state.service);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   Collapse,
@@ -16,6 +16,8 @@ import {
   Bars3Icon,
   XMarkIcon,
   PowerIcon,
+  BookmarkIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 
 import { Link } from "react-router-dom";
@@ -24,21 +26,9 @@ import { UserOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "~/Redux/store";
 import { routes } from "~/routes";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
+import ModalEditUser from "../ModalEditUser/ModalEditUser";
 
 
-const profileMenuItems = [
-  {
-    label: "Thông tin cá nhân",
-    icon: UserCircleIcon,
-    href: "/booking/history",
-  },
-  {
-    label: "Đăng Xuất",
-    icon: PowerIcon,
-    href: "/login",
-  },
-];
 
 function NavList() {
   return (
@@ -128,6 +118,7 @@ function NavList() {
 export function Header() {
   const [openNav, setOpenNav] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const user = useSelector((state: RootState) => state.user.currentUser);
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
   const closeMenu = () => setIsMenuOpen(false);
@@ -137,7 +128,11 @@ export function Header() {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
+  const showModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
   return (
+    <>
     <Navbar className="mx-auto max-w-screen-2xl px-4 py-2 border-none">
       <div className="flex items-center justify-between text-blue-gray-900">
         <div className="flex items-center justify-between ">
@@ -171,37 +166,39 @@ export function Header() {
         </Button> 
       </MenuHandler>
       <MenuList className="p-1 mt-2">
-        {profileMenuItems.map(({ label, icon, href }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          return (
-            <MenuItem
-              key={label}
-              onClick={closeMenu}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
-              }`}
-            >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-             <Link to={href}>
-             <Typography
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
-                style={{  zIndex: 101 }}
-              >
-                {label}
-              </Typography>
-             </Link>
-            </MenuItem>
-          );
-        })}
-      </MenuList>
+
+<MenuItem
+  onClick={closeMenu}
+  className={`flex flex-col gap-2 rounded `}
+>
+ <Button
+    className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none hover:bg-gray-300 w-full rounded-sm"
+    style={{  zIndex: 101 }}
+    onClick={() => showModal()}
+  >
+ <UserCircleIcon className='h-4 w-5'/>
+    Thông Tin Cá Nhân
+  </Button>
+ <Link to={routes.bookingHistory} className='hover:bg-gray-300 w-full rounded-sm'>
+ <Button
+    className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"
+    style={{  zIndex: 101 }}
+  >
+    <BookmarkIcon className='h-4 w-4'/>
+    Lịch Sử Đặt
+  </Button>
+ </Link>
+ <Link to={routes.login} className='hover:bg-red-50 w-full rounded-sm'>
+ <Button
+    className="flex items-center gap-2 font-bold font-normal border-none bg-transparent text-red-700 shadow-none hover:shadow-none "
+    style={{  zIndex: 101 }}
+  >
+    <PowerIcon className='h-4 w-4'/>
+    Đăng Xuất
+  </Button>
+ </Link>
+</MenuItem>
+</MenuList>
    
    </div>
     </Menu> : <Link to={"/login"} className='flex items-center gap-2  border-2 border-gray-400 p-1 rounded-2xl ease-linear hover:shadow-lg hover:ease-linear'>
@@ -230,5 +227,8 @@ export function Header() {
         </div>
       </Collapse>
     </Navbar>
+    {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+    </>
+    
   );
 }

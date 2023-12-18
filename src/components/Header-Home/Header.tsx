@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Navbar,
   Typography,
@@ -23,15 +23,15 @@ import {
   MenuItem,
   Avatar,
 } from "@material-tailwind/react";
-import {
-  BookmarkIcon,
-  PowerIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/solid";
+
 import { RootState } from '~/Redux/store';
+import ModalEditUser from '../ModalEditUser/ModalEditUser';
+import { BookmarkIcon, PowerIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 const Header = () => {
   const [openNav, setOpenNav] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const user = useSelector((state: RootState) => state.user.currentUser);
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
@@ -42,23 +42,12 @@ const Header = () => {
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
   }, []);
-  const profileMenuItems = [
-    {
-      label: "Thông tin cá nhân",
-      icon: UserCircleIcon,
-      href: "/booking/history",
-    },
-    {
-      label: "Lịch Sử Đặt",
-      icon: BookmarkIcon,
-      href: "/booking/history",
-    },
-    {
-      label: "Đăng Xuất",
-      icon: PowerIcon,
-      href: "/login",
-    },
-  ];
+  const showModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  
+
   const navList = (
     <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
@@ -186,42 +175,44 @@ const Header = () => {
             variant="circular"
             size="sm"
             alt="tania andrew"
-            className="border border-gray-900 p-0.5"
+            className="border border-gray-900 w-6 h-6"
             src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
           />
         </Button> 
       </MenuHandler>
       <MenuList className="p-1 mt-2">
-        {profileMenuItems.map(({ label, icon, href }, key) => {
-          const isLastItem = key === profileMenuItems.length - 1;
-          return (
+
             <MenuItem
-              key={label}
               onClick={closeMenu}
-              className={`flex items-center gap-2 rounded ${
-                isLastItem
-                  ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
-                  : ""
-              }`}
+              className={`flex flex-col gap-2 rounded `}
             >
-              {React.createElement(icon, {
-                className: `h-4 w-4 ${isLastItem ? "text-red-500" : ""}`,
-                strokeWidth: 2,
-              })}
-             <Link to={href}>
-             <Typography
-                as="span"
-                variant="small"
-                className="font-normal"
-                color={isLastItem ? "red" : "inherit"}
+             <Button
+                className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none hover:bg-gray-300 w-full rounded-sm"
+                style={{  zIndex: 101 }}
+                onClick={() => showModal()}
+              >
+             <UserCircleIcon className='h-4 w-5'/>
+                Thông Tin Cá Nhân
+              </Button>
+             <Link to={routes.bookingHistory} className='hover:bg-gray-300 w-full rounded-sm'>
+             <Button
+                className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"
                 style={{  zIndex: 101 }}
               >
-                {label}
-              </Typography>
+                <BookmarkIcon className='h-4 w-4'/>
+                Lịch Sử Đặt
+              </Button>
+             </Link>
+             <Link to={routes.login} className='hover:bg-red-50 w-full rounded-sm'>
+             <Button
+                className="flex items-center gap-2 font-bold font-normal border-none bg-transparent text-red-700 shadow-none hover:shadow-none "
+                style={{  zIndex: 101 }}
+              >
+                <PowerIcon className='h-4 w-4'/>
+                Đăng Xuất
+              </Button>
              </Link>
             </MenuItem>
-          );
-        })}
       </MenuList>
    
    </div>
@@ -246,6 +237,8 @@ const Header = () => {
           </div>
         </div>
       </Navbar>
+      {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
+
     </div>
   );
 };
