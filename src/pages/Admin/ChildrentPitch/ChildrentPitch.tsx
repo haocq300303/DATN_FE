@@ -18,10 +18,13 @@ const ChildrentPitch = () => {
   const [modalMode, setModalMode] = useState('');
   const [childrenPitchs, setShildrenPitchs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const pitchLocal = JSON.parse(localStorage.getItem('pitch') || '');
+  const id = pitchLocal._id;
+
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const { data } = await getAllChildrentPicthByParent('653ca30f5d70cbab41a2e5d0', '');
+      const { data } = await getAllChildrentPicthByParent(id, '');      
       setShildrenPitchs(data.data);
       setIsLoading(false);
     })();
@@ -164,7 +167,7 @@ const ChildrentPitch = () => {
     if (modalMode === 'add') {
       const { data } = await getCreatChildrentPitch({
         ...values,
-        idParentPitch: '653ca30f5d70cbab41a2e5d0',
+        idParentPitch: id,
         image: values?.image?.file?.response?.data?.url,
       });
       const newData = [...childrenPitchs, data.data];
@@ -174,7 +177,7 @@ const ChildrentPitch = () => {
       const newImage = values?.image?.file ? values?.image?.file?.response?.data?.url : values?.image;
       const newValues = {
         ...values,
-        idParentPitch: '653ca30f5d70cbab41a2e5d0',
+        idParentPitch: id,
         image: newImage,
       };
       const { _id, ...childrentpitch } = newValues;
