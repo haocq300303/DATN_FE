@@ -145,7 +145,7 @@ const ShiftManagement = () => {
     if (modalMode === 'add') {
       const { data } = await createShiftDefault({
         ...values,
-        id_pitch: '653ca30f5d70cbab41a2e5d0',
+        id_pitch: pitchId,
         default: true,
       });
 
