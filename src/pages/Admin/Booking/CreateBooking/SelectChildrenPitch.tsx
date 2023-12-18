@@ -19,7 +19,8 @@ const SelectChildrenPitchItem = ({ code_chirldren_pitch }: IChildrentPitch) => {
 
 const SelectChildrenPitch = ({ setDataBooking, dataBooking }: { setDataBooking: Dispatch<DataBookingType>; dataBooking: DataBookingType }) => {
     // Get store
-    const pitchId = "653ca30f5d70cbab41a2e5d0";
+    const pitchLocal = JSON.parse(localStorage.getItem('pitch') || '');
+  const pitchId = pitchLocal._id;
 
     const { data, isFetching } = useGetAllChildrenPitchByPitchIdQuery(pitchId);
 
