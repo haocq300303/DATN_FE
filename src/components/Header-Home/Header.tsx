@@ -1,31 +1,16 @@
 import { useEffect, useState } from 'react';
-import {
-  Navbar,
-  Typography,
-  Button,
-  IconButton,
-} from '@material-tailwind/react';
+import { Navbar, Typography, Button, IconButton } from '@material-tailwind/react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectIsFixed,
-  setFixed,
-  setVisibleTitle,
-} from '~/Redux/Slices/navbarSlice';
+import { selectIsFixed, setFixed, setVisibleTitle } from '~/Redux/Slices/navbarSlice';
 import './Header.css';
-import { CloseOutlined, MenuOutlined, UserOutlined} from '@ant-design/icons';
+import { CloseOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { routes } from '~/routes';
-import React from "react";
-import {
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-} from "@material-tailwind/react";
+import React from 'react';
+import { Menu, MenuHandler, MenuList, MenuItem, Avatar } from '@material-tailwind/react';
 
 import { RootState } from '~/Redux/store';
-import ModalEditUser from '../ModalEditUser/ModalEditUser';
+// import ModalEditUser from '../ModalEditUser/ModalEditUser';
 import { BookmarkIcon, PowerIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 const Header = () => {
@@ -37,16 +22,11 @@ const Header = () => {
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
   const closeMenu = () => setIsMenuOpen(false);
   React.useEffect(() => {
-    window.addEventListener(
-      'resize',
-      () => window.innerWidth >= 960 && setOpenNav(false)
-    );
+    window.addEventListener('resize', () => window.innerWidth >= 960 && setOpenNav(false));
   }, []);
   const showModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-
-  
 
   const navList = (
     <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -162,65 +142,66 @@ const Header = () => {
           <div className="flex items-center gap-3">
             <div className="mr-4 hidden lg:block">{navList}</div>
             <div className="flex items-center gap-x-1 ">
-            { isLogged ?   <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end" >   
-   <div className='flex items-center gap-2 border-2 border-gray-300 p-1 px-2 rounded-full'>
-   {user.values?.name}
-   <MenuHandler>
-          <Button
-          variant="text"
-          color="blue-gray"
-          className="flex items-center gap-1 rounded-full py-0.5 pr-0 pl-0.5 lg:ml-auto"
-        >
-          <Avatar
-            variant="circular"
-            size="sm"
-            alt="tania andrew"
-            className="border border-gray-900 w-6 h-6"
-            src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
-          />
-        </Button> 
-      </MenuHandler>
-      <MenuList className="p-1 mt-2">
-
-            <MenuItem
-              onClick={closeMenu}
-              className={`flex flex-col gap-2 rounded `}
-            >
-             <Button
-                className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none hover:bg-gray-300 w-full rounded-sm"
-                style={{  zIndex: 101 }}
-                onClick={() => showModal()}
-              >
-             <UserCircleIcon className='h-4 w-5'/>
-                Thông Tin Cá Nhân
-              </Button>
-             <Link to={routes.bookingHistory} className='hover:bg-gray-300 w-full rounded-sm'>
-             <Button
-                className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"
-                style={{  zIndex: 101 }}
-              >
-                <BookmarkIcon className='h-4 w-4'/>
-                Lịch Sử Đặt
-              </Button>
-             </Link>
-             <Link to={routes.login} className='hover:bg-red-50 w-full rounded-sm'>
-             <Button
-                className="flex items-center gap-2 font-bold font-normal border-none bg-transparent text-red-700 shadow-none hover:shadow-none "
-                style={{  zIndex: 101 }}
-              >
-                <PowerIcon className='h-4 w-4'/>
-                Đăng Xuất
-              </Button>
-             </Link>
-            </MenuItem>
-      </MenuList>
-   
-   </div>
-    </Menu> : <Link to={"/login"} className='flex items-center gap-2  border-2 border-gray-400 p-1 rounded-2xl ease-linear hover:shadow-lg hover:ease-linear'>
-     <UserOutlined  className=' bg-gray-300 p-2 rounded-xl'/> 
-     Đăng Nhập
-    </Link> }
-    
+              {isLogged ? (
+                <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
+                  <div className="flex items-center gap-2 border-2 border-gray-300 p-1 px-2 rounded-full">
+                    {user.values?.name}
+                    <MenuHandler>
+                      <Button
+                        variant="text"
+                        color="blue-gray"
+                        className="flex items-center gap-1 rounded-full py-0.5 pr-0 pl-0.5 lg:ml-auto"
+                      >
+                        <Avatar
+                          variant="circular"
+                          size="sm"
+                          alt="tania andrew"
+                          className="border border-gray-900 w-6 h-6"
+                          src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
+                        />
+                      </Button>
+                    </MenuHandler>
+                    <MenuList className="p-1 mt-2">
+                      <MenuItem onClick={closeMenu} className={`flex flex-col gap-2 rounded `}>
+                        <Button
+                          className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none hover:bg-gray-300 w-full rounded-sm"
+                          style={{ zIndex: 101 }}
+                          onClick={() => showModal()}
+                        >
+                          <UserCircleIcon className="h-4 w-5" />
+                          Thông Tin Cá Nhân
+                        </Button>
+                        <Link to={routes.bookingHistory} className="hover:bg-gray-300 w-full rounded-sm">
+                          <Button
+                            className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"
+                            style={{ zIndex: 101 }}
+                          >
+                            <BookmarkIcon className="h-4 w-4" />
+                            Lịch Sử Đặt
+                          </Button>
+                        </Link>
+                        <Link to={routes.login} className="hover:bg-red-50 w-full rounded-sm">
+                          <Button
+                            className="flex items-center gap-2 font-bold font-normal border-none bg-transparent text-red-700 shadow-none hover:shadow-none "
+                            style={{ zIndex: 101 }}
+                          >
+                            <PowerIcon className="h-4 w-4" />
+                            Đăng Xuất
+                          </Button>
+                        </Link>
+                      </MenuItem>
+                    </MenuList>
+                  </div>
+                </Menu>
+              ) : (
+                <Link
+                  to={'/login'}
+                  className="flex items-center gap-2  border-2 border-gray-400 p-1 rounded-2xl ease-linear hover:shadow-lg hover:ease-linear"
+                >
+                  <UserOutlined className=" bg-gray-300 p-2 rounded-xl" />
+                  Đăng Nhập
+                </Link>
+              )}
             </div>
             <IconButton
               variant="text"
@@ -228,17 +209,12 @@ const Header = () => {
               ripple={false}
               onClick={() => setOpenNav(!openNav)}
             >
-              {openNav ? (
-                <CloseOutlined className="text-gray-500 text-2xl" />
-              ) : (
-                <MenuOutlined className="text-gray-500 text-2xl" />
-              )}
+              {openNav ? <CloseOutlined className="text-gray-500 text-2xl" /> : <MenuOutlined className="text-gray-500 text-2xl" />}
             </IconButton>
           </div>
         </div>
       </Navbar>
-      {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
-
+      {/* {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />} */}
     </div>
   );
 };
