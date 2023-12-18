@@ -22,6 +22,7 @@ import ModalBookOneShiftFullMonth from './ModalBookOneShiftFullMonth';
 import ModalBookPitchFullMonth from './ModalBookPitchFullMonth';
 import Swal from 'sweetalert2';
 import { socket } from '~/config/socket';
+import { checkBookingLimit } from '~/api/user';
 
 const PitchDetailPage = () => {
   const dispatch = useAppDispatch();
@@ -44,7 +45,9 @@ const PitchDetailPage = () => {
   const [isModalBookMultipleDay, setIsModalBookMultipleDay] = useState<boolean>(false);
   const [isModalBookOneShiftMonth, setIsModalBookOneShiftMonth] = useState<boolean>(false);
   const [isModalBookPitchMonth, setIsModalBookPitchMonth] = useState<boolean>(false);
+  const [isBookingLimit, setIsBookingLimit] = useState<boolean>(false);
 
+  const user: any = useAppSelector((state) => state.user.currentUser.values);
   const pitchAll = useAppSelector((state) => state.pitch.pitchs);
 
   const totalPrice = dataBookShift?.price + (selectedServices?.reduce((total: any, service: any) => total + service.price, 0) || 0);
@@ -67,64 +70,77 @@ const PitchDetailPage = () => {
     getOnePitch(String(id)).then(({ data: { data } }) => setPitch(data));
   }, [id]);
 
-  const handleComfirmBookShift = (data: any) => {
-    setDataBookShift(data);
+  const handleComfirmBookShift = async (value: any) => {
+    setDataBookShift(value);
 
     setModalBookShift(true);
+
+    const { data } = await checkBookingLimit(user?._id, id);
+
+    data.data && data.data.length >= 3 ? setIsBookingLimit(true) : setIsBookingLimit(false);
   };
 
   const onFinishModalBookShift = async () => {
-    const { value: accept } = await Swal.fire({
-      title: 'Xác nhận đặt lịch',
-      icon: 'info',
-      text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
-      input: 'checkbox',
-      inputValue: 0,
-      inputPlaceholder: `
+    if (isBookingLimit) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Đã Đặt Tối Đa Lượt Trong Ngày!',
+        text: 'Bạn đã đặt tối đa lượt trong ngày của sân là 3 lượt. Vui lòng chọn sân khác hoặc hẹn gặp bạn ngày hôm sau!',
+        confirmButtonText: 'Xác nhận',
+      });
+    } else {
+      const { value: accept } = await Swal.fire({
+        title: 'Xác nhận đặt lịch',
+        icon: 'info',
+        text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
+        input: 'checkbox',
+        inputValue: 0,
+        inputPlaceholder: `
        Tôi đồng ý với chính sách
       `,
-      confirmButtonText: `
+        confirmButtonText: `
         Tiếp tục &nbsp;<i class="fa fa-arrow-right"></i>
       `,
-      inputValidator: (result) => {
-        return !result && 'Bạn cần phải đồng ý với chính sách trên!';
-      },
-    });
-    if (accept) {
-      sessionStorage.setItem(
-        'infoBooking',
-        JSON.stringify({
-          pitch: {
-            _id: dataBookShift.id_pitch,
-            name: Pitch.name,
-            image: Pitch.avatar,
-            address: Pitch.address,
-          },
-          admin_pitch: {
-            _id: Pitch?.admin_pitch_id?._id,
-            name: Pitch?.admin_pitch_id?.name,
-            phone: Pitch?.admin_pitch_id?.phone_number,
-          },
-          children_pitch: {
-            _id: dataBookShift?.id_chirlden_pitch,
-            children_pitch_code: dataBookShift?.code_chirldren_pitch,
-          },
-          shift: {
-            price: dataBookShift?.price,
-            totalPrice,
-            shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
-            date: [selectedDate],
-            numberDate: 1,
-            start_time: dataBookShift?.start_time,
-            end_time: dataBookShift?.end_time,
-            number_shift: dataBookShift?.number_shift,
-            find_opponent: findOpponent ? 'Find' : 'NotFind',
-          },
-          services: selectedServices,
-          type: 'singleDay',
-        })
-      );
-      navigate('/checkout');
+        inputValidator: (result) => {
+          return !result && 'Bạn cần phải đồng ý với chính sách trên!';
+        },
+      });
+      if (accept) {
+        sessionStorage.setItem(
+          'infoBooking',
+          JSON.stringify({
+            pitch: {
+              _id: dataBookShift.id_pitch,
+              name: Pitch.name,
+              image: Pitch.avatar,
+              address: Pitch.address,
+            },
+            admin_pitch: {
+              _id: Pitch?.admin_pitch_id?._id,
+              name: Pitch?.admin_pitch_id?.name,
+              phone: Pitch?.admin_pitch_id?.phone_number,
+            },
+            children_pitch: {
+              _id: dataBookShift?.id_chirlden_pitch,
+              children_pitch_code: dataBookShift?.code_chirldren_pitch,
+            },
+            shift: {
+              price: dataBookShift?.price,
+              totalPrice,
+              shift_day: `${dataBookShift?.start_time} - ${dataBookShift?.end_time} | ${selectedDate}`,
+              date: [selectedDate],
+              numberDate: 1,
+              start_time: dataBookShift?.start_time,
+              end_time: dataBookShift?.end_time,
+              number_shift: dataBookShift?.number_shift,
+              find_opponent: findOpponent ? 'Find' : 'NotFind',
+            },
+            services: selectedServices,
+            type: 'singleDay',
+          })
+        );
+        navigate('/checkout');
+      }
     }
   };
 
