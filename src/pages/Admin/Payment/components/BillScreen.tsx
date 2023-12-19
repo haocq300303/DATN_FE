@@ -9,6 +9,7 @@ import { BillBankingProps } from '~/interfaces/payment.type';
 const BillScreen = ({ payment_id }: { payment_id: string }) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { data, isFetching } = useGetBookingByFieldQuery({ payment_id }, { skip: !isOpenModal });
+  console.log(data);
 
   const billData: BillBankingProps = {
     payment_id: data?.data?.payment_id as string,

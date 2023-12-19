@@ -46,10 +46,17 @@ const BillScreen = () => {
     payment_id: data?.data?.payment_id as string,
     payment: data?.data?.payment,
     infoBooking: {
+      children_pitch: data?.data?.childrenPitch?.code_chirldren_pitch,
       pitch_name: data?.data?.pitch?.name as string,
       pitch_address: data?.data?.pitch?.address as string,
-      booking_day: `${data?.data?.shift?.start_time} - ${data?.data?.shift?.end_time}`,
+      booking_day: `${data?.data?.shift?.start_time}h - ${data?.data?.shift?.end_time}h`,
       price: data?.data?.shift?.price as number,
+      number_shift: data?.data?.shift?.number_shift,
+      is_booking_month: data?.data?.shift?.is_booking_month,
+      services: data?.data?.services,
+      user_booking: data?.data?.user_booking,
+      createdAt: data?.data?.createdAt,
+      date: data?.data?.shift?.date,
     } as any,
   };
   return (

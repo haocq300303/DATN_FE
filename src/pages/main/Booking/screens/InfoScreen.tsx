@@ -73,6 +73,18 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
     }
   };
 
+  const validatePhoneNumber = (_: any, value: any) => {
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!value) {
+      return Promise.reject();
+    } else if (!phoneRegex.test(value)) {
+      return Promise.reject(new Error('Số điện thoại không hợp lệ'));
+    }
+
+    return Promise.resolve();
+  };
+
   useEffect(() => {
     if (currentUser) setIsDisabled(true);
   }, [currentUser]);
@@ -104,7 +116,11 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
                 wrapperCol={{ span: 24 }}
                 name="phone_number"
                 label="Số điện thoại"
-                rules={[{ required: true }, { whitespace: true }]}
+                rules={[
+                  { validator: validatePhoneNumber },
+                  { required: true, message: 'Vui lòng nhập số điện thoại' },
+                  { whitespace: true, message: 'Số điện thoại không hợp lệ' },
+                ]}
               >
                 <Input disabled={isDisabled} size="large" placeholder="Số diện thoại..." />
               </Form.Item>
@@ -115,7 +131,10 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
                 wrapperCol={{ span: 24 }}
                 name="fullname"
                 label="Họ và tên"
-                rules={[{ required: true }, { whitespace: true }]}
+                rules={[
+                  { required: true, message: 'Vui lòng nhập họ tên' },
+                  { whitespace: true, message: 'Họ tên không hợp lệ' },
+                ]}
               >
                 <Input disabled={isDisabled} size="large" placeholder="Họ và tên..." />
               </Form.Item>
@@ -131,7 +150,11 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
                 wrapperCol={{ span: 24 }}
                 name="email"
                 label="Địa chỉ email (nếu có)"
-                rules={[{ type: 'email' }]}
+                rules={[
+                  { type: 'email', message: 'Email không đúng định dạng' },
+                  { required: true, message: 'Vui lòng nhập email' },
+                  { whitespace: true, message: 'Email không hợp lệ' },
+                ]}
               >
                 <Input size="large" placeholder="Địa chỉ email.." />
               </Form.Item>

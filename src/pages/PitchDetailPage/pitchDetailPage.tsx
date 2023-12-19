@@ -204,22 +204,18 @@ const PitchDetailPage = () => {
       value: 'html',
       desc: (
         <>
-          <div className="flex img-pitch gap-[20px]">
-            <div className="left-img w-[65%] md:w-[100%]">
-              <Image.PreviewGroup
-                items={[
-                  `
-                  ${Pitch?.images && Pitch.images.length > 0 && (Pitch.images[0], Pitch.images[1], Pitch.images[2])}
-                  `,
-                ]}
-              >
-                {Pitch?.images && Pitch.images.length > 0 && <Image className="w-[100%] h-[100%] object-cover" src={Pitch.images[0]} />}
-              </Image.PreviewGroup>
+          <div className="flex img-pitch justify-between gap-[28px]">
+            <div className="left-img w-[70%]">
+              <Image width={'100%'} height={'100%'} src={Pitch.avatar} />
             </div>
             {Pitch?.images && Pitch.images.length > 0 && (
-              <div className="right-img w-[30%] xl:grid md:hidden pt-[20px]">
-                <Image width={200} height={160} src={Pitch?.images[1]} />
-                <Image width={200} height={160} src={Pitch?.images[2]} />
+              <div className="right-img w-[30%] xl:grid md:hidden pt-[8px]">
+                <div className="w-full h-full rounded-[15px] overflow-hidden">
+                  <Image width={'100%'} height={'100%'} src={Pitch?.images[1]} />
+                </div>
+                <div className="w-full h-full rounded-[15px] overflow-hidden">
+                  <Image width={'100%'} height={'100%'} src={Pitch?.images[2]} />
+                </div>
               </div>
             )}
           </div>
@@ -240,13 +236,16 @@ const PitchDetailPage = () => {
                       
                     </Link> */}
                     <a href={`/pitch/detail/${item._id}`}>
-                      <div className="imgae-item-pitch">
-                        <img src={item.avatar} width="100%" className="h-[250px]" alt="" />
+                      <div className="imgae-item-pitch ">
+                        <img src={item.avatar} width="100%" className="h-[250px] rounded-[18px]" alt="" />
                       </div>
                       <div className="text-item-pitch">
                         <Rate disabled allowHalf defaultValue={4.5} /> <span>( {item?.feedback_id?.length} Review)</span>
-                        <h3>{item.name}</h3>
-                        <p>Số Người :7 Người</p>
+                        <h3>
+                          <span>Tên sân: </span>
+                          {item.name}
+                        </h3>
+                        <p>Kiểu sân :7 Người</p>
                         <p className="flex justify-between my-[10px]">
                           Dịch Vụ :
                           {Pitch?.services && Pitch?.services.length > 0
@@ -258,13 +257,11 @@ const PitchDetailPage = () => {
                             : ''}
                         </p>
                         <p className="flex justify-between">
-                          Giá :
-                          <span>
+                          Giá trung bình :
+                          {/* <span>
                             <del className="italic text-[13px]">500.000-1.200.000</del>
-                          </span>
-                          <span className="text-[23px] text-[#ffb932] text-bold">
-                            {item.average_price.toLocaleString('vi-VN')} - 850.000
-                          </span>
+                          </span> */}
+                          <span className="text-[22px] text-[#ffb932]">{item.average_price.toLocaleString('vi-VN')}đ</span>
                         </p>
                       </div>
                     </a>
