@@ -1,10 +1,11 @@
 import { BillBankingProps } from '~/interfaces/payment.type';
 import banner from '~/assets/img/Web/banner1.png';
+import { addDays, format, parseISO } from 'date-fns';
 const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment }: BillBankingProps) => {
   return (
     <>
       <div className=" w-full h-full">
-        <div className="mt-7 opacity-100 hs-overlay-open:duration-500 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
+        <div className="mt-7 opacity-100 hs-overlay-open:duration-500 ease-out transition-all sm:max-w-[700px] sm:w-full m-3 sm:mx-auto">
           <div className="relative flex flex-col bg-white rounded-xl pointer-events-auto dark:bg-gray-800">
             <div className="relative overflow-hidden h-[8rem] bg-gray-900 text-center rounded-b-3xl">
               <img src={banner} alt="" />
@@ -32,7 +33,7 @@ const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment 
                 <p className="text-sm text-gray-500">#{payment_id}</p>
               </div>
 
-              <div className="mt-5 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 gap-5">
+              {/* <div className="mt-5 sm:mt-10 grid grid-cols-2 sm:grid-cols-3 gap-5">
                 <div>
                   <span className="block text-xs uppercase text-gray-500">Người Chuyển:</span>
                   <span className="block text-sm font-medium text-gray-800 dark:text-gray-200">{userBank?.fullname}</span>
@@ -69,7 +70,7 @@ const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment 
                     <span className="block text-sm font-medium text-gray-800 dark:text-gray-200"></span>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="mt-5 sm:mt-10">
                 <h4 className="text-xs font-semibold uppercase text-gray-800 dark:text-gray-200">Chi Tiết</h4>
@@ -77,14 +78,50 @@ const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment 
                 <ul className="mt-3 flex flex-col">
                   <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
                     <div className="flex items-center justify-between w-full">
+                      <span>Tên sân</span>
+
                       <span>{infoBooking?.pitch_name}</span>
-                      <span> {infoBooking?.price?.toLocaleString()} VNĐ</span>
+                      {/* <span> {infoBooking?.price?.toLocaleString()} VNĐ</span> */}
+                    </div>
+                  </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Sân số</span>
+
+                      <span>{infoBooking?.children_pitch}</span>
+                      {/* <span> {infoBooking?.price?.toLocaleString()} VNĐ</span> */}
                     </div>
                   </li>
                   <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
                     <div className="flex items-center justify-between w-full">
                       <span>Giờ Đá</span>
-                      <span>{infoBooking?.booking_day}</span>
+                      <span>{infoBooking?.number_shift ? `Ca ${infoBooking?.number_shift} - ${infoBooking?.booking_day}` : 'Cả ngày'}</span>
+                    </div>
+                  </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Ngày đá</span>
+                      <span>
+                        {infoBooking?.is_booking_month
+                          ? `${infoBooking?.date[0] && format(new Date(infoBooking?.date[0]), 'dd-MM-yyyy')} đến ${format(
+                              addDays(new Date(infoBooking?.date[0]), 29),
+                              'dd-MM-yyyy'
+                            )}`
+                          : infoBooking?.date &&
+                            infoBooking?.date?.length > 0 &&
+                            infoBooking?.date?.map((item: string) => format(new Date(item), 'dd-MM-yyyy'))}
+                      </span>
+                    </div>
+                  </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Giá</span>
+                      <span>
+                        {infoBooking?.price?.toLocaleString('it-IT', {
+                          style: 'currency',
+                          currency: 'VND',
+                        })}
+                      </span>
                     </div>
                   </li>
                   <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
@@ -93,42 +130,74 @@ const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment 
                       <span>{infoBooking?.pitch_address}</span>
                     </div>
                   </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Ngày đặt</span>
+                      <span>{infoBooking?.createdAt && format(parseISO(infoBooking?.createdAt), 'HH:mm:ss dd/MM/yyyy')}</span>
+                    </div>
+                  </li>
+                  <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                    <div className="flex items-center justify-between w-full">
+                      <span>Người đặt</span>
+                      <span>
+                        {infoBooking?.user_booking?.name} - {infoBooking?.user_booking?.phone_number}
+                      </span>
+                    </div>
+                  </li>
+                  {infoBooking?.services && infoBooking?.services.length > 0 && (
+                    <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
+                      <div className="flex items-center justify-between w-full">
+                        <span>Dịch vụ</span>
+                        {infoBooking?.services?.map((item: any) => (
+                          <span>
+                            {item.name} -{' '}
+                            {item.price?.toLocaleString('it-IT', {
+                              style: 'currency',
+                              currency: 'VND',
+                            })}
+                            <br />
+                          </span>
+                        ))}
+                      </div>
+                    </li>
+                  )}
                 </ul>
                 <div className="mt-8 flex sm:justify-end">
-          <div className="w-full max-w-2xl sm:text-end space-y-2">
-            <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Tổng tiền:</dt>
-                <dd className="col-span-2 text-gray-500"> {payment?.total_received?.toLocaleString()} VNĐ</dd>
-              </dl>
+                  <div className="w-full max-w-2xl sm:text-end space-y-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-1 gap-3 sm:gap-2">
+                      <dl className="grid sm:grid-cols-5 gap-x-3">
+                        <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Tổng tiền:</dt>
+                        <dd className="col-span-2 text-gray-500"> {payment?.total_received?.toLocaleString()} VNĐ</dd>
+                      </dl>
 
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Còn Nợ:</dt>
-                <dd className="col-span-2 text-gray-500">{((payment as any)?.total_received - (payment as any)?.price_received).toLocaleString()} VNĐ</dd>
-              </dl>
+                      <dl className="grid sm:grid-cols-5 gap-x-3">
+                        <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Còn Nợ:</dt>
+                        <dd className="col-span-2 text-gray-500">
+                          {((payment as any)?.total_received - (payment as any)?.price_received).toLocaleString()} VNĐ
+                        </dd>
+                      </dl>
 
-              <dl className="grid sm:grid-cols-5 gap-x-3">
-                <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Đã Thanh Toán:</dt>
-                <dd className="col-span-2 text-gray-500">{payment?.price_received?.toLocaleString()} VNĐ</dd>
-              </dl>
-
-            </div>
-          </div>
-        </div>
+                      <dl className="grid sm:grid-cols-5 gap-x-3">
+                        <dt className="col-span-3 font-semibold text-gray-800 dark:text-gray-200">Đã Thanh Toán:</dt>
+                        <dd className="col-span-2 text-gray-500">{payment?.price_received?.toLocaleString()} VNĐ</dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-5 sm:mt-10">
                 <p className="text-sm text-gray-500">
                   Nếu có gì thắc mắc vui lòng liên hệ chúng tôi qua{' '}
                   <a className="inline-flex items-center gap-x-1.5 text-blue-600 decoration-2 hover:underline font-medium" href="#">
-                    example@site.com
+                    fsport@gmail.com
                   </a>{' '}
                   hoặc gọi tới{' '}
                   <a
                     className="inline-flex items-center gap-x-1.5 text-blue-600 decoration-2 hover:underline font-medium"
                     href="tel:+1898345492"
                   >
-                    +84 358-34-5492
+                    0987957355
                   </a>
                 </p>
               </div>

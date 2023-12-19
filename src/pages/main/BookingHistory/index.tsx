@@ -11,7 +11,7 @@ const BookingHistoryPage = () => {
   //     //console.log(date, dateString);
   // };
   return (
-    <div className="mt-10 mb-14 max-w-6xl mx-auto">
+    <div className="mt-10 mb-14 max-w-7xl mx-auto">
       <h1 className="text-[40px] font-semibold text-center">Lịch sử booking</h1>
       <div className="">
         <div className="">

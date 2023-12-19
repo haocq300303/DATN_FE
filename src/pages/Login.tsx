@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../Redux/store';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { routes } from '../routes';
@@ -11,21 +10,18 @@ import Backgound from '../assets/img/Web/banner1.png';
 import { Tabs, message } from 'antd';
 import type { TabsProps } from 'antd';
 import MaskedInput from 'react-text-mask';
-import { loginAsync, loginWithGoogleAsync, logout } from '~/Redux/Slices/userSlice';
+import { loginWithGoogleAsync, logout, saveUserValues } from '~/Redux/Slices/userSlice';
 import { SigninFormEmail, signinSchema } from '~/interfaces/auth';
-import { loginSMS } from '~/api/auth';
+import { login, loginSMS } from '~/api/auth';
+import jwtDecode from 'jwt-decode';
 
 const Login = () => {
-  const user = useSelector((state: RootState) => state.user);
-
-  const isLogged = useSelector((state: RootState) => state.user.isLogged);
-  const role_name = useSelector((state: RootState) => state.user.role_name);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errorPhonenumber, setErrorPhonenumber] = useState(false);
   const onChange = (key: string) => {
-    //console.log(key);
+    console.log(key);
   };
   const {
     register,
@@ -37,8 +33,31 @@ const Login = () => {
   });
 
   const onSubmit: SubmitHandler<SigninFormEmail> = async (values) => {
-    dispatch(loginAsync(values));
-    reset();
+    const response = await login(values);
+    if (response.data.statusCode === 200) {
+      const accessToken = response.data.data.accessToken;
+      localStorage.setItem('accessToken', accessToken);
+      const decode: any = jwtDecode(accessToken);
+      dispatch(
+        saveUserValues({
+          accessToken: accessToken,
+          values: decode,
+          role_name: decode.role_name,
+        })
+      );
+      message.success('Đăng nhập thành công!');
+      setTimeout(() => {
+        if (decode.role_name === 'admin') {
+          navigate(routes.admin);
+        } else if (decode.role_name === 'adminPitch') {
+          navigate(routes.admin_pitch);
+        } else if (decode.role_name === 'user') {
+          navigate(routes.home);
+        }
+      }, 1000);
+    } else {
+      message.error(response?.data.message);
+    }
   };
 
   const handleLoginWithGoogle = async () => {
@@ -163,27 +182,6 @@ const Login = () => {
   useEffect(() => {
     dispatch(logout());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isLogged === true && role_name !== '') {
-      message.success('Đăng nhập thành công!');
-      setTimeout(() => {
-        if (role_name === 'admin') {
-          navigate(routes.admin);
-        } else if (role_name === 'adminPitch') {
-          navigate(routes.admin_pitch);
-        } else if (role_name === 'user') {
-          navigate(routes.home);
-        }
-      }, 1000);
-    }
-  }, [isLogged, navigate, role_name]);
-
-  useEffect(() => {
-    if (user.error !== '') {
-      message.error(user.error);
-    }
-  }, [user.error]);
 
   return (
     <section className="flex flex-col md:flex-row h-screen items-center">

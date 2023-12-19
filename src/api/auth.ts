@@ -45,4 +45,21 @@ const UserPagination = (page?: number) => {
   return instance.get(`users?page=${page}`);
 };
 
-export { signup, login, verify, refetchOtp, loginWithGoogle, loginSMS, registerSMS, getAllUser, removeUser, UserPagination, updateUser };
+const changePassword = (params: any) => {
+  return instance.post(`re_password`, params);
+};
+
+export {
+  signup,
+  login,
+  verify,
+  refetchOtp,
+  loginWithGoogle,
+  loginSMS,
+  registerSMS,
+  getAllUser,
+  removeUser,
+  UserPagination,
+  updateUser,
+  changePassword,
+};

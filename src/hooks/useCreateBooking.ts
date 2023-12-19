@@ -6,6 +6,7 @@ import { sendMail } from '~/api/email';
 import { bookChildrenPicthFullMonth, bookMultipleDay, bookOneShiftFullMonth, getCreatShift } from '~/api/shift';
 import { hideLoader, showLoader } from '~/components/LoaderAllPage';
 import { socket } from '~/config/socket';
+import templateEmailBill from '~/config/templateEmailBill';
 import { IInfoBooking } from '~/interfaces/booking.type';
 import IShift from '~/interfaces/shift';
 
@@ -13,9 +14,10 @@ type UseCreateBookingProps = {
   infoBooking: IInfoBooking;
   currentUser: any;
   setCurrent: React.Dispatch<number>;
+  price_received: any;
 };
 
-const useCreateBooking = ({ infoBooking, currentUser, setCurrent }: UseCreateBookingProps) => {
+const useCreateBooking = ({ infoBooking, currentUser, setCurrent, price_received }: UseCreateBookingProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [newBooking] = useNewBookingAfterPayMutation();
@@ -114,7 +116,7 @@ const useCreateBooking = ({ infoBooking, currentUser, setCurrent }: UseCreateBoo
               email_to: currentUser?.values?.email,
               subject: 'FSport send bill to!!',
               content: 'Nội dung',
-              html: 'Nội dung bill',
+              html: templateEmailBill({ ...infoBooking, payment_id: result?.data?._id, currentUser, price_received }),
             });
 
             toast.success(`Chúng tôi đã gửi bill thanh toán về email của quý khách, vui lòng kiểm tra(${currentUser?.values?.email})!`);

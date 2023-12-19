@@ -15,6 +15,7 @@ import { useAppSelector } from "~/Redux/hook";
 import { Link } from "react-router-dom";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { routes } from "~/routes";
+import ModalEditUser from "~/components/ModalEditUser/ModalEditUser";
 // import ModalEditUser from "~/components/ModalEditUser/ModalEditUser";
 
 
@@ -78,7 +79,7 @@ function HeaderAdmin() {
    </div>
       </Menu>
     </div>
-    {/* {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />} */}
+    {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
     </>
   );
 }

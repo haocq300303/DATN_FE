@@ -15,7 +15,6 @@ const BookingHistoryItem = (booking: IBooking) => {
   const [bookingStatus, setBookingStatus] = useState(booking.status);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
-  console.log(booking);
 
   const timeDifference = differenceInMinutes(new Date(), new Date(booking?.createdAt));
 
@@ -87,7 +86,7 @@ const BookingHistoryItem = (booking: IBooking) => {
   };
   return (
     <>
-      <div className=" border my-4 rounded-xl shadow-md">
+      <div className="border my-4 rounded-xl shadow-md ">
         <div className="flex justify-between items-center px-4 py-2 w-full">
           <div className=" flex items-center gap-11">
             <div>
@@ -96,17 +95,19 @@ const BookingHistoryItem = (booking: IBooking) => {
             </div>
             <div>
               <h2 className="text-lg text-gray-600">Ngày Đặt</h2>
-              <p className="text-base"> {format(new Date(booking?.createdAt), 'HH:mm:ss dd-MM-yyyy')}</p>
+              <p className="text-base"> {booking?.createdAt && format(new Date(booking?.createdAt), 'HH:mm:ss dd-MM-yyyy')}</p>
             </div>
-            <div>
+            <div className="w-[260px]">
               <h2 className="text-lg text-gray-600">Địa Chỉ</h2>
               <p className="text-base"> {booking.pitch?.address} </p>
             </div>
             <div>
               <h2 className="text-lg text-gray-600">Giờ Sân</h2>
               <p className="text-base">
-                <span className="text-lime-800">{booking.shift?.start_time}h</span> -
-                <span className="text-green-800"> {booking.shift?.end_time}h</span>
+                {booking.shift?.start_time
+                  ? `${booking?.shift?.start_time}h - ${booking?.shift?.end_time}h
+                    `
+                  : 'Cả ngày'}
               </p>
             </div>
             <div>
@@ -117,11 +118,13 @@ const BookingHistoryItem = (booking: IBooking) => {
               <h2 className="text-lg text-gray-600">Ngày Đá</h2>
               <p className="text-base">
                 {booking.shift?.is_booking_month
-                  ? `${format(booking?.shift?.date[0], 'dd-MM-yyyy')} đến ${format(
+                  ? `${booking?.shift?.date[0] && format(new Date(booking?.shift?.date[0]), 'dd-MM-yyyy')} đến ${format(
                       addDays(new Date(booking?.shift?.date[0]), 29),
                       'dd-MM-yyyy'
                     )}`
-                  : booking?.shift?.date?.map((item: string) => format(new Date(item), 'dd-MM-yyyy'))}
+                  : booking?.shift?.date &&
+                    booking?.shift?.date?.length > 0 &&
+                    booking?.shift?.date?.map((item: string) => `${format(new Date(item), 'dd-MM-yyyy')}, `)}
               </p>
             </div>
           </div>
@@ -137,7 +140,7 @@ const BookingHistoryItem = (booking: IBooking) => {
         <div className="flex p-4 justify-between">
           <div className="flex">
             <div className="h-[180px] w-[320px]">
-              <img src={booking.pitch?.avatar} alt="hepta-brown" className="w-full rounded-md" />
+              <img src={booking.pitch?.avatar} alt="hepta-brown" className="w-full h-full object-cover rounded-md" />
             </div>
 
             <div className="ml-8">
@@ -149,7 +152,6 @@ const BookingHistoryItem = (booking: IBooking) => {
                   <>
                     <h2 className="text-lg text-gray-600 pb-3">Các Dịch Vụ :</h2>
                     <p className="">
-                      {' '}
                       {booking.services?.map((item: any) => (
                         <div key={item.id} className="flex gap-2">
                           <div className="w-20 h-12 mr-[6px] overflow-hidden rounded-xl">
@@ -171,14 +173,14 @@ const BookingHistoryItem = (booking: IBooking) => {
           </div>
 
           <div>
-            <div className="flex justify-end items-end flex-col gap-4 pt-2">
+            <div className="flex justify-end items-end flex-col pt-2">
               {bookingStatus !== 'success' ? (
                 ''
               ) : (
                 <Button
                   key={booking.shift?._id}
                   onClick={handleToggleFindOpponent}
-                  className={`px-6 py-1 rounded-lg ${isFindOpponent === 'Find' ? 'bg-red-500' : 'bg-green-500'}`}
+                  className={`px-6 py-1 rounded-lg mb-4 ${isFindOpponent === 'Find' ? 'bg-red-500' : 'bg-green-500'}`}
                 >
                   {isFindOpponent === 'Find' ? (
                     <span className="text-white ">Tắt Tìm Đối</span>
@@ -192,19 +194,27 @@ const BookingHistoryItem = (booking: IBooking) => {
                 {timeDifference > 30 ? (
                   ''
                 ) : (
-                  <Button onClick={handleCancelBooking} className={`px-4 py-1 rounded-lg bg-red-500`}>
-                    <span className="text-white ">{isLoading ? 'Loading...' : 'Hủy lịch'}</span>
+                  <Button onClick={handleCancelBooking} className={`px-4 py-1 rounded-lg bg-red-500 mb-4`}>
+                    <span className="text-white ">
+                      {isLoading ? (
+                        <span className="flex items-center justify-center">
+                          <div className="w-5 h-5 border-t-[3px] border-[#333] border-solid rounded-full animate-spin"></div>
+                        </span>
+                      ) : (
+                        'Hủy lịch'
+                      )}
+                    </span>
                   </Button>
                 )}
               </Show>
-              <div className="flex items-center justify-end">
+              <div className="flex items-center justify-end mb-2">
                 {' '}
-                <h2 className="text-lg text-gray-600 py-2 pr-2">Tổng Tiền :</h2>
+                <h2 className="text-lg text-gray-600 pr-2">Tổng Tiền :</h2>
                 <p className="text-lg"> {booking.payment?.total_received?.toLocaleString('vi-VN')}đ</p>
               </div>
               <div className="flex items-center justify-end">
                 {' '}
-                <h2 className="text-lg text-gray-600 py-2 pr-2">Đã thanh toán :</h2>
+                <h2 className="text-lg text-gray-600 pr-2">Đã thanh toán :</h2>
                 <p className="text-lg"> {booking.payment?.price_received?.toLocaleString('vi-VN')}đ</p>
               </div>
             </div>

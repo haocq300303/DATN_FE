@@ -12,6 +12,7 @@ import {
 } from '~/api/childrentPitch';
 import Dragger from 'antd/es/upload/Dragger';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const ChildrentPitch = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,11 +25,11 @@ const ChildrentPitch = () => {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const { data } = await getAllChildrentPicthByParent(id, '');      
+      const { data } = await getAllChildrentPicthByParent(id, '');
       setShildrenPitchs(data.data);
       setIsLoading(false);
     })();
-  }, []);
+  }, [id]);
   const confirm = async (id: string) => {
     await getDeleteChildrentPitch(id);
     const newData = childrenPitchs?.filter((chilPitch: any) => chilPitch._id !== id);
@@ -164,29 +165,42 @@ const ChildrentPitch = () => {
   };
   const [form] = Form.useForm();
   const onFinish = async (values: any) => {
-    if (modalMode === 'add') {
-      const { data } = await getCreatChildrentPitch({
-        ...values,
-        idParentPitch: id,
-        image: values?.image?.file?.response?.data?.url,
+    try {
+      if (modalMode === 'add') {
+        const { data } = await getCreatChildrentPitch({
+          ...values,
+          idParentPitch: id,
+          image: values?.image?.file?.response?.data?.url,
+        });
+        const newData = [...childrenPitchs, data.data];
+        setShildrenPitchs(newData);
+        message.success(`Tạo sân thành công!`);
+      } else if (modalMode === 'edit') {
+        const newImage = values?.image?.file ? values?.image?.file?.response?.data?.url : values?.image;
+        const newValues = {
+          ...values,
+          idParentPitch: id,
+          image: newImage,
+        };
+        const { _id, ...childrentpitch } = newValues;
+        const { data } = await getUpdateChildrentPitch(_id, childrentpitch);
+        const newData = childrenPitchs?.map((childrentPitch: any) => (childrentPitch._id === _id ? data.data : childrentPitch));
+        setShildrenPitchs(newData);
+        message.success(`Sửa sân thành công!`);
+      }
+      setIsModalOpen(false);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'light',
       });
-      const newData = [...childrenPitchs, data.data];
-      setShildrenPitchs(newData);
-      message.success(`Tạo sân thành công!`);
-    } else if (modalMode === 'edit') {
-      const newImage = values?.image?.file ? values?.image?.file?.response?.data?.url : values?.image;
-      const newValues = {
-        ...values,
-        idParentPitch: id,
-        image: newImage,
-      };
-      const { _id, ...childrentpitch } = newValues;
-      const { data } = await getUpdateChildrentPitch(_id, childrentpitch);
-      const newData = childrenPitchs?.map((childrentPitch: any) => (childrentPitch._id === _id ? data.data : childrentPitch));
-      setShildrenPitchs(newData);
-      message.success(`Sửa sân thành công!`);
     }
-    setIsModalOpen(false);
   };
 
   return (

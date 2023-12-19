@@ -5,6 +5,7 @@ import type { DatePickerProps } from 'antd';
 import { DatePicker } from 'antd';
 import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
+import { useAppSelector } from '~/Redux/hook';
 
 const DashboardPitchPage = () => {
   const [monthlyPrices, setMonthlyPrices] = useState([]);
@@ -29,6 +30,12 @@ const DashboardPitchPage = () => {
       },
     },
   });
+
+  const user = useAppSelector((state) => state.user.currentUser);
+  const idUser = user?.values?._id
+  console.log(user);
+
+
   //  thống kê doanh thu trong năm
   const fetchData = async (apiUrl: any) => {
     try {
@@ -55,7 +62,7 @@ const DashboardPitchPage = () => {
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
     //console.log(date, dateString);
     if (dateString) {
-      const apiUrl = `http://localhost:8080/api/statistical/revenue?year=${dateString}`;
+      const apiUrl = `http://localhost:8080/api/statistical/revenue?year=${dateString}&pitch_user=${idUser}`;
       fetchData(apiUrl);
     }
   };
@@ -77,7 +84,7 @@ const DashboardPitchPage = () => {
       const month = dateString.split('-')[1];
       //console.log(date);
 
-      const apiUrl = `http://localhost:8080/api/statistical/revenue/${month}?year=2023&pitch_user=655c53ed6c0689551d7528a3&start_time=1&end_time=31`;
+      const apiUrl = `http://localhost:8080/api/statistical/revenue/${month}?year=2023&pitch_user=${idUser}&start_time=1&end_time=31`;
 
       try {
         const response = await axios.get(apiUrl);
@@ -202,81 +209,7 @@ const DashboardPitchPage = () => {
           <h1 className="text-[30px]">Thống Kê Số Liệu Tháng Này </h1>
           <DatePicker className="w-[300px] rounded-lg shadow-md" onChange={onChangeDate} picker="month" />
         </div>
-        <div className="header">
-          <div className="text flex justify-between items-center my-[50px]"></div>
-          <Swiper spaceBetween={30} slidesPerView={4.5}>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
-                />
-                <p className="my-[20px]">Đặt sân</p>
-                <p className="font-[600] text-[20px]">119.000.000 VND</p>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://cf.shopee.vn/file/336295657902e8becdeb174f977e0e8b"
-                />
-                <p className="my-[20px]">Thuê bóng</p>
-                <p className="font-[600] text-[20px]">1.000.000 VND</p>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://cdn.yousport.vn/Media/Products/070318050840217/qabd-ao-bid-xanh.jpg"
-                />
-                <p className="my-[20px]">Thuê áo bit</p>
-                <p className="font-[600] text-[20px]">5.500.000 VND</p>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://bizweb.dktcdn.net/thumb/large/100/435/259/products/thiet-ke-chua-co-ten-2023-06-08t161419-932.png?v=1686215713957"
-                />
-                <p className="my-[20px]">Nước Khoáng</p>
-                <p className="font-[600] text-[20px]">8.500.000 VND</p>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://i1-thethao.vnecdn.net/2022/12/16/Argentina-v-Australia-Round-of-8972-1172-1671148658.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=QRPTtqGt58KtS73XsvP6Xw"
-                />
-                <p className="my-[20px]">Trọng tài</p>
-                <p className="font-[600] text-[20px]">10.000.000 VND</p>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://icdn.24h.com.vn/upload/2-2022/images/2022-05-23/anh-1-1653275651-650-width660height917.jpg"
-                />
-                <p className="my-[20px]">Cổ vũ</p>
-                <p className="font-[600] text-[20px]">0.000.000 VND</p>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="item bg-[#ffffff] rounded-lg shadow-lg p-[30px] my-[10px]">
-                <img
-                  className="rounded-lg w-[100px] h-[100px] object-cover"
-                  src="https://kenh14cdn.com/d0701n3xMlC38QESbdmYKRwii2Kp9L/Image/2014/06/3-e84fa.jpg"
-                />
-                <p className="my-[20px]">Bình luận viên</p>
-                <p className="font-[600] text-[20px]">10.000.000 VND</p>
-              </div>
-            </SwiperSlide>
-          </Swiper>
-        </div>
+
         <div className="filter_day flex gap-8 mt-9">
           <div className="w-[65%] bg-[#ffffff] p-[30px] rounded-md shadow-lg]">
             <ReactApexChart options={options} series={seriesData} type="bar" height={350} />
