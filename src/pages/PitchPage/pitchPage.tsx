@@ -25,8 +25,8 @@ const fixedOptions = [
 const filterServiceOptions = [
   { value: 'trong-tai', label: 'Trọng Tài' },
   { value: 'binh-luan-vien', label: 'Bình Luận Viên' },
+  { value: 'doi-co-vu', label: 'Đội cổ vũ' },
   { value: 'ao', label: 'Áo đấu' },
-  { value: 'bac-si', label: 'Bác sĩ' },
 ];
 const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
