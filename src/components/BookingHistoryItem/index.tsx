@@ -188,8 +188,7 @@ const BookingHistoryItem = () => {
                             </div>
                           </td>
                           <td className="px-4 py-4 text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">
-                            {' '}
-                            {format(new Date(booking.updatedAt), 'd MMM yyyy')}
+                            {booking?.updatedAt && format(new Date(booking.updatedAt), 'd MMM yyyy')}
                           </td>
                           <td className="px-4 py-4 text-sm font-medium text-gray-700 whitespace-nowrap">
                             <div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">

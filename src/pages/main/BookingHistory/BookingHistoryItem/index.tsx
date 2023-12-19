@@ -15,7 +15,6 @@ const BookingHistoryItem = (booking: IBooking) => {
   const [bookingStatus, setBookingStatus] = useState(booking.status);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
-  console.log(booking);
 
   const timeDifference = differenceInMinutes(new Date(), new Date(booking?.createdAt));
 
@@ -96,7 +95,7 @@ const BookingHistoryItem = (booking: IBooking) => {
             </div>
             <div>
               <h2 className="text-lg text-gray-600">Ngày Đặt</h2>
-              <p className="text-base"> {format(new Date(booking?.createdAt), 'HH:mm:ss dd-MM-yyyy')}</p>
+              <p className="text-base"> {booking?.createdAt && format(new Date(booking?.createdAt), 'HH:mm:ss dd-MM-yyyy')}</p>
             </div>
             <div>
               <h2 className="text-lg text-gray-600">Địa Chỉ</h2>
@@ -149,7 +148,6 @@ const BookingHistoryItem = (booking: IBooking) => {
                   <>
                     <h2 className="text-lg text-gray-600 pb-3">Các Dịch Vụ :</h2>
                     <p className="">
-                      {' '}
                       {booking.services?.map((item: any) => (
                         <div key={item.id} className="flex gap-2">
                           <div className="w-20 h-12 mr-[6px] overflow-hidden rounded-xl">
@@ -198,12 +196,10 @@ const BookingHistoryItem = (booking: IBooking) => {
                 )}
               </Show>
               <div className="flex items-center justify-end">
-                {' '}
                 <h2 className="text-lg text-gray-600 py-2 pr-2">Tổng Tiền :</h2>
                 <p className="text-lg"> {booking.payment?.total_received?.toLocaleString('vi-VN')}đ</p>
               </div>
               <div className="flex items-center justify-end">
-                {' '}
                 <h2 className="text-lg text-gray-600 py-2 pr-2">Đã thanh toán :</h2>
                 <p className="text-lg"> {booking.payment?.price_received?.toLocaleString('vi-VN')}đ</p>
               </div>
