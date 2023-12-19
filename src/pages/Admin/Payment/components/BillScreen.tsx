@@ -4,21 +4,26 @@ import { useEffect, useState } from 'react';
 import { useGetBookingByFieldQuery } from '~/Redux/booking/bookingApi';
 import BillBanking from '~/components/BillBanking';
 import { hideLoader, showLoader } from '~/components/LoaderAllPage';
-import { BillBankingProps } from '~/interfaces/payment.type';
 
 const BillScreen = ({ payment_id }: { payment_id: string }) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { data, isFetching } = useGetBookingByFieldQuery({ payment_id }, { skip: !isOpenModal });
-  console.log(data);
 
-  const billData: BillBankingProps = {
+  const billData: any = {
     payment_id: data?.data?.payment_id as string,
     payment: data?.data?.payment,
     infoBooking: {
+      children_pitch: (data as any)?.data?.childrenPitch?.code_chirldren_pitch,
       pitch_name: data?.data?.pitch?.name as string,
       pitch_address: data?.data?.pitch?.address as string,
-      booking_day: `${data?.data?.shift?.start_time} - ${data?.data?.shift?.end_time}`,
+      booking_day: `${data?.data?.shift?.start_time}h - ${data?.data?.shift?.end_time}h`,
       price: data?.data?.shift?.price as number,
+      number_shift: data?.data?.shift?.number_shift,
+      is_booking_month: data?.data?.shift?.is_booking_month,
+      services: data?.data?.services,
+      user_booking: data?.data?.user_booking,
+      createdAt: data?.data?.createdAt,
+      date: data?.data?.shift?.date,
     } as any,
   };
 

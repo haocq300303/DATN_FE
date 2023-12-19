@@ -1,7 +1,8 @@
 import { BillBankingProps } from '~/interfaces/payment.type';
 import banner from '~/assets/img/Web/banner1.png';
 import { addDays, format, parseISO } from 'date-fns';
-const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment }: BillBankingProps) => {
+
+const BillBanking = ({ payment_id, infoBooking, payment, ...data }: BillBankingProps) => {
   return (
     <>
       <div className=" w-full h-full">
@@ -101,7 +102,7 @@ const BillBanking = ({ userBank, userReceiver, payment_id, infoBooking, payment 
                   <li className="inline-flex items-center gap-x-2 py-3 px-4 text-sm border text-gray-800 -mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-gray-700 dark:text-gray-200">
                     <div className="flex items-center justify-between w-full">
                       <span>Ngày đá</span>
-                      <span>
+                      <span className="ml-6 line-clamp-2 overflow-hidden">
                         {infoBooking?.is_booking_month
                           ? `${infoBooking?.date[0] && format(new Date(infoBooking?.date[0]), 'dd-MM-yyyy')} đến ${format(
                               addDays(new Date(infoBooking?.date[0]), 29),
