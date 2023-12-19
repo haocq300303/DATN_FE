@@ -1,5 +1,5 @@
 import { Button, Radio } from 'antd';
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { useAppSelector } from '~/Redux/hook';
@@ -68,7 +68,8 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
   };
 
   // handle create booking
-  useCreateBooking({ infoBooking, currentUser, setCurrent });
+  useCreateBooking({ infoBooking, currentUser, setCurrent, price_received: infoBooking?.shift.totalPrice * 0.4 });
+
   return (
     <div className="border border-solid px-5 py-2 rounded-md border-[#e7e7e7]">
       <div className="note">Vui lòng xác nhận đúng thông tin và thời gian đặt sân để chúng tôi có thể xử lý cho bạn chính xác nhất</div>

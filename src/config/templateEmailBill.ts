@@ -1,5 +1,7 @@
+import { format } from 'date-fns';
+
 const templateEmailBill = (data: any) => {
-  const { payment_id } = data;
+
   return `<!DOCTYPE html>
   <html lang="en, id">
       <head>
@@ -220,25 +222,18 @@ const templateEmailBill = (data: any) => {
           <section class="wrapper-invoice">
               <div class="invoice">
                   <div class="invoice-information">
-                      <p><b>Mã đơn #</b> : ${payment_id}</p>
-                      <p><b>Ngày Đặt </b>: 17-12-2022</p>
+                      <p><b>Mã đơn #</b> : ${data?.payment_id}</p>
+                      <p><b>Ngày Đặt </b>: ${format(new Date(), 'dd-MM-yyyy')}</p>
                   </div>
                   <div class="invoice-logo-brand">
                       <img src="./assets/image/tampsh.png" alt="" />
                   </div>
                   <div class="invoice-head">
                       <div class="head client-info">
-                          <p>Lê Sỹ Hải</p>
-                          <p>0357902068</p>
-                          <p>hailsph22054@fpt.edu.vn</p>
-                          <p>Đông Hòa - Đông Sơn - Thanh Hóa</p>
+                          <p>${data?.currentUser?.values?.name}</p>
+                          <p>${data?.currentUser?.values?.phone_number}</p>
                       </div>
-                      <div class="head client-data">
-                          <p>-</p>
-                          <p>Mohammad Sahrullah</p>
-                          <p>Bondowoso, Jawa timur</p>
-                          <p>Jln. Duko Kembang, Bondowoso</p>
-                      </div>
+                    
                   </div>
                   <!-- invoice body-->
                   <div class="invoice-body">
@@ -251,23 +246,28 @@ const templateEmailBill = (data: any) => {
                           </thead>
                           <tbody>
                               <tr>
-                                  <td>Sân bóng Đại học Quốc Gia Hà Nội</td>
-                                  <td>200.000 VND</td>
+                                  <td>${data?.pitch?.name}</td>
+                                  <td>${data?.shift?.price?.toLocaleString('vi-VN')} VND</td>
                               </tr>
                               <tr>
                                   <td>Giờ Đá</td>
-                                  <td>18:00 - 20:00</td>
+                                  <td>Ca ${data?.shift?.number_shift} ${data?.shift?.shift_day} Sân ${data?.children_pitch
+                                    ?.children_pitch_code}</td>
                               </tr>
                               <tr>
                                   <td>Địa Chỉ</td>
-                                  <td>Trường Đại học Ngoại ngữ, Dịch Vọng Hậu, Cầu Giấy, Hà Nội</td>
+                                  <td>${data?.pitch?.address}</td>
                               </tr>
                               <tr>
                                   <td>Dịch vụ đi kèm</td>
                                   <td class="sv">
-                                      <p>Áo: 200.000 VND</p>
-                                      <p>Trọng Tài: 150.000 VND</p>
-                                      <p>Bình Luận Viên: 100.000 VND</p>
+                                  ${
+                                    data?.services?.length > 0
+                                      ? data?.services?.map(
+                                          (item: any) => `<p>${item.name}: ${item.price?.toLocaleString('vi-VN')} VND</p>`
+                                        )
+                                      : ''
+                                  }
                                   </td>
                               </tr>
                           </tbody>
@@ -279,18 +279,18 @@ const templateEmailBill = (data: any) => {
                                   <tbody>
                                       <tr>
                                           <td>Tổng Tiền</td>
-                                          <td>650.000 VND</td>
+                                          <td>${data?.shift?.totalPrice?.toLocaleString('vi-VN')} VND</td>
                                       </tr>
                                       <tr>
                                           <td>Còn nợ</td>
-                                          <td>200.000 VND</td>
+                                          <td>${(data?.shift?.totalPrice - data?.price_received)?.toLocaleString('vi-VN')} VND</td>
                                       </tr>
                                   </tbody>
                               </table>
                           </div>
                       </div>
                       <div class="invoice-total-amount">
-                          <p>Đã Thanh Toán : 450.000 VND</p>
+                          <p>Đã Thanh Toán : ${data?.price_received.toLocaleString('vi-VN')} VND</p>
                       </div>
                   </div>
                   <div class="invoice-footer">

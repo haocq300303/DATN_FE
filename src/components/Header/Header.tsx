@@ -20,7 +20,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { RootState } from '~/Redux/store';
 import { routes } from '~/routes';
-// import ModalEditUser from "../ModalEditUser/ModalEditUser";
+import ModalEditUser from '../ModalEditUser/ModalEditUser';
 
 function NavList() {
   return (
@@ -203,7 +203,7 @@ export function Header() {
           <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden"></div>
         </Collapse>
       </Navbar>
-      {/* {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />} */}
+      {isModalOpen && <ModalEditUser isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />}
     </>
   );
 }
