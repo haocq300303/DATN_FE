@@ -19,7 +19,7 @@ const Banner = () => {
   return (
     <section>
       <div className="w-[100%] h-[100vh] bg_banner relative">
-        <div className="absolute top-[50px] left-0 w-[100%] h-[100%] flex items-center justify-center animation1">
+        <div className="absolute top-[50px] left-0 h-[100%] flex items-center justify-center animation1">
           <img src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702961884/datn-img/m10_gzcbpr.png" width="70%" alt="" />
         </div>
         <div className="absolute top-[50px] left-0 w-[55%] h-[80%] flex items-center justify-center animation2">
@@ -41,11 +41,11 @@ const Banner = () => {
         <div className="absolute top-[100px] h-[80%] left-[100px] flex items-center justify-center text-right">
           <div>
             <p className="text-white text-[25px]">Thao Tác Dễ Dàng</p>
-            <p className='italic text-[#c4c4c4] mb-[50px]'>Giao diện dễ tiếp cận</p>
+            <p className="italic text-[#c4c4c4] mb-[50px]">Giao diện dễ tiếp cận</p>
             <p className="text-white text-[23px]">Tìm Sân Nhanh Chóng</p>
-            <p className='italic text-[#c4c4c4] mb-[50px]'>Hệ thống sân đa sạng  khu vực</p>
+            <p className="italic text-[#c4c4c4] mb-[50px]">Hệ thống sân đa sạng khu vực</p>
             <p className="text-white text-[23px]">Tìm Đối Ghép Sân</p>
-            <p className='italic text-[#c4c4c4] mb-[50px]'>Linh hoạt và tối ưu</p>
+            <p className="italic text-[#c4c4c4] mb-[50px]">Linh hoạt và tối ưu</p>
           </div>
         </div>
       </div>
