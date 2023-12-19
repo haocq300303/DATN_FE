@@ -263,7 +263,7 @@ const FindOpponentPage = () => {
                       <div key={item._id} className="w-[33%] px-[8px] mb-[24px]">
                         <div className="relative flex max-w-[26rem] flex-col rounded-xl bg-white bg-clip-border text-gray-700 shadow-lg">
                           <div className="relative mx-4 mt-4 overflow-hidden text-white shadow-lg rounded-xl bg-blue-gray-500 bg-clip-border shadow-blue-gray-500/40">
-                            <img src={item?.id_pitch?.avatar} alt="ui/ux review check" />
+                            <img className="object-cover w-full h-[220px]" src={item?.id_pitch?.avatar} alt="ui/ux review check" />
                             <div className="absolute inset-0 w-full h-full to-bg-black-10 bg-gradient-to-tr from-transparent via-transparent to-black/60"></div>
                           </div>
                           <div className="px-6 py-4">
@@ -272,7 +272,7 @@ const FindOpponentPage = () => {
                                 {item?.id_pitch?.name}
                               </h5>
                             </div>
-                            <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
+                            <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700 whitespace-nowrap overflow-hidden text-ellipsis">
                               <span className="text-pink-500">Vị trí:</span> {item?.id_pitch?.address}
                             </p>
                             <p className="block font-sans text-base antialiased font-light leading-relaxed text-gray-700">
@@ -307,7 +307,7 @@ const FindOpponentPage = () => {
                               className="block w-full select-none rounded-lg bg-pink-500 py-3 px-7 text-center align-middle font-sans text-sm font-bold uppercase text-white shadow-md shadow-pink-500/20 transition-all hover:shadow-lg hover:shadow-pink-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                               type="button"
                             >
-                              Ghép kèo
+                              Chi Tiết
                             </button>
                           </div>
                         </div>
@@ -421,7 +421,15 @@ const FindOpponentPage = () => {
         </div>
 
         <div className="flex justify-end">
-          <Button onClick={onHandleSubmit}>{isLoading ? 'Loading...' : 'Xác nhận'}</Button>
+          <Button onClick={onHandleSubmit}>
+            {isLoading ? (
+              <span className="flex items-center justify-center">
+                <div className="w-5 h-5 border-t-[3px] border-[#333] border-solid rounded-full animate-spin"></div>
+              </span>
+            ) : (
+              'Ghép kèo'
+            )}
+          </Button>
         </div>
       </Modal>
     </div>

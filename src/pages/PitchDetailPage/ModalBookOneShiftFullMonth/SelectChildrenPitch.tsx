@@ -1,6 +1,6 @@
-import { useGetAllChildrenPitchByPitchIdQuery } from "~/Redux/pitch/pitch.api";
-import Loading from "~/components/Loading";
-import IChildrentPitch from "~/interfaces/childrentPitch";
+import { useGetAllChildrenPitchByPitchIdQuery } from '~/Redux/pitch/pitch.api';
+import Loading from '~/components/Loading';
+import IChildrentPitch from '~/interfaces/childrentPitch';
 
 interface ISelectChildrenPitch {
   setDataBooking: any;
@@ -8,11 +8,7 @@ interface ISelectChildrenPitch {
   pitchId: string;
 }
 
-const SelectChildrenPitch = ({
-  setDataBooking,
-  dataBooking,
-  pitchId,
-}: ISelectChildrenPitch) => {
+const SelectChildrenPitch = ({ setDataBooking, dataBooking, pitchId }: ISelectChildrenPitch) => {
   const handlePickPitch = (childrentPitch: IChildrentPitch) => {
     const _dataBooking = [...dataBooking];
 
@@ -31,7 +27,7 @@ const SelectChildrenPitch = ({
           <Loading />
         </div>
       ) : (
-        ""
+        ''
       )}
       <div className="grid grid-cols-2 gap-6">
         {data?.data.map((childrentPitch: any) => (
@@ -40,13 +36,8 @@ const SelectChildrenPitch = ({
             onClick={() => handlePickPitch(childrentPitch)}
             className="rounded-[10px] shadow-md overflow-hidden h-[180px] cursor-pointer hover:opacity-90 hover:shadow-xl"
           >
-            <h3 className="bg-[#1fd392] text-center p-[4px] text-[18px] font-medium">
-              Sân {childrentPitch.code_chirldren_pitch}
-            </h3>
-            <img
-              src="http://res.cloudinary.com/dwp7umncy/image/upload/v1698472712/datn-img/wf48fo9qkwrka4icasrz.jpg"
-              className="aspect-video object-cover"
-            />
+            <h3 className="bg-[#1fd392] text-center p-[4px] text-[18px] font-medium">Sân {childrentPitch.code_chirldren_pitch}</h3>
+            <img src={childrentPitch.image} className="aspect-video object-cover" />
           </div>
         ))}
       </div>

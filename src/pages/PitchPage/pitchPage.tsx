@@ -32,11 +32,11 @@ const handleChange = (value: ChangeEventHandler) => {
   console.log(`selected ${value}`);
 };
 const convertToFilterFormat = (serviceName: any) => {
-  return  serviceName
-  .toLowerCase()
-  .replace(/\s/g, '-')
-  .normalize("NFD")
-  .replace(/[\u0300-\u036f]/g, "");
+  return serviceName
+    .toLowerCase()
+    .replace(/\s/g, '-')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 };
 const PitchPage = () => {
   const [form] = Form.useForm();
@@ -57,7 +57,6 @@ const PitchPage = () => {
   const { pitchs, isLoading } = useAppSelector((state) => state.pitch);
   const services = useAppSelector((state) => state.service.services);
   const { Option } = Select;
-  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +73,7 @@ const PitchPage = () => {
     const updatedServices = selectedServices.includes(formattedServiceValue)
       ? selectedServices.filter((service) => service !== formattedServiceValue)
       : [...selectedServices, formattedServiceValue];
-    setSelectedServices(updatedServices); 
+    setSelectedServices(updatedServices);
   };
   useEffect(() => {
     dispatch(fetchAllPitch(''));
@@ -123,7 +122,7 @@ const PitchPage = () => {
   // });
 
   const filteredPitchs = pitchs.filter((pitch: any) => {
-    return selectedServices.every((service) => 
+    return selectedServices.every((service) =>
       pitch.services.some((item: any) => {
         const formattedServiceValue = convertToFilterFormat(item.name);
         console.log(formattedServiceValue.startsWith(service));
@@ -131,8 +130,6 @@ const PitchPage = () => {
       })
     );
   });
-  
-  
 
   const handleCityChange = async (value: string) => {
     setSelectedCity(value);
@@ -450,9 +447,9 @@ const PitchPage = () => {
                   filteredPitchs.map((pitch: IPitch, index: any) => (
                     <div className="list-pitch mt-[40px]" key={index}>
                       <Link to={`/pitch/detail/${pitch._id}`}>
-                        <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[15px]">
+                        <div className="grid grid-cols-12 gap-[40px] shadow-lg my-[40px] item-pitch pr-[15px] bg-[white] rounded-[18px]">
                           <div className="imgae-item-pitch col-span-5">
-                            <img src={pitch?.avatar} className="rounded-l-[20px] h-[250px] object-cover" width="100%" alt="" />
+                            <img src={pitch?.avatar} className="rounded-l-[20px] h-full object-cover" width="100%" alt="" />
                           </div>
 
                           <div className="text-item-pitch col-span-7 ml-[20px]">
@@ -474,13 +471,11 @@ const PitchPage = () => {
                               })}
                             </p>
                             <p className="flex justify-between">
-                              Giá :
-                              <span>
+                              Giá trung bình :
+                              {/* <span>
                                 <del className="italic text-[13px]">300.000-1.200.000</del>
-                              </span>
-                              <span className="text-[23px] text-[#ffb932] text-bold">
-                                {pitch?.average_price?.toLocaleString('vi-VN')} - 850.000
-                              </span>
+                              </span> */}
+                              <span className="text-[23px] text-[#ffb932] text-bold">{pitch?.average_price?.toLocaleString('vi-VN')}đ</span>
                             </p>
                           </div>
                         </div>

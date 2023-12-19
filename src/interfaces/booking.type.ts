@@ -30,7 +30,7 @@ export interface IInfoBooking {
   };
   children_pitch: {
     _id: string;
-    children_pitch_code: string;
+    code_chirldren_pitch: number;
   };
   admin_pitch: {
     _id: string;
