@@ -32,9 +32,8 @@ const DashboardPitchPage = () => {
   });
 
   const user = useAppSelector((state) => state.user.currentUser);
-  const idUser = user?.values?._id
+  const idUser = user?.values?._id;
   console.log(user);
-
 
   //  thống kê doanh thu trong năm
   const fetchData = async (apiUrl: any) => {
