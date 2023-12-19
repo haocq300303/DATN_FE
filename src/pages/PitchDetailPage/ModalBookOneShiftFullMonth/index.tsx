@@ -1,10 +1,12 @@
 import { Modal } from 'antd';
-import { Dispatch, useState } from 'react';
+import { Dispatch, useEffect, useState } from 'react';
 import SelectChildrenPitch from './SelectChildrenPitch';
 import SelectShift from './SelectShift';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { addDays, format } from 'date-fns';
+import { useAppSelector } from '~/Redux/hook';
+import { checkBookingLimit } from '~/api/user';
 
 interface IModalBookOneShiftFullMonth {
   isOpen: boolean;
@@ -30,7 +32,12 @@ const ModalBookOneShiftFullMonth = ({
   nameAdminPitch,
 }: IModalBookOneShiftFullMonth) => {
   const [dataBooking, setDataBooking] = useState<any[]>([]);
+  const [isBookingLimit, setIsBookingLimit] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const user: any = useAppSelector((state) => state.user.currentUser.values);
+  const userId = user?._id;
+
   // Ngày hiện tại
   const currentDate = new Date();
 
@@ -41,58 +48,67 @@ const ModalBookOneShiftFullMonth = ({
   const formattedFutureDate = format(futureDate, 'yyyy-MM-dd');
 
   const handleSubmitBooking = async () => {
-    const { value: accept } = await Swal.fire({
-      title: 'Xác nhận đặt lịch',
-      icon: 'info',
-      text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
-      input: 'checkbox',
-      inputValue: 0,
-      inputPlaceholder: `
+    if (isBookingLimit) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Đã Đặt Tối Đa Lượt Trong Ngày!',
+        text: 'Bạn đã đặt tối đa lượt trong ngày của sân là 3 lượt. Vui lòng chọn sân khác hoặc hẹn gặp bạn ngày hôm sau!',
+        confirmButtonText: 'Xác nhận',
+      });
+    } else {
+      const { value: accept } = await Swal.fire({
+        title: 'Xác nhận đặt lịch',
+        icon: 'info',
+        text: 'Hệ thống của chúng tôi đặt lịch thông qua hình thức thanh toán trực tuyến. Bạn sẽ được hủy trong 30 phút từ khi đặt lịch và sẽ mất toàn bộ tiền cọc!',
+        input: 'checkbox',
+        inputValue: 0,
+        inputPlaceholder: `
        Tôi đồng ý với chính sách
       `,
-      confirmButtonText: `
+        confirmButtonText: `
         Tiếp tục &nbsp;<i class="fa fa-arrow-right"></i>
       `,
-      inputValidator: (result) => {
-        return !result && 'Bạn cần phải đồng ý với chính sách trên!';
-      },
-    });
-    if (accept) {
-      sessionStorage.setItem(
-        'infoBooking',
-        JSON.stringify({
-          pitch: {
-            _id: pitchId,
-            name: namePitch,
-            image: avatar,
-            address: address,
-          },
-          admin_pitch: {
-            _id: idAdminPitch,
-            name: nameAdminPitch,
-            phone,
-          },
-          children_pitch: {
-            _id: dataBooking[0]?._id,
-            children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
-          },
-          shift: {
-            price: dataBooking[1]?.price,
-            totalPrice: dataBooking[1]?.price * 30,
-            shift_day: `${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time} | Ngày ${formattedCurrentDate} đến ${formattedFutureDate}`,
-            start_time: dataBooking[1]?.start_time,
-            end_time: dataBooking[1]?.end_time,
-            number_shift: dataBooking[1]?.number_shift,
-            date: [formattedCurrentDate],
-            numberDate: 30,
-            status_shift: true,
-            is_booking_month: true,
-          },
-          services: [],
-          type: 'bookOneShiftFullMonth',
-        })
-      );
-      navigate('/checkout');
+        inputValidator: (result) => {
+          return !result && 'Bạn cần phải đồng ý với chính sách trên!';
+        },
+      });
+      if (accept) {
+        sessionStorage.setItem(
+          'infoBooking',
+          JSON.stringify({
+            pitch: {
+              _id: pitchId,
+              name: namePitch,
+              image: avatar,
+              address: address,
+            },
+            admin_pitch: {
+              _id: idAdminPitch,
+              name: nameAdminPitch,
+              phone,
+            },
+            children_pitch: {
+              _id: dataBooking[0]?._id,
+              children_pitch_code: dataBooking[0]?.code_chirldren_pitch,
+            },
+            shift: {
+              price: dataBooking[1]?.price,
+              totalPrice: dataBooking[1]?.price * 30,
+              shift_day: `${dataBooking[1]?.start_time} - ${dataBooking[1]?.end_time} | Ngày ${formattedCurrentDate} đến ${formattedFutureDate}`,
+              start_time: dataBooking[1]?.start_time,
+              end_time: dataBooking[1]?.end_time,
+              number_shift: dataBooking[1]?.number_shift,
+              date: [formattedCurrentDate],
+              numberDate: 30,
+              status_shift: true,
+              is_booking_month: true,
+            },
+            services: [],
+            type: 'bookOneShiftFullMonth',
+          })
+        );
+        navigate('/checkout');
+      }
     }
   };
 
@@ -101,6 +117,15 @@ const ModalBookOneShiftFullMonth = ({
 
     setDataBooking(_dataBooking.slice(0, -1));
   };
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await checkBookingLimit(userId, pitchId);
+
+      data.data && data.data.length >= 3 ? setIsBookingLimit(true) : setIsBookingLimit(false);
+    })();
+  }, [userId, pitchId]);
+
   return (
     <div>
       <Modal open={isOpen} onCancel={() => setOpen(false)} width="1024px" footer={null}>
