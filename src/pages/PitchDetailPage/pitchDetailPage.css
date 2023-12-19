@@ -122,3 +122,6 @@
   background-color: #ef4444 !important;
   border: #ef4444 !important;
 }
+:where(.css-dev-only-do-not-override-1ck3jst).ant-image {
+  width: 100%;
+}

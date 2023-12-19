@@ -156,7 +156,7 @@ const DashboardPitchPage = () => {
       },
     },
   });
-  //console.log(setChartData);
+  console.log(setChartData);
   //  tỉ lệ đặt sân, huỷ sân
   const [cancelPitch, setCancelPitch] = useState({
     series: [
@@ -193,7 +193,7 @@ const DashboardPitchPage = () => {
     },
   });
   const labels = cancelPitch.series.map((item) => item.name);
-  //console.log(setCancelPitch);
+  console.log(setCancelPitch);
 
   return (
     <div className="w-[100%]">

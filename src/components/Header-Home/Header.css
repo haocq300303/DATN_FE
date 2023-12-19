@@ -1,16 +1,10 @@
+
 /* Header.css */
-#header {
-    font-family: "Roboto", sans-serif;
-    color: black !important;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-}
-/* Header.css */
-.fixed-header {
+#header{
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 100;
-    transition: background-color 0.3s ease;
-    background-color: transparent;
+    transition: 0.1s linear;
 }

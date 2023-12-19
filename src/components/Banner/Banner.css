@@ -1,0 +1,31 @@
+.bg_banner{
+    background-image: url(
+    https://res.cloudinary.com/dlu4tkcct/image/upload/v1702961879/datn-img/z4988713130786_bc7b8e3417d7882ccca8eb26629bc650_vf9iys.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 0;
+}
+.animation2{
+    animation: animation2 2s alternate infinite;
+}
+@keyframes animation2{
+    0%{
+        left: 0;
+    }
+    100%{
+        left: 20px;
+    }
+}
+.animation1{
+    animation: animation1 3s alternate infinite;
+}
+@keyframes animation1{
+    0%{
+        left: 0;
+        transform: scale(1.08);
+    }
+    100%{
+        left: 40px;
+        transform: scaleX(1.08);
+    }
+}
