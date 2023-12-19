@@ -18,7 +18,7 @@ const AdminLayout = () => {
             <Input icon={<MagnifyingGlassIcon className="h-5 w-5" />} label="Tìm Kiếm..." crossOrigin={undefined} />
           </div>
           <List>
-            <Accordion open={open === 1}>
+            {/* <Accordion open={open === 1}>
               <Link to={'/admin'} className="flex items-center gap-2">
                 <ListItem className="p-0" selected={open === 1}>
                   <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
@@ -44,7 +44,7 @@ const AdminLayout = () => {
                   </AccordionHeader>
                 </ListItem>
               </Link>
-            </Accordion>
+            </Accordion> */}
             <Accordion open={open === 2}>
               <Link to={'/admin/pitch'} className="flex items-center gap-2">
                 <ListItem className="p-0" selected={open === 2}>

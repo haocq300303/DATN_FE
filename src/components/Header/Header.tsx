@@ -12,7 +12,7 @@ import {
   Input,
   Avatar,
 } from '@material-tailwind/react';
-import { Bars3Icon, XMarkIcon, PowerIcon, BookmarkIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon, PowerIcon, BookmarkIcon, BriefcaseIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 import { Link } from 'react-router-dom';
 import logo from '../../assets/img/logoFsport.png';
@@ -113,6 +113,7 @@ export function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const user = useSelector((state: RootState) => state.user.currentUser);
   const isLogged = useSelector((state: RootState) => state.user.isLogged);
+
   const closeMenu = () => setIsMenuOpen(false);
   React.useEffect(() => {
     window.addEventListener('resize', () => window.innerWidth >= 960 && setOpenNav(false));
@@ -161,6 +162,28 @@ export function Header() {
                         <UserCircleIcon className="h-4 w-5" />
                         Thông Tin Cá Nhân
                       </Button>
+                      {user?.values?.role_name === 'admin' && (
+                        <Link to={'/admin'} className="hover:bg-gray-300 w-full rounded-sm">
+                          <Button
+                            className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"
+                            style={{ zIndex: 101 }}
+                          >
+                            <BriefcaseIcon className="h-4 w-4" />
+                            Quản trị
+                          </Button>
+                        </Link>
+                      )}
+                      {user?.values?.role_name === 'adminPitch' && (
+                        <Link to={'/admin-pitch'} className="hover:bg-gray-300 w-full rounded-sm">
+                          <Button
+                            className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"
+                            style={{ zIndex: 101 }}
+                          >
+                            <BriefcaseIcon className="h-4 w-4" />
+                            Quản trị
+                          </Button>
+                        </Link>
+                      )}
                       <Link to={routes.bookingHistory} className="hover:bg-gray-300 w-full rounded-sm">
                         <Button
                           className="flex items-center gap-2 font-normal border-none bg-transparent text-black shadow-none hover:shadow-none"

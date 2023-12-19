@@ -1,7 +1,6 @@
 import { format } from 'date-fns';
 
 const templateEmailBill = (data: any) => {
-
   return `<!DOCTYPE html>
   <html lang="en, id">
       <head>
@@ -251,8 +250,8 @@ const templateEmailBill = (data: any) => {
                               </tr>
                               <tr>
                                   <td>Giờ Đá</td>
-                                  <td>Ca ${data?.shift?.number_shift} ${data?.shift?.shift_day} Sân ${data?.children_pitch
-                                    ?.children_pitch_code}</td>
+                                  <td>${data?.shift?.number_shift ? `Ca ${data?.shift?.number_shift}` : 'Cả ngày'} ${data?.shift
+                                    ?.shift_day} Sân ${data?.children_pitch?.children_pitch_code}</td>
                               </tr>
                               <tr>
                                   <td>Địa Chỉ</td>
