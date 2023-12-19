@@ -49,16 +49,16 @@ const Header = () => {
   
 
   const navList = (
-    <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+    <ul className="pl-0 mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-[50px] ">
       <Typography
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
+        className="p-3 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all "
       >
         <Link
           to={routes.home}
-          className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+          className="flex text-[#b0b6c2] text-[16px]  no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Trang Chủ
         </Link>
@@ -71,7 +71,7 @@ const Header = () => {
       >
         <Link
           to={routes.pitch_client}
-          className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+          className="flex text-[#b0b6c2] text-[16px]  no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Sân Bóng
         </Link>
@@ -84,7 +84,7 @@ const Header = () => {
       >
         <Link
           to={routes.find_opponent}
-          className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+          className="flex text-[#b0b6c2] text-[16px]  no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Tìm Đối
         </Link>
@@ -93,7 +93,7 @@ const Header = () => {
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
+        className="p-1 text-[#b0b6c2] text-[16px]  font-normal hover:bg-gray-300 lg:hover:bg-transparent hover:transition-all transition-all"
       >
         <Link
           to={routes.post_client}
@@ -110,7 +110,7 @@ const Header = () => {
       >
         <Link
           to={routes.contact}
-          className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+          className="flex text-[#b0b6c2] text-[16px]  no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Liên Hệ
         </Link>
@@ -123,7 +123,7 @@ const Header = () => {
       >
         <Link
           to={routes.about}
-          className="flex no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
+          className="flex text-[#b0b6c2] text-[16px]  no-underline items-center hover:translate-x-3 lg:hover:translate-x-0 hover:transition-all transition-all"
         >
           Về Chúng Tôi
         </Link>
@@ -134,7 +134,7 @@ const Header = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY >= 250) {
+      if (window.scrollY >= 150) {
         dispatch(setFixed(true));
         dispatch(setVisibleTitle(true));
       } else {
@@ -149,13 +149,15 @@ const Header = () => {
     };
   }, [dispatch]);
   return (
-    <div id="header" className={`bg-transparent ${isFixed ? 'fixed-header shadow-xl bg-white' : ''}`}>
+
+    <div id="header" className={`bg-[#081224] ${isFixed ? 'fixed-header shadow-xl bg-[#081224]' : ''}`}>
       <Navbar className="sticky bg-transparent shadow-none border-none  top-0 z-10 h-max max-w-full rounded-none px-4 py-2 container">
-        <div className="flex items-center justify-between text-blue-gray-900">
+        <div className="flex items-center justify-between px-[50px] text-white">
+
           <div className=" flex items-center">
             <img
               className="w-28 lg:w-40"
-              src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1696192598/ImageOther/z4718088485311_234f31f313ef91652f1da8c544568ddb-removebg-preview_yhtdtr.png"
+              src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702974223/ImageOther/z4989296948742_229befe6420facc392ccb86ec089b083-removebg-preview_r41uzg.png"
               alt=""
             />
           </div>

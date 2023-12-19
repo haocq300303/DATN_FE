@@ -5,6 +5,7 @@ import './Home.css';
 import { useEffect } from 'react';
 
 import { Link } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const Home = () => {
   const dispatch = useAppDispatch();
@@ -15,119 +16,13 @@ const Home = () => {
   }, [dispatch]);
   return (
     <div className="gradient">
-      <section className="bg-white box-border py-2">
-        <div className="container max-w-5xl mx-auto m-8">
-          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800 ">FootieMatchFinder</h2>
-          <div className="w-full">
-            <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
-          </div>
-          <section className="bg-white dark:bg-gray-900">
-            <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-10 lg:px-2">
-              <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-                <h2 className="pb-2 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Hệ thống đặt lịch hàng đầu</h2>
-                <p className="mb-4">
-                  Tại trang web của chúng tôi, bạn sẽ dễ dàng thực hiện việc lên lịch luyện tập và tham gia các cuộc thi thể thao một cách
-                  nhanh chóng và thuận tiện. Bạn cũng có thể theo dõi thông tin về các sự kiện thể thao, tham gia đội thi, và tương tác với
-                  cộng đồng yêu thể thao của chúng tôi.
-                </p>
-                <p>Với chúng tôi, việc tổ chức và tham gia vào các hoạt động thể thao trở nên đơn giản và tiện lợi hơn bao giờ hết</p>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mt-8">
-                <img
-                  className="w-full rounded-lg"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png"
-                  alt="office content 1"
-                />
-                <img
-                  className="mt-4 w-full lg:mt-10 rounded-lg"
-                  src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png"
-                  alt="office content 2"
-                />
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-      <section className="bg-white">
-        <div className="container mx-auto flex flex-wrap pt-4 pb-12">
-          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800">Tin Tức Mới Nhất</h2>
-          <div className="w-full my-8">
-            <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 md:gap-6 w-full xl:grid-cols-3 xl:gap-8">
-            {posts
-              ?.slice(0, 3)
-              ?.reverse()
-              ?.map((post: IPost) => (
-                <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">
-                  <Link to={`/post/${post._id}`} className="group relative block h-48 overflow-hidden bg-gray-100 md:h-64">
-                    <img
-                      src={post.images[0]}
-                      loading="lazy"
-                      alt="Photo by Minh Pham"
-                      className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
-                    />
-                  </Link>
-
-                  <div className="flex flex-1 flex-col p-4 sm:p-6">
-                    <h2 className="mb-2 text-lg font-semibold text-gray-800">
-                      <Link to={`/post/${post._id}`} className="transition duration-100 hover:text-indigo-500 active:text-indigo-600">
-                        {' '}
-                        {post.title}
-                      </Link>
-                    </h2>
-
-                    <div className="mb-8" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
-
-                    <div className="mt-auto flex items-end justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
-                          <img
-                            src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
-                            loading="lazy"
-                            alt="Photo by Brock Wegner"
-                            className="h-full w-full object-cover object-center"
-                          />
-                        </div>
-
-                        <div>
-                          <span className="block text-gray-400">Hệ Thống</span>
-                          <span className="block text-sm text-gray-400">{post.updatedAt}</span>
-                        </div>
-                      </div>
-
-                      <span className="rounded border px-2 py-1 text-sm text-gray-500">Thông Báo</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-          <div className="flex justify-center w-full mt-[30px]">
-            <Link
-              to={`/post`}
-              className="flex flex-row items-center justify-center w-full px-4 py-4 mb-4 text-sm font-bold bg-green-300 leading-6 capitalize duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:mb-0 sm:w-auto sm:mr-4 md:pl-8 md:pr-6 xl:pl-12 xl:pr-10   hover:shadow-lg hover:-translate-y-1"
-            >
-              Xem Thêm
-              <span className="ml-4">
-                <svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-                  <path
-                    fill="currentColor"
-                    d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"
-                  ></path>
-                </svg>
-              </span>
-            </Link>
-          </div>
-        </div>
-      </section>
-      <section className="bg-white lg:pt-[30px]">
+      <section className="bg-white lg:pt-[30px] p-[100px]">
         <div className="container mx-auto">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
-              <div className="mx-auto mb-12 max-w-[510px] text-center lg:mb-6">
+              <div className="mx-auto my-[100px] text-center lg:mb-6">
                 <h2 className="mb-4 text-3xl font-bold text-black sm:text-4xl md:text-[40px]">Thông tin về trang web chúng tôi</h2>
-                <p className="text-black text-body-color">
+                <p className="text-black text-body-color mb-12">
                   Ở đây chúng tôi đã và đang có gắng đem đến cho mọi người có một trải nghiệm tốt nhất
                 </p>
               </div>
@@ -315,7 +210,89 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="bg-white pt-20 lg:pt-[10px]">
+      <section className="w-[100%] bg-[#081224] p-[120px] ">
+        <h2 className="text-[48px] font-[700] text-white text-center mb-[30px]">HỘI ĐỒNG SÁNG LẬP</h2>
+        <Swiper spaceBetween={30} slidesPerView={4.5}>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702977649/ImageOther/z4989491423907_06ca6f1a39b25d99e54e3b5f3f6a29c7_tmyzwm.jpg"
+              />
+              <p className="my-[10px]">Bùi Mạnh Cường</p>
+              <p className="font-[600] my-[10px] text-[20px]">Leader</p>
+              <p>Dev FrontEnd, BackEnd</p>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="blob:https://www.facebook.com/0afd480c-024f-4c12-abfd-6c70185c91fb"
+              />
+              <p className="my-[10px]">Chu Quang Hào</p>
+              <p className="font-[600] my-[10px] text-[20px]">Member</p>
+              <p>Dev FrontEnd, BackEnd</p>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+              />
+              <p className="my-[10px]">Trương Minh Hiếu</p>
+              <p className="font-[600] my-[10px] text-[20px]">Member</p>
+              <p>Dev FrontEnd, BackEnd</p>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+              />
+              <p className="my-[10px]">Nguyễn Hà Hữu</p>
+              <p className="font-[600] my-[10px] text-[20px]">Member</p>
+              <p>Dev FrontEnd, BackEnd</p>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+              />
+              <p className="my-[10px]">Phạm Anh Tuấn</p>
+              <p className="font-[600] my-[10px] text-[20px]">Member</p>
+              <p>Dev FrontEnd, BackEnd</p>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702977662/ImageOther/z4978658876816_6af73a35b10e770fdb05d35355b4ba98_psbof4.jpg"
+              />
+              <p className="my-[10px]">Lê Sỹ Hải</p>
+              <p className="font-[600] my-[10px] text-[20px]">Leader</p>
+              <p>Dev FrontEnd, BackEnd</p>
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+              <img
+                className="rounded-lg w-[100%] h-[100%] object-cover"
+                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+              />
+              <p className="my-[10px]">Đậu Phương Thảo</p>
+              <p className="font-[600] my-[10px] text-[20px]">Member</p>
+              <p>Dev FrontEnd, BackEnd, Tester</p>
+            </div>
+          </SwiperSlide>
+        </Swiper>
+      </section>
+      <section className="bg-white py-[100px] lg:pt-[10px]">
         <div className="bg-white py-6 sm:py-8 lg:py-12">
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div className="mb-4 flex items-center justify-between gap-8 sm:mb-8 md:mb-12">
@@ -382,6 +359,99 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <section>
+        <div className="about_our relative">
+          <div className="absolute flex top-[50px] h-[90%] w-[45%] right-[100px] items-center justify-center">
+            <div>
+              <p className="text-[#FC0205] text-[20px] font-[700]">THÔNG TIN</p>
+              <h2 className="text-white text-[56px] font-[900]"> VỀ CHÚNG TÔI</h2>
+              <p className="text-[#c7c7c7]">
+                "Chúng tôi là không gian mà mọi người đến để thể hiện niềm đam mê bằng trái bóng và tạo ra những khoảnh khắc đáng nhớ.{' '}
+                <br />
+                Với sân bóng hiện đại và tiện nghi, chúng tôi cam kết cung cấp trải nghiệm tốt nhất cho các đội bóng, từ các trận đấu sôi
+                động đến những buổi tập chuyên nghiệp. <br />
+                Chúng tôi là nơi tạo ra không gian giao lưu, học hỏi và kỷ niệm, nơi mà niềm đam mê bóng đá trở nên sống động và ý nghĩa."
+              </p>
+              <Link to="/about"><button className='text-[#fff] bg-[#FC0205] py-[10px] px-[20px] rounded-3xl mt-[30px]'>Xem Thêm
+                </button></Link>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="bg-white pt-[100px]">
+        <div className="container mx-auto flex flex-wrap pt-4 pb-12">
+          <h2 className="w-full text-5xl font-bold leading-tight text-center text-gray-800">Tin Tức Mới Nhất</h2>
+          <div className="w-full my-8">
+            <div className="h-1 mx-auto gradient w-64 opacity-25 my-0 py-0 rounded-t"></div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 md:gap-6 w-full xl:grid-cols-3 xl:gap-8">
+            {posts
+              ?.slice(0, 3)
+              ?.reverse()
+              ?.map((post: IPost) => (
+                <div key={post._id} className="flex flex-col overflow-hidden rounded-lg border bg-white">
+                  <Link to={`/post/${post._id}`} className="group relative block h-48 overflow-hidden bg-gray-100 md:h-64">
+                    <img
+                      src={post.images[0]}
+                      loading="lazy"
+                      alt="Photo by Minh Pham"
+                      className="absolute inset-0 h-full w-full object-cover object-center transition duration-200 group-hover:scale-110"
+                    />
+                  </Link>
+
+                  <div className="flex flex-1 flex-col p-4 sm:p-6">
+                    <h2 className="mb-2 text-lg font-semibold text-gray-800">
+                      <Link to={`/post/${post._id}`} className="transition duration-100 hover:text-indigo-500 active:text-indigo-600">
+                        {' '}
+                        {post.title}
+                      </Link>
+                    </h2>
+
+                    <div className="mb-8" dangerouslySetInnerHTML={{ __html: post?.description?.substring(0, 100) }} />
+
+                    <div className="mt-auto flex items-end justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-gray-100">
+                          <img
+                            src="https://hienthao.com/wp-content/uploads/2023/05/c6e56503cfdd87da299f72dc416023d4-736x620.jpg"
+                            loading="lazy"
+                            alt="Photo by Brock Wegner"
+                            className="h-full w-full object-cover object-center"
+                          />
+                        </div>
+
+                        <div>
+                          <span className="block text-gray-400">Hệ Thống</span>
+                          <span className="block text-sm text-gray-400">{post.updatedAt}</span>
+                        </div>
+                      </div>
+
+                      <span className="rounded border px-2 py-1 text-sm text-gray-500">Thông Báo</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className="flex justify-center w-full mt-[30px]">
+            <Link
+              to={`/post`}
+              className="flex flex-row items-center justify-center w-full px-4 py-4 mb-4 text-sm font-bold bg-green-300 leading-6 capitalize duration-100 transform rounded-sm shadow cursor-pointer focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 focus:outline-none sm:mb-0 sm:w-auto sm:mr-4 md:pl-8 md:pr-6 xl:pl-12 xl:pr-10   hover:shadow-lg hover:-translate-y-1"
+            >
+              Xem Thêm
+              <span className="ml-4">
+                <svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 1" viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                  <path
+                    fill="currentColor"
+                    d="M17.92,11.62a1,1,0,0,0-.21-.33l-5-5a1,1,0,0,0-1.42,1.42L14.59,11H7a1,1,0,0,0,0,2h7.59l-3.3,3.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l5-5a1,1,0,0,0,.21-.33A1,1,0,0,0,17.92,11.62Z"
+                  ></path>
+                </svg>
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-white py-8" id="dkdt">
         <div className="container mx-auto px-2 pt-4 pb-12 text-gray-800">
           <h2 className="w-full my-2 text-5xl font-bold leading-tight text-center text-gray-800">Đăng Kí Đối Tác</h2>
