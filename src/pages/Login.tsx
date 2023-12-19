@@ -11,9 +11,10 @@ import Backgound from '../assets/img/Web/banner1.png';
 import { Tabs, message } from 'antd';
 import type { TabsProps } from 'antd';
 import MaskedInput from 'react-text-mask';
-import { loginAsync, loginWithGoogleAsync, logout } from '~/Redux/Slices/userSlice';
+import { loginAsync, loginWithGoogleAsync, logout, saveUserValues } from '~/Redux/Slices/userSlice';
 import { SigninFormEmail, signinSchema } from '~/interfaces/auth';
-import { loginSMS } from '~/api/auth';
+import { login, loginSMS } from '~/api/auth';
+import jwtDecode from 'jwt-decode';
 
 const Login = () => {
   const user = useSelector((state: RootState) => state.user);
@@ -37,7 +38,35 @@ const Login = () => {
   });
 
   const onSubmit: SubmitHandler<SigninFormEmail> = async (values) => {
-    dispatch(loginAsync(values));
+    try {
+      const response = await login(values);
+      if (response.status === 200) {
+        const accessToken = response.data.data.accessToken;
+        localStorage.setItem('accessToken', accessToken);
+        const decode: any = jwtDecode(accessToken);
+        dispatch(
+          saveUserValues({
+            accessToken: accessToken,
+            values: decode,
+            role_name: decode.role_name,
+          })
+        );
+        message.success('Đăng nhập thành công!');
+        setTimeout(() => {
+          if (decode.role_name === 'admin') {
+            navigate(routes.admin);
+          } else if (decode.role_name === 'adminPitch') {
+            navigate(routes.admin_pitch);
+          } else if (decode.role_name === 'user') {
+            navigate(routes.home);
+          }
+        }, 1000);
+      } else {
+        message.error(response?.data?.message);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
     reset();
   };
 
@@ -163,27 +192,6 @@ const Login = () => {
   useEffect(() => {
     dispatch(logout());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (isLogged === true && role_name !== '') {
-      message.success('Đăng nhập thành công!');
-      setTimeout(() => {
-        if (role_name === 'admin') {
-          navigate(routes.admin);
-        } else if (role_name === 'adminPitch') {
-          navigate(routes.admin_pitch);
-        } else if (role_name === 'user') {
-          navigate(routes.home);
-        }
-      }, 1000);
-    }
-  }, [isLogged, navigate, role_name]);
-
-  useEffect(() => {
-    if (user.error !== '') {
-      message.error(user.error);
-    }
-  }, [user.error]);
 
   return (
     <section className="flex flex-col md:flex-row h-screen items-center">
