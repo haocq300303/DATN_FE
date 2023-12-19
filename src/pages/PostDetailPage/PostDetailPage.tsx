@@ -118,7 +118,7 @@ const PostDetailPage = () => {
           <div>
             <h4 className="block font-sans text-4xl font-semibold leading-snug text-blue-gray-900 mb-6">{post?.title}</h4>
             <div className="flex justify-center gap-[20px]">
-              <div className="m-0 overflow-hidden bg-transparent text-gray-700 w-[2500px] h-[520px]">
+              <div className="m-0 overflow-auto bg-transparent text-gray-700 w-[2500px] h-[1100px] rounded-xl">
                 <Carousel autoplay>
                   {post?.images?.map((data) => (
                     <div>
@@ -126,16 +126,57 @@ const PostDetailPage = () => {
                     </div>
                   ))}
                 </Carousel>
+                <div className="py-6">
+              <div
+                dangerouslySetInnerHTML={{ __html: post?.description || '' }}
+                className="mt-3 block font-sans text-xl font-normal leading-10 text-gray-700 antialiased"
+              ></div>
+            </div>
+            <div className="flex items-center justify-end py-6">
+              <p className="block font-sans text-base font-normal leading-relaxed">{post?.updatedAt}</p>
+            </div>
               </div>
               <div className="w-full ">
-                <h1 className="text-center text-xl font-sans font-[600]">Tin Mới Nhất</h1>
+                <form>
+                  <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
+                    Search
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 end-0 flex items-center p-3 pointer-events-none">
+                      <svg
+                        className="w-6 h-6 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      type="search"
+                      id="default-search"
+                      className="block outline-none focus:border-gray-300 rounded-full w-full p-4 ps-6 text-sm text-gray-900 border border-gray-300 bg-gray-50 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Tìm Kiếm..."
+                      required
+                    />
+                  </div>
+                </form>
+
+                <h1 className="my-4  text-2xl font-sans font-[600]">Tin Mới Nhất</h1>
                 <div className=" ">
                   {posts && posts.length > 0 ? (
                     posts?.slice(0, 6).map((item: IPost) => (
                       <a key={item?._id} href={`/post/${item._id}`}>
-                        <div className="flex items-center gap-[5px] mt-[10px] bg-gray-200 rounded-md">
-                          <img className="w-[100px] h-[70px] rounded-md" src={item?.images[0]} alt="" />
-                          <h1 className="w-[330px]">{item?.title}</h1>
+                        <div className="flex gap-[10px] mt-[10px]  rounded-md">
+                          <img className="w-[80px] h-[80px] rounded-md" src={item?.images[0]} alt="" />
+                          <h1 className="w-[330px] text-[20px]">{item?.title}</h1>
                         </div>
                       </a>
                     ))
@@ -146,15 +187,6 @@ const PostDetailPage = () => {
                   )}
                 </div>
               </div>
-            </div>
-            <div className="py-6">
-              <div
-                dangerouslySetInnerHTML={{ __html: post?.description || '' }}
-                className="mt-3 block font-sans text-xl font-normal leading-10 text-gray-700 antialiased"
-              ></div>
-            </div>
-            <div className="flex items-center justify-end py-6">
-              <p className="block font-sans text-base font-normal leading-relaxed">{post?.updatedAt}</p>
             </div>
           </div>
           <div className="border-b-[1px] border-gray-700"></div>

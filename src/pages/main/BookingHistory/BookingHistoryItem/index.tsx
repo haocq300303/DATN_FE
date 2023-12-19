@@ -15,7 +15,6 @@ const BookingHistoryItem = (booking: IBooking) => {
   const [bookingStatus, setBookingStatus] = useState(booking.status);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
-  console.log(booking);
 
   const timeDifference = differenceInMinutes(new Date(), new Date(booking?.createdAt));
 
@@ -87,7 +86,7 @@ const BookingHistoryItem = (booking: IBooking) => {
   };
   return (
     <>
-      <div className=" border my-4 rounded-xl shadow-md">
+      <div className="border my-4 rounded-xl shadow-md ">
         <div className="flex justify-between items-center px-4 py-2 w-full">
           <div className=" flex items-center gap-11">
             <div>
@@ -153,7 +152,6 @@ const BookingHistoryItem = (booking: IBooking) => {
                   <>
                     <h2 className="text-lg text-gray-600 pb-3">Các Dịch Vụ :</h2>
                     <p className="">
-                      {' '}
                       {booking.services?.map((item: any) => (
                         <div key={item.id} className="flex gap-2">
                           <div className="w-20 h-12 mr-[6px] overflow-hidden rounded-xl">

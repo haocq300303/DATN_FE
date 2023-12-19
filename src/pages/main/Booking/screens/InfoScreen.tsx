@@ -156,7 +156,7 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
                   { whitespace: true, message: 'Email không hợp lệ' },
                 ]}
               >
-                <Input size="large" placeholder="Địa chỉ email.." />
+                <Input disabled={isDisabled} size="large" placeholder="Địa chỉ email.." />
               </Form.Item>
             </Col>
 
