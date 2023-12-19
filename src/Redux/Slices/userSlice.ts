@@ -52,12 +52,14 @@ const userSlice = createSlice({
       state.currentUser.values = {} as IUser;
       state.currentUser.accessToken = '';
       localStorage.removeItem('accessToken');
+      localStorage.removeItem('pitch');
       state.isLogged = false;
       state.role_name = '';
     },
     saveUserValues(state, action) {
       state.currentUser.values = action.payload?.values;
       state.currentUser.accessToken = action.payload?.accessToken;
+      localStorage.setItem('accessToken', action.payload?.accessToken);
       state.isLogged = true;
       state.role_name = action.payload?.role_name;
     },
