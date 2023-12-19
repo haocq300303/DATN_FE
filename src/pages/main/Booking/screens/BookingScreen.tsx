@@ -29,7 +29,6 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
     }
     setModeBanking(e.target.value);
   };
-  console.log('Thông tin đặt', infoBooking);
 
   const handleBanking = () => {
     Swal.fire({
