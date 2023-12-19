@@ -130,10 +130,10 @@ const InfoScreen = ({ setCurrent }: InfoScreenProps) => {
                 labelCol={{ span: 24 }}
                 wrapperCol={{ span: 24 }}
                 name="email"
-                label="Địa chỉ email (nếu có)"
-                rules={[{ type: 'email' }]}
+                label="Địa chỉ email"
+                rules={[{ required: true }, { type: 'email' }]}
               >
-                <Input size="large" placeholder="Địa chỉ email.." />
+                <Input disabled={isDisabled} size="large" placeholder="Địa chỉ email.." />
               </Form.Item>
             </Col>
 
