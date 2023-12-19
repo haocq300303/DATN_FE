@@ -15,7 +15,7 @@ const PostDetailPage = () => {
   const [post, setPost] = useState<IPost>();
   const [Char, setChar] = useState('');
   const [IdComment, setIdComment] = useState<any>();
-  //console.log(post);
+  const isLogged = useAppSelector((state) => state.user.isLogged);
 
   const posts = useAppSelector((state) => state.post.posts);
   useEffect(() => {
@@ -127,14 +127,14 @@ const PostDetailPage = () => {
                   ))}
                 </Carousel>
                 <div className="py-6">
-              <div
-                dangerouslySetInnerHTML={{ __html: post?.description || '' }}
-                className="mt-3 block font-sans text-xl font-normal leading-10 text-gray-700 antialiased"
-              ></div>
-            </div>
-            <div className="flex items-center justify-end py-6">
-              <p className="block font-sans text-base font-normal leading-relaxed">{post?.updatedAt}</p>
-            </div>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: post?.description || '' }}
+                    className="mt-3 block font-sans text-xl font-normal leading-10 text-gray-700 antialiased"
+                  ></div>
+                </div>
+                <div className="flex items-center justify-end py-6">
+                  <p className="block font-sans text-base font-normal leading-relaxed">{post?.updatedAt}</p>
+                </div>
               </div>
               <div className="w-full ">
                 <form>
@@ -193,25 +193,29 @@ const PostDetailPage = () => {
           <div className="border-b-[1px] border-gray-700 mt-[1px]"></div>
           <div className=" mx-[100px]">
             <h1 className="text-2xl text-blue-500 font-sans font-[500] mt-[20px] mb-[15px]">Nhận Xét Về Bài Đăng :</h1>
-            <Form form={form} onFinish={onFinishComment}>
-              <Form.Item name="content" rules={[{ required: true, message: 'Hãy viết bình luận của mình !' }]}>
-                <TextArea rows={4} placeholder="Nhập Bình Luận !" maxLength={1500} value={Char} onChange={handleCharChange} />
-              </Form.Item>
-              <Form.Item hidden name="id_post" initialValue={id!}>
-                <Input type="text" defaultValue={id} />
-              </Form.Item>
-              <div className="flex justify-between">
-                <Form.Item>
-                  <Button type="primary" className=" bg-blue-600" htmlType="submit">
-                    Bình Luận
-                  </Button>
+            {isLogged ? (
+              <Form form={form} onFinish={onFinishComment}>
+                <Form.Item name="content" rules={[{ required: true, message: 'Hãy viết bình luận của mình !' }]}>
+                  <TextArea rows={4} placeholder="Nhập Bình Luận !" maxLength={1500} value={Char} onChange={handleCharChange} />
                 </Form.Item>
-                <h1>
-                  {' '}
-                  Tối Đa : <span className="font-[600]">{1500 - Char.length} Kí Tự</span>{' '}
-                </h1>
-              </div>
-            </Form>
+                <Form.Item hidden name="id_post" initialValue={id!}>
+                  <Input type="text" defaultValue={id} />
+                </Form.Item>
+                <div className="flex justify-between">
+                  <Form.Item>
+                    <Button type="primary" className=" bg-blue-600" htmlType="submit">
+                      Bình Luận
+                    </Button>
+                  </Form.Item>
+                  <h1>
+                    {' '}
+                    Tối Đa : <span className="font-[600]">{1500 - Char.length} Kí Tự</span>{' '}
+                  </h1>
+                </div>
+              </Form>
+            ) : (
+              <p className="mb-4">Vui lòng đăng nhập để bình luận!</p>
+            )}
 
             <div className="bg-gray-100/50">
               <div className=" bg-gray-100 py-[10px] border-b-[1px] border-gray-700">
