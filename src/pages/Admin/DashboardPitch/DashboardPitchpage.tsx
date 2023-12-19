@@ -5,6 +5,7 @@ import type { DatePickerProps } from 'antd';
 import { DatePicker } from 'antd';
 import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
+import { useAppSelector } from '~/Redux/hook';
 
 const DashboardPitchPage = () => {
   const [monthlyPrices, setMonthlyPrices] = useState([]);
@@ -30,20 +31,9 @@ const DashboardPitchPage = () => {
     },
   });
 
-  const storedDataString = localStorage.getItem('pitch');
-  let idPitch: string;
-
-  if (storedDataString) {
-    try {
-      const storedData = JSON.parse(storedDataString);
-      idPitch = storedData?._id;
-      console.log('IdPitch:', idPitch);
-    } catch (error) {
-      console.error('Error parsing JSON from localStorage:', error);
-    }
-  } else {
-    console.log('Không có dữ liệu trong localStorage hoặc không phải là chuỗi JSON hợp lệ.');
-  }
+  const user = useAppSelector((state) => state.user.currentUser);
+  const idUser = user?.values?._id
+  console.log(user);
 
 
   //  thống kê doanh thu trong năm
@@ -72,7 +62,7 @@ const DashboardPitchPage = () => {
   const onChange: DatePickerProps['onChange'] = (date, dateString) => {
     //console.log(date, dateString);
     if (dateString) {
-      const apiUrl = `http://localhost:8080/api/statistical/revenue?year=${dateString}&pitch_user=${idPitch}`;
+      const apiUrl = `http://localhost:8080/api/statistical/revenue?year=${dateString}&pitch_user=${idUser}`;
       fetchData(apiUrl);
     }
   };
@@ -94,7 +84,7 @@ const DashboardPitchPage = () => {
       const month = dateString.split('-')[1];
       //console.log(date);
 
-      const apiUrl = `http://localhost:8080/api/statistical/revenue/${month}?year=2023&pitch_user=${idPitch}&start_time=1&end_time=31`;
+      const apiUrl = `http://localhost:8080/api/statistical/revenue/${month}?year=2023&pitch_user=${idUser}&start_time=1&end_time=31`;
 
       try {
         const response = await axios.get(apiUrl);
