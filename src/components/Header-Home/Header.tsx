@@ -129,7 +129,7 @@ const Header = () => {
     };
   }, [dispatch]);
   return (
-    <div id="header" className={`bg-transparent ${isFixed ? 'fixed-header shadow-xl bg-[#081224]' : ''}`}>
+    <div id="header" className={`bg-[#081224] ${isFixed ? 'fixed-header shadow-xl bg-[#081224]' : ''}`}>
       <Navbar className="sticky bg-transparent shadow-none border-none  top-0 z-10 h-max max-w-full rounded-none px-4 py-2 container">
         <div className="flex items-center justify-between px-[50px] text-white">
           <div className=" flex items-center">

@@ -227,7 +227,7 @@ const Home = () => {
             <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
               <img
                 className="rounded-lg w-[100%] h-[100%] object-cover"
-                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+                src="blob:https://www.facebook.com/0afd480c-024f-4c12-abfd-6c70185c91fb"
               />
               <p className="my-[10px]">Chu Quang Hào</p>
               <p className="font-[600] my-[10px] text-[20px]">Member</p>
@@ -371,7 +371,8 @@ const Home = () => {
                 động đến những buổi tập chuyên nghiệp. <br />
                 Chúng tôi là nơi tạo ra không gian giao lưu, học hỏi và kỷ niệm, nơi mà niềm đam mê bóng đá trở nên sống động và ý nghĩa."
               </p>
-              <p></p>
+              <Link to="/about"><button className='text-[#fff] bg-[#FC0205] py-[10px] px-[20px] rounded-3xl mt-[30px]'>Xem Thêm
+                </button></Link>
             </div>
           </div>
         </div>
