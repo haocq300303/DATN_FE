@@ -214,9 +214,9 @@ const Home = () => {
         <h2 className="text-[48px] font-[700] text-white text-center mb-[30px]">HỘI ĐỒNG SÁNG LẬP</h2>
         <Swiper spaceBetween={30} slidesPerView={4.5}>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
+                className=" w-[100%] h-[410px] object-cover"
                 src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702977649/ImageOther/z4989491423907_06ca6f1a39b25d99e54e3b5f3f6a29c7_tmyzwm.jpg"
               />
               <p className="my-[10px]">Bùi Mạnh Cường</p>
@@ -225,10 +225,10 @@ const Home = () => {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
-                src="blob:https://www.facebook.com/0afd480c-024f-4c12-abfd-6c70185c91fb"
+                className="w-[100%] h-[410px] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702992465/ImageOther/z4990225889867_0d6f5f11128eb7ce9cb74d82b22774da_bo9o1k.jpg"
               />
               <p className="my-[10px]">Chu Quang Hào</p>
               <p className="font-[600] my-[10px] text-[20px]">Member</p>
@@ -236,10 +236,10 @@ const Home = () => {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
-                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+                className="w-[100%] h-[410px] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702993585/ImageOther/z4989913837544_0be16165f6a1474c8763074cc0545cab_ruxx7l.jpg"
               />
               <p className="my-[10px]">Trương Minh Hiếu</p>
               <p className="font-[600] my-[10px] text-[20px]">Member</p>
@@ -247,10 +247,10 @@ const Home = () => {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
-                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+                className="w-[100%] h-[410px] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702992462/ImageOther/z4990227939948_08b168d2dc99347dc16b107fbb14c554_x4mhmf.jpg"
               />
               <p className="my-[10px]">Nguyễn Hà Hữu</p>
               <p className="font-[600] my-[10px] text-[20px]">Member</p>
@@ -258,10 +258,10 @@ const Home = () => {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
-                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+                className="w-[100%] h-[410px] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702992464/ImageOther/z4990237459700_5de56324cb17de4b202de377c684992c_qijgae.jpg"
               />
               <p className="my-[10px]">Phạm Anh Tuấn</p>
               <p className="font-[600] my-[10px] text-[20px]">Member</p>
@@ -269,21 +269,21 @@ const Home = () => {
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
+                className="w-[100%] h-[410px] object-cover"
                 src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702977662/ImageOther/z4978658876816_6af73a35b10e770fdb05d35355b4ba98_psbof4.jpg"
               />
               <p className="my-[10px]">Lê Sỹ Hải</p>
-              <p className="font-[600] my-[10px] text-[20px]">Leader</p>
+              <p className="font-[600] my-[10px] text-[20px]">Member</p>
               <p>Dev FrontEnd, BackEnd</p>
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center">
+            <div className="item bg-[#ffffff] rounded-lg shadow-lg pb-[30px] my-[10px] text-center overflow-hidden">
               <img
-                className="rounded-lg w-[100%] h-[100%] object-cover"
-                src="https://conhantaogreengo.com/wp-content/uploads/2022/07/chi-phi-lam-san-co-nhan-tao-bong-da-3.jpeg"
+                className="w-[100%] h-[410px] object-cover"
+                src="https://res.cloudinary.com/dlu4tkcct/image/upload/v1702972698/ImageOther/z4862726884600_b806c1a30b5e1001037ecb3a54d5c04b_ztrdsx.jpg"
               />
               <p className="my-[10px]">Đậu Phương Thảo</p>
               <p className="font-[600] my-[10px] text-[20px]">Member</p>
