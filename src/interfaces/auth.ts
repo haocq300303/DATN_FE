@@ -41,6 +41,7 @@ export interface IUser {
   name: string;
   email: string;
   phone_number?: string;
+  role_name?: string;
 }
 
 export interface UserState {

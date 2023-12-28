@@ -9,7 +9,8 @@ export interface IBooking {
   shift_id: string;
   pitch_id: string;
   payment_id: string;
-  children_pitch_id: string;
+  children_pitch_id?: any;
+  childrenPitch?: any;
   user_booking?: IUser;
   payment?: IPayment;
   pitch?: IPitch;

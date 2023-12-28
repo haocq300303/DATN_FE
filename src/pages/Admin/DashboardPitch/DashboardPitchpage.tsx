@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Chart from 'react-apexcharts';
-import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Swiper, SwiperSlide } from 'swiper/react';
 import type { DatePickerProps } from 'antd';
 import { DatePicker } from 'antd';
 import axios from 'axios';
@@ -16,19 +16,19 @@ const DashboardPitchPage = () => {
     xaxis: {
       categories: [],
     },
-    yaxis: {
-      title: {
-        text: 'Doanh thu (VNĐ)',
-      },
-    },
-    title: {
-      text: 'Biểu đồ doanh thu hàng năm',
-      floating: false,
-      align: 'center',
-      style: {
-        color: '#444',
-      },
-    },
+    // yaxis: {
+    //   title: {
+    //     text: 'Doanh thu (VNĐ)',
+    //   },
+    // },
+    // title: {
+    //   text: 'Biểu đồ doanh thu hàng năm',
+    //   floating: false,
+    //   align: 'center',
+    //   style: {
+    //     color: '#444',
+    //   },
+    // },
   });
 
   const user = useAppSelector((state) => state.user.currentUser);
@@ -58,7 +58,7 @@ const DashboardPitchPage = () => {
     }
   };
 
-  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+  const onChange: DatePickerProps['onChange'] = (_, dateString) => {
     //console.log(date, dateString);
     if (dateString) {
       const apiUrl = `http://localhost:8080/api/statistical/revenue?year=${dateString}&pitch_user=${idUser}`;
@@ -71,14 +71,14 @@ const DashboardPitchPage = () => {
   const [options, setOptions] = useState({
     chart: {
       height: 350,
-      type: 'bar',
+      // type: 'bar',
     },
     xaxis: {
       categories: [],
     },
   });
 
-  const onChangeDate: DatePickerProps['onChange'] = async (date, dateString) => {
+  const onChangeDate: DatePickerProps['onChange'] = async (_, dateString) => {
     if (dateString) {
       const month = dateString.split('-')[1];
       //console.log(date);
@@ -153,6 +153,7 @@ const DashboardPitchPage = () => {
       },
       legend: {
         formatter: function (val: any, opts: any) {
+          console.log(val);
           const name = chartData.series[opts.seriesIndex].name;
           return name + ' - ' + opts.w.globals.series[opts.seriesIndex];
         },
@@ -164,42 +165,42 @@ const DashboardPitchPage = () => {
   });
   console.log(setChartData);
   //  tỉ lệ đặt sân, huỷ sân
-  const [cancelPitch, setCancelPitch] = useState({
-    series: [
-      {
-        data: 96.67,
-        name: 'Đặt Sân thành công',
-      },
-      {
-        data: 3.37,
-        name: 'Huỷ Sân',
-      },
-    ],
-    options: {
-      chart: {
-        width: 380,
-        type: 'pie',
-      },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: 'bottom',
-            },
-          },
-        },
-      ],
-      title: {
-        text: 'Tỉ lệ đặt sân',
-      },
-    },
-  });
-  const labels = cancelPitch.series.map((item) => item.name);
-  console.log(setCancelPitch);
+  // const [cancelPitch, setCancelPitch] = useState({
+  //   series: [
+  //     {
+  //       data: 96.67,
+  //       name: 'Đặt Sân thành công',
+  //     },
+  //     {
+  //       data: 3.37,
+  //       name: 'Huỷ Sân',
+  //     },
+  //   ],
+  //   options: {
+  //     chart: {
+  //       width: 380,
+  //       type: 'pie',
+  //     },
+  //     responsive: [
+  //       {
+  //         breakpoint: 480,
+  //         options: {
+  //           chart: {
+  //             width: 200,
+  //           },
+  //           legend: {
+  //             position: 'bottom',
+  //           },
+  //         },
+  //       },
+  //     ],
+  //     title: {
+  //       text: 'Tỉ lệ đặt sân',
+  //     },
+  //   },
+  // });
+  // const labels = cancelPitch.series.map((item) => item.name);
+  // console.log(setCancelPitch);
 
   return (
     <div className="w-[100%]">
@@ -214,7 +215,7 @@ const DashboardPitchPage = () => {
             <ReactApexChart options={options} series={seriesData} type="bar" height={350} />
           </div>
           <div className="right w-[34%]  flex justify-center items-center bg-[#ffffff] p-[30px] rounded-md shadow-lg">
-            <ReactApexChart options={chartData.option} series={chartData.series.map((item) => item.data)} type="donut" width={420} />
+            {/* <ReactApexChart options={chartData.option} series={chartData.series.map((item) => item.data)} type="donut" width={420} /> */}
           </div>
         </div>
         <div className="flex justify-between mt-[100px] mb-[40px]">
@@ -227,8 +228,8 @@ const DashboardPitchPage = () => {
           </div>
           <div className="w-[34%]  flex justify-center items-center bg-[#ffffff] p-[30px] rounded-md shadow-lg">
             <ReactApexChart
-              options={{ ...cancelPitch.options, labels }}
-              series={cancelPitch.series.map((item) => item.data)}
+              // options={{ ...cancelPitch.options, labels }}
+              // series={cancelPitch.series.map((item) => item.data)}
               type="pie"
               width={380}
             />

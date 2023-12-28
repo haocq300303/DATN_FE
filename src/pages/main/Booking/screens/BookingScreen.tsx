@@ -1,5 +1,5 @@
 import { Button, Radio } from 'antd';
-import { memo, useEffect, useState } from 'react';
+import { memo, useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { useAppSelector } from '~/Redux/hook';
@@ -92,7 +92,7 @@ const BookingScreen = ({ setCurrent }: BookingScreenProps) => {
               <div className="mr-3 flex justify-between text-[#422eb1] font-semibold  w-[100px]">
                 Số sân <span>:</span>
               </div>
-              <span className="flex-1 text-[#242424]">{infoBooking?.children_pitch?.children_pitch_code}</span>
+              <span className="flex-1 text-[#242424]">{infoBooking?.children_pitch?.code_chirldren_pitch}</span>
             </div>
             <div className="flex flex-wrap">
               <div className="text-[#422eb1] font-semibold mr-3 flex justify-between w-[100px]">

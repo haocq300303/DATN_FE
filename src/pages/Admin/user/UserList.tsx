@@ -259,7 +259,7 @@ const UserList = () => {
         bordered
         pagination={{
           current: currentPage,
-          total: totalItems,
+          // total: totalItems,
           pageSize: 7,
           onChange: handlePageChange,
         }}

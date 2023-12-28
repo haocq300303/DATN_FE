@@ -4,8 +4,8 @@ import Swal from 'sweetalert2';
 import { DatePicker, Space } from 'antd';
 import { useGetAllBookingByUserIdQuery } from '~/Redux/booking/bookingApi';
 import { useEffect, useState } from 'react';
-import Search from 'antd/es/input/Search';
-import { SearchOutlined } from '@ant-design/icons';
+// import Search from 'antd/es/input/Search';
+// import { SearchOutlined } from '@ant-design/icons';
 
 const BookingHistoryItem = () => {
   const userId = '65131393f8698962d691cd12';
@@ -29,14 +29,14 @@ const BookingHistoryItem = () => {
   };
 
   // SEARCH DATEPICKER----------------------------------------------------------------
-  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState<any>([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [bookingStatus, setBookingStatus] = useState('all');
   useEffect(() => {
     if (selectedDate) {
       const filteredByDate = bookingHistory?.data.filter((booking) => {
         const bookingDate = new Date(booking.updatedAt);
-        return bookingDate.toDateString() === selectedDate.toDate().toDateString();
+        return bookingDate.toDateString() === new Date(selectedDate).toDateString();
       });
       setFilteredBookings(filteredByDate);
     } else {
@@ -53,8 +53,8 @@ const BookingHistoryItem = () => {
     }
     setBookingStatus(status);
   };
-  const onChange = (date: any, dateString: any) => {
-    setSelectedDate(date, dateString);
+  const onChange = (date: any) => {
+    setSelectedDate(date);
     if (bookingHistory?.data) {
       const foundBooking = bookingHistory.data.some((booking) => {
         const bookingDate = new Date(booking.updatedAt);

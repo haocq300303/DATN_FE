@@ -41,7 +41,7 @@ const FeedBack = () => {
   }, [id]);
 
   const handleRateChange = async (value: number) => {
-    //console.log('Giá trị đánh giá:', value);
+    console.log('Giá trị đánh giá:', value);
   };
 
   const onFinish = async (values: any) => {

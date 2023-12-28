@@ -33,7 +33,7 @@ const SelectChildrenPitch = ({
   const handlePickPitch = ({ code_chirldren_pitch, _id }: IChildrentPitch) => {
     const _pitchChild: PitchChildrenInfoType = {
       name: 'Sân' + code_chirldren_pitch,
-      _id,
+      _id: _id || '',
     };
     const _dataBooking = [...dataBooking];
 

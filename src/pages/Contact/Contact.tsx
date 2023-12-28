@@ -1,14 +1,14 @@
 import { message } from 'antd';
 import banner from '../../assets/img/Web/banner1.png';
-import emailjs from 'emailjs-com';
+// import emailjs from 'emailjs-com';
 
 const Contact = () => {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const serviceID = 'service_5hgv1m3';
-    const templateID = 'template_xyhcgho';
-    const userID = 'gz8XBteB4Ltx_gk8N';
+    // const serviceID = 'service_5hgv1m3';
+    // const templateID = 'template_xyhcgho';
+    // const userID = 'gz8XBteB4Ltx_gk8N';
 
     const form_name = e.currentTarget.elements.namedItem('from_name') as HTMLInputElement;
     const email_id = e.currentTarget.elements.namedItem('email_id') as HTMLInputElement;

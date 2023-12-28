@@ -1,10 +1,10 @@
-import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Empty, Form, Image, Input, InputNumber, Select, Spin, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Image, Input, InputNumber, Select, Spin, message } from 'antd';
 import { Option } from 'antd/es/mentions';
 import Dragger from 'antd/es/upload/Dragger';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '~/Redux/hook';
+import { useAppDispatch } from '~/Redux/hook';
 import ModalForm from '~/components/ModalForm/ModalForm';
 import { getUserPitch } from '~/api/pitch';
 import { fetchUpdatePitch } from '~/Redux/Slices/pitchSlice';

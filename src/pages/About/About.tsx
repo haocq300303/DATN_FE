@@ -10,12 +10,11 @@ const contentStyle = {
 const About = () => {
   const carouselRef = useRef(null);
 
-  const onChange = (slideIndex: any) => {
-    // //console.log(slideIndex);
-    if (carouselRef.current) {
-      carouselRef.current.goTo(slideIndex);
-    }
-  };
+  // const onChange = (slideIndex: any) => {
+  //   if (carouselRef.current) {
+  //     carouselRef.current?.goTo(slideIndex);
+  //   }
+  // };
 
   return (
     <div className="">
@@ -100,7 +99,7 @@ const About = () => {
                   <Col className="gutter-row" span={6}>
                     <div
                       className="relative w-20 h-20 bg-lime-800 rounded-full flex justify-center items-center text-center p-4 shadow-xl cursor-pointer transition  hover:scale-[1.1] hover:bg-lime-600 "
-                      onClick={() => onChange(0)}
+                      // onClick={() => onChange(0)}
                     >
                       <span className="absolute text-7xl left-0 top-0 text-lime-400">"</span>
                       <h5 className=" uppercase font-bold text-white  text-center ">1</h5>
@@ -109,7 +108,7 @@ const About = () => {
                   <Col className="gutter-row" span={6}>
                     <div
                       className="relative w-20 h-20 bg-lime-800 rounded-full flex justify-center items-center text-center p-4 shadow-xl cursor-pointer transition  hover:scale-[1.1] hover:bg-lime-600 "
-                      onClick={() => onChange(1)}
+                      // onClick={() => onChange(1)}
                     >
                       <span className="absolute text-7xl left-0 top-0 text-lime-400">"</span>
                       <h5 className=" uppercase font-bold text-white  text-center ">2</h5>
@@ -118,7 +117,7 @@ const About = () => {
                   <Col className="gutter-row" span={6}>
                     <div
                       className="relative w-20 h-20 bg-lime-800 rounded-full flex justify-center items-center text-center p-4 shadow-xl cursor-pointer transition  hover:scale-[1.1] hover:bg-lime-600 "
-                      onClick={() => onChange(2)}
+                      // onClick={() => onChange(2)}
                     >
                       <span className="absolute text-7xl left-0 top-0 text-lime-400">"</span>
                       <h5 className=" uppercase font-bold text-white  text-center ">3</h5>
@@ -127,7 +126,7 @@ const About = () => {
                   <Col className="gutter-row" span={6}>
                     <div
                       className="relative w-20 h-20 bg-lime-800 rounded-full flex justify-center items-center text-center p-4 shadow-xl cursor-pointer transition  hover:scale-[1.1] hover:bg-lime-600 "
-                      onClick={() => onChange(3)}
+                      // onClick={() => onChange(3)}
                     >
                       <span className="absolute text-7xl left-0 top-0 text-lime-400">"</span>
                       <h5 className=" uppercase font-bold text-white  text-center ">4</h5>
@@ -219,9 +218,9 @@ const About = () => {
               height="445"
               src="https://www.youtube.com/embed/oHdg9H6CdOE"
               title="YouTube video player"
-              frameborder="0"
+              // frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
+              // allowfullscreen
             ></iframe>
           </div>
         </div>

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../../Redux/hook';
 import { createPostMid } from '../../../../Redux/Slices/postSlice';
-import ReactQuill from 'react-quill';
+// import ReactQuill from 'react-quill';
 
 const { Dragger } = Upload;
 

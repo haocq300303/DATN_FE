@@ -35,7 +35,7 @@ export type ShiftInfoType = {
 
 export type PitchChildrenInfoType = {
   name: string;
-  _id: string;
+  _id?: string;
 };
 
 export type ServiceType = {

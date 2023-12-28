@@ -1,5 +1,5 @@
 import { Button, message, Form, Input, Upload, Select, InputNumber, Modal } from 'antd';
-import type { CheckboxValueType } from 'antd/es/checkbox/Group';
+// import type { CheckboxValueType } from 'antd/es/checkbox/Group';
 import { UploadOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../Redux/hook';

@@ -2,7 +2,7 @@ import { BillBankingProps } from '~/interfaces/payment.type';
 import banner from '~/assets/img/Web/banner1.png';
 import { addDays, format, parseISO } from 'date-fns';
 
-const BillBanking = ({ payment_id, infoBooking, payment, ...data }: BillBankingProps) => {
+const BillBanking = ({ payment_id, infoBooking, payment }: BillBankingProps) => {
   return (
     <>
       <div className=" w-full h-full">
